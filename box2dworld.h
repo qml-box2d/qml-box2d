@@ -34,6 +34,7 @@ class Box2DWorld : public QDeclarativeItem
 
 public:
     explicit Box2DWorld(QDeclarativeItem *parent = 0);
+    ~Box2DWorld();
 
 private:
     b2World *mWorld;

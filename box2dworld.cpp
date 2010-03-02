@@ -35,3 +35,8 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
 
     mWorld = new b2World(bounds, gravity, doSleep);
 }
+
+Box2DWorld::~Box2DWorld()
+{
+    delete mWorld;
+}
