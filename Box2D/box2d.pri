@@ -57,12 +57,8 @@ HEADERS = \
 	$$PWD/Source/Common/Fixed.h \
 	$$PWD/Source/Common/jtypes.h \
 	$$PWD/Source/Collision/b2Collision.h \
-	$$PWD/Source/Collision/b2Distance.h \
 	$$PWD/Source/Collision/Shapes/b2Shape.h \
 	$$PWD/Source/Collision/Shapes/b2CircleShape.h \
 	$$PWD/Source/Collision/Shapes/b2PolygonShape.h \
-	$$PWD/Source/Collision/b2TimeOfImpact.h \
 	$$PWD/Source/Collision/b2PairManager.h \
-	$$PWD/Source/Collision/b2CollidePoly.h \
-	$$PWD/Source/Collision/b2CollideCircle.h \
 	$$PWD/Source/Collision/b2BroadPhase.h

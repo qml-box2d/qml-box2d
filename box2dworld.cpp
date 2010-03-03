@@ -20,12 +20,31 @@
 
 #include "box2dworld.h"
 
+#include "box2dbody.h"
+
+#include <QTimerEvent>
+
 #include <Box2D.h>
 
 Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
-    QDeclarativeItem(parent)
+    QDeclarativeItem(parent),
+    mWorld(0),
+    mTimeStep(1.0f / 60.0f),
+    mIterations(10),
+    mFrameTime(1000 / 60),
+    mTimerId(0)
+{
+}
+
+Box2DWorld::~Box2DWorld()
+{
+    delete mWorld;
+}
+
+void Box2DWorld::componentComplete()
 {
     // Define the world boundaries and its gravity
+    // TODO: Make properties for setting the boundaries
     b2AABB bounds;
     bounds.lowerBound.Set(-100.0f, -100.0f);
     bounds.upperBound.Set(100.0f, 100.0f);
@@ -34,9 +53,38 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     bool doSleep = true;
 
     mWorld = new b2World(bounds, gravity, doSleep);
+
+    foreach (Box2DBody *body, mBodies)
+        body->initialize(mWorld);
+
+    mTimerId = startTimer(mFrameTime);
 }
 
-Box2DWorld::~Box2DWorld()
+/**
+ * Registers a Box2D body with this world. When the world component is
+ * complete, it will initialize the body.
+ */
+void Box2DWorld::registerBody(Box2DBody *body)
 {
-    delete mWorld;
+    mBodies.append(body);
+}
+
+/**
+ * Unregisters a Box2D body from this world. It will be asked to clean up after
+ * itself.
+ */
+void Box2DWorld::unregisterBody(Box2DBody *body)
+{
+    mBodies.removeOne(body);
+    body->cleanup(mWorld);
+}
+
+void Box2DWorld::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == mTimerId) {
+        mWorld->Step(mTimeStep, mIterations);
+        foreach (Box2DBody *body, mBodies)
+            body->synchronize();
+    }
+    QDeclarativeItem::timerEvent(event);
 }

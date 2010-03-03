@@ -7,8 +7,10 @@ MOC_DIR = .moc
 OBJECTS_DIR = .obj
 
 SOURCES += box2dplugin.cpp \
-    box2dworld.cpp
+    box2dworld.cpp \
+    box2dbody.cpp
 
 HEADERS += \
     box2dplugin.h \
-    box2dworld.h
+    box2dworld.h \
+    box2dbody.h

@@ -18,20 +18,43 @@
  * along with QmlArcade.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "box2dplugin.h"
+#ifndef BOX2DBODY_H
+#define BOX2DBODY_H
 
-#include "box2dworld.h"
-#include "box2dbody.h"
+#include <QDeclarativeItem>
 
-Box2DPlugin::Box2DPlugin(QObject *parent) :
-    QDeclarativeExtensionPlugin(parent)
+class Box2DWorld;
+
+class b2Body;
+class b2World;
+
+/**
+ * The Box2D body, build up from a list of shapes.
+ */
+class Box2DBody : public QDeclarativeItem
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(bool fixed READ fixed WRITE setFixed)
 
-void Box2DPlugin::registerTypes(const char *uri)
-{
-    qmlRegisterType<Box2DWorld>(uri, 2, 0, "World");
-    qmlRegisterType<Box2DBody>(uri, 2, 0, "Body");
-}
+public:
+    explicit Box2DBody(QDeclarativeItem *parent = 0);
+    ~Box2DBody();
 
-Q_EXPORT_PLUGIN2(Box2DPlugin, Box2DPlugin)
+    bool fixed() const
+    { return mFixed; }
+
+    void setFixed(bool fixed)
+    { mFixed = fixed; }
+
+    void componentComplete();
+
+    void initialize(b2World *world);
+    void synchronize();
+    void cleanup(b2World *world);
+
+private:
+    bool mFixed;
+    b2Body *mBody;
+};
+
+#endif // BOX2DBODY_H
