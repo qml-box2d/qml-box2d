@@ -78,9 +78,16 @@ void Box2DBody::synchronize()
     Q_ASSERT(mBody);
     const b2Vec2 position = mBody->GetPosition();
     const float32 angle = mBody->GetAngle();
-    setPos(position.x * scaleRatio - width() / 2,
-           -position.y * scaleRatio - height() / 2);
-    setRotation(-(angle * 360.0) / (2 * M_PI));
+
+    const qreal newX = position.x * scaleRatio - width() / 2;
+    const qreal newY = -position.y * scaleRatio - height() / 2;
+    const qreal newRotation = -(angle * 360.0) / (2 * M_PI);
+
+    // Do fuzzy comparisions to avoid small inaccuracies causing repaints
+    if (!qFuzzyCompare(x(), newX) || !qFuzzyCompare(y(), newY))
+        setPos(newX, newY);
+    if (!qFuzzyCompare(rotation(), newRotation))
+        setRotation(newRotation);
 }
 
 void Box2DBody::cleanup(b2World *world)

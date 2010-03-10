@@ -53,8 +53,8 @@ public:
     void cleanup(b2World *world);
 
 private:
-    bool mFixed;
     b2Body *mBody;
+    bool mFixed;
 };
 
 #endif // BOX2DBODY_H
