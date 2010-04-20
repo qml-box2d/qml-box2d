@@ -30,7 +30,8 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mWorld(0),
     mTimeStep(1.0f / 60.0f),
-    mIterations(10),
+    mVelocityIterations(10),
+    mPositionIterations(10),
     mFrameTime(1000 / 60),
     mTimerId(0)
 {
@@ -43,16 +44,10 @@ Box2DWorld::~Box2DWorld()
 
 void Box2DWorld::componentComplete()
 {
-    // Define the world boundaries and its gravity
-    // TODO: Make properties for setting the boundaries
-    b2AABB bounds;
-    bounds.lowerBound.Set(-100.0f, -100.0f);
-    bounds.upperBound.Set(100.0f, 100.0f);
-
     b2Vec2 gravity(0.0f, -10.0f);
     bool doSleep = true;
 
-    mWorld = new b2World(bounds, gravity, doSleep);
+    mWorld = new b2World(gravity, doSleep);
 
     foreach (Box2DBody *body, mBodies)
         body->initialize(mWorld);
@@ -82,7 +77,8 @@ void Box2DWorld::unregisterBody(Box2DBody *body)
 void Box2DWorld::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == mTimerId) {
-        mWorld->Step(mTimeStep, mIterations);
+        mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
+        mWorld->ClearForces();
         foreach (Box2DBody *body, mBodies)
             body->synchronize();
     }

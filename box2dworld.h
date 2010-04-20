@@ -35,7 +35,8 @@ class Box2DWorld : public QDeclarativeItem
 {
     Q_OBJECT
     Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep)
-    Q_PROPERTY(int iterations READ iterations WRITE setIterations)
+    Q_PROPERTY(int velocityIterations READ velocityIterations WRITE setVelocityIterations)
+    Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations)
     Q_PROPERTY(int frameTime READ frameTime WRITE setFrameTime)
 
 public:
@@ -50,10 +51,24 @@ public:
     void setTimeStep(float timeStep) { mTimeStep = timeStep; }
 
     /**
-     * The number of iterations used to process one step. 10 by default.
+     * The number of velocity iterations used to process one step.
+     * 10 by default.
      */
-    int iterations() const { return mIterations; }
-    void setIterations(int iterations) { mIterations = iterations; }
+    int velocityIterations() const
+    { return mVelocityIterations; }
+
+    void setVelocityIterations(int iterations)
+    { mVelocityIterations = iterations; }
+
+    /**
+     * The number of position iterations used to process one step.
+     * 10 by default.
+     */
+    int positionIterations() const
+    { return mPositionIterations; }
+
+    void setPositionIterations(int iterations)
+    { mPositionIterations = iterations; }
 
     /**
      * The amount of time each frame takes in milliseconds.
@@ -73,7 +88,8 @@ protected:
 private:
     b2World *mWorld;
     float mTimeStep;
-    int mIterations;
+    int mVelocityIterations;
+    int mPositionIterations;
     int mFrameTime;
     int mTimerId;
     QList<Box2DBody*> mBodies;

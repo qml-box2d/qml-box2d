@@ -54,20 +54,23 @@ void Box2DBody::initialize(b2World *world)
     bodyDef.position.Set((x() + width() / 2) / scaleRatio,
                          -(y() + height() / 2) / scaleRatio);
     bodyDef.angle = -(rotation() * (2 * M_PI)) / 360.0;
+    if (!mFixed)
+        bodyDef.type = b2_dynamicBody;
 
     mBody = world->CreateBody(&bodyDef);
 
-    // TODO: Create a shape for each child shape
-    b2PolygonDef shapeDef;
-    shapeDef.SetAsBox(width() / 2.0f / scaleRatio,
-                      height() / 2.0f / scaleRatio);
-    shapeDef.density = 1.0f;    // TODO: Make a property for it in Box2DShape
-    shapeDef.friction = 0.3f;   // TODO: Make a property for it in Box2DShape
-    shapeDef.restitution = 0.5f;
-    mBody->CreateShape(&shapeDef);
+    // TODO: Create a fixture for each child shape
+    b2PolygonShape shape;
+    shape.SetAsBox(width() / 2.0f / scaleRatio,
+                   height() / 2.0f / scaleRatio);
 
-    if (!mFixed)
-        mBody->SetMassFromShapes(); // TODO: Make a property for it in Box2DBody
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &shape;
+    fixtureDef.density = 1.0f;    // TODO: Make a property for it in Box2DShape
+    fixtureDef.friction = 0.3f;   // TODO: Make a property for it in Box2DShape
+    fixtureDef.restitution = 0.5f;
+
+    mBody->CreateFixture(&fixtureDef);
 }
 
 /**
