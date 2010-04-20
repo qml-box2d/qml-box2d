@@ -1,4 +1,5 @@
 TEMPLATE = lib
+CONFIG += plugin
 QT += declarative
 TARGET = Box2D
 DESTDIR = ../../lib/Box2D
