@@ -33,6 +33,7 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     mVelocityIterations(10),
     mPositionIterations(10),
     mFrameTime(1000 / 60),
+    mGravity(qreal(0), qreal(-10)),
     mTimerId(0)
 {
 }
@@ -42,11 +43,22 @@ Box2DWorld::~Box2DWorld()
     delete mWorld;
 }
 
+void Box2DWorld::setGravity(const QPointF &gravity)
+{
+    if (mGravity == gravity)
+        return;
+
+    mGravity = gravity;
+    mWorld->SetGravity(b2Vec2(gravity.x(), gravity.y()));
+
+    emit gravityChanged();
+}
+
 void Box2DWorld::componentComplete()
 {
     QDeclarativeItem::componentComplete();
 
-    b2Vec2 gravity(0.0f, -10.0f);
+    const b2Vec2 gravity(mGravity.x(), mGravity.y());
     bool doSleep = true;
 
     mWorld = new b2World(gravity, doSleep);

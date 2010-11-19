@@ -38,6 +38,7 @@ class Box2DWorld : public QDeclarativeItem
     Q_PROPERTY(int velocityIterations READ velocityIterations WRITE setVelocityIterations)
     Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations)
     Q_PROPERTY(int frameTime READ frameTime WRITE setFrameTime)
+    Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
 
 public:
     explicit Box2DWorld(QDeclarativeItem *parent = 0);
@@ -77,10 +78,16 @@ public:
     int frameTime() const { return mFrameTime; }
     void setFrameTime(int frameTime) { mFrameTime = frameTime; }
 
+    QPointF gravity() const { return mGravity; }
+    void setGravity(const QPointF &gravity);
+
     void componentComplete();
 
     void registerBody(Box2DBody *body);
     void unregisterBody(Box2DBody *body);
+
+signals:
+    void gravityChanged();
 
 protected:
     void timerEvent(QTimerEvent *);
@@ -91,6 +98,7 @@ private:
     int mVelocityIterations;
     int mPositionIterations;
     int mFrameTime;
+    QPointF mGravity;
     int mTimerId;
     QList<Box2DBody*> mBodies;
 };
