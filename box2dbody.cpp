@@ -42,6 +42,8 @@ Box2DBody::~Box2DBody()
 
 void Box2DBody::componentComplete()
 {
+    QDeclarativeItem::componentComplete();
+
     if (Box2DWorld *world = qobject_cast<Box2DWorld*>(parent()))
         world->registerBody(this);
     else

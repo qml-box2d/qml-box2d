@@ -44,6 +44,8 @@ Box2DWorld::~Box2DWorld()
 
 void Box2DWorld::componentComplete()
 {
+    QDeclarativeItem::componentComplete();
+
     b2Vec2 gravity(0.0f, -10.0f);
     bool doSleep = true;
 
