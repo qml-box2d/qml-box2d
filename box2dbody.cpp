@@ -30,7 +30,8 @@ static const float scaleRatio = 32.0f; // 32 pixels in one meter
 Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mBody(0),
-    mFixed(false)
+    mBodyType(Dynamic),
+    mSleepingAllowed(true)
 {
 }
 
@@ -38,6 +39,28 @@ Box2DBody::~Box2DBody()
 {
     if (Box2DWorld *world = qobject_cast<Box2DWorld*>(parent()))
         world->unregisterBody(this);
+}
+
+void Box2DBody::setBodyType(BodyType bodyType)
+{
+    if (mBodyType == bodyType)
+        return;
+
+    mBodyType = bodyType;
+    if (mBody)
+        mBody->SetType(static_cast<b2BodyType>(bodyType));
+    emit bodyTypeChanged();
+}
+
+void Box2DBody::setSleepingAllowed(bool allowed)
+{
+    if (mSleepingAllowed == allowed)
+        return;
+
+    mSleepingAllowed = allowed;
+    if (mBody)
+        mBody->SetSleepingAllowed(allowed);
+    emit sleepingAllowedChanged();
 }
 
 void Box2DBody::componentComplete()
@@ -53,11 +76,11 @@ void Box2DBody::componentComplete()
 void Box2DBody::initialize(b2World *world)
 {
     b2BodyDef bodyDef;
+    bodyDef.type = static_cast<b2BodyType>(mBodyType);
     bodyDef.position.Set((x() + width() / 2) / scaleRatio,
                          -(y() + height() / 2) / scaleRatio);
     bodyDef.angle = -(rotation() * (2 * M_PI)) / 360.0;
-    if (!mFixed)
-        bodyDef.type = b2_dynamicBody;
+    bodyDef.allowSleep = mSleepingAllowed;
 
     mBody = world->CreateBody(&bodyDef);
 

@@ -34,17 +34,26 @@ class b2World;
 class Box2DBody : public QDeclarativeItem
 {
     Q_OBJECT
-    Q_PROPERTY(bool fixed READ fixed WRITE setFixed)
+
+    Q_ENUMS(BodyType);
+    Q_PROPERTY(BodyType bodyType READ bodyType WRITE setBodyType NOTIFY bodyTypeChanged)
+    Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
 
 public:
+    enum BodyType {
+        Static,
+        Kinematic,
+        Dynamic
+    };
+
     explicit Box2DBody(QDeclarativeItem *parent = 0);
     ~Box2DBody();
 
-    bool fixed() const
-    { return mFixed; }
+    BodyType bodyType() const { return mBodyType; }
+    void setBodyType(BodyType bodyType);
 
-    void setFixed(bool fixed)
-    { mFixed = fixed; }
+    bool sleepingAllowed() const { return mSleepingAllowed; }
+    void setSleepingAllowed(bool allowed);
 
     void componentComplete();
 
@@ -52,9 +61,14 @@ public:
     void synchronize();
     void cleanup(b2World *world);
 
+signals:
+    void bodyTypeChanged();
+    void sleepingAllowedChanged();
+
 private:
     b2Body *mBody;
-    bool mFixed;
+    BodyType mBodyType;
+    bool mSleepingAllowed;
 };
 
 #endif // BOX2DBODY_H
