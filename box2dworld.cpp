@@ -63,8 +63,9 @@ void Box2DWorld::componentComplete()
 
     mWorld = new b2World(gravity, doSleep);
 
-    foreach (Box2DBody *body, mBodies)
-        body->initialize(mWorld);
+    foreach (QGraphicsItem *child, childItems())
+        if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
+            registerBody(body);
 
     mTimerId = startTimer(mFrameTime);
 }
@@ -76,6 +77,7 @@ void Box2DWorld::componentComplete()
 void Box2DWorld::registerBody(Box2DBody *body)
 {
     mBodies.append(body);
+    body->initialize(mWorld);
 }
 
 /**
@@ -97,4 +99,22 @@ void Box2DWorld::timerEvent(QTimerEvent *event)
             body->synchronize();
     }
     QDeclarativeItem::timerEvent(event);
+}
+
+QVariant Box2DWorld::itemChange(GraphicsItemChange change,
+                                const QVariant &value)
+{
+    if (isComponentComplete()) {
+        if (change == ItemChildAddedChange) {
+            QGraphicsItem *child = value.value<QGraphicsItem*>();
+            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
+                registerBody(body);
+        } else if (change == ItemChildRemovedChange) {
+            QGraphicsItem *child = value.value<QGraphicsItem*>();
+            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
+                unregisterBody(body);
+        }
+    }
+
+    return QDeclarativeItem::itemChange(change, value);
 }

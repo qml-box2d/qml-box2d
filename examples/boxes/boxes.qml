@@ -13,17 +13,13 @@ Image {
         id: world;
         anchors.fill: parent
 
-        WoodenBox {
-            x: 20; y: 20;
-            rotation: 46;
-        }
-        WoodenBox {
-            x: 200; y: 30;
-            rotation: -33;
-        }
-        WoodenBox {
-            x: 300; y: 150;
-            rotation: -5;
+        Repeater {
+            model: 3
+            delegate: WoodenBox {
+                x: Math.random() * (screen.width - 100);
+                y: Math.random() * (screen.height / 3);
+                rotation: Math.random() * 90;
+            }
         }
 
         Body {

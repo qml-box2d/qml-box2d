@@ -55,8 +55,6 @@ public:
     bool sleepingAllowed() const { return mSleepingAllowed; }
     void setSleepingAllowed(bool allowed);
 
-    void componentComplete();
-
     void initialize(b2World *world);
     void synchronize();
     void cleanup(b2World *world);

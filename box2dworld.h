@@ -91,6 +91,7 @@ signals:
 
 protected:
     void timerEvent(QTimerEvent *);
+    QVariant itemChange(GraphicsItemChange, const QVariant &);
 
 private:
     b2World *mWorld;

@@ -63,16 +63,6 @@ void Box2DBody::setSleepingAllowed(bool allowed)
     emit sleepingAllowedChanged();
 }
 
-void Box2DBody::componentComplete()
-{
-    QDeclarativeItem::componentComplete();
-
-    if (Box2DWorld *world = qobject_cast<Box2DWorld*>(parent()))
-        world->registerBody(this);
-    else
-        qWarning() << "Warning: Body should have World as parent";
-}
-
 void Box2DBody::initialize(b2World *world)
 {
     b2BodyDef bodyDef;
@@ -121,4 +111,5 @@ void Box2DBody::synchronize()
 void Box2DBody::cleanup(b2World *world)
 {
     world->DestroyBody(mBody);
+    mBody = 0;
 }
