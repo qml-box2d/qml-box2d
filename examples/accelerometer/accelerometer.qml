@@ -1,5 +1,6 @@
 import Qt 4.7
 import Box2D 1.0
+import QtMobility.sensors 1.1
 
 Image {
     id: screen;
@@ -57,6 +58,14 @@ Image {
             id: debugMouseArea
             anchors.fill: world
             onPressed: debugDraw.visible = !debugDraw.visible
+        }
+    }
+
+    Accelerometer  {
+        Component.onCompleted: start()
+        onReadingChanged: {
+            var r = reading
+            world.gravity = Qt.point(-r.y * 0.1, r.x * 0.1)
         }
     }
 }
