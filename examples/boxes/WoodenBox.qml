@@ -1,5 +1,5 @@
 import Qt 4.7
-import Box2D 2.0
+import Box2D 1.0
 
 Body {
     width: 100;

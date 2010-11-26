@@ -31,9 +31,9 @@ Box2DPlugin::Box2DPlugin(QObject *parent) :
 
 void Box2DPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<Box2DWorld>(uri, 2, 0, "World");
-    qmlRegisterType<Box2DBody>(uri, 2, 0, "Body");
-    qmlRegisterType<Box2DDebugDraw>(uri, 2, 0, "DebugDraw");
+    qmlRegisterType<Box2DWorld>(uri, 1, 0, "World");
+    qmlRegisterType<Box2DBody>(uri, 1, 0, "Body");
+    qmlRegisterType<Box2DDebugDraw>(uri, 1, 0, "DebugDraw");
 }
 
 Q_EXPORT_PLUGIN2(Box2DPlugin, Box2DPlugin)
