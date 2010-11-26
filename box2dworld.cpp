@@ -97,6 +97,7 @@ void Box2DWorld::timerEvent(QTimerEvent *event)
         mWorld->ClearForces();
         foreach (Box2DBody *body, mBodies)
             body->synchronize();
+        emit stepped();
     }
     QDeclarativeItem::timerEvent(event);
 }

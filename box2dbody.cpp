@@ -25,8 +25,6 @@
 #include <Box2D.h>
 #include <cmath>
 
-static const float scaleRatio = 32.0f; // 32 pixels in one meter
-
 Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mBody(0),

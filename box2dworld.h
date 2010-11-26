@@ -28,6 +28,10 @@ class Box2DBody;
 
 class b2World;
 
+// TODO: Maybe turn this into a property of the world, though it can't be
+// changed dynamically.
+static const float scaleRatio = 32.0f; // 32 pixels in one meter
+
 /**
  * Wrapper class around a Box2D world.
  */
@@ -86,8 +90,11 @@ public:
     void registerBody(Box2DBody *body);
     void unregisterBody(Box2DBody *body);
 
+    b2World *world() const { return mWorld; }
+
 signals:
     void gravityChanged();
+    void stepped();
 
 protected:
     void timerEvent(QTimerEvent *);

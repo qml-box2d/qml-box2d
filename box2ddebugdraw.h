@@ -18,22 +18,32 @@
  * along with this library;  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "box2dplugin.h"
+#ifndef BOX2DDEBUGDRAW_H
+#define BOX2DDEBUGDRAW_H
 
-#include "box2dworld.h"
-#include "box2dbody.h"
-#include "box2ddebugdraw.h"
+#include <QDeclarativeItem>
 
-Box2DPlugin::Box2DPlugin(QObject *parent) :
-    QDeclarativeExtensionPlugin(parent)
+class Box2DWorld;
+
+class Box2DDebugDraw : public QDeclarativeItem
 {
-}
+    Q_OBJECT
 
-void Box2DPlugin::registerTypes(const char *uri)
-{
-    qmlRegisterType<Box2DWorld>(uri, 2, 0, "World");
-    qmlRegisterType<Box2DBody>(uri, 2, 0, "Body");
-    qmlRegisterType<Box2DDebugDraw>(uri, 2, 0, "DebugDraw");
-}
+    Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld)
 
-Q_EXPORT_PLUGIN2(Box2DPlugin, Box2DPlugin)
+public:
+    explicit Box2DDebugDraw(QDeclarativeItem *parent = 0);
+
+    Box2DWorld *world() const { return mWorld; }
+    void setWorld(Box2DWorld *world);
+
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+
+private slots:
+    void onWorldStepped();
+
+private:
+    Box2DWorld *mWorld;
+};
+
+#endif // BOX2DDEBUGDRAW_H
