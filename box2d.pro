@@ -3,9 +3,11 @@ CONFIG += plugin
 QT += declarative
 TARGET = $$qtLibraryTarget(Box2D)
 TARGETPATH = Box2D
-include(Box2D/box2d.pri)
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
+
+INCLUDEPATH += .
+include(Box2D/box2d.pri)
 
 target.path = $$[QT_INSTALL_IMPORTS]/$$TARGETPATH
 
