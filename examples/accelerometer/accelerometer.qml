@@ -61,7 +61,7 @@ Image {
         Component.onCompleted: start()
         onReadingChanged: {
             var r = reading
-            world.gravity = Qt.point(-r.y * 0.1, r.x * 0.1)
+            world.gravity = Qt.point(-r.x, -r.y)
         }
     }
 }
