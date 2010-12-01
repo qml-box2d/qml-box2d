@@ -1,0 +1,42 @@
+QML Box2D plugin
+----------------
+
+This plugin is meant to be installed to your Qt/imports directory, or shipped
+in a directory of which the parent is added as import path.
+
+The goal is to expose the functionality of Box2D as QML components, in order
+to make it easy to write physics based games in QML.
+
+
+INSTALLING
+
+ qmake
+ make
+ make install  (goes to Qt's import path, run with sudo if necessary)
+
+
+RUNNING THE EXAMPLE
+
+ qmlviewer examples/boxes/boxes.qml
+
+
+DEPLOYMENT
+
+Support for deployment to mobile devices like the N900 and N8 is being worked
+on.
+
+
+USING QT CREATOR
+
+For running you can use a "Custom Executable" configuration set to run
+"qmlviewer" with the right parameters.
+
+When you have write permissions to Qt's import path, it can be convenient to
+add a deployment step to your run settings:
+
+ * Go to Projects -> box2d -> Run Settings
+ * Choose Add Deploy Step -> Make
+ * Enter "install" under "Make arguments"
+
+This will make sure that before running, the version of the plugin is updated
+in Qt's import path.
