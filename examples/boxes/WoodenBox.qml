@@ -6,5 +6,12 @@ Body {
     height: 100;
     sleepingAllowed: false
 
+    fixtures: Box {
+        anchors.fill: parent
+        density: 1;
+        friction: 0.3;
+        restitution: 0.5;
+    }
+
     Image { anchors.fill: parent; source: "woodenbox.png" }
 }

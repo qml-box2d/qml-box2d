@@ -22,29 +22,25 @@ Image {
             }
         }
 
-        Body {
+        Wall {
             id: ground
             height: 20
             anchors { left: parent.left; right: parent.right; top: parent.bottom }
-            bodyType: Body.Static
         }
-        Body {
+        Wall {
             id: ceiling
             height: 20
             anchors { left: parent.left; right: parent.right; bottom: parent.top }
-            bodyType: Body.Static
         }
-        Body {
+        Wall {
             id: leftWall
             width: 20
             anchors { right: parent.left; bottom: ground.top; top: ceiling.bottom }
-            bodyType: Body.Static
         }
-        Body {
+        Wall {
             id: rightWall
             width: 20
             anchors { left: parent.right; bottom: ground.top; top: ceiling.bottom }
-            bodyType: Body.Static
         }
 
         DebugDraw {

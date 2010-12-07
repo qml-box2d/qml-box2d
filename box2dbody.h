@@ -23,6 +23,7 @@
 
 #include <QDeclarativeItem>
 
+class Box2DFixture;
 class Box2DWorld;
 
 class b2Body;
@@ -35,9 +36,10 @@ class Box2DBody : public QDeclarativeItem
 {
     Q_OBJECT
 
-    Q_ENUMS(BodyType);
+    Q_ENUMS(BodyType)
     Q_PROPERTY(BodyType bodyType READ bodyType WRITE setBodyType NOTIFY bodyTypeChanged)
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
+    Q_PROPERTY(QDeclarativeListProperty<Box2DFixture> fixtures READ fixtures)
 
 public:
     enum BodyType {
@@ -55,6 +57,8 @@ public:
     bool sleepingAllowed() const { return mSleepingAllowed; }
     void setSleepingAllowed(bool allowed);
 
+    QDeclarativeListProperty<Box2DFixture> fixtures();
+
     void initialize(b2World *world);
     void synchronize();
     void cleanup(b2World *world);
@@ -64,9 +68,13 @@ signals:
     void sleepingAllowedChanged();
 
 private:
+    static void append_fixture(QDeclarativeListProperty<Box2DFixture> *list,
+                               Box2DFixture *fixture);
+
     b2Body *mBody;
     BodyType mBodyType;
     bool mSleepingAllowed;
+    QList<Box2DFixture*> mFixtures;
 };
 
 #endif // BOX2DBODY_H

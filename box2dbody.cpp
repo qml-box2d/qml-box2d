@@ -20,6 +20,7 @@
 
 #include "box2dbody.h"
 
+#include "box2dfixture.h"
 #include "box2dworld.h"
 
 #include <Box2D.h>
@@ -31,12 +32,11 @@ Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     mBodyType(Dynamic),
     mSleepingAllowed(true)
 {
+    setTransformOrigin(TopLeft);
 }
 
 Box2DBody::~Box2DBody()
 {
-    if (Box2DWorld *world = qobject_cast<Box2DWorld*>(parent()))
-        world->unregisterBody(this);
 }
 
 void Box2DBody::setBodyType(BodyType bodyType)
@@ -61,29 +61,32 @@ void Box2DBody::setSleepingAllowed(bool allowed)
     emit sleepingAllowedChanged();
 }
 
+QDeclarativeListProperty<Box2DFixture> Box2DBody::fixtures()
+{
+    return QDeclarativeListProperty<Box2DFixture>(this, 0,
+                                                  &Box2DBody::append_fixture);
+}
+
+void Box2DBody::append_fixture(QDeclarativeListProperty<Box2DFixture> *list,
+                               Box2DFixture *fixture)
+{
+    Box2DBody *body = static_cast<Box2DBody*>(list->object);
+    fixture->setParentItem(body);
+    body->mFixtures.append(fixture);
+}
+
 void Box2DBody::initialize(b2World *world)
 {
     b2BodyDef bodyDef;
     bodyDef.type = static_cast<b2BodyType>(mBodyType);
-    bodyDef.position.Set((x() + width() / 2) / scaleRatio,
-                         -(y() + height() / 2) / scaleRatio);
+    bodyDef.position.Set(x() / scaleRatio, -y() / scaleRatio);
     bodyDef.angle = -(rotation() * (2 * M_PI)) / 360.0;
     bodyDef.allowSleep = mSleepingAllowed;
 
     mBody = world->CreateBody(&bodyDef);
 
-    // TODO: Create a fixture for each child shape
-    b2PolygonShape shape;
-    shape.SetAsBox(width() / 2.0f / scaleRatio,
-                   height() / 2.0f / scaleRatio);
-
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &shape;
-    fixtureDef.density = 1.0f;    // TODO: Make a property for it in Box2DShape
-    fixtureDef.friction = 0.3f;   // TODO: Make a property for it in Box2DShape
-    fixtureDef.restitution = 0.5f;
-
-    mBody->CreateFixture(&fixtureDef);
+    foreach (Box2DFixture *fixture, mFixtures)
+        fixture->createFixture(mBody);
 }
 
 /**
@@ -95,8 +98,8 @@ void Box2DBody::synchronize()
     const b2Vec2 position = mBody->GetPosition();
     const float32 angle = mBody->GetAngle();
 
-    const qreal newX = position.x * scaleRatio - width() / 2;
-    const qreal newY = -position.y * scaleRatio - height() / 2;
+    const qreal newX = position.x * scaleRatio;
+    const qreal newY = -position.y * scaleRatio;
     const qreal newRotation = -(angle * 360.0) / (2 * M_PI);
 
     // Do fuzzy comparisions to avoid small inaccuracies causing repaints

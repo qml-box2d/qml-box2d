@@ -23,6 +23,7 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 #include "box2ddebugdraw.h"
+#include "box2dfixture.h"
 
 Box2DPlugin::Box2DPlugin(QObject *parent) :
     QDeclarativeExtensionPlugin(parent)
@@ -33,6 +34,9 @@ void Box2DPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Box2DWorld>(uri, 1, 0, "World");
     qmlRegisterType<Box2DBody>(uri, 1, 0, "Body");
+    qmlRegisterType<Box2DFixture>();
+    qmlRegisterType<Box2DBox>(uri, 1, 0, "Box");
+    qmlRegisterType<Box2DCircle>(uri, 1, 0, "Circle");
     qmlRegisterType<Box2DDebugDraw>(uri, 1, 0, "DebugDraw");
 }
 
