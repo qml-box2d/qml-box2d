@@ -37,7 +37,10 @@ class Box2DBody : public QDeclarativeItem
     Q_OBJECT
 
     Q_ENUMS(BodyType)
+    Q_PROPERTY(qreal linearDamping READ linearDamping WRITE setLinearDamping NOTIFY linearDampingChanged)
+    Q_PROPERTY(qreal angularDamping READ angularDamping WRITE setAngularDamping NOTIFY angularDampingChanged)
     Q_PROPERTY(BodyType bodyType READ bodyType WRITE setBodyType NOTIFY bodyTypeChanged)
+    Q_PROPERTY(bool bullet READ isBullet WRITE setBullet NOTIFY bulletChanged)
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
     Q_PROPERTY(QDeclarativeListProperty<Box2DFixture> fixtures READ fixtures)
 
@@ -51,8 +54,17 @@ public:
     explicit Box2DBody(QDeclarativeItem *parent = 0);
     ~Box2DBody();
 
+    qreal linearDamping() const { return mLinearDamping; }
+    void setLinearDamping(qreal linearDamping);
+
+    qreal angularDamping() const { return mAngularDamping; }
+    void setAngularDamping(qreal angularDamping);
+
     BodyType bodyType() const { return mBodyType; }
     void setBodyType(BodyType bodyType);
+
+    bool isBullet() const { return mBullet; }
+    void setBullet(bool bullet);
 
     bool sleepingAllowed() const { return mSleepingAllowed; }
     void setSleepingAllowed(bool allowed);
@@ -64,7 +76,10 @@ public:
     void cleanup(b2World *world);
 
 signals:
+    void linearDampingChanged();
+    void angularDampingChanged();
     void bodyTypeChanged();
+    void bulletChanged();
     void sleepingAllowedChanged();
 
 private:
@@ -72,7 +87,10 @@ private:
                                Box2DFixture *fixture);
 
     b2Body *mBody;
+    qreal mLinearDamping;
+    qreal mAngularDamping;
     BodyType mBodyType;
+    bool mBullet;
     bool mSleepingAllowed;
     QList<Box2DFixture*> mFixtures;
 };

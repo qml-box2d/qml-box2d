@@ -29,7 +29,10 @@
 Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mBody(0),
+    mLinearDamping(0.0f),
+    mAngularDamping(0.0f),
     mBodyType(Dynamic),
+    mBullet(false),
     mSleepingAllowed(true)
 {
     setTransformOrigin(TopLeft);
@@ -37,6 +40,28 @@ Box2DBody::Box2DBody(QDeclarativeItem *parent) :
 
 Box2DBody::~Box2DBody()
 {
+}
+
+void Box2DBody::setLinearDamping(qreal linearDamping)
+{
+    if (mLinearDamping == linearDamping)
+        return;
+
+    mLinearDamping = linearDamping;
+    if (mBody)
+        mBody->SetLinearDamping(linearDamping);
+    emit linearDampingChanged();
+}
+
+void Box2DBody::setAngularDamping(qreal angularDamping)
+{
+    if (mAngularDamping == angularDamping)
+        return;
+
+    mAngularDamping = angularDamping;
+    if (mBody)
+        mBody->SetAngularDamping(angularDamping);
+    emit angularDampingChanged();
 }
 
 void Box2DBody::setBodyType(BodyType bodyType)
@@ -48,6 +73,17 @@ void Box2DBody::setBodyType(BodyType bodyType)
     if (mBody)
         mBody->SetType(static_cast<b2BodyType>(bodyType));
     emit bodyTypeChanged();
+}
+
+void Box2DBody::setBullet(bool bullet)
+{
+    if (mBullet == bullet)
+        return;
+
+    mBullet = bullet;
+    if (mBody)
+        mBody->SetBullet(bullet);
+    emit bulletChanged();
 }
 
 void Box2DBody::setSleepingAllowed(bool allowed)
@@ -81,6 +117,9 @@ void Box2DBody::initialize(b2World *world)
     bodyDef.type = static_cast<b2BodyType>(mBodyType);
     bodyDef.position.Set(x() / scaleRatio, -y() / scaleRatio);
     bodyDef.angle = -(rotation() * (2 * M_PI)) / 360.0;
+    bodyDef.linearDamping = mLinearDamping;
+    bodyDef.angularDamping = mAngularDamping;
+    bodyDef.bullet = mBullet;
     bodyDef.allowSleep = mSleepingAllowed;
 
     mBody = world->CreateBody(&bodyDef);
