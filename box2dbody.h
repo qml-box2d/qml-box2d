@@ -75,6 +75,9 @@ public:
     void synchronize();
     void cleanup(b2World *world);
 
+protected:
+    QVariant itemChange(GraphicsItemChange, const QVariant &);
+
 signals:
     void linearDampingChanged();
     void angularDampingChanged();
@@ -92,6 +95,7 @@ private:
     BodyType mBodyType;
     bool mBullet;
     bool mSleepingAllowed;
+    bool mSynchronizing;
     QList<Box2DFixture*> mFixtures;
 };
 

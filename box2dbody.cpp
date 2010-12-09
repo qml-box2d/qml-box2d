@@ -33,9 +33,11 @@ Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     mAngularDamping(0.0f),
     mBodyType(Dynamic),
     mBullet(false),
-    mSleepingAllowed(true)
+    mSleepingAllowed(true),
+    mSynchronizing(false)
 {
     setTransformOrigin(TopLeft);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
 }
 
 Box2DBody::~Box2DBody()
@@ -134,6 +136,8 @@ void Box2DBody::initialize(b2World *world)
 void Box2DBody::synchronize()
 {
     Q_ASSERT(mBody);
+    mSynchronizing = true;
+
     const b2Vec2 position = mBody->GetPosition();
     const float32 angle = mBody->GetAngle();
 
@@ -146,10 +150,31 @@ void Box2DBody::synchronize()
         setPos(newX, newY);
     if (!qFuzzyCompare(rotation(), newRotation))
         setRotation(newRotation);
+
+    mSynchronizing = false;
 }
 
 void Box2DBody::cleanup(b2World *world)
 {
     world->DestroyBody(mBody);
     mBody = 0;
+}
+
+QVariant Box2DBody::itemChange(QGraphicsItem::GraphicsItemChange change,
+                               const QVariant &variant)
+{
+    if (!mSynchronizing && mBody) {
+        if (change == ItemPositionHasChanged) {
+            const QPointF pos = variant.toPointF();
+            mBody->SetTransform(b2Vec2(pos.x() / scaleRatio,
+                                       -pos.y() / scaleRatio),
+                                mBody->GetAngle());
+        } else if (change == ItemRotationHasChanged) {
+            const qreal rotation = variant.toReal();
+            mBody->SetTransform(mBody->GetPosition(),
+                                (rotation * 2 * M_PI) / -360.0);
+        }
+    }
+
+    return QDeclarativeItem::itemChange(change, variant);
 }
