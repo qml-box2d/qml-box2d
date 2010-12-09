@@ -24,6 +24,7 @@
 #include <QDeclarativeItem>
 
 class b2Body;
+class b2Fixture;
 class b2Shape;
 
 class Box2DFixture : public QDeclarativeItem
@@ -62,6 +63,7 @@ signals:
     void sensorChanged();
 
 private:
+    b2Fixture *mFixture;
     float mDensity;
     float mFriction;
     float mRestitution;

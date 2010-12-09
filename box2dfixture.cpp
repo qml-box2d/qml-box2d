@@ -26,6 +26,7 @@
 
 Box2DFixture::Box2DFixture(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
+    mFixture(0),
     mDensity(0.0f),
     mFriction(0.2f),
     mRestitution(0.0f),
@@ -39,6 +40,8 @@ void Box2DFixture::setDensity(float density)
         return;
 
     mDensity = density;
+    if (mFixture)
+        mFixture->SetDensity(density);
     emit densityChanged();
 }
 
@@ -48,6 +51,8 @@ void Box2DFixture::setFriction(float friction)
         return;
 
     mFriction = friction;
+    if (mFixture)
+        mFixture->SetFriction(friction);
     emit frictionChanged();
 }
 
@@ -57,6 +62,8 @@ void Box2DFixture::setRestitution(float restitution)
         return;
 
     mRestitution = restitution;
+    if (mFixture)
+        mFixture->SetRestitution(restitution);
     emit restitutionChanged();
 }
 
@@ -66,6 +73,8 @@ void Box2DFixture::setSensor(bool sensor)
         return;
 
     mSensor = sensor;
+    if (mFixture)
+        mFixture->SetSensor(sensor);
     emit sensorChanged();
 }
 
@@ -80,7 +89,7 @@ void Box2DFixture::createFixture(b2Body *body)
     fixtureDef.restitution = mRestitution;
     fixtureDef.isSensor = mSensor;
 
-    body->CreateFixture(&fixtureDef);
+    mFixture = body->CreateFixture(&fixtureDef);
     delete shape;
 }
 
