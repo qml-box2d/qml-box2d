@@ -49,7 +49,8 @@ void Box2DWorld::setGravity(const QPointF &gravity)
         return;
 
     mGravity = gravity;
-    mWorld->SetGravity(b2Vec2(gravity.x(), gravity.y()));
+    if (mWorld)
+        mWorld->SetGravity(b2Vec2(gravity.x(), gravity.y()));
 
     emit gravityChanged();
 }
