@@ -76,7 +76,7 @@ public:
     void cleanup(b2World *world);
 
 protected:
-    QVariant itemChange(GraphicsItemChange, const QVariant &);
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
 
 signals:
     void linearDampingChanged();
@@ -84,6 +84,9 @@ signals:
     void bodyTypeChanged();
     void bulletChanged();
     void sleepingAllowedChanged();
+
+private slots:
+    void onRotationChanged();
 
 private:
     static void append_fixture(QDeclarativeListProperty<Box2DFixture> *list,

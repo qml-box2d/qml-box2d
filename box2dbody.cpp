@@ -37,7 +37,7 @@ Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     mSynchronizing(false)
 {
     setTransformOrigin(TopLeft);
-    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+    connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
 }
 
 Box2DBody::~Box2DBody()
@@ -160,21 +160,25 @@ void Box2DBody::cleanup(b2World *world)
     mBody = 0;
 }
 
-QVariant Box2DBody::itemChange(QGraphicsItem::GraphicsItemChange change,
-                               const QVariant &variant)
+void Box2DBody::geometryChanged(const QRectF &newGeometry,
+                                const QRectF &oldGeometry)
 {
     if (!mSynchronizing && mBody) {
-        if (change == ItemPositionHasChanged) {
-            const QPointF pos = variant.toPointF();
+        if (newGeometry.topLeft() != oldGeometry.topLeft()) {
+            const QPointF pos = newGeometry.topLeft();
             mBody->SetTransform(b2Vec2(pos.x() / scaleRatio,
                                        -pos.y() / scaleRatio),
                                 mBody->GetAngle());
-        } else if (change == ItemRotationHasChanged) {
-            const qreal rotation = variant.toReal();
-            mBody->SetTransform(mBody->GetPosition(),
-                                (rotation * 2 * M_PI) / -360.0);
         }
     }
 
-    return QDeclarativeItem::itemChange(change, variant);
+    QDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+}
+
+void Box2DBody::onRotationChanged()
+{
+    if (!mSynchronizing && mBody) {
+        mBody->SetTransform(mBody->GetPosition(),
+                            (rotation() * 2 * M_PI) / -360.0);
+    }
 }
