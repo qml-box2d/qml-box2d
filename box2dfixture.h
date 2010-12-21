@@ -62,7 +62,17 @@ signals:
     void restitutionChanged();
     void sensorChanged();
 
+    void beginContact(Box2DFixture *other);
+    void contactChanged(Box2DFixture *other);
+    void endContact(Box2DFixture *other);
+
 private:
+    friend class Box2DWorld;
+
+    void emitBeginContact(Box2DFixture *other);
+    void emitContactChanged(Box2DFixture *other);
+    void emitEndContact(Box2DFixture *other);
+
     b2Fixture *mFixture;
     float mDensity;
     float mFriction;

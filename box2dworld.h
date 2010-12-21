@@ -25,6 +25,7 @@
 #include <QList>
 
 class Box2DBody;
+class ContactListener;
 
 class b2World;
 
@@ -102,6 +103,7 @@ protected:
 
 private:
     b2World *mWorld;
+    ContactListener *mContactListener;
     float mTimeStep;
     int mVelocityIterations;
     int mPositionIterations;

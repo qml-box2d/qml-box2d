@@ -90,7 +90,24 @@ void Box2DFixture::createFixture(b2Body *body)
     fixtureDef.isSensor = mSensor;
 
     mFixture = body->CreateFixture(&fixtureDef);
+    mFixture->SetUserData(this);
+
     delete shape;
+}
+
+void Box2DFixture::emitBeginContact(Box2DFixture *other)
+{
+    emit beginContact(other);
+}
+
+void Box2DFixture::emitContactChanged(Box2DFixture *other)
+{
+    emit contactChanged(other);
+}
+
+void Box2DFixture::emitEndContact(Box2DFixture *other)
+{
+    emit endContact(other);
 }
 
 

@@ -21,14 +21,66 @@
 #include "box2dworld.h"
 
 #include "box2dbody.h"
+#include "box2dfixture.h"
 
 #include <QTimerEvent>
 
 #include <Box2D.h>
 
+class ContactEvent
+{
+public:
+    enum Type {
+        BeginContact,
+        EndContact
+    };
+
+    Type type;
+    Box2DFixture *fixtureA;
+    Box2DFixture *fixtureB;
+};
+
+class ContactListener : public b2ContactListener
+{
+public:
+    void BeginContact(b2Contact *contact);
+    void EndContact(b2Contact *contact);
+
+    void clearEvents() { mEvents.clear(); }
+    const QList<ContactEvent> &events() { return mEvents; }
+
+private:
+    QList<ContactEvent> mEvents;
+};
+
+static Box2DFixture *toBox2DFixture(b2Fixture *fixture)
+{
+    return static_cast<Box2DFixture*>(fixture->GetUserData());
+}
+
+void ContactListener::BeginContact(b2Contact *contact)
+{
+    ContactEvent event;
+    event.type = ContactEvent::BeginContact;
+    event.fixtureA = toBox2DFixture(contact->GetFixtureA());
+    event.fixtureB = toBox2DFixture(contact->GetFixtureB());
+    mEvents.append(event);
+}
+
+void ContactListener::EndContact(b2Contact *contact)
+{
+    ContactEvent event;
+    event.type = ContactEvent::EndContact;
+    event.fixtureA = toBox2DFixture(contact->GetFixtureA());
+    event.fixtureB = toBox2DFixture(contact->GetFixtureB());
+    mEvents.append(event);
+}
+
+
 Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mWorld(0),
+    mContactListener(new ContactListener),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(10),
     mPositionIterations(10),
@@ -41,6 +93,7 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
 Box2DWorld::~Box2DWorld()
 {
     delete mWorld;
+    delete mContactListener;
 }
 
 void Box2DWorld::setGravity(const QPointF &gravity)
@@ -63,6 +116,7 @@ void Box2DWorld::componentComplete()
     bool doSleep = true;
 
     mWorld = new b2World(gravity, doSleep);
+    mWorld->SetContactListener(mContactListener);
 
     foreach (QGraphicsItem *child, childItems())
         if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
@@ -98,6 +152,34 @@ void Box2DWorld::timerEvent(QTimerEvent *event)
         mWorld->ClearForces();
         foreach (Box2DBody *body, mBodies)
             body->synchronize();
+
+        // Emit contact signals
+        foreach (const ContactEvent &event, mContactListener->events()) {
+            switch (event.type) {
+            case ContactEvent::BeginContact:
+                event.fixtureA->emitBeginContact(event.fixtureB);
+                event.fixtureB->emitBeginContact(event.fixtureA);
+                break;
+            case ContactEvent::EndContact:
+                event.fixtureA->emitEndContact(event.fixtureB);
+                event.fixtureB->emitEndContact(event.fixtureA);
+                break;
+            }
+        }
+        mContactListener->clearEvents();
+
+        // Emit signals for the current state of the contacts
+        b2Contact *contact = mWorld->GetContactList();
+        while (contact) {
+            Box2DFixture *fixtureA = toBox2DFixture(contact->GetFixtureA());
+            Box2DFixture *fixtureB = toBox2DFixture(contact->GetFixtureB());
+
+            fixtureA->emitContactChanged(fixtureB);
+            fixtureB->emitContactChanged(fixtureA);
+
+            contact = contact->GetNext();
+        }
+
         emit stepped();
     }
     QDeclarativeItem::timerEvent(event);
