@@ -37,6 +37,7 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DFixture>();
     qmlRegisterType<Box2DBox>(uri, 1, 0, "Box");
     qmlRegisterType<Box2DCircle>(uri, 1, 0, "Circle");
+    qmlRegisterType<Box2DPolygon>(uri, 1, 0, "Polygon");
     qmlRegisterType<Box2DDebugDraw>(uri, 1, 0, "DebugDraw");
 }
 

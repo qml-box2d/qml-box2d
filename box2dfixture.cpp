@@ -128,10 +128,28 @@ b2Shape *Box2DBox::createShape()
     return shape;
 }
 
+
 b2Shape *Box2DCircle::createShape()
 {
     b2CircleShape *shape = new b2CircleShape;
     shape->m_radius = mRadius / scaleRatio;
     shape->m_p.Set(x() / scaleRatio, -y() / scaleRatio);
+    return shape;
+}
+
+b2Shape *Box2DPolygon::createShape()
+{
+    const QVariantList &vertices_list = m_vertices.toList();
+    int count = vertices_list.length();
+    b2Vec2 vertices[count];
+    int i = 0;
+    foreach (const QVariant &variant_point, vertices_list) {
+        const QPointF &point = variant_point.toPointF();
+        vertices[i].Set(point.x() / scaleRatio, point.y() / scaleRatio);
+        i++;
+    }
+
+    b2PolygonShape *shape = new b2PolygonShape;
+    shape->Set(vertices, count);
     return shape;
 }

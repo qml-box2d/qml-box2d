@@ -23,6 +23,8 @@
 
 #include <QDeclarativeItem>
 
+#include "box2dfixture.h"
+
 class b2Body;
 class b2Fixture;
 class b2Shape;
@@ -94,7 +96,6 @@ protected:
     b2Shape *createShape();
 };
 
-
 class Box2DCircle : public Box2DFixture
 {
     Q_OBJECT
@@ -123,5 +124,35 @@ protected:
 private:
     float mRadius;
 };
+
+class Box2DPolygon : public Box2DFixture
+{
+    Q_OBJECT
+
+    Q_PROPERTY(QVariant vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
+
+public:
+    explicit Box2DPolygon(QDeclarativeItem *parent = 0) :
+      Box2DFixture(parent), m_vertices()
+    { }
+
+    QVariant vertices() const { return m_vertices; }
+    void setVertices(const QVariant &vertices) {
+        if (vertices == m_vertices)
+            return;
+        m_vertices = vertices;
+        emit verticesChanged(vertices);
+    }
+
+signals:
+    void verticesChanged(const QVariant &vertices);
+
+protected:
+    b2Shape *createShape();
+
+private:
+    QVariant m_vertices;
+};
+
 
 #endif // BOX2DFIXTURE_H
