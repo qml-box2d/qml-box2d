@@ -145,7 +145,7 @@ b2Shape *Box2DPolygon::createShape()
     int i = 0;
     foreach (const QVariant &variant_point, vertices_list) {
         const QPointF &point = variant_point.toPointF();
-        vertices[i].Set(point.x() / scaleRatio, point.y() / scaleRatio);
+        vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
         i++;
     }
 
