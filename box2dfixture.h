@@ -129,29 +129,29 @@ class Box2DPolygon : public Box2DFixture
 {
     Q_OBJECT
 
-    Q_PROPERTY(QVariant vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
+    Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
     explicit Box2DPolygon(QDeclarativeItem *parent = 0) :
-      Box2DFixture(parent), m_vertices()
+        Box2DFixture(parent)
     { }
 
-    QVariant vertices() const { return m_vertices; }
-    void setVertices(const QVariant &vertices) {
-        if (vertices == m_vertices)
+    QVariantList vertices() const { return mVertices; }
+    void setVertices(const QVariantList &vertices) {
+        if (vertices == mVertices)
             return;
-        m_vertices = vertices;
-        emit verticesChanged(vertices);
+        mVertices = vertices;
+        emit verticesChanged();
     }
 
 signals:
-    void verticesChanged(const QVariant &vertices);
+    void verticesChanged();
 
 protected:
     b2Shape *createShape();
 
 private:
-    QVariant m_vertices;
+    QVariantList mVertices;
 };
 
 

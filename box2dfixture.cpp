@@ -23,6 +23,7 @@
 #include "box2dworld.h"
 
 #include <Box2D.h>
+#include <QDebug>
 
 Box2DFixture::Box2DFixture(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
@@ -81,6 +82,8 @@ void Box2DFixture::setSensor(bool sensor)
 void Box2DFixture::createFixture(b2Body *body)
 {
     b2Shape *shape = createShape();
+    if (!shape)
+        return;
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = shape;
@@ -139,14 +142,16 @@ b2Shape *Box2DCircle::createShape()
 
 b2Shape *Box2DPolygon::createShape()
 {
-    const QVariantList &vertices_list = m_vertices.toList();
-    int count = vertices_list.length();
+    const int count = mVertices.length();
+    if (count < 2 || count > b2_maxPolygonVertices) {
+        qWarning() << "Polygon: Invalid number of vertices:" << count;
+        return 0;
+    }
+
     b2Vec2 vertices[count];
-    int i = 0;
-    foreach (const QVariant &variant_point, vertices_list) {
-        const QPointF &point = variant_point.toPointF();
+    for (int i = 0; i < count; ++i) {
+        const QPointF &point = mVertices.at(i).toPointF();
         vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
-        i++;
     }
 
     b2PolygonShape *shape = new b2PolygonShape;
