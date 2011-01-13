@@ -22,11 +22,14 @@
 #define BOX2DFIXTURE_H
 
 #include <QDeclarativeItem>
+#include <QFlags>
+#include <Box2D.h>
 
 #include "box2dfixture.h"
 
 class b2Body;
 class b2Fixture;
+class b2FixtureDef;
 class b2Shape;
 
 class Box2DFixture : public QDeclarativeItem
@@ -37,21 +40,45 @@ class Box2DFixture : public QDeclarativeItem
     Q_PROPERTY(float friction READ friction WRITE setFriction NOTIFY frictionChanged)
     Q_PROPERTY(float restitution READ restitution WRITE setRestitution NOTIFY restitutionChanged)
     Q_PROPERTY(bool sensor READ isSensor WRITE setSensor NOTIFY sensorChanged)
+    Q_PROPERTY(CategoryFlags categories READ categories WRITE setCategories NOTIFY categoriesChanged)
+    Q_PROPERTY(CategoryFlags collidesWith READ collidesWith WRITE setCollidesWith NOTIFY collidesWithChanged)
+    Q_PROPERTY(int groupIndex READ groupIndex WRITE setGroupIndex NOTIFY groupIndexChanged)
+
+    Q_ENUMS(CategoryFlag)
+    Q_FLAGS(CategoryFlags)
 
 public:
+
     explicit Box2DFixture(QDeclarativeItem *parent = 0);
 
-    float density() const { return mDensity; }
+    enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
+                Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
+                Category9 = 0x0100, Category10 = 0x0200, Category11 = 0x0400, Category12 = 0x0800,
+                Category13 = 0x1000, Category14 = 0x2000, Category15 = 0x4000, Category16 = 0x8000,
+                All = 0xFFFF, None=0x0000};
+
+    Q_DECLARE_FLAGS(CategoryFlags, CategoryFlag)
+
+    float density() const;
     void setDensity(float density);
 
-    float friction() const { return mFriction; }
+    float friction() const;
     void setFriction(float friction);
 
-    float restitution() const { return mRestitution; }
+    float restitution() const;
     void setRestitution(float restitution);
 
-    bool isSensor() const { return mSensor; }
+    bool isSensor() const;
     void setSensor(bool sensor);
+
+    CategoryFlags categories() const;
+    void setCategories(CategoryFlags layers);
+
+    CategoryFlags collidesWith() const;
+    void setCollidesWith(CategoryFlags layers);
+
+    int groupIndex() const;
+    void setGroupIndex(int groupIndex);
 
     void createFixture(b2Body *body);
 
@@ -63,6 +90,9 @@ signals:
     void frictionChanged();
     void restitutionChanged();
     void sensorChanged();
+    void categoriesChanged();
+    void collidesWithChanged();
+    void groupIndexChanged();
 
     void beginContact(Box2DFixture *other);
     void contactChanged(Box2DFixture *other);
@@ -75,13 +105,11 @@ private:
     void emitContactChanged(Box2DFixture *other);
     void emitEndContact(Box2DFixture *other);
 
+    b2FixtureDef mFixtureDef;
     b2Fixture *mFixture;
-    float mDensity;
-    float mFriction;
-    float mRestitution;
-    bool mSensor;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
 
 class Box2DBox : public Box2DFixture
 {
@@ -153,6 +181,5 @@ protected:
 private:
     QVariantList mVertices;
 };
-
 
 #endif // BOX2DFIXTURE_H

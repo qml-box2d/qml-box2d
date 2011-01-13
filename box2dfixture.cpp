@@ -22,61 +22,119 @@
 
 #include "box2dworld.h"
 
-#include <Box2D.h>
 #include <QDebug>
 
 Box2DFixture::Box2DFixture(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
-    mFixture(0),
-    mDensity(0.0f),
-    mFriction(0.2f),
-    mRestitution(0.0f),
-    mSensor(false)
+    mFixtureDef(),
+    mFixture(0)
 {
+}
+
+float Box2DFixture::density() const
+{
+    return mFixtureDef.density;
 }
 
 void Box2DFixture::setDensity(float density)
 {
-    if (mDensity == density)
+    if (mFixtureDef.density == density)
         return;
 
-    mDensity = density;
+    mFixtureDef.density = density;
     if (mFixture)
         mFixture->SetDensity(density);
     emit densityChanged();
 }
 
+float Box2DFixture::friction() const
+{
+    return mFixtureDef.friction;
+}
+
 void Box2DFixture::setFriction(float friction)
 {
-    if (mFriction == friction)
+    if (mFixtureDef.friction == friction)
         return;
 
-    mFriction = friction;
+    mFixtureDef.friction = friction;
     if (mFixture)
         mFixture->SetFriction(friction);
     emit frictionChanged();
 }
 
+float Box2DFixture::restitution() const
+{
+    return mFixtureDef.restitution;
+}
+
 void Box2DFixture::setRestitution(float restitution)
 {
-    if (mRestitution == restitution)
+    if (mFixtureDef.restitution == restitution)
         return;
 
-    mRestitution = restitution;
+    mFixtureDef.restitution = restitution;
     if (mFixture)
         mFixture->SetRestitution(restitution);
     emit restitutionChanged();
 }
 
+bool Box2DFixture::isSensor() const
+{
+    return mFixtureDef.isSensor;
+}
+
 void Box2DFixture::setSensor(bool sensor)
 {
-    if (mSensor == sensor)
+    if (mFixtureDef.isSensor == sensor)
         return;
 
-    mSensor = sensor;
+    mFixtureDef.isSensor = sensor;
     if (mFixture)
         mFixture->SetSensor(sensor);
     emit sensorChanged();
+}
+
+Box2DFixture::CategoryFlags Box2DFixture::categories() const
+{
+    return CategoryFlags(mFixtureDef.filter.categoryBits);
+}
+
+void Box2DFixture::setCategories(CategoryFlags layers)
+{
+    if (mFixtureDef.filter.categoryBits == layers)
+        return;
+
+    mFixtureDef.filter.categoryBits = layers;
+    emit categoriesChanged();
+}
+
+Box2DFixture::CategoryFlags Box2DFixture::collidesWith() const
+{
+    return CategoryFlags(mFixtureDef.filter.maskBits);
+}
+
+void Box2DFixture::setCollidesWith(CategoryFlags layers)
+{
+    if (mFixtureDef.filter.maskBits == layers)
+        return;
+
+    mFixtureDef.filter.maskBits = layers;
+    emit collidesWithChanged();
+}
+
+int Box2DFixture::groupIndex() const
+{
+    return mFixtureDef.filter.groupIndex;
+}
+
+void Box2DFixture::setGroupIndex(int groupIndex)
+{
+    if (mFixtureDef.filter.groupIndex == groupIndex)
+        return;
+
+    mFixtureDef.filter.groupIndex = groupIndex;
+    emit groupIndexChanged();
 }
 
 void Box2DFixture::createFixture(b2Body *body)
@@ -85,14 +143,9 @@ void Box2DFixture::createFixture(b2Body *body)
     if (!shape)
         return;
 
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = shape;
-    fixtureDef.density = mDensity;
-    fixtureDef.friction = mFriction;
-    fixtureDef.restitution = mRestitution;
-    fixtureDef.isSensor = mSensor;
+    mFixtureDef.shape = shape;
 
-    mFixture = body->CreateFixture(&fixtureDef);
+    mFixture = body->CreateFixture(&mFixtureDef);
     mFixture->SetUserData(this);
 
     delete shape;
