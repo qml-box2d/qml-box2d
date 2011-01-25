@@ -32,6 +32,8 @@ Box2DPlugin::Box2DPlugin(QObject *parent) :
 
 void Box2DPlugin::registerTypes(const char *uri)
 {
+    Q_ASSERT(QLatin1String(uri) == QLatin1String("Box2D"));
+
     qmlRegisterType<Box2DWorld>(uri, 1, 0, "World");
     qmlRegisterType<Box2DBody>(uri, 1, 0, "Body");
     qmlRegisterType<Box2DFixture>();
