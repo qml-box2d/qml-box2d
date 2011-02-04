@@ -42,6 +42,7 @@ class Box2DBody : public QDeclarativeItem
     Q_PROPERTY(BodyType bodyType READ bodyType WRITE setBodyType NOTIFY bodyTypeChanged)
     Q_PROPERTY(bool bullet READ isBullet WRITE setBullet NOTIFY bulletChanged)
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
+    Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
     Q_PROPERTY(QDeclarativeListProperty<Box2DFixture> fixtures READ fixtures)
 
 public:
@@ -69,6 +70,9 @@ public:
     bool sleepingAllowed() const { return mSleepingAllowed; }
     void setSleepingAllowed(bool allowed);
 
+    bool fixedRotation() const { return mFixedRotation; }
+    void setFixedRotation(bool fixedRotation);
+
     QDeclarativeListProperty<Box2DFixture> fixtures();
 
     void initialize(b2World *world);
@@ -84,6 +88,7 @@ signals:
     void bodyTypeChanged();
     void bulletChanged();
     void sleepingAllowedChanged();
+    void fixedRotationChanged();
 
 private slots:
     void onRotationChanged();
@@ -98,6 +103,7 @@ private:
     BodyType mBodyType;
     bool mBullet;
     bool mSleepingAllowed;
+    bool mFixedRotation;
     bool mSynchronizing;
     QList<Box2DFixture*> mFixtures;
 };

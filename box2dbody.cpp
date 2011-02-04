@@ -23,7 +23,6 @@
 #include "box2dfixture.h"
 #include "box2dworld.h"
 
-#include <Box2D.h>
 #include <cmath>
 
 Box2DBody::Box2DBody(QDeclarativeItem *parent) :
@@ -34,6 +33,7 @@ Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     mBodyType(Dynamic),
     mBullet(false),
     mSleepingAllowed(true),
+    mFixedRotation(false),
     mSynchronizing(false)
 {
     setTransformOrigin(TopLeft);
@@ -99,6 +99,17 @@ void Box2DBody::setSleepingAllowed(bool allowed)
     emit sleepingAllowedChanged();
 }
 
+void Box2DBody::setFixedRotation(bool fixedRotation)
+{
+    if (mFixedRotation == fixedRotation)
+        return;
+
+    mFixedRotation = fixedRotation;
+    if (mBody)
+        mBody->SetFixedRotation(fixedRotation);
+    emit fixedRotationChanged();
+}
+
 QDeclarativeListProperty<Box2DFixture> Box2DBody::fixtures()
 {
     return QDeclarativeListProperty<Box2DFixture>(this, 0,
@@ -123,6 +134,7 @@ void Box2DBody::initialize(b2World *world)
     bodyDef.angularDamping = mAngularDamping;
     bodyDef.bullet = mBullet;
     bodyDef.allowSleep = mSleepingAllowed;
+    bodyDef.fixedRotation = mFixedRotation;
 
     mBody = world->CreateBody(&bodyDef);
 

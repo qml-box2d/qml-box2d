@@ -10,7 +10,7 @@ Item {
         anchors.fill: parent
 
         Repeater {
-            model: 10
+            model: 5
             delegate: Body {
                 x: index * 150 + 10;
                 y: Math.random() * (screen.height / 3);
@@ -24,7 +24,7 @@ Item {
                     friction: 0.3
                     restitution: 0.5
                     categories: Box.Category2
-                    collidesWith: Box.Category1 | Box.Category3
+                    collidesWith: Box.Category1 | Box.Category3 | Box.Category4
                 }
                 rotation: Math.random() * 90;
                 Rectangle {
@@ -36,7 +36,7 @@ Item {
         }
 
         Repeater {
-            model: 10
+            model: 5
             delegate: Body {
                 x: index * 150 + 10;
                 y: Math.random() * (screen.height / 3);
@@ -50,12 +50,39 @@ Item {
                     friction: 0.3
                     restitution: 0.5
                     categories: Box.Category3
-                    collidesWith: Box.Category1 | Box.Category2
+                    collidesWith: Box.Category1 | Box.Category2 | Box.Category4
                 }
                 rotation: Math.random() * 90;
                 Rectangle {
                     anchors.fill: parent
                     color: "red"
+                    opacity: 0.5
+                }
+            }
+        }
+
+        Repeater {
+            model: 5
+            delegate: Body {
+                x: index * 150 + 10;
+                y: Math.random() * (screen.height / 3);
+                width: 50;
+                height: 50;
+                sleepingAllowed: false
+                fixedRotation: true
+
+                fixtures: Box {
+                    anchors.fill: parent
+                    density: 1
+                    friction: 0.3
+                    restitution: 0.5
+                    categories: Box.Category4
+                    collidesWith: Box.All
+                }
+                rotation: Math.random() * 90;
+                Rectangle {
+                    anchors.fill: parent
+                    color: "green"
                     opacity: 0.5
                 }
             }
