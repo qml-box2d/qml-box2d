@@ -112,6 +112,18 @@ void Box2DBody::setFixedRotation(bool fixedRotation)
     emit fixedRotationChanged();
 }
 
+void Box2DBody::setLinearVelocity(const QPointF &linearVelocity)
+{
+    if (mLinearVelocity == linearVelocity)
+        return;
+
+    mLinearVelocity = linearVelocity;
+    if (mBody)
+        mBody->SetLinearVelocity(b2Vec2(mLinearVelocity.x() / scaleRatio,
+                                        -mLinearVelocity.y() / scaleRatio));
+    emit linearVelocityChanged();
+}
+
 QDeclarativeListProperty<Box2DFixture> Box2DBody::fixtures()
 {
     return QDeclarativeListProperty<Box2DFixture>(this, 0,
@@ -176,6 +188,10 @@ void Box2DBody::synchronize()
     if (!qFuzzyCompare(rotation(), newRotation))
         setRotation(newRotation);
 
+    b2Vec2 linearVelocity = mBody->GetLinearVelocity();
+    setLinearVelocity(QPointF(linearVelocity.x * scaleRatio,
+                              -linearVelocity.y * scaleRatio));
+
     mSynchronizing = false;
 }
 
@@ -215,4 +231,26 @@ void Box2DBody::onRotationChanged()
         mBody->SetTransform(mBody->GetPosition(),
                             (rotation() * 2 * M_PI) / -360.0);
     }
+}
+
+void Box2DBody::applyLinearImpulse(const QPointF &impulse,
+                                   const QPointF &point)
+{
+    if (mBody) {
+        mBody->ApplyLinearImpulse(b2Vec2(impulse.x() / scaleRatio,
+                                         -impulse.y() / scaleRatio),
+                                  b2Vec2(point.x() / scaleRatio,
+                                         -point.y() / scaleRatio));
+    }
+}
+
+QPointF Box2DBody::getWorldCenter() const
+{
+    QPointF worldCenter;
+    if (mBody) {
+        const b2Vec2 &center = mBody->GetWorldCenter();
+        worldCenter.setX(center.x * scaleRatio);
+        worldCenter.setY(-center.y * scaleRatio);
+    }
+    return worldCenter;
 }

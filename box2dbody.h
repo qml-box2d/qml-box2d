@@ -43,6 +43,7 @@ class Box2DBody : public QDeclarativeItem
     Q_PROPERTY(bool bullet READ isBullet WRITE setBullet NOTIFY bulletChanged)
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
     Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
+    Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(QDeclarativeListProperty<Box2DFixture> fixtures READ fixtures)
 
 public:
@@ -73,11 +74,18 @@ public:
     bool fixedRotation() const { return mFixedRotation; }
     void setFixedRotation(bool fixedRotation);
 
+    QPointF linearVelocity() const { return mLinearVelocity; }
+    void setLinearVelocity(const QPointF &linearVelocity);
+
     QDeclarativeListProperty<Box2DFixture> fixtures();
 
     void initialize(b2World *world);
     void synchronize();
     void cleanup(b2World *world);
+
+    Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse,
+                                        const QPointF &point);
+    Q_INVOKABLE QPointF getWorldCenter() const;
 
     void componentComplete();
 
@@ -91,6 +99,7 @@ signals:
     void bulletChanged();
     void sleepingAllowedChanged();
     void fixedRotationChanged();
+    void linearVelocityChanged();
 
 private slots:
     void onRotationChanged();
@@ -107,6 +116,7 @@ private:
     bool mBullet;
     bool mSleepingAllowed;
     bool mFixedRotation;
+    QPointF mLinearVelocity;
     bool mSynchronizing;
     bool mInitializePending;
     QList<Box2DFixture*> mFixtures;
