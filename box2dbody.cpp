@@ -28,13 +28,15 @@
 Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mBody(0),
+    mWorld(0),
     mLinearDamping(0.0f),
     mAngularDamping(0.0f),
     mBodyType(Dynamic),
     mBullet(false),
     mSleepingAllowed(true),
     mFixedRotation(false),
-    mSynchronizing(false)
+    mSynchronizing(false),
+    mInitializePending(false)
 {
     setTransformOrigin(TopLeft);
     connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
@@ -126,6 +128,16 @@ void Box2DBody::append_fixture(QDeclarativeListProperty<Box2DFixture> *list,
 
 void Box2DBody::initialize(b2World *world)
 {
+    mWorld = world;
+
+    if (!isComponentComplete()) {
+        // When components are created dynamically, they get their parent
+        // assigned before they have been completely initialized. In that case
+        // we need to delay initialization.
+        mInitializePending = true;
+        return;
+    }
+
     b2BodyDef bodyDef;
     bodyDef.type = static_cast<b2BodyType>(mBodyType);
     bodyDef.position.Set(x() / scaleRatio, -y() / scaleRatio);
@@ -137,6 +149,7 @@ void Box2DBody::initialize(b2World *world)
     bodyDef.fixedRotation = mFixedRotation;
 
     mBody = world->CreateBody(&bodyDef);
+    mInitializePending = false;
 
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->createFixture(mBody);
@@ -170,6 +183,15 @@ void Box2DBody::cleanup(b2World *world)
 {
     world->DestroyBody(mBody);
     mBody = 0;
+    mWorld = 0;
+}
+
+void Box2DBody::componentComplete()
+{
+    QDeclarativeItem::componentComplete();
+
+    if (mInitializePending)
+        initialize(mWorld);
 }
 
 void Box2DBody::geometryChanged(const QRectF &newGeometry,

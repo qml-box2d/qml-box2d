@@ -79,6 +79,8 @@ public:
     void synchronize();
     void cleanup(b2World *world);
 
+    void componentComplete();
+
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
 
@@ -98,6 +100,7 @@ private:
                                Box2DFixture *fixture);
 
     b2Body *mBody;
+    b2World *mWorld;
     qreal mLinearDamping;
     qreal mAngularDamping;
     BodyType mBodyType;
@@ -105,6 +108,7 @@ private:
     bool mSleepingAllowed;
     bool mFixedRotation;
     bool mSynchronizing;
+    bool mInitializePending;
     QList<Box2DFixture*> mFixtures;
 };
 
