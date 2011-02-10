@@ -149,7 +149,6 @@ void Box2DWorld::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == mTimerId) {
         mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
-        mWorld->ClearForces();
         foreach (Box2DBody *body, mBodies)
             body->synchronize();
 
