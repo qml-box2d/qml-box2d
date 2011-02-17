@@ -35,6 +35,7 @@ Box2DBody::Box2DBody(QDeclarativeItem *parent) :
     mBullet(false),
     mSleepingAllowed(true),
     mFixedRotation(false),
+    mActive(true),
     mSynchronizing(false),
     mInitializePending(false)
 {
@@ -110,6 +111,16 @@ void Box2DBody::setFixedRotation(bool fixedRotation)
     if (mBody)
         mBody->SetFixedRotation(fixedRotation);
     emit fixedRotationChanged();
+}
+
+void Box2DBody::setActive(bool active)
+{
+    if (mActive == active)
+        return;
+
+    mActive = active;
+    if (mBody)
+        mBody->SetActive(active);
 }
 
 void Box2DBody::setLinearVelocity(const QPointF &linearVelocity)

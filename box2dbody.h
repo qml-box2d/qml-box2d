@@ -43,6 +43,7 @@ class Box2DBody : public QDeclarativeItem
     Q_PROPERTY(bool bullet READ isBullet WRITE setBullet NOTIFY bulletChanged)
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
     Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
+    Q_PROPERTY(bool active READ active WRITE setActive)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(QDeclarativeListProperty<Box2DFixture> fixtures READ fixtures)
 
@@ -73,6 +74,9 @@ public:
 
     bool fixedRotation() const { return mFixedRotation; }
     void setFixedRotation(bool fixedRotation);
+
+    bool active() const { return mActive; }
+    void setActive(bool active);
 
     QPointF linearVelocity() const { return mLinearVelocity; }
     void setLinearVelocity(const QPointF &linearVelocity);
@@ -116,6 +120,7 @@ private:
     bool mBullet;
     bool mSleepingAllowed;
     bool mFixedRotation;
+    bool mActive;
     QPointF mLinearVelocity;
     bool mSynchronizing;
     bool mInitializePending;
