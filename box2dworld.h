@@ -25,6 +25,7 @@
 #include <QList>
 
 class Box2DBody;
+class Box2DJoint;
 class ContactListener;
 
 class b2World;
@@ -90,6 +91,9 @@ public:
 
     void registerBody(Box2DBody *body);
     void unregisterBody(Box2DBody *body);
+
+    void registerJoint(Box2DJoint *joint);
+    void unregisterJoint(Box2DJoint *joint);
 
     b2World *world() const { return mWorld; }
 

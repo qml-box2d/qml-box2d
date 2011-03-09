@@ -221,6 +221,11 @@ void Box2DBody::componentComplete()
         initialize(mWorld);
 }
 
+b2Body *Box2DBody::body() const
+{
+    return mBody;
+}
+
 void Box2DBody::geometryChanged(const QRectF &newGeometry,
                                 const QRectF &oldGeometry)
 {

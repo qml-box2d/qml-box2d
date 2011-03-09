@@ -22,11 +22,17 @@ SOURCES += box2dplugin.cpp \
     box2dworld.cpp \
     box2dbody.cpp \
     box2dfixture.cpp \
-    box2ddebugdraw.cpp
+    box2ddebugdraw.cpp \
+    box2djoint.cpp \
+    box2ddistancejoint.cpp \
+    box2dprismaticjoint.cpp
 
 HEADERS += \
     box2dplugin.h \
     box2dworld.h \
     box2dbody.h \
     box2dfixture.h \
-    box2ddebugdraw.h
+    box2ddebugdraw.h \
+    box2djoint.h \
+    box2ddistancejoint.h \
+    box2dprismaticjoint.h

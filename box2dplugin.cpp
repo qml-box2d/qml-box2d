@@ -24,6 +24,9 @@
 #include "box2dbody.h"
 #include "box2ddebugdraw.h"
 #include "box2dfixture.h"
+#include "box2djoint.h"
+#include "box2ddistancejoint.h"
+#include "box2dprismaticjoint.h"
 
 Box2DPlugin::Box2DPlugin(QObject *parent) :
     QDeclarativeExtensionPlugin(parent)
@@ -41,6 +44,9 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DCircle>(uri, 1, 0, "Circle");
     qmlRegisterType<Box2DPolygon>(uri, 1, 0, "Polygon");
     qmlRegisterType<Box2DDebugDraw>(uri, 1, 0, "DebugDraw");
+    qmlRegisterType<Box2DJoint>();
+    qmlRegisterType<Box2DDistanceJoint>(uri, 1, 0, "DistanceJoint");
+    qmlRegisterType<Box2DPrismaticJoint>(uri, 1, 0, "PrismaticJoint");
 }
 
 Q_EXPORT_PLUGIN2(Box2DPlugin, Box2DPlugin)

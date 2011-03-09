@@ -22,6 +22,7 @@
 
 #include "box2dbody.h"
 #include "box2dfixture.h"
+#include "box2djoint.h"
 
 #include <QTimerEvent>
 
@@ -121,6 +122,8 @@ void Box2DWorld::componentComplete()
     foreach (QGraphicsItem *child, childItems())
         if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
             registerBody(body);
+        else if (Box2DJoint *joint = dynamic_cast<Box2DJoint*>(child))
+            registerJoint(joint);
 
     mTimerId = startTimer(mFrameTime);
 }
@@ -143,6 +146,16 @@ void Box2DWorld::unregisterBody(Box2DBody *body)
 {
     mBodies.removeOne(body);
     body->cleanup(mWorld);
+}
+
+void Box2DWorld::registerJoint(Box2DJoint *joint)
+{
+    joint->initialize(mWorld);
+}
+
+void Box2DWorld::unregisterJoint(Box2DJoint *joint)
+{
+    joint->cleanup(mWorld);
 }
 
 void Box2DWorld::timerEvent(QTimerEvent *event)
@@ -192,10 +205,14 @@ QVariant Box2DWorld::itemChange(GraphicsItemChange change,
             QGraphicsItem *child = value.value<QGraphicsItem*>();
             if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
                 registerBody(body);
+            else if (Box2DJoint *joint = dynamic_cast<Box2DJoint*>(child))
+                registerJoint(joint);
         } else if (change == ItemChildRemovedChange) {
             QGraphicsItem *child = value.value<QGraphicsItem*>();
             if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
                 unregisterBody(body);
+            else if (Box2DJoint *joint = dynamic_cast<Box2DJoint*>(child))
+                unregisterJoint(joint);
         }
     }
 
