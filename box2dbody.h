@@ -106,6 +106,7 @@ signals:
     void sleepingAllowedChanged();
     void fixedRotationChanged();
     void linearVelocityChanged();
+    void bodyCreated();
 
 private slots:
     void onRotationChanged();

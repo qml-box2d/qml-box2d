@@ -7,6 +7,76 @@ Item {
     height: 600
     focus: true
 
+    // A heavy ball that will be created dynamically with the timer below
+    Component {
+        id: heavyBall
+        Body {
+            fixtures: Circle {
+                radius: 40
+                density: 5
+                friction: 0.3
+                restitution: 0.2
+            }
+
+            Rectangle {
+                anchors.centerIn: parent
+                radius: 40
+                width: 80
+                height: 80
+                smooth: true
+                color: "black"
+            }
+        }
+    }
+
+    Component {
+        id: lightBall
+        Body {
+            fixtures: Circle {
+                radius: 40
+                density: 2
+                friction: 0.3
+                restitution: 0.2
+            }
+
+            Rectangle {
+                anchors.centerIn: parent
+                radius: 40
+                width: 80
+                height: 80
+                smooth: true
+                color: "black"
+            }
+        }
+    }
+
+    Component {
+        id: extraJoint
+        DistanceJoint {
+            frequencyHz: 20
+            dampingRatio: 0.5
+            collideConnected: false
+        }
+    }
+
+    // Timer that keeps creating heavy balls that crash down on the building
+    Timer {
+        running: true
+        repeat: false
+        interval: 4000
+        onTriggered: {
+            var ball = heavyBall.createObject(world)
+            ball.x =  400
+            ball.y = 50
+            var ball2 = lightBall.createObject(world)
+            ball2.x =  150
+            ball2.y = 50
+            var joint = extraJoint.createObject(world)
+            joint.bodyA = ball
+            joint.bodyB = ball2
+        }
+    }
+
     // BOX2D WORLD
     World {
         id: world;
@@ -40,8 +110,6 @@ Item {
             rotation: 0
             width: 80
             height: 80
-
-            Component.onCompleted: joint.bodyA = ball
         }
 
         Square {
@@ -51,8 +119,6 @@ Item {
             rotation: 0
             width: 80
             height: 80
-
-            Component.onCompleted: joint.bodyB = square
         }
 
         DistanceJoint {
@@ -60,6 +126,8 @@ Item {
             frequencyHz: 15
             dampingRatio: 0.5
             collideConnected: true
+            bodyA: ball
+            bodyB: square
         }
 
         Body {

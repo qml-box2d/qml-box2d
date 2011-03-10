@@ -176,6 +176,8 @@ void Box2DBody::initialize(b2World *world)
 
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->createFixture(mBody);
+
+    emit bodyCreated();
 }
 
 /**

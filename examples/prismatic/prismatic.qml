@@ -60,8 +60,6 @@ Item {
             width: 200
             height: 80
 
-            Component.onCompleted: prismatic.bodyB = square
-
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
@@ -75,8 +73,6 @@ Item {
             bodyType: Body.Static
 
             anchors.centerIn: parent
-
-            Component.onCompleted: prismatic.bodyA = middle
         }
 
         PrismaticJoint {
@@ -87,6 +83,8 @@ Item {
             maxMotorForce: 3000
             motorSpeed: -10
             enableMotor: true
+            bodyB: square
+            bodyA: middle
             axis: Qt.point(0.7, 0.3)
         }
 

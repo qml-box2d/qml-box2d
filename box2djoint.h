@@ -56,6 +56,10 @@ protected:
     virtual void createJoint() = 0;
     b2World *world() const;
 
+private slots:
+    void bodyACreated();
+    void bodyBCreated();
+
 signals:
     void collideConnectedChanged();
     void bodyAChanged();
@@ -67,8 +71,8 @@ protected:
 private:
     b2World *mWorld;
     bool mCollideConnected;
-    Box2DBody* mBodyA;
-    Box2DBody* mBodyB;
+    Box2DBody *mBodyA;
+    Box2DBody *mBodyB;
 };
 
 #endif // BOX2DJOINT_H

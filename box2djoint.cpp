@@ -19,6 +19,7 @@
  */
 
 #include "box2djoint.h"
+#include "box2dbody.h"
 
 Box2DJoint::Box2DJoint(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
@@ -55,10 +56,13 @@ void Box2DJoint::setBodyA(Box2DBody *bodyA)
     if (mBodyA)
         return;
 
-    mBodyA = bodyA;
-    emit bodyAChanged();
-
-    initialize(mWorld);
+    if (bodyA->body() != NULL) {
+        mBodyA = bodyA;
+        emit bodyAChanged();
+        initialize(mWorld);
+    }
+    else
+        connect(bodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
 }
 
 Box2DBody *Box2DJoint::bodyB() const
@@ -71,10 +75,13 @@ void Box2DJoint::setBodyB(Box2DBody *bodyB)
     if (mBodyB)
         return;
 
-    mBodyB = bodyB;
-    emit bodyBChanged();
-
-    initialize(mWorld);
+    if (bodyB->body() != NULL) {
+        mBodyB = bodyB;
+        emit bodyBChanged();
+        initialize(mWorld);
+    }
+    else
+        connect(bodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
 }
 
 void Box2DJoint::initialize(b2World *world)
@@ -82,7 +89,7 @@ void Box2DJoint::initialize(b2World *world)
     if (world)
         mWorld = world;
 
-    if (!isComponentComplete() || !mBodyA || !mBodyB) {
+    if (!isComponentComplete() || !mBodyA || !mBodyB || !mWorld) {
         // When components are created dynamically, they get their parent
         // assigned before they have been completely initialized. In that case
         // we need to delay initialization.
@@ -104,4 +111,18 @@ void Box2DJoint::componentComplete()
 b2World *Box2DJoint::world() const
 {
     return mWorld;
+}
+
+void Box2DJoint::bodyACreated()
+{
+    mBodyA = static_cast<Box2DBody*>(sender());
+    emit bodyAChanged();
+    initialize(mWorld);
+}
+
+void Box2DJoint::bodyBCreated()
+{
+    mBodyB = static_cast<Box2DBody*>(sender());
+    emit bodyBChanged();
+    initialize(mWorld);
 }
