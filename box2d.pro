@@ -25,7 +25,8 @@ SOURCES += box2dplugin.cpp \
     box2ddebugdraw.cpp \
     box2djoint.cpp \
     box2ddistancejoint.cpp \
-    box2dprismaticjoint.cpp
+    box2dprismaticjoint.cpp \
+    box2drevolutejoint.cpp
 
 HEADERS += \
     box2dplugin.h \
@@ -35,4 +36,5 @@ HEADERS += \
     box2ddebugdraw.h \
     box2djoint.h \
     box2ddistancejoint.h \
-    box2dprismaticjoint.h
+    box2dprismaticjoint.h \
+    box2drevolutejoint.h
