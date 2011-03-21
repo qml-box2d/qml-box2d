@@ -89,6 +89,7 @@ public:
 
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse,
                                         const QPointF &point);
+    Q_INVOKABLE void applyTorque(qreal torque);
     Q_INVOKABLE QPointF getWorldCenter() const;
 
     void componentComplete();
