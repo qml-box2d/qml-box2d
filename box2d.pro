@@ -6,6 +6,8 @@ TARGETPATH = Box2D
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
 
+contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
+
 INCLUDEPATH += .
 include(Box2D/box2d.pri)
 
