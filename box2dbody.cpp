@@ -164,7 +164,7 @@ void Box2DBody::initialize(b2World *world)
     b2BodyDef bodyDef;
     bodyDef.type = static_cast<b2BodyType>(mBodyType);
     bodyDef.position.Set(x() / scaleRatio, -y() / scaleRatio);
-    bodyDef.angle = -(rotation() * (2 * M_PI)) / 360.0;
+    bodyDef.angle = -(rotation() * (2 * b2_pi)) / 360.0;
     bodyDef.linearDamping = mLinearDamping;
     bodyDef.angularDamping = mAngularDamping;
     bodyDef.bullet = mBullet;
@@ -191,7 +191,7 @@ void Box2DBody::synchronize()
 
     const qreal newX = position.x * scaleRatio;
     const qreal newY = -position.y * scaleRatio;
-    const qreal newRotation = -(angle * 360.0) / (2 * M_PI);
+    const qreal newRotation = -(angle * 360.0) / (2 * b2_pi);
 
     // Do fuzzy comparisions to avoid small inaccuracies causing repaints
     if (!qFuzzyCompare(x(), newX) || !qFuzzyCompare(y(), newY))
@@ -240,7 +240,7 @@ void Box2DBody::onRotationChanged()
 {
     if (!mSynchronizing && mBody) {
         mBody->SetTransform(mBody->GetPosition(),
-                            (rotation() * 2 * M_PI) / -360.0);
+                            (rotation() * 2 * b2_pi) / -360.0);
     }
 }
 

@@ -201,7 +201,7 @@ b2Shape *Box2DPolygon::createShape()
         return 0;
     }
 
-    b2Vec2 vertices[count];
+    b2Vec2 *vertices = new b2Vec2[count];
     for (int i = 0; i < count; ++i) {
         const QPointF &point = mVertices.at(i).toPointF();
         vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
@@ -209,5 +209,6 @@ b2Shape *Box2DPolygon::createShape()
 
     b2PolygonShape *shape = new b2PolygonShape;
     shape->Set(vertices, count);
+    delete[] vertices;
     return shape;
 }
