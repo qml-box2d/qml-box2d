@@ -38,6 +38,7 @@ class Box2DRevoluteJoint : public Box2DJoint
     Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
     Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
     Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
+    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
 
 public:
     explicit Box2DRevoluteJoint(QDeclarativeItem *parent = 0);
@@ -60,6 +61,9 @@ public:
     bool enableMotor() const;
     void setEnableMotor(bool enableMotor);
 
+    QPointF localAnchorA() const;
+    void setLocalAnchorA(const QPointF &localAnchorA);
+
     void createJoint();
     void cleanup(b2World *world);
 
@@ -70,10 +74,13 @@ signals:
     void motorSpeedChanged();
     void enableLimitChanged();
     void enableMotorChanged();
+    void localAnchorAChanged();
 
 private:
     b2RevoluteJointDef mRevoluteJointDef;
     b2RevoluteJoint *mRevoluteJoint;
+    bool mOverrideLocalAnchorA;
+    QPointF mLocalAnchorA;
 };
 
 #endif // BOX2DREVOLUTEJOINT_H

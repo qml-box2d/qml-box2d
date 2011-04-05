@@ -26,7 +26,8 @@
 Box2DRevoluteJoint::Box2DRevoluteJoint(QDeclarativeItem *parent) :
     Box2DJoint(parent),
     mRevoluteJointDef(),
-    mRevoluteJoint(0)
+    mRevoluteJoint(0),
+    mOverrideLocalAnchorA(false)
 {
 }
 
@@ -128,10 +129,36 @@ void Box2DRevoluteJoint::setEnableMotor(bool enableMotor)
     emit enableMotorChanged();
 }
 
+QPointF Box2DRevoluteJoint::localAnchorA() const
+{
+    if (mOverrideLocalAnchorA)
+        return mLocalAnchorA;
+    else
+        return QPointF(mRevoluteJointDef.localAnchorA.x * scaleRatio,
+                       -mRevoluteJointDef.localAnchorA.y * scaleRatio);
+}
+
+void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
+{
+    if (mOverrideLocalAnchorA && mLocalAnchorA == localAnchorA)
+        return;
+
+    mOverrideLocalAnchorA = true;
+    mLocalAnchorA = localAnchorA;
+
+    emit localAnchorAChanged();
+}
+
 void Box2DRevoluteJoint::createJoint()
 {
+    b2Vec2 anchor = mOverrideLocalAnchorA ?
+                b2Vec2(mLocalAnchorA.x() / scaleRatio,
+                       -mLocalAnchorA.y() / scaleRatio) +
+                bodyA()->body()->GetPosition() :
+                bodyA()->body()->GetWorldCenter();
+
     mRevoluteJointDef.Initialize(bodyA()->body(), bodyB()->body(),
-                                 bodyA()->body()->GetWorldCenter());
+                                 anchor);
     mRevoluteJointDef.collideConnected = collideConnected();
 
     mRevoluteJoint = static_cast<b2RevoluteJoint*>(
