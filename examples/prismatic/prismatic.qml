@@ -86,6 +86,7 @@ Item {
             bodyB: square
             bodyA: middle
             axis: Qt.point(0.7, 0.3)
+            world: world
         }
 
         // Debug

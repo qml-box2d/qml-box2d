@@ -39,7 +39,8 @@ class Box2DDistanceJoint : public Box2DJoint
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
 
 public:
-    explicit Box2DDistanceJoint(QDeclarativeItem *parent = 0);
+    explicit Box2DDistanceJoint(QObject *parent = 0);
+    ~Box2DDistanceJoint();
 
     float length() const;
     void setLength(float length);
@@ -56,6 +57,7 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
+    void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
 

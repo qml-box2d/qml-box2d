@@ -23,11 +23,16 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DPrismaticJoint::Box2DPrismaticJoint(QDeclarativeItem *parent) :
+Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
     Box2DJoint(parent),
     mPrismaticJointDef(),
     mPrismaticJoint(0)
 {
+}
+
+Box2DPrismaticJoint::~Box2DPrismaticJoint()
+{
+    cleanup(world());
 }
 
 float Box2DPrismaticJoint::lowerTranslation() const
@@ -144,6 +149,11 @@ void Box2DPrismaticJoint::setAxis(const QPointF &axis)
     emit axisChanged();
 }
 
+void Box2DPrismaticJoint::nullifyJoint()
+{
+    mPrismaticJoint = 0;
+}
+
 void Box2DPrismaticJoint::createJoint()
 {
     mPrismaticJointDef.Initialize(bodyA()->body(), bodyB()->body(),
@@ -153,11 +163,15 @@ void Box2DPrismaticJoint::createJoint()
 
     mPrismaticJoint = static_cast<b2PrismaticJoint*>
             (world()->CreateJoint(&mPrismaticJointDef));
+    mPrismaticJoint->SetUserData(this);
     mInitializePending = false;
 }
 
 void Box2DPrismaticJoint::cleanup(b2World *world)
 {
-    world->DestroyJoint(mPrismaticJoint);
-    mPrismaticJoint = 0;
+    if (mPrismaticJoint && bodyA() && bodyB()) {
+        mPrismaticJoint->SetUserData(0);
+        world->DestroyJoint(mPrismaticJoint);
+        mPrismaticJoint = 0;
+    }
 }

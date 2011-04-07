@@ -21,25 +21,31 @@
 #ifndef BOX2DJOINT_H
 #define BOX2DJOINT_H
 
-#include <QDeclarativeItem>
+#include <QObject>
+#include <QPointF>
 #include <Box2D.h>
 
 class b2World;
 class Box2DBody;
+class Box2DWorld;
 
-class Box2DJoint : public QDeclarativeItem
+class Box2DJoint : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(bool collideConnected READ collideConnected WRITE setCollideConnected NOTIFY collideConnectedChanged)
+    Q_PROPERTY(Box2DWorld *world READ box2DWorld WRITE setWorld NOTIFY worldChanged)
     Q_PROPERTY(Box2DBody *bodyA READ bodyA WRITE setBodyA NOTIFY bodyAChanged)
     Q_PROPERTY(Box2DBody *bodyB READ bodyB WRITE setBodyB NOTIFY bodyBChanged)
 
 public:
-    explicit Box2DJoint(QDeclarativeItem *parent = 0);
+    explicit Box2DJoint(QObject *parent = 0);
 
     bool collideConnected() const;
     void setCollideConnected(bool collideConnected);
+
+    Box2DWorld *box2DWorld() const;
+    void setWorld(Box2DWorld *world);
 
     Box2DBody *bodyA() const;
     void setBodyA(Box2DBody *bodyA);
@@ -47,9 +53,9 @@ public:
     Box2DBody *bodyB() const;
     void setBodyB(Box2DBody *bodyB);
 
-    void initialize(b2World *world);
-    void componentComplete();
+    void initialize();
 
+    virtual void nullifyJoint() = 0;
     virtual void cleanup(b2World *world) = 0;
 
 protected:
@@ -62,6 +68,7 @@ private slots:
 
 signals:
     void collideConnectedChanged();
+    void worldChanged();
     void bodyAChanged();
     void bodyBChanged();
 
@@ -69,7 +76,7 @@ protected:
     bool mInitializePending;
 
 private:
-    b2World *mWorld;
+    Box2DWorld *mWorld;
     bool mCollideConnected;
     Box2DBody *mBodyA;
     Box2DBody *mBodyB;

@@ -77,11 +77,29 @@ void ContactListener::EndContact(b2Contact *contact)
     mEvents.append(event);
 }
 
+class DestructionListener : public b2DestructionListener
+{
+public:
+    void SayGoodbye(b2Joint* joint);
+
+    void SayGoodbye(b2Fixture* fixture) { Q_UNUSED(fixture) }
+};
+
+void DestructionListener::SayGoodbye(b2Joint *joint)
+{
+    if (joint->GetUserData()) {
+        Box2DJoint *temp = static_cast<Box2DJoint*>(joint->GetUserData());
+        temp->nullifyJoint();
+        delete temp;
+    }
+}
+
 
 Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mWorld(0),
     mContactListener(new ContactListener),
+    mDestructionListener(new DestructionListener),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(10),
     mPositionIterations(10),
@@ -93,8 +111,14 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
 
 Box2DWorld::~Box2DWorld()
 {
+    // Bodies must be deleted before the world
+    foreach (Box2DBody *body, mBodies)
+        delete body;
+    mBodies.clear();
+
     delete mWorld;
     delete mContactListener;
+    delete mDestructionListener;
 }
 
 void Box2DWorld::setGravity(const QPointF &gravity)
@@ -118,12 +142,13 @@ void Box2DWorld::componentComplete()
 
     mWorld = new b2World(gravity, doSleep);
     mWorld->SetContactListener(mContactListener);
+    mWorld->SetDestructionListener(mDestructionListener);
 
     foreach (QGraphicsItem *child, childItems())
-        if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
+        if (Box2DBody *body = dynamic_cast<Box2DBody*>(child)) {
             registerBody(body);
-        else if (Box2DJoint *joint = dynamic_cast<Box2DJoint*>(child))
-            registerJoint(joint);
+            connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
+        }
 
     mTimerId = startTimer(mFrameTime);
 }
@@ -139,23 +164,13 @@ void Box2DWorld::registerBody(Box2DBody *body)
 }
 
 /**
- * Unregisters a Box2D body from this world. It will be asked to clean up after
- * itself.
+ * Unregisters a Box2D body from this world. Called when a dynamically
+ * created Box2D body has been deleted.
  */
-void Box2DWorld::unregisterBody(Box2DBody *body)
+void Box2DWorld::unregisterBody()
 {
+    Box2DBody *body = static_cast<Box2DBody*>(sender());
     mBodies.removeOne(body);
-    body->cleanup(mWorld);
-}
-
-void Box2DWorld::registerJoint(Box2DJoint *joint)
-{
-    joint->initialize(mWorld);
-}
-
-void Box2DWorld::unregisterJoint(Box2DJoint *joint)
-{
-    joint->cleanup(mWorld);
 }
 
 void Box2DWorld::timerEvent(QTimerEvent *event)
@@ -203,16 +218,10 @@ QVariant Box2DWorld::itemChange(GraphicsItemChange change,
     if (isComponentComplete()) {
         if (change == ItemChildAddedChange) {
             QGraphicsItem *child = value.value<QGraphicsItem*>();
-            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
+            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child)) {
                 registerBody(body);
-            else if (Box2DJoint *joint = dynamic_cast<Box2DJoint*>(child))
-                registerJoint(joint);
-        } else if (change == ItemChildRemovedChange) {
-            QGraphicsItem *child = value.value<QGraphicsItem*>();
-            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
-                unregisterBody(body);
-            else if (Box2DJoint *joint = dynamic_cast<Box2DJoint*>(child))
-                unregisterJoint(joint);
+                connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
+            }
         }
     }
 

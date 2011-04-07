@@ -23,12 +23,17 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DRevoluteJoint::Box2DRevoluteJoint(QDeclarativeItem *parent) :
+Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
     Box2DJoint(parent),
     mRevoluteJointDef(),
     mRevoluteJoint(0),
     mOverrideLocalAnchorA(false)
 {
+}
+
+Box2DRevoluteJoint::~Box2DRevoluteJoint()
+{
+    cleanup(world());
 }
 
 float Box2DRevoluteJoint::lowerAngle() const
@@ -149,6 +154,11 @@ void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
+void Box2DRevoluteJoint::nullifyJoint()
+{
+    mRevoluteJoint = 0;
+}
+
 void Box2DRevoluteJoint::createJoint()
 {
     b2Vec2 anchor = mOverrideLocalAnchorA ?
@@ -163,11 +173,15 @@ void Box2DRevoluteJoint::createJoint()
 
     mRevoluteJoint = static_cast<b2RevoluteJoint*>(
                 world()->CreateJoint(&mRevoluteJointDef));
+    mRevoluteJoint->SetUserData(this);
     mInitializePending = false;
 }
 
 void Box2DRevoluteJoint::cleanup(b2World *world)
 {
-    world->DestroyJoint(mRevoluteJoint);
-    mRevoluteJoint = 0;
+    if (mRevoluteJoint && bodyA() && bodyB()) {
+        mRevoluteJoint->SetUserData(0);
+        world->DestroyJoint(mRevoluteJoint);
+        mRevoluteJoint = 0;
+    }
 }

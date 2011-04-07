@@ -27,6 +27,7 @@
 class Box2DBody;
 class Box2DJoint;
 class ContactListener;
+class DestructionListener;
 
 class b2World;
 
@@ -90,12 +91,11 @@ public:
     void componentComplete();
 
     void registerBody(Box2DBody *body);
-    void unregisterBody(Box2DBody *body);
-
-    void registerJoint(Box2DJoint *joint);
-    void unregisterJoint(Box2DJoint *joint);
 
     b2World *world() const { return mWorld; }
+
+private slots:
+    void unregisterBody();
 
 signals:
     void gravityChanged();
@@ -108,6 +108,7 @@ protected:
 private:
     b2World *mWorld;
     ContactListener *mContactListener;
+    DestructionListener *mDestructionListener;
     float mTimeStep;
     int mVelocityIterations;
     int mPositionIterations;

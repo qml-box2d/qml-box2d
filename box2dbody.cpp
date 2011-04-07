@@ -45,6 +45,7 @@ Box2DBody::Box2DBody(QDeclarativeItem *parent) :
 
 Box2DBody::~Box2DBody()
 {
+    cleanup(mWorld);
 }
 
 void Box2DBody::setLinearDamping(qreal linearDamping)

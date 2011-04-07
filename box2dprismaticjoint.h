@@ -41,7 +41,8 @@ class Box2DPrismaticJoint : public Box2DJoint
     Q_PROPERTY(QPointF axis READ axis WRITE setAxis NOTIFY axisChanged)
 
 public:
-    explicit Box2DPrismaticJoint(QDeclarativeItem *parent = 0);
+    explicit Box2DPrismaticJoint(QObject *parent = 0);
+    ~Box2DPrismaticJoint();
 
     float lowerTranslation() const;
     void setLowerTranslation(float lowerTranslation);
@@ -64,6 +65,7 @@ public:
     QPointF axis() const;
     void setAxis(const QPointF &axis);
 
+    void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
 

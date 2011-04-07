@@ -20,9 +20,10 @@
 
 #include "box2djoint.h"
 #include "box2dbody.h"
+#include "box2dworld.h"
 
-Box2DJoint::Box2DJoint(QDeclarativeItem *parent) :
-    QDeclarativeItem(parent),
+Box2DJoint::Box2DJoint(QObject *parent) :
+    QObject(parent),
     mInitializePending(false),
     mWorld(0),
     mCollideConnected(false),
@@ -46,6 +47,21 @@ void Box2DJoint::setCollideConnected(bool collideConnected)
     emit collideConnectedChanged();
 }
 
+Box2DWorld *Box2DJoint::box2DWorld() const
+{
+    return mWorld;
+}
+
+void Box2DJoint::setWorld(Box2DWorld *world)
+{
+    if (mWorld == world)
+        return;
+
+    mWorld = world;
+    emit worldChanged();
+    initialize();
+}
+
 Box2DBody *Box2DJoint::bodyA() const
 {
     return mBodyA;
@@ -59,7 +75,7 @@ void Box2DJoint::setBodyA(Box2DBody *bodyA)
     if (bodyA->body() != NULL) {
         mBodyA = bodyA;
         emit bodyAChanged();
-        initialize(mWorld);
+        initialize();
     }
     else
         connect(bodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
@@ -78,18 +94,15 @@ void Box2DJoint::setBodyB(Box2DBody *bodyB)
     if (bodyB->body() != NULL) {
         mBodyB = bodyB;
         emit bodyBChanged();
-        initialize(mWorld);
+        initialize();
     }
     else
         connect(bodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
 }
 
-void Box2DJoint::initialize(b2World *world)
+void Box2DJoint::initialize()
 {
-    if (world)
-        mWorld = world;
-
-    if (!isComponentComplete() || !mBodyA || !mBodyB || !mWorld) {
+    if (!mBodyA || !mBodyB || !mWorld) {
         // When components are created dynamically, they get their parent
         // assigned before they have been completely initialized. In that case
         // we need to delay initialization.
@@ -100,29 +113,21 @@ void Box2DJoint::initialize(b2World *world)
     createJoint();
 }
 
-void Box2DJoint::componentComplete()
-{
-    QDeclarativeItem::componentComplete();
-
-    if (mInitializePending)
-        initialize(mWorld);
-}
-
 b2World *Box2DJoint::world() const
 {
-    return mWorld;
+    return mWorld->world();
 }
 
 void Box2DJoint::bodyACreated()
 {
     mBodyA = static_cast<Box2DBody*>(sender());
     emit bodyAChanged();
-    initialize(mWorld);
+    initialize();
 }
 
 void Box2DJoint::bodyBCreated()
 {
     mBodyB = static_cast<Box2DBody*>(sender());
     emit bodyBChanged();
-    initialize(mWorld);
+    initialize();
 }

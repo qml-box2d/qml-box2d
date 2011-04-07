@@ -103,6 +103,7 @@ Item {
             motorSpeed: 0
             bodyA: middle
             bodyB: rod
+            world: world
         }
 
         // Debug

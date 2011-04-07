@@ -74,6 +74,7 @@ Item {
             var joint = extraJoint.createObject(world)
             joint.bodyA = ball
             joint.bodyB = ball2
+            joint.world = world
         }
     }
 
@@ -128,6 +129,7 @@ Item {
             collideConnected: true
             bodyA: ball
             bodyB: square
+            world: world
         }
 
         Body {
