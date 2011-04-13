@@ -25,9 +25,10 @@
 #include <QList>
 
 class Box2DBody;
+class Box2DFixture;
 class Box2DJoint;
 class ContactListener;
-class DestructionListener;
+class Box2DDestructionListener;
 
 class b2World;
 
@@ -96,6 +97,7 @@ public:
 
 private slots:
     void unregisterBody();
+    void fixtureDestroyed(Box2DFixture *fixture);
 
 signals:
     void gravityChanged();
@@ -108,7 +110,7 @@ protected:
 private:
     b2World *mWorld;
     ContactListener *mContactListener;
-    DestructionListener *mDestructionListener;
+    Box2DDestructionListener *mDestructionListener;
     float mTimeStep;
     int mVelocityIterations;
     int mPositionIterations;

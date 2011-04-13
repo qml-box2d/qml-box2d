@@ -23,6 +23,7 @@
 #include "box2dbody.h"
 #include "box2dfixture.h"
 #include "box2djoint.h"
+#include "box2ddestructionlistener.h"
 
 #include <QTimerEvent>
 
@@ -47,6 +48,7 @@ public:
     void BeginContact(b2Contact *contact);
     void EndContact(b2Contact *contact);
 
+    void removeEvent(int index) { mEvents.removeAt(index); }
     void clearEvents() { mEvents.clear(); }
     const QList<ContactEvent> &events() { return mEvents; }
 
@@ -77,29 +79,12 @@ void ContactListener::EndContact(b2Contact *contact)
     mEvents.append(event);
 }
 
-class DestructionListener : public b2DestructionListener
-{
-public:
-    void SayGoodbye(b2Joint* joint);
-
-    void SayGoodbye(b2Fixture* fixture) { Q_UNUSED(fixture) }
-};
-
-void DestructionListener::SayGoodbye(b2Joint *joint)
-{
-    if (joint->GetUserData()) {
-        Box2DJoint *temp = static_cast<Box2DJoint*>(joint->GetUserData());
-        temp->nullifyJoint();
-        delete temp;
-    }
-}
-
 
 Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     QDeclarativeItem(parent),
     mWorld(0),
     mContactListener(new ContactListener),
-    mDestructionListener(new DestructionListener),
+    mDestructionListener(new Box2DDestructionListener),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(10),
     mPositionIterations(10),
@@ -107,6 +92,8 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     mGravity(qreal(0), qreal(-10)),
     mTimerId(0)
 {
+    connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
+            this, SLOT(fixtureDestroyed(Box2DFixture*)));
 }
 
 Box2DWorld::~Box2DWorld()
@@ -171,6 +158,16 @@ void Box2DWorld::unregisterBody()
 {
     Box2DBody *body = static_cast<Box2DBody*>(sender());
     mBodies.removeOne(body);
+}
+
+void Box2DWorld::fixtureDestroyed(Box2DFixture *fixture)
+{
+    QList<ContactEvent> events = mContactListener->events();
+    for (int i = events.count() - 1; i >= 0; i--) {
+        if (events.at(i).fixtureA == fixture
+                || events.at(i).fixtureB == fixture)
+            mContactListener->removeEvent(i);
+    }
 }
 
 void Box2DWorld::timerEvent(QTimerEvent *event)
