@@ -82,4 +82,14 @@ private:
     Box2DBody *mBodyB;
 };
 
+
+/**
+ * Convenience function to get the Box2DJoint wrapping a b2Joint.
+ */
+inline Box2DJoint *toBox2DJoint(b2Joint *joint)
+{
+    return static_cast<Box2DJoint*>(joint->GetUserData());
+}
+
+
 #endif // BOX2DJOINT_H

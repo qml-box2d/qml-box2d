@@ -31,7 +31,7 @@ Box2DDestructionListener::Box2DDestructionListener(QObject *parent) :
 void Box2DDestructionListener::SayGoodbye(b2Joint *joint)
 {
     if (joint->GetUserData()) {
-        Box2DJoint *temp = static_cast<Box2DJoint*>(joint->GetUserData());
+        Box2DJoint *temp = toBox2DJoint(joint);
         temp->nullifyJoint();
         delete temp;
     }
@@ -39,5 +39,5 @@ void Box2DDestructionListener::SayGoodbye(b2Joint *joint)
 
 void Box2DDestructionListener::SayGoodbye(b2Fixture *fixture)
 {
-    emit fixtureDestroyed(static_cast<Box2DFixture*>(fixture->GetUserData()));
+    emit fixtureDestroyed(toBox2DFixture(fixture));
 }

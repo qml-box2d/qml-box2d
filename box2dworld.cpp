@@ -56,11 +56,6 @@ private:
     QList<ContactEvent> mEvents;
 };
 
-static Box2DFixture *toBox2DFixture(b2Fixture *fixture)
-{
-    return static_cast<Box2DFixture*>(fixture->GetUserData());
-}
-
 void ContactListener::BeginContact(b2Contact *contact)
 {
     ContactEvent event;

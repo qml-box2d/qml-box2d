@@ -124,6 +124,7 @@ protected:
     b2Shape *createShape();
 };
 
+
 class Box2DCircle : public Box2DFixture
 {
     Q_OBJECT
@@ -153,6 +154,7 @@ private:
     float mRadius;
 };
 
+
 class Box2DPolygon : public Box2DFixture
 {
     Q_OBJECT
@@ -181,5 +183,15 @@ protected:
 private:
     QVariantList mVertices;
 };
+
+
+/**
+ * Convenience function to get the Box2DFixture wrapping a b2Fixture.
+ */
+inline Box2DFixture *toBox2DFixture(b2Fixture *fixture)
+{
+    return static_cast<Box2DFixture*>(fixture->GetUserData());
+}
+
 
 #endif // BOX2DFIXTURE_H
