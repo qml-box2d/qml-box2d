@@ -85,7 +85,7 @@ Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
     mPositionIterations(10),
     mFrameTime(1000 / 60),
     mGravity(qreal(0), qreal(-10)),
-    mTimerId(0)
+    mIsRunning(true)
 {
     connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
             this, SLOT(fixtureDestroyed(Box2DFixture*)));
@@ -101,6 +101,22 @@ Box2DWorld::~Box2DWorld()
     delete mWorld;
     delete mContactListener;
     delete mDestructionListener;
+}
+
+void Box2DWorld::setRunning(bool running)
+{
+    if (mIsRunning == running)
+        return;
+
+    mIsRunning = running;
+    emit runningChanged();
+
+    if (isComponentComplete()) {
+        if (running)
+            mTimer.start(mFrameTime, this);
+        else
+            mTimer.stop();
+    }
 }
 
 void Box2DWorld::setGravity(const QPointF &gravity)
@@ -132,7 +148,8 @@ void Box2DWorld::componentComplete()
             connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
         }
 
-    mTimerId = startTimer(mFrameTime);
+    if (mIsRunning)
+        mTimer.start(mFrameTime, this);
 }
 
 /**
@@ -167,7 +184,7 @@ void Box2DWorld::fixtureDestroyed(Box2DFixture *fixture)
 
 void Box2DWorld::timerEvent(QTimerEvent *event)
 {
-    if (event->timerId() == mTimerId) {
+    if (event->timerId() == mTimer.timerId()) {
         mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
         foreach (Box2DBody *body, mBodies)
             body->synchronize();
@@ -201,6 +218,7 @@ void Box2DWorld::timerEvent(QTimerEvent *event)
 
         emit stepped();
     }
+
     QDeclarativeItem::timerEvent(event);
 }
 

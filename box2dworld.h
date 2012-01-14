@@ -23,6 +23,7 @@
 
 #include <QDeclarativeItem>
 #include <QList>
+#include <QBasicTimer>
 
 class Box2DBody;
 class Box2DFixture;
@@ -42,6 +43,7 @@ static const float scaleRatio = 32.0f; // 32 pixels in one meter
 class Box2DWorld : public QDeclarativeItem
 {
     Q_OBJECT
+    Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
     Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep)
     Q_PROPERTY(int velocityIterations READ velocityIterations WRITE setVelocityIterations)
     Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations)
@@ -59,6 +61,9 @@ public:
     float timeStep() const { return mTimeStep; }
     void setTimeStep(float timeStep) { mTimeStep = timeStep; }
 
+    bool isRunning() const { return mIsRunning; }
+    void setRunning(bool running);
+
     /**
      * The number of velocity iterations used to process one step.
      * 10 by default.
@@ -68,6 +73,7 @@ public:
 
     void setVelocityIterations(int iterations)
     { mVelocityIterations = iterations; }
+
 
     /**
      * The number of position iterations used to process one step.
@@ -101,6 +107,7 @@ private slots:
 
 signals:
     void gravityChanged();
+    void runningChanged();
     void stepped();
 
 protected:
@@ -116,7 +123,8 @@ private:
     int mPositionIterations;
     int mFrameTime;
     QPointF mGravity;
-    int mTimerId;
+    bool mIsRunning;
+    QBasicTimer mTimer;
     QList<Box2DBody*> mBodies;
 };
 
