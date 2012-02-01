@@ -21,7 +21,7 @@
 #ifndef BOX2DBODY_H
 #define BOX2DBODY_H
 
-#include <QDeclarativeItem>
+#include <QQuickItem>
 
 class Box2DFixture;
 class Box2DWorld;
@@ -32,7 +32,7 @@ class b2World;
 /**
  * The Box2D body, build up from a list of shapes.
  */
-class Box2DBody : public QDeclarativeItem
+class Box2DBody : public QQuickItem
 {
     Q_OBJECT
 
@@ -54,7 +54,7 @@ public:
         Dynamic
     };
 
-    explicit Box2DBody(QDeclarativeItem *parent = 0);
+    explicit Box2DBody(QQuickItem *parent = 0);
     ~Box2DBody();
 
     qreal linearDamping() const { return mLinearDamping; }

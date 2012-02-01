@@ -21,7 +21,7 @@
 #ifndef BOX2DFIXTURE_H
 #define BOX2DFIXTURE_H
 
-#include <QDeclarativeItem>
+#include <QQuickItem>
 #include <QFlags>
 #include <Box2D.h>
 
@@ -32,7 +32,7 @@ class b2Fixture;
 struct b2FixtureDef;
 class b2Shape;
 
-class Box2DFixture : public QDeclarativeItem
+class Box2DFixture : public QQuickItem
 {
     Q_OBJECT
 
@@ -49,7 +49,7 @@ class Box2DFixture : public QDeclarativeItem
 
 public:
 
-    explicit Box2DFixture(QDeclarativeItem *parent = 0);
+    explicit Box2DFixture(QQuickItem *parent = 0);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
                 Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
@@ -116,7 +116,7 @@ class Box2DBox : public Box2DFixture
     Q_OBJECT
 
 public:
-    explicit Box2DBox(QDeclarativeItem *parent = 0) :
+    explicit Box2DBox(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
 
@@ -132,7 +132,7 @@ class Box2DCircle : public Box2DFixture
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
 public:
-    explicit Box2DCircle(QDeclarativeItem *parent = 0) :
+    explicit Box2DCircle(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
 
@@ -162,7 +162,7 @@ class Box2DPolygon : public Box2DFixture
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
-    explicit Box2DPolygon(QDeclarativeItem *parent = 0) :
+    explicit Box2DPolygon(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
 

@@ -1,6 +1,6 @@
 TEMPLATE = lib
 CONFIG += plugin
-QT += declarative
+QT += quick
 TARGET = $$qtLibraryTarget(Box2D)
 TARGETPATH = Box2D
 MOC_DIR = .moc

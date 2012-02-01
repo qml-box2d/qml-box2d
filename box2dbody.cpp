@@ -25,8 +25,8 @@
 
 #include <cmath>
 
-Box2DBody::Box2DBody(QDeclarativeItem *parent) :
-    QDeclarativeItem(parent),
+Box2DBody::Box2DBody(QQuickItem *parent) :
+    QQuickItem(parent),
     mBody(0),
     mWorld(0),
     mLinearDamping(0.0f),
@@ -198,7 +198,7 @@ void Box2DBody::synchronize()
 
     // Do fuzzy comparisions to avoid small inaccuracies causing repaints
     if (!qFuzzyCompare(x(), newX) || !qFuzzyCompare(y(), newY))
-        setPos(newX, newY);
+        setPos(QPointF(newX, newY));
     if (!qFuzzyCompare(rotation(), newRotation))
         setRotation(newRotation);
 
@@ -218,7 +218,7 @@ void Box2DBody::cleanup(b2World *world)
 
 void Box2DBody::componentComplete()
 {
-    QDeclarativeItem::componentComplete();
+    QQuickItem::componentComplete();
 
     if (mInitializePending)
         initialize(mWorld);
@@ -241,7 +241,7 @@ void Box2DBody::geometryChanged(const QRectF &newGeometry,
         }
     }
 
-    QDeclarativeItem::geometryChanged(newGeometry, oldGeometry);
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
 }
 
 void Box2DBody::onRotationChanged()

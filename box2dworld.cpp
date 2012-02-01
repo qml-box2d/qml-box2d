@@ -75,8 +75,8 @@ void ContactListener::EndContact(b2Contact *contact)
 }
 
 
-Box2DWorld::Box2DWorld(QDeclarativeItem *parent) :
-    QDeclarativeItem(parent),
+Box2DWorld::Box2DWorld(QQuickItem *parent) :
+    QQuickItem(parent),
     mWorld(0),
     mContactListener(new ContactListener),
     mDestructionListener(new Box2DDestructionListener),
@@ -133,7 +133,7 @@ void Box2DWorld::setGravity(const QPointF &gravity)
 
 void Box2DWorld::componentComplete()
 {
-    QDeclarativeItem::componentComplete();
+    QQuickItem::componentComplete();
 
     const b2Vec2 gravity(mGravity.x(), mGravity.y());
     bool doSleep = true;
@@ -142,7 +142,7 @@ void Box2DWorld::componentComplete()
     mWorld->SetContactListener(mContactListener);
     mWorld->SetDestructionListener(mDestructionListener);
 
-    foreach (QGraphicsItem *child, childItems())
+    foreach (QObject *child, childItems())
         if (Box2DBody *body = dynamic_cast<Box2DBody*>(child)) {
             registerBody(body);
             connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
@@ -219,15 +219,15 @@ void Box2DWorld::timerEvent(QTimerEvent *event)
         emit stepped();
     }
 
-    QDeclarativeItem::timerEvent(event);
+    QQuickItem::timerEvent(event);
 }
 
-QVariant Box2DWorld::itemChange(GraphicsItemChange change,
-                                const QVariant &value)
+void Box2DWorld::itemChange(ItemChange change,
+                                const ItemChangeData &value)
 {
     if (isComponentComplete()) {
         if (change == ItemChildAddedChange) {
-            QGraphicsItem *child = value.value<QGraphicsItem*>();
+            QObject *child = value.item;
             if (Box2DBody *body = dynamic_cast<Box2DBody*>(child)) {
                 registerBody(body);
                 connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
@@ -235,5 +235,5 @@ QVariant Box2DWorld::itemChange(GraphicsItemChange change,
         }
     }
 
-    return QDeclarativeItem::itemChange(change, value);
+    QQuickItem::itemChange(change, value);
 }
