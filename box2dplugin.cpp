@@ -30,7 +30,7 @@
 #include "box2drevolutejoint.h"
 
 Box2DPlugin::Box2DPlugin(QObject *parent) :
-    QDeclarativeExtensionPlugin(parent)
+    QQmlExtensionPlugin(parent)
 {
 }
 
@@ -50,5 +50,3 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DPrismaticJoint>(uri, 1, 0, "PrismaticJoint");
     qmlRegisterType<Box2DRevoluteJoint>(uri, 1, 0, "RevoluteJoint");
 }
-
-Q_EXPORT_PLUGIN2(Box2DPlugin, Box2DPlugin)

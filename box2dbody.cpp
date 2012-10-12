@@ -136,13 +136,13 @@ void Box2DBody::setLinearVelocity(const QPointF &linearVelocity)
     emit linearVelocityChanged();
 }
 
-QDeclarativeListProperty<Box2DFixture> Box2DBody::fixtures()
+QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
 {
-    return QDeclarativeListProperty<Box2DFixture>(this, 0,
+    return QQmlListProperty<Box2DFixture>(this, 0,
                                                   &Box2DBody::append_fixture);
 }
 
-void Box2DBody::append_fixture(QDeclarativeListProperty<Box2DFixture> *list,
+void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
