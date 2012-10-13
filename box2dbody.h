@@ -45,7 +45,7 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
     Q_PROPERTY(bool active READ active WRITE setActive)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
-    Q_PROPERTY(QDeclarativeListProperty<Box2DFixture> fixtures READ fixtures)
+    Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
 
 public:
     enum BodyType {
@@ -81,7 +81,7 @@ public:
     QPointF linearVelocity() const { return mLinearVelocity; }
     void setLinearVelocity(const QPointF &linearVelocity);
 
-    QDeclarativeListProperty<Box2DFixture> fixtures();
+    QQmlListProperty<Box2DFixture> fixtures();
 
     void initialize(b2World *world);
     void synchronize();
@@ -113,7 +113,7 @@ private slots:
     void onRotationChanged();
 
 private:
-    static void append_fixture(QDeclarativeListProperty<Box2DFixture> *list,
+    static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
 
     b2Body *mBody;
