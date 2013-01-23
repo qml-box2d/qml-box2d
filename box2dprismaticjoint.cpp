@@ -140,16 +140,16 @@ void Box2DPrismaticJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DPrismaticJoint::axis() const
 {
-    return QPointF(mPrismaticJointDef.localAxis1.x,
-                   -mPrismaticJointDef.localAxis1.y);
+    return QPointF(mPrismaticJointDef.localAxisA.x,
+                   -mPrismaticJointDef.localAxisA.y);
 }
 
 void Box2DPrismaticJoint::setAxis(const QPointF &axis)
 {
-    if (mPrismaticJointDef.localAxis1 == b2Vec2(axis.x(), -axis.y()))
+    if (mPrismaticJointDef.localAxisA == b2Vec2(axis.x(), -axis.y()))
         return;
 
-    mPrismaticJointDef.localAxis1 = b2Vec2(axis.x(), -axis.y());
+    mPrismaticJointDef.localAxisA = b2Vec2(axis.x(), -axis.y());
 
     emit axisChanged();
 }
@@ -163,7 +163,7 @@ void Box2DPrismaticJoint::createJoint()
 {
     mPrismaticJointDef.Initialize(bodyA()->body(), bodyB()->body(),
                                  bodyA()->body()->GetWorldCenter(),
-                                  mPrismaticJointDef.localAxis1);
+                                  mPrismaticJointDef.localAxisA);
     mPrismaticJointDef.collideConnected = collideConnected();
 
     mPrismaticJoint = static_cast<b2PrismaticJoint*>
