@@ -47,12 +47,14 @@ void Box2DPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Box2DWorld>(uri, 1, 0, "World");
     qmlRegisterType<Box2DBody>(uri, 1, 0, "Body");
-    qmlRegisterType<Box2DFixture>();
+    qmlRegisterUncreatableType<Box2DFixture>(uri, 1, 0, "Fixture",
+                                             QStringLiteral("Base type for Box, Circle etc."));
     qmlRegisterType<Box2DBox>(uri, 1, 0, "Box");
     qmlRegisterType<Box2DCircle>(uri, 1, 0, "Circle");
     qmlRegisterType<Box2DPolygon>(uri, 1, 0, "Polygon");
     qmlRegisterType<Box2DDebugDraw>(uri, 1, 0, "DebugDraw");
-    qmlRegisterType<Box2DJoint>();
+    qmlRegisterUncreatableType<Box2DJoint>(uri, 1, 0, "Joint",
+                                           QStringLiteral("Base type for DistanceJoint, RevoluteJoint etc."));
     qmlRegisterType<Box2DDistanceJoint>(uri, 1, 0, "DistanceJoint");
     qmlRegisterType<Box2DPrismaticJoint>(uri, 1, 0, "PrismaticJoint");
     qmlRegisterType<Box2DRevoluteJoint>(uri, 1, 0, "RevoluteJoint");

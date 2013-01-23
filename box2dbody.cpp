@@ -34,8 +34,6 @@
 #include "box2dfixture.h"
 #include "box2dworld.h"
 
-#include <cmath>
-
 Box2DBody::Box2DBody(QQuickItem *parent) :
     QQuickItem(parent),
     mBody(0),
@@ -150,7 +148,7 @@ void Box2DBody::setLinearVelocity(const QPointF &linearVelocity)
 QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
 {
     return QQmlListProperty<Box2DFixture>(this, 0,
-                                                  &Box2DBody::append_fixture);
+                                                  &Box2DBody::append_fixture, 0, 0, 0);
 }
 
 void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
@@ -208,8 +206,11 @@ void Box2DBody::synchronize()
     const qreal newRotation = -(angle * 360.0) / (2 * b2_pi);
 
     // Do fuzzy comparisions to avoid small inaccuracies causing repaints
-    if (!qFuzzyCompare(x(), newX) || !qFuzzyCompare(y(), newY))
-        setPos(QPointF(newX, newY));
+    if (!qFuzzyCompare(x(), newX))
+        setX(newX);
+    if (!qFuzzyCompare(y(), newY))
+        setY(newY);
+
     if (!qFuzzyCompare(rotation(), newRotation))
         setRotation(newRotation);
 
