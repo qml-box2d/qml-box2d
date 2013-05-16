@@ -11,10 +11,10 @@ contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 INCLUDEPATH += .
 include(Box2D/box2d.pri)
 
-target.path = $$[QT_INSTALL_IMPORTS]/$$TARGETPATH
+target.path = $$[QT_INSTALL_QML]/$$replace(TARGETPATH, \\., /)
 
+qmldir.path = $$[QT_INSTALL_QML]/$$replace(TARGETPATH, \\., /)
 qmldir.files += $$PWD/qmldir
-qmldir.path +=  $$[QT_INSTALL_IMPORTS]/$$TARGETPATH
 
 INSTALLS += target qmldir
 
