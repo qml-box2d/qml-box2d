@@ -271,14 +271,14 @@ void Box2DBody::applyLinearImpulse(const QPointF &impulse,
         mBody->ApplyLinearImpulse(b2Vec2(impulse.x() / scaleRatio,
                                          -impulse.y() / scaleRatio),
                                   b2Vec2(point.x() / scaleRatio,
-                                         -point.y() / scaleRatio));
+                                         -point.y() / scaleRatio),true);
     }
 }
 
 void Box2DBody::applyTorque(qreal torque)
 {
     if (mBody)
-        mBody->ApplyTorque(torque);
+        mBody->ApplyTorque(torque,true);
 }
 
 QPointF Box2DBody::getWorldCenter() const
