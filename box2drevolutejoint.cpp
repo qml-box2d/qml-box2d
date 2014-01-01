@@ -32,8 +32,7 @@
 Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
     Box2DJoint(parent),
     mRevoluteJointDef(),
-    mRevoluteJoint(0),
-    mOverrideLocalAnchorA(false)
+    mRevoluteJoint(0)
 {
 }
 
@@ -44,35 +43,36 @@ Box2DRevoluteJoint::~Box2DRevoluteJoint()
 
 float Box2DRevoluteJoint::lowerAngle() const
 {
-    return mRevoluteJointDef.lowerAngle;
+    return mRevoluteJointDef.lowerAngle * 180 / b2_pi;
 }
 
 void Box2DRevoluteJoint::setLowerAngle(float lowerAngle)
 {
-    if (mRevoluteJointDef.lowerAngle == lowerAngle * b2_pi)
+    float lowerAngleRad = lowerAngle * b2_pi / 180;
+    if (mRevoluteJointDef.lowerAngle == lowerAngleRad)
         return;
 
-    mRevoluteJointDef.lowerAngle = lowerAngle * b2_pi;
+    mRevoluteJointDef.lowerAngle = lowerAngleRad;
     if (mRevoluteJoint)
-        mRevoluteJoint->SetLimits(lowerAngle * b2_pi,
-                                  mRevoluteJointDef.upperAngle);
+        mRevoluteJoint->SetLimits(lowerAngleRad,mRevoluteJointDef.upperAngle);
     emit lowerAngleChanged();
 }
 
 float Box2DRevoluteJoint::upperAngle() const
 {
-    return mRevoluteJointDef.upperAngle;
+    return mRevoluteJointDef.upperAngle * 180 / b2_pi;
 }
 
 void Box2DRevoluteJoint::setUpperAngle(float upperAngle)
 {
-    if (mRevoluteJointDef.upperAngle == upperAngle * b2_pi)
+    float upperAngleRad = upperAngle * b2_pi / 180;
+    if (mRevoluteJointDef.upperAngle == upperAngleRad)
         return;
 
-    mRevoluteJointDef.upperAngle = upperAngle * b2_pi;
+    mRevoluteJointDef.upperAngle = upperAngleRad;
     if (mRevoluteJoint)
         mRevoluteJoint->SetLimits(mRevoluteJointDef.lowerAngle,
-                                  upperAngle * b2_pi);
+                                  upperAngleRad);
     emit upperAngleChanged();
 }
 
@@ -94,17 +94,18 @@ void Box2DRevoluteJoint::setMaxMotorTorque(float maxMotorTorque)
 
 float Box2DRevoluteJoint::motorSpeed() const
 {
-    return mRevoluteJointDef.motorSpeed;
+    return mRevoluteJointDef.motorSpeed * b2_pi / 180;
 }
 
 void Box2DRevoluteJoint::setMotorSpeed(float motorSpeed)
 {
-    if (mRevoluteJointDef.motorSpeed == motorSpeed)
+    float motorSpeedRad = motorSpeed  * b2_pi / 180;
+    if (mRevoluteJointDef.motorSpeed == motorSpeedRad)
         return;
 
-    mRevoluteJointDef.motorSpeed = motorSpeed;
+    mRevoluteJointDef.motorSpeed = motorSpeedRad;
     if (mRevoluteJoint)
-        mRevoluteJoint->SetMotorSpeed(motorSpeed);
+        mRevoluteJoint->SetMotorSpeed(motorSpeedRad);
     emit motorSpeedChanged();
 }
 
@@ -142,22 +143,26 @@ void Box2DRevoluteJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DRevoluteJoint::localAnchorA() const
 {
-    if (mOverrideLocalAnchorA)
-        return mLocalAnchorA;
-    else
-        return QPointF(mRevoluteJointDef.localAnchorA.x * scaleRatio,
-                       -mRevoluteJointDef.localAnchorA.y * scaleRatio);
+    return QPointF(mRevoluteJointDef.localAnchorA.x * scaleRatio, mRevoluteJointDef.localAnchorA.y * scaleRatio);
+}
+
+QPointF Box2DRevoluteJoint::localAnchorB() const
+{
+    return QPointF(mRevoluteJointDef.localAnchorB.x * scaleRatio, mRevoluteJointDef.localAnchorB.y * scaleRatio);
 }
 
 void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    if (mOverrideLocalAnchorA && mLocalAnchorA == localAnchorA)
-        return;
 
-    mOverrideLocalAnchorA = true;
-    mLocalAnchorA = localAnchorA;
-
+    mRevoluteJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,-localAnchorA.y() / scaleRatio);
     emit localAnchorAChanged();
+}
+
+void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
+{
+
+    mRevoluteJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,-localAnchorB.y() / scaleRatio);
+    emit localAnchorBChanged();
 }
 
 void Box2DRevoluteJoint::nullifyJoint()
@@ -167,14 +172,9 @@ void Box2DRevoluteJoint::nullifyJoint()
 
 void Box2DRevoluteJoint::createJoint()
 {
-    b2Vec2 anchor = mOverrideLocalAnchorA ?
-                b2Vec2(mLocalAnchorA.x() / scaleRatio,
-                       -mLocalAnchorA.y() / scaleRatio) +
-                bodyA()->body()->GetPosition() :
-                bodyA()->body()->GetWorldCenter();
-
-    mRevoluteJointDef.Initialize(bodyA()->body(), bodyB()->body(),
-                                 anchor);
+    mRevoluteJointDef.bodyA = bodyA()->body();
+    mRevoluteJointDef.bodyB = bodyB()->body();
+    mRevoluteJointDef.referenceAngle = 0;
     mRevoluteJointDef.collideConnected = collideConnected();
 
     mRevoluteJoint = static_cast<b2RevoluteJoint*>(

@@ -187,6 +187,7 @@ b2Shape *Box2DBox::createShape()
     int32 count = 4;
 
     b2PolygonShape *shape = new b2PolygonShape;
+    //shape->SetAsBox(width()/ scaleRatio,height()/ scaleRatio );
     shape->Set(vertices, count);
     return shape;
 }

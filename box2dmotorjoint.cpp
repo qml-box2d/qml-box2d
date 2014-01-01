@@ -43,14 +43,14 @@ Box2DMotorJoint::~Box2DMotorJoint()
 
 QPointF Box2DMotorJoint::linearOffset() const
 {
-    return QPointF(mMotorJointDef.linearOffset.x,mMotorJointDef.linearOffset.y);
+    return QPointF(mMotorJointDef.linearOffset.x * scaleRatio,mMotorJointDef.linearOffset.y * scaleRatio);
 }
 
 void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 {
     if(this->linearOffset() == linearOffset)
         return;
-    mMotorJointDef.linearOffset = b2Vec2(linearOffset.x(),linearOffset.y());
+    mMotorJointDef.linearOffset = b2Vec2(linearOffset.x() / scaleRatio,-linearOffset.y() / scaleRatio);
     if(mMotorJoint)
         mMotorJoint->SetLinearOffset(mMotorJointDef.linearOffset);
     emit linearOffsetChanged();
@@ -58,16 +58,17 @@ void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 
 float Box2DMotorJoint::angularOffset() const
 {
-    return mMotorJointDef.angularOffset;
+    return mMotorJointDef.angularOffset * 180 / b2_pi;
 }
 
 void Box2DMotorJoint::setAngularOffset(const float angularOffset)
 {
-    if(mMotorJointDef.angularOffset == angularOffset)
+    float angularOffsetRad = angularOffset * ( b2_pi / 180);
+    if(mMotorJointDef.angularOffset == angularOffsetRad)
         return;
-    mMotorJointDef.angularOffset = angularOffset;
+    mMotorJointDef.angularOffset = angularOffsetRad;
     if(mMotorJoint)
-        mMotorJoint->SetAngularOffset(angularOffset);
+        mMotorJoint->SetAngularOffset(angularOffsetRad);
     emit angularOffsetChanged();
 }
 
@@ -123,6 +124,7 @@ void Box2DMotorJoint::nullifyJoint()
 
 void Box2DMotorJoint::createJoint()
 {
+
     mMotorJointDef.Initialize(bodyA()->body(),bodyB()->body());
     mMotorJointDef.collideConnected = collideConnected();
     mMotorJoint = static_cast<b2MotorJoint*>(
