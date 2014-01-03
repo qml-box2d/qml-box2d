@@ -32,7 +32,8 @@
 Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
     Box2DJoint(parent),
     mRevoluteJointDef(),
-    mRevoluteJoint(0)
+    mRevoluteJoint(0),
+    anchorsAuto(true)
 {
 }
 
@@ -43,13 +44,13 @@ Box2DRevoluteJoint::~Box2DRevoluteJoint()
 
 float Box2DRevoluteJoint::lowerAngle() const
 {
-    return mRevoluteJointDef.lowerAngle * 180 / b2_pi;
+    return -mRevoluteJointDef.lowerAngle * 180 / b2_pi;
 }
 
 void Box2DRevoluteJoint::setLowerAngle(float lowerAngle)
 {
-    float lowerAngleRad = lowerAngle * b2_pi / 180;
-    if (mRevoluteJointDef.lowerAngle == lowerAngleRad)
+    float lowerAngleRad = lowerAngle * b2_pi / -180;
+    if (qFuzzyCompare(mRevoluteJointDef.lowerAngle,lowerAngleRad))
         return;
 
     mRevoluteJointDef.lowerAngle = lowerAngleRad;
@@ -60,13 +61,13 @@ void Box2DRevoluteJoint::setLowerAngle(float lowerAngle)
 
 float Box2DRevoluteJoint::upperAngle() const
 {
-    return mRevoluteJointDef.upperAngle * 180 / b2_pi;
+    return -mRevoluteJointDef.upperAngle * 180 / b2_pi;
 }
 
 void Box2DRevoluteJoint::setUpperAngle(float upperAngle)
 {
-    float upperAngleRad = upperAngle * b2_pi / 180;
-    if (mRevoluteJointDef.upperAngle == upperAngleRad)
+    float upperAngleRad = upperAngle * b2_pi / -180;
+    if (qFuzzyCompare(mRevoluteJointDef.upperAngle,upperAngleRad))
         return;
 
     mRevoluteJointDef.upperAngle = upperAngleRad;
@@ -83,7 +84,7 @@ float Box2DRevoluteJoint::maxMotorTorque() const
 
 void Box2DRevoluteJoint::setMaxMotorTorque(float maxMotorTorque)
 {
-    if (mRevoluteJointDef.maxMotorTorque == maxMotorTorque)
+    if (qFuzzyCompare(mRevoluteJointDef.maxMotorTorque,maxMotorTorque))
         return;
 
     mRevoluteJointDef.maxMotorTorque = maxMotorTorque;
@@ -94,13 +95,13 @@ void Box2DRevoluteJoint::setMaxMotorTorque(float maxMotorTorque)
 
 float Box2DRevoluteJoint::motorSpeed() const
 {
-    return mRevoluteJointDef.motorSpeed * b2_pi / 180;
+    return -mRevoluteJointDef.motorSpeed * b2_pi / 180;
 }
 
 void Box2DRevoluteJoint::setMotorSpeed(float motorSpeed)
 {
-    float motorSpeedRad = motorSpeed  * b2_pi / 180;
-    if (mRevoluteJointDef.motorSpeed == motorSpeedRad)
+    float motorSpeedRad = motorSpeed  * b2_pi / -180;
+    if (qFuzzyCompare(mRevoluteJointDef.motorSpeed,motorSpeedRad))
         return;
 
     mRevoluteJointDef.motorSpeed = motorSpeedRad;
@@ -153,15 +154,15 @@ QPointF Box2DRevoluteJoint::localAnchorB() const
 
 void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-
     mRevoluteJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,-localAnchorA.y() / scaleRatio);
+    anchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-
     mRevoluteJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,-localAnchorB.y() / scaleRatio);
+    anchorsAuto = false;
     emit localAnchorBChanged();
 }
 
@@ -172,13 +173,16 @@ void Box2DRevoluteJoint::nullifyJoint()
 
 void Box2DRevoluteJoint::createJoint()
 {
-    mRevoluteJointDef.bodyA = bodyA()->body();
-    mRevoluteJointDef.bodyB = bodyB()->body();
-    mRevoluteJointDef.referenceAngle = 0;
+    if(anchorsAuto)
+        mRevoluteJointDef.Initialize(bodyA()->body(), bodyB()->body(),bodyA()->body()->GetWorldCenter());
+    else
+    {
+        mRevoluteJointDef.bodyA = bodyA()->body();
+        mRevoluteJointDef.bodyB = bodyB()->body();
+        mRevoluteJointDef.referenceAngle = 0;
+    }
     mRevoluteJointDef.collideConnected = collideConnected();
-
-    mRevoluteJoint = static_cast<b2RevoluteJoint*>(
-                world()->CreateJoint(&mRevoluteJointDef));
+    mRevoluteJoint = static_cast<b2RevoluteJoint*>(world()->CreateJoint(&mRevoluteJointDef));
     mRevoluteJoint->SetUserData(this);
     mInitializePending = false;
 }
@@ -190,4 +194,16 @@ void Box2DRevoluteJoint::cleanup(b2World *world)
         world->DestroyJoint(mRevoluteJoint);
         mRevoluteJoint = 0;
     }
+}
+
+float Box2DRevoluteJoint::getJointAngle()
+{
+    if(mRevoluteJoint) return mRevoluteJoint->GetJointAngle() * 180 / b2_pi;
+    return 0.0;
+}
+
+float Box2DRevoluteJoint::getJointSpeed()
+{
+    if(mRevoluteJoint) return mRevoluteJoint->GetJointSpeed();
+    return 0.0;
 }

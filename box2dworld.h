@@ -116,6 +116,7 @@ signals:
     void gravityChanged();
     void runningChanged();
     void stepped();
+    void initialized();
 
 protected:
     void timerEvent(QTimerEvent *);

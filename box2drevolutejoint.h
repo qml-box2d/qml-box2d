@@ -37,7 +37,6 @@ class b2RevoluteJointDef;
 class Box2DRevoluteJoint : public Box2DJoint
 {
     Q_OBJECT
-
     Q_PROPERTY(float lowerAngle READ lowerAngle WRITE setLowerAngle NOTIFY lowerAngleChanged)
     Q_PROPERTY(float upperAngle READ upperAngle WRITE setUpperAngle NOTIFY upperAngleChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
@@ -79,6 +78,9 @@ public:
     void createJoint();
     void cleanup(b2World *world);
 
+    Q_INVOKABLE float getJointAngle();
+    Q_INVOKABLE float getJointSpeed();
+
 signals:
     void lowerAngleChanged();
     void upperAngleChanged();
@@ -92,6 +94,7 @@ signals:
 private:
     b2RevoluteJointDef mRevoluteJointDef;
     b2RevoluteJoint *mRevoluteJoint;
+    bool anchorsAuto;
 };
 
 #endif // BOX2DREVOLUTEJOINT_H

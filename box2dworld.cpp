@@ -102,7 +102,8 @@ Box2DWorld::~Box2DWorld()
 {
     // Bodies must be deleted before the world
     foreach (Box2DBody *body, mBodies)
-        delete body;
+        if(body->canDelete())
+            delete body;
     mBodies.clear();
 
     delete mWorld;
@@ -154,8 +155,10 @@ void Box2DWorld::componentComplete()
             connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
         }
 
+    emit initialized();
     if (mIsRunning)
         mTimer.start(mFrameTime, this);
+
 }
 
 /**
