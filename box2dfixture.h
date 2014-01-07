@@ -59,10 +59,10 @@ public:
     explicit Box2DFixture(QQuickItem *parent = 0);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
-                Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
-                Category9 = 0x0100, Category10 = 0x0200, Category11 = 0x0400, Category12 = 0x0800,
-                Category13 = 0x1000, Category14 = 0x2000, Category15 = 0x4000, Category16 = 0x8000,
-                All = 0xFFFF, None=0x0000};
+                       Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
+                       Category9 = 0x0100, Category10 = 0x0200, Category11 = 0x0400, Category12 = 0x0800,
+                       Category13 = 0x1000, Category14 = 0x2000, Category15 = 0x4000, Category16 = 0x8000,
+                       All = 0xFFFF, None=0x0000};
 
     Q_DECLARE_FLAGS(CategoryFlags, CategoryFlag)
 
@@ -88,9 +88,17 @@ public:
     void setGroupIndex(int groupIndex);
 
     void createFixture(b2Body *body);
+    virtual void scale(){}
 
 protected:
+    b2Fixture *mFixture;
+    b2FixtureDef mFixtureDef;
+    b2Body * mBody;
+    float factorWidth;
+    float factorHeight;
     virtual b2Shape *createShape() = 0;
+    void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+    void scaleVertices();
 
 signals:
     void densityChanged();
@@ -105,6 +113,7 @@ signals:
     void contactChanged(Box2DFixture *other);
     void endContact(Box2DFixture *other);
 
+
 private:
     friend class Box2DWorld;
 
@@ -112,8 +121,9 @@ private:
     void emitContactChanged(Box2DFixture *other);
     void emitEndContact(Box2DFixture *other);
 
-    b2FixtureDef mFixtureDef;
-    b2Fixture *mFixture;
+
+
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
@@ -126,6 +136,7 @@ public:
     explicit Box2DBox(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
+    void scale();
 
 protected:
     b2Shape *createShape();
@@ -148,9 +159,10 @@ public:
         if (mRadius == radius)
             return;
         mRadius = radius;
+        scale();
         emit radiusChanged();
     }
-
+    void scale();
 signals:
     void radiusChanged();
 
@@ -180,7 +192,7 @@ public:
         mVertices = vertices;
         emit verticesChanged();
     }
-
+    void scale();
 signals:
     void verticesChanged();
 

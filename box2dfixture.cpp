@@ -33,8 +33,10 @@
 
 Box2DFixture::Box2DFixture(QQuickItem *parent) :
     QQuickItem(parent),
+    mFixture(0),
     mFixtureDef(),
-    mFixture(0)
+    factorWidth(1.0),
+    factorHeight(1.0)
 {
 }
 
@@ -151,11 +153,25 @@ void Box2DFixture::createFixture(b2Body *body)
         return;
 
     mFixtureDef.shape = shape;
-
     mFixture = body->CreateFixture(&mFixtureDef);
     mFixture->SetUserData(this);
-
+    mBody = body;
     delete shape;
+}
+
+void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+{
+    qreal nw = newGeometry.right();
+    qreal nh = newGeometry.bottom();
+    qreal ow = oldGeometry.right();
+    qreal oh = oldGeometry.bottom();
+
+    if((nw != ow && !qFuzzyCompare(ow,0.0)) ||  (nh != oh && !qFuzzyCompare(oh,0.0)) )
+    {
+        factorWidth = nw / ow;
+        factorHeight = nh / oh;
+        scale();
+    }
 }
 
 void Box2DFixture::emitBeginContact(Box2DFixture *other)
@@ -173,25 +189,63 @@ void Box2DFixture::emitEndContact(Box2DFixture *other)
     emit endContact(other);
 }
 
+void Box2DFixture::scaleVertices()
+{
+    b2PolygonShape * shape = static_cast<b2PolygonShape *>(mFixture->GetShape());
+    if(shape)
+    {
+        b2PolygonShape newShape;
+        b2Vec2 * vertices = new b2Vec2[shape->GetVertexCount()];
+        for(int i = 0;i < shape->GetVertexCount();i ++)
+        {
+            b2Vec2 vertex = shape->GetVertex(i);
+            vertices[i].x = vertex.x * factorWidth;
+            vertices[i].y = vertex.y * factorHeight;
+        }
+        newShape.Set(vertices,shape->GetVertexCount());
+        mBody->DestroyFixture(mFixture);
+        mFixtureDef.shape = &newShape;
+        mFixture = mBody->CreateFixture(&mFixtureDef);
+        mFixture->SetUserData(this);
+    }
+}
+
+
+void Box2DBox::scale()
+{
+    if(mFixture)
+        scaleVertices();
+}
 
 b2Shape *Box2DBox::createShape()
 {
-    const float32 _x = x() / scaleRatio;
-    const float32 _y = -y() / scaleRatio;
 
+    const qreal _x = x() / scaleRatio;
+    const qreal _y = -y() / scaleRatio;
     b2Vec2 vertices[4];
     vertices[0].Set(_x, _y);
     vertices[1].Set(_x, _y - height() / scaleRatio);
     vertices[2].Set(_x + width() / scaleRatio, _y - height() / scaleRatio);
     vertices[3].Set(_x + width() / scaleRatio, _y);
-    int32 count = 4;
 
+    int32 count = 4;
     b2PolygonShape *shape = new b2PolygonShape;
-    //shape->SetAsBox(width()/ scaleRatio,height()/ scaleRatio );
     shape->Set(vertices, count);
     return shape;
 }
 
+void Box2DCircle::scale()
+{
+    if(mFixture)
+    {
+        b2Shape * newShape = createShape();
+        mBody->DestroyFixture(mFixture);
+        mFixtureDef.shape = newShape;
+        mFixture = mBody->CreateFixture(&mFixtureDef);
+        mFixture->SetUserData(this);
+        delete newShape;
+    }
+}
 
 b2Shape *Box2DCircle::createShape()
 {
@@ -201,6 +255,14 @@ b2Shape *Box2DCircle::createShape()
     return shape;
 }
 
+
+void Box2DPolygon::scale()
+{
+
+    if(mFixture)
+        scaleVertices();
+
+}
 
 b2Shape *Box2DPolygon::createShape()
 {
