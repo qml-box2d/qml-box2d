@@ -102,7 +102,13 @@ Box2DWorld::~Box2DWorld()
 {
     // Bodies must be deleted before the world
     foreach (Box2DBody *body, mBodies)
-        delete body;
+    {
+        if(body->parent() == this)
+            delete body;
+        else
+            body->cleanup(this->world());
+
+    }
     mBodies.clear();
 
     delete mWorld;

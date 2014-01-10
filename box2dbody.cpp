@@ -46,7 +46,8 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mFixedRotation(false),
     mActive(true),
     mSynchronizing(false),
-    mInitializePending(false)
+    mInitializePending(false),
+    mCanDelete(true)
 {
     setTransformOrigin(TopLeft);
     connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
@@ -162,7 +163,7 @@ void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
 void Box2DBody::initialize(b2World *world)
 {
     mWorld = world;
-
+    //this->setParent(world);
     if (!isComponentComplete()) {
         // When components are created dynamically, they get their parent
         // assigned before they have been completely initialized. In that case
@@ -223,7 +224,7 @@ void Box2DBody::synchronize()
 
 void Box2DBody::cleanup(b2World *world)
 {
-    world->DestroyBody(mBody);
+    if(mBody) world->DestroyBody(mBody);
     mBody = 0;
     mWorld = 0;
 }
@@ -245,14 +246,11 @@ void Box2DBody::geometryChanged(const QRectF &newGeometry,
                                 const QRectF &oldGeometry)
 {
     if (!mSynchronizing && mBody) {
-        if (newGeometry.topLeft() != oldGeometry.topLeft()) {
-            const QPointF pos = newGeometry.topLeft();
-            mBody->SetTransform(b2Vec2(pos.x() / scaleRatio,
-                                       -pos.y() / scaleRatio),
-                                mBody->GetAngle());
+        if (newGeometry.x() != oldGeometry.x() || newGeometry.y() != oldGeometry.y())
+        {
+            mBody->SetTransform(b2Vec2(newGeometry.x() / scaleRatio,-newGeometry.y() / scaleRatio),mBody->GetAngle());
         }
     }
-
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
 }
 
@@ -260,7 +258,7 @@ void Box2DBody::onRotationChanged()
 {
     if (!mSynchronizing && mBody) {
         mBody->SetTransform(mBody->GetPosition(),
-                            (rotation() * 2 * b2_pi) / -360.0);
+                            (rotation() * b2_pi) / -180.0);
     }
 }
 
