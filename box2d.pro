@@ -32,7 +32,8 @@ SOURCES += box2dplugin.cpp \
     box2dprismaticjoint.cpp \
     box2drevolutejoint.cpp \
     box2ddestructionlistener.cpp \
-    box2dmotorjoint.cpp
+    box2dmotorjoint.cpp \
+    box2dweldjoint.cpp
 
 HEADERS += \
     box2dplugin.h \
@@ -45,4 +46,5 @@ HEADERS += \
     box2dprismaticjoint.h \
     box2drevolutejoint.h \
     box2ddestructionlistener.h \
-    box2dmotorjoint.h
+    box2dmotorjoint.h \
+    box2dweldjoint.h
