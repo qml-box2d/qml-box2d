@@ -26,9 +26,7 @@
  */
 
 #include "box2dfixture.h"
-
 #include "box2dworld.h"
-
 #include <QDebug>
 
 Box2DFixture::Box2DFixture(QQuickItem *parent) :
@@ -161,12 +159,14 @@ void Box2DFixture::createFixture(b2Body *body)
 
 void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
-    qreal nw = newGeometry.right();
-    qreal nh = newGeometry.bottom();
-    qreal ow = oldGeometry.right();
-    qreal oh = oldGeometry.bottom();
+    if(!isComponentComplete()) return;
 
-    if((nw != ow && !qFuzzyCompare(ow,0.0)) ||  (nh != oh && !qFuzzyCompare(oh,0.0)) )
+    qreal nw = newGeometry.width();
+    qreal nh = newGeometry.height();
+    qreal ow = oldGeometry.width();
+    qreal oh = oldGeometry.height();
+
+    if( (nw != ow && !qFuzzyCompare(ow,0.0)) ||  (nh != oh && !qFuzzyCompare(oh,0.0)) )
     {
         factorWidth = nw / ow;
         factorHeight = nh / oh;
@@ -189,44 +189,43 @@ void Box2DFixture::emitEndContact(Box2DFixture *other)
     emit endContact(other);
 }
 
-void Box2DFixture::scaleVertices()
+void Box2DFixture::applyShape(b2Shape *shape)
 {
-    b2PolygonShape * shape = static_cast<b2PolygonShape *>(mFixture->GetShape());
-    if(shape)
-    {
-        b2PolygonShape newShape;
-        b2Vec2 * vertices = new b2Vec2[shape->GetVertexCount()];
-        for(int i = 0;i < shape->GetVertexCount();i ++)
-        {
-            b2Vec2 vertex = shape->GetVertex(i);
-            vertices[i].x = vertex.x * factorWidth;
-            vertices[i].y = vertex.y * factorHeight;
-        }
-        newShape.Set(vertices,shape->GetVertexCount());
-        mBody->DestroyFixture(mFixture);
-        mFixtureDef.shape = &newShape;
-        mFixture = mBody->CreateFixture(&mFixtureDef);
-        mFixture->SetUserData(this);
+    if(mFixture) mBody->DestroyFixture(mFixture);
+    mFixtureDef.shape = shape;
+    mFixture = mBody->CreateFixture(&mFixtureDef);
+    mFixture->SetUserData(this);
+    delete shape;
+}
+
+b2Vec2 *Box2DVerticesShape::scaleVertices()
+{
+    const int count = mVertices.length();
+    b2Vec2 * vertices = new b2Vec2[count];
+    for (int i = 0; i < count; ++i) {
+
+        QPointF point = mVertices.at(i).toPointF();
+        point.setX(point.x() * factorWidth);
+        point.setY(point.y() * factorHeight);
+        mVertices.replace(i,point);
+        vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
     }
+    return vertices;
 }
 
-
-void Box2DBox::scale()
-{
-    if(mFixture)
-        scaleVertices();
-}
+//=================== BOX =======================
 
 b2Shape *Box2DBox::createShape()
 {
-
     const qreal _x = x() / scaleRatio;
     const qreal _y = -y() / scaleRatio;
-    b2Vec2 vertices[4];
+    const qreal _width = width() / scaleRatio;
+    const qreal _height = height() / scaleRatio;
+
     vertices[0].Set(_x, _y);
-    vertices[1].Set(_x, _y - height() / scaleRatio);
-    vertices[2].Set(_x + width() / scaleRatio, _y - height() / scaleRatio);
-    vertices[3].Set(_x + width() / scaleRatio, _y);
+    vertices[1].Set(_x , _y - _height);
+    vertices[2].Set(_x + _width , _y - _height);
+    vertices[3].Set(_x + _width , _y );
 
     int32 count = 4;
     b2PolygonShape *shape = new b2PolygonShape;
@@ -234,35 +233,35 @@ b2Shape *Box2DBox::createShape()
     return shape;
 }
 
-void Box2DCircle::scale()
+void Box2DBox::scale()
 {
     if(mFixture)
     {
-        b2Shape * newShape = createShape();
-        mBody->DestroyFixture(mFixture);
-        mFixtureDef.shape = newShape;
-        mFixture = mBody->CreateFixture(&mFixtureDef);
-        mFixture->SetUserData(this);
-        delete newShape;
+        b2Shape * shape = createShape();
+        applyShape(shape);
     }
 }
+
+//=================== CIRCLE =======================
 
 b2Shape *Box2DCircle::createShape()
 {
     b2CircleShape *shape = new b2CircleShape;
     shape->m_radius = mRadius / scaleRatio;
-    shape->m_p.Set(x() / scaleRatio, -y() / scaleRatio);
+    shape->m_p.Set(shape->m_radius, -shape->m_radius);
     return shape;
 }
 
-
-void Box2DPolygon::scale()
+void Box2DCircle::scale()
 {
-
     if(mFixture)
-        scaleVertices();
-
+    {
+        b2Shape * shape = createShape();
+        applyShape(shape);
+    }
 }
+
+//=================== POLYGON =======================
 
 b2Shape *Box2DPolygon::createShape()
 {
@@ -282,4 +281,87 @@ b2Shape *Box2DPolygon::createShape()
     shape->Set(vertices, count);
     delete[] vertices;
     return shape;
+}
+
+void Box2DPolygon::scale()
+{
+    if(mFixture)
+    {
+        b2Vec2 *vertices = scaleVertices();
+        b2PolygonShape *shape = new b2PolygonShape;
+        shape->Set(vertices, mVertices.count());
+        delete[] vertices;
+        applyShape(shape);
+    }
+
+}
+
+//=================== CHAIN =======================
+
+b2Shape *Box2DChain::createShape()
+{
+    const int count = mVertices.length();
+    if (count < 2) {
+        qWarning() << "Chain: Invalid number of vertices:" << count;
+        return 0;
+    }
+
+    b2Vec2 *vertices = new b2Vec2[count];
+    for (int i = 0; i < count; ++i) {
+        const QPointF &point = mVertices.at(i).toPointF();
+        vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+    }
+
+    b2ChainShape *shape = new b2ChainShape;
+    if(mLoop) shape->CreateLoop(vertices, count);
+    else shape->CreateChain(vertices, count);
+    if(prevVertexFlag) shape->SetPrevVertex(b2Vec2(mPrevVertex.x() / scaleRatio,mPrevVertex.y() / scaleRatio));
+    if(nextVertexFlag) shape->SetNextVertex(b2Vec2(mNextVertex.x() / scaleRatio,mNextVertex.y() / scaleRatio));
+    delete[] vertices;
+    return shape;
+}
+
+void Box2DChain::scale()
+{
+    if(mFixture)
+    {
+        b2Vec2 *vertices = scaleVertices();
+        b2ChainShape *shape = new b2ChainShape;
+        if(mLoop) shape->CreateLoop(vertices, mVertices.count());
+        else shape->CreateChain(vertices, mVertices.count());
+        delete[] vertices;
+        applyShape(shape);
+    }
+}
+
+//=================== EDGE =======================
+
+b2Shape *Box2DEdge::createShape()
+{
+    const int count = mVertices.length();
+    if (count != 2) {
+        qWarning() << "Edge: Invalid number of vertices:" << count;
+        return 0;
+    }
+    QPointF point1 = mVertices.at(0).toPointF();
+    QPointF point2 = mVertices.at(1).toPointF();
+    b2Vec2 vertex1(point1.x() / scaleRatio, -point1.y() / scaleRatio);
+    b2Vec2 vertex2(point2.x() / scaleRatio, -point2.y() / scaleRatio);
+
+    b2EdgeShape *shape = new b2EdgeShape;
+    shape->Set(vertex1,vertex2);
+
+    return shape;
+}
+
+void Box2DEdge::scale()
+{
+    if(mFixture)
+    {
+        b2Vec2 *vertices = scaleVertices();
+        b2EdgeShape *shape = new b2EdgeShape;
+        shape->Set(vertices[0],vertices[1]);
+        delete[] vertices;
+        applyShape(shape);
+    }
 }

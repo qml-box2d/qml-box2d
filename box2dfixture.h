@@ -98,7 +98,7 @@ protected:
     float factorHeight;
     virtual b2Shape *createShape() = 0;
     void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-    void scaleVertices();
+    void applyShape(b2Shape * shape);
 
 signals:
     void densityChanged();
@@ -140,6 +140,7 @@ public:
 
 protected:
     b2Shape *createShape();
+    b2Vec2 vertices[4];
 };
 
 
@@ -174,17 +175,14 @@ private:
 };
 
 
-class Box2DPolygon : public Box2DFixture
+class Box2DVerticesShape : public Box2DFixture
 {
     Q_OBJECT
-
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
-
 public:
-    explicit Box2DPolygon(QQuickItem *parent = 0) :
+    explicit Box2DVerticesShape(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
-
     QVariantList vertices() const { return mVertices; }
     void setVertices(const QVariantList &vertices) {
         if (vertices == mVertices)
@@ -192,17 +190,83 @@ public:
         mVertices = vertices;
         emit verticesChanged();
     }
-    void scale();
 signals:
     void verticesChanged();
 
 protected:
-    b2Shape *createShape();
-
-private:
     QVariantList mVertices;
+    b2Vec2 * scaleVertices();
+    virtual b2Shape *createShape(){ return NULL; }
+
 };
 
+class Box2DPolygon : public Box2DVerticesShape
+{
+public:
+    explicit Box2DPolygon(QQuickItem *parent = 0) :
+        Box2DVerticesShape(parent)
+    { }
+    void scale();
+
+protected:
+    b2Shape *createShape();
+};
+
+
+class Box2DChain : public Box2DVerticesShape
+{
+    Q_OBJECT
+    Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
+    Q_PROPERTY(QPointF prevVertex READ prevVertex WRITE setPrevVertex NOTIFY prevVertexChanged)
+    Q_PROPERTY(QPointF nextVertex READ nextVertex WRITE setNextVertex NOTIFY nextVertexChanged)
+public:
+    explicit Box2DChain(QQuickItem *parent = 0) :
+        Box2DVerticesShape(parent),
+        mLoop(false)
+    { }
+    void scale();
+    bool loop() const { return mLoop; }
+    void setLoop(bool loop) {
+        mLoop = loop;
+        emit loopChanged();
+    }
+    QPointF prevVertex() const { return mPrevVertex; }
+    void setPrevVertex(QPointF &prevVertex) {
+        mPrevVertex = prevVertex;
+        prevVertexFlag = true;
+    }
+    QPointF nextVertex() const { return mNextVertex; }
+    void setNextVertex(QPointF &nextVertex) {
+        mNextVertex = nextVertex;
+        nextVertexFlag = true;
+    }
+
+protected:
+    b2Shape *createShape();
+    bool mLoop;
+    bool prevVertexFlag;
+    bool nextVertexFlag;
+    QPointF mPrevVertex;
+    QPointF mNextVertex;
+signals:
+    void loopChanged();
+    void prevVertexChanged();
+    void nextVertexChanged();
+};
+
+class Box2DEdge : public Box2DVerticesShape
+{
+    Q_OBJECT
+public:
+    explicit Box2DEdge(QQuickItem *parent = 0) :
+        Box2DVerticesShape(parent)
+    { }
+    void scale();
+
+protected:
+    b2Shape *createShape();
+
+};
 
 /**
  * Convenience function to get the Box2DFixture wrapping a b2Fixture.

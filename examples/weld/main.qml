@@ -35,6 +35,7 @@ Rectangle {
         Body {
             width: 20
             height: 20
+			z: 1
             bodyType: Body.Dynamic
             fixtures: Box {
                 anchors.fill: parent
@@ -236,6 +237,7 @@ Rectangle {
             world: world
             opacity: 1
             visible: false
+			z: 10
         }
 
         Timer {
