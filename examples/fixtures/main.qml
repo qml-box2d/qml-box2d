@@ -44,24 +44,57 @@ Rectangle {
         anchors.fill: parent
 
         Body {
-            id: ground
+            function getVertices() {
+                var pos = 40;
+                var arr = [];
+                arr.push(Qt.point(0,0));
+                arr.push(Qt.point(40,0));
+                while(pos < 700) {
+                    var y = Math.round(Math.random() * 30);
+                    var x = Math.round(20 + Math.random() * 40);
+                    pos += x;
+                    arr.push(Qt.point(pos,y));
+                }
+                arr.push(Qt.point(760,0));
+                arr.push(Qt.point(800,0));
+                arr.push(Qt.point(800,40));
+                arr.push(Qt.point(0,40));
+                return arr;
+            }
             height: 40
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            z: 100
+            id: ground
             bodyType: Body.Static
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-            }
-            fixtures: Box {
+            fixtures: Chain {
+                id: groundShape
+                vertices: ground.getVertices()
                 anchors.fill: parent
-                friction: 1
-                density: 1
+                loop: true
             }
-            Rectangle {
+            Canvas {
+                id: groundCanvas
                 anchors.fill: parent
-                color: "#DEDEDE"
+                onPaint: {
+                    var context = groundCanvas.getContext("2d");
+                    context.beginPath();
+                    context.moveTo(0,0);
+                    var points = groundShape.vertices;
+                    for(var i = 1;i < points.length;i ++) {
+                        var point = points[i];
+                        var x = point.x;
+                        var y = point.y;
+                        context.lineTo(x,y);
+                    }
+                    context.fillStyle = "#000000";
+                    context.fill();
+
+                }
             }
         }
+
         Wall {
             id: topWall
             height: 40
@@ -106,14 +139,14 @@ Rectangle {
                 Box {
                     x: 0
                     y: 0
-                    width: (parent.width / 2) - 10
-                    height:parent.height
+                    width: parent.width * 0.45
+                    height: parent.height
                 },
                 Box {
-                    x: (parent.width / 2) + 10
+                    x: parent.width * 0.55
                     y: 0
+                    width: parent.width * 0.45
                     height: parent.height
-                    width: (parent.width / 2) - 10
 
                 }
             ]
@@ -121,6 +154,7 @@ Rectangle {
                 anchors.fill: parent
                 color: "blue"
             }
+
         }
 
         Body {
@@ -365,6 +399,30 @@ Rectangle {
                         polygonTest.height = 100;
                         polygonTest.width = 100;
                     }
+                }
+            }
+        }
+
+        Rectangle {
+            id: chainTestButton
+            x: 50
+            y: 300
+            width: 120
+            height: 30
+            Text {
+                text: "Chain"
+                anchors.centerIn: parent
+            }
+            color: "#DEDEDE"
+            border.color: "#999"
+            radius: 5
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if(ground.height == 40)
+                        ground.height = 100
+                    else
+                        ground.height = 40
                 }
             }
         }
