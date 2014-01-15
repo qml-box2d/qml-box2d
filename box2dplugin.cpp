@@ -37,6 +37,7 @@
 #include "box2drevolutejoint.h"
 #include "box2dmotorjoint.h"
 #include "box2dweldjoint.h"
+#include "box2dpulleyjoint.h"
 
 Box2DPlugin::Box2DPlugin(QObject *parent) :
     QQmlExtensionPlugin(parent)
@@ -64,4 +65,5 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DRevoluteJoint>(uri, 1, 0, "RevoluteJoint");
     qmlRegisterType<Box2DMotorJoint>(uri, 1, 0, "MotorJoint");
     qmlRegisterType<Box2DWeldJoint>(uri, 1, 0, "WeldJoint");
+    qmlRegisterType<Box2DPulleyJoint>(uri, 1, 0, "PulleyJoint");
 }

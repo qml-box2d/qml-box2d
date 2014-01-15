@@ -29,7 +29,8 @@ SOURCES += $$PWD/box2dplugin.cpp \
     $$PWD/box2dprismaticjoint.cpp \
     $$PWD/box2ddestructionlistener.cpp \
     $$PWD/box2dmotorjoint.cpp \
-    $$PWD/box2dweldjoint.cpp
+    $$PWD/box2dweldjoint.cpp \
+	$$PWD/box2dpulleyjoint.cpp
 
 
 
@@ -45,5 +46,6 @@ HEADERS += \
     $$PWD/box2dprismaticjoint.h \
     $$PWD/box2ddestructionlistener.h \
     $$PWD/box2dmotorjoint.h \
-    $$PWD/box2dweldjoint.h
+	$$PWD/box2dweldjoint.h \
+    $$PWD/box2dpulleyjoint.h
 
