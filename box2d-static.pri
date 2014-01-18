@@ -32,6 +32,7 @@ SOURCES += $$PWD/box2dplugin.cpp \
     $$PWD/box2dweldjoint.cpp \
     $$PWD/box2dpulleyjoint.cpp \
     $$PWD/box2dfrictionjoint.cpp \
+    $$PWD/box2dwheeljoint.cpp
 
 
 
@@ -50,4 +51,5 @@ HEADERS += \
     $$PWD/box2dweldjoint.h \
     $$PWD/box2dpulleyjoint.h \
     $$PWD/box2dfrictionjoint.h \
+    $$PWD/box2dwheeljoint.h
 
