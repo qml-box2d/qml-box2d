@@ -46,8 +46,7 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mFixedRotation(false),
     mActive(true),
     mSynchronizing(false),
-    mInitializePending(false),
-    mCanDelete(true)
+    mInitializePending(false)
 {
     setTransformOrigin(TopLeft);
     connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
@@ -187,7 +186,7 @@ void Box2DBody::initialize(b2World *world)
 
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->createFixture(mBody);
-
+    mBody->SetUserData(this);
     emit bodyCreated();
 }
 
@@ -289,3 +288,21 @@ QPointF Box2DBody::getWorldCenter() const
     }
     return worldCenter;
 }
+
+void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
+{
+    if (mBody) {
+        mBody->ApplyForce(b2Vec2(force.x() / scaleRatio,
+                                         -force.y() / scaleRatio),
+                                  b2Vec2(point.x() / scaleRatio,
+                                         -point.y() / scaleRatio),true);
+    }
+}
+
+float Box2DBody::getMass() const
+{
+    if (mBody)
+        return mBody->GetMass() / scaleRatio;
+    return 0.0;
+}
+

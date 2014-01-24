@@ -56,7 +56,7 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(bool active READ active WRITE setActive)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
-    Q_PROPERTY(bool canDelete READ canDelete WRITE setCanDelete)
+
 
 public:
     enum BodyType {
@@ -92,9 +92,6 @@ public:
     QPointF linearVelocity() const { return mLinearVelocity; }
     void setLinearVelocity(const QPointF &linearVelocity);
 
-    bool canDelete() const { return mCanDelete; }
-    void setCanDelete(const bool canDelete) { mCanDelete = canDelete; }
-
     QQmlListProperty<Box2DFixture> fixtures();
 
     void initialize(b2World *world);
@@ -105,6 +102,9 @@ public:
                                         const QPointF &point);
     Q_INVOKABLE void applyTorque(qreal torque);
     Q_INVOKABLE QPointF getWorldCenter() const;
+    Q_INVOKABLE void applyForce(const QPointF &force,
+                                        const QPointF &point);
+    Q_INVOKABLE float getMass() const;
 
     void componentComplete();
 
@@ -143,7 +143,6 @@ private:
     bool mSynchronizing;
     bool mInitializePending;
     QList<Box2DFixture*> mFixtures;
-    bool mCanDelete;
 };
 
 #endif // BOX2DBODY_H

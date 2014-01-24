@@ -36,7 +36,8 @@ SOURCES += box2dplugin.cpp \
     box2dweldjoint.cpp \
     box2dpulleyjoint.cpp \
     box2dfrictionjoint.cpp \
-    box2dwheeljoint.cpp
+    box2dwheeljoint.cpp \
+    box2dmousejoint.cpp
 
 HEADERS += \
     box2dplugin.h \
@@ -53,4 +54,5 @@ HEADERS += \
     box2dweldjoint.h \
     box2dpulleyjoint.h \
     box2dfrictionjoint.h \
-    box2dwheeljoint.h
+    box2dwheeljoint.h \
+    box2dmousejoint.h
