@@ -64,6 +64,7 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
+    b2Joint * GetJoint();
 
 signals:
     void targetChanged();

@@ -131,13 +131,23 @@ void Box2DMotorJoint::createJoint()
                 world()->CreateJoint(&mMotorJointDef));
     mMotorJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DMotorJoint::cleanup(b2World *world)
 {
+    if(!world) {
+        qWarning() << "MotorJoint: There is no world connected";
+        return;
+    }
     if (mMotorJoint && bodyA() && bodyB()) {
         mMotorJoint->SetUserData(0);
         world->DestroyJoint(mMotorJoint);
         mMotorJoint = 0;
     }
+}
+
+b2Joint *Box2DMotorJoint::GetJoint()
+{
+    return mMotorJoint;
 }

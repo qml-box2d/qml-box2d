@@ -77,6 +77,7 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
+    b2Joint * GetJoint();
 
     Q_INVOKABLE float getJointAngle();
     Q_INVOKABLE float getJointSpeed();

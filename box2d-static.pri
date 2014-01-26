@@ -34,7 +34,7 @@ SOURCES += $$PWD/box2dplugin.cpp \
     $$PWD/box2dfrictionjoint.cpp \
     $$PWD/box2dwheeljoint.cpp \
     $$PWD/box2dmousejoint.cpp \
-    qml-box2d/box2dapi.cpp
+    $$PWD/box2dgearjoint.cpp
 
 
 
@@ -55,5 +55,5 @@ HEADERS += \
     $$PWD/box2dfrictionjoint.h \
     $$PWD/box2dwheeljoint.h \
     $$PWD/box2dmousejoint.h \
-    qml-box2d/box2dapi.h
+    $$PWD/box2dgearjoint.h
 

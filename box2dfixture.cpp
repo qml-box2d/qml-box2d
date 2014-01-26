@@ -28,6 +28,7 @@
 #include "box2dfixture.h"
 #include "box2dworld.h"
 #include <QDebug>
+#include "Common/b2Math.h"
 
 Box2DFixture::Box2DFixture(QQuickItem *parent) :
     QQuickItem(parent),
@@ -157,6 +158,11 @@ void Box2DFixture::createFixture(b2Body *body)
     delete shape;
 }
 
+Box2DBody *Box2DFixture::GetBody() const
+{
+    return static_cast<Box2DBody *>(mBody->GetUserData());
+}
+
 void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     if(!isComponentComplete()) return;
@@ -226,6 +232,17 @@ b2Shape *Box2DBox::createShape()
     vertices[1].Set(_x , _y - _height);
     vertices[2].Set(_x + _width , _y - _height);
     vertices[3].Set(_x + _width , _y );
+    for(int i = 1;i < 4;i ++)
+    {
+        if(i > 0)
+        {
+            if(b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop)
+            {
+                qWarning() << "Box: vertices are too close together";
+                return 0;
+            }
+        }
+    }
 
     int32 count = 4;
     b2PolygonShape *shape = new b2PolygonShape;
@@ -275,6 +292,14 @@ b2Shape *Box2DPolygon::createShape()
     for (int i = 0; i < count; ++i) {
         const QPointF &point = mVertices.at(i).toPointF();
         vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+        if(i > 0)
+        {
+            if(b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop)
+            {
+                qWarning() << "Polygon: vertices are too close together";
+                return 0;
+            }
+        }
     }
 
     b2PolygonShape *shape = new b2PolygonShape;
@@ -310,6 +335,13 @@ b2Shape *Box2DChain::createShape()
     for (int i = 0; i < count; ++i) {
         const QPointF &point = mVertices.at(i).toPointF();
         vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+        if(i > 0) {
+            if(b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop)
+            {
+                qWarning() << "Chain: vertices are too close together";
+                return 0;
+            }
+        }
     }
 
     b2ChainShape *shape = new b2ChainShape;
@@ -347,7 +379,11 @@ b2Shape *Box2DEdge::createShape()
     QPointF point2 = mVertices.at(1).toPointF();
     b2Vec2 vertex1(point1.x() / scaleRatio, -point1.y() / scaleRatio);
     b2Vec2 vertex2(point2.x() / scaleRatio, -point2.y() / scaleRatio);
-
+    if(b2DistanceSquared(vertex1, vertex2) <= b2_linearSlop * b2_linearSlop)
+    {
+        qWarning() << "Edge: vertices are too close together";
+        return 0;
+    }
     b2EdgeShape *shape = new b2EdgeShape;
     shape->Set(vertex1,vertex2);
 

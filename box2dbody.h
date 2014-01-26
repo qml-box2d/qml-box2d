@@ -106,6 +106,8 @@ public:
                                         const QPointF &point);
     Q_INVOKABLE float getMass() const;
 
+    Q_INVOKABLE QPointF GetLinearVelocityFromWorldPoint(const QPointF &point);
+
     void componentComplete();
 
     b2Body *body() const;
@@ -129,6 +131,9 @@ private slots:
 private:
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
+    static int count_fixture(QQmlListProperty<Box2DFixture> *list);
+    static Box2DFixture * at_fixture(QQmlListProperty<Box2DFixture> *list,int index);
+
 
     b2Body *mBody;
     b2World *mWorld;

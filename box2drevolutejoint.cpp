@@ -174,26 +174,37 @@ void Box2DRevoluteJoint::nullifyJoint()
 void Box2DRevoluteJoint::createJoint()
 {
     if(anchorsAuto)
-        mRevoluteJointDef.Initialize(bodyA()->body(), bodyB()->body(),bodyA()->body()->GetWorldCenter());
+        mRevoluteJointDef.Initialize(bodyA()->body(),
+                                  bodyB()->body(),
+                                  bodyA()->body()->GetWorldCenter());
     else
     {
         mRevoluteJointDef.bodyA = bodyA()->body();
         mRevoluteJointDef.bodyB = bodyB()->body();
-        mRevoluteJointDef.referenceAngle = 0;
     }
     mRevoluteJointDef.collideConnected = collideConnected();
     mRevoluteJoint = static_cast<b2RevoluteJoint*>(world()->CreateJoint(&mRevoluteJointDef));
     mRevoluteJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DRevoluteJoint::cleanup(b2World *world)
 {
+    if(!world) {
+        qWarning() << "RevoluteJoint: There is no world connected";
+        return;
+    }
     if (mRevoluteJoint && bodyA() && bodyB()) {
         mRevoluteJoint->SetUserData(0);
         world->DestroyJoint(mRevoluteJoint);
         mRevoluteJoint = 0;
     }
+}
+
+b2Joint *Box2DRevoluteJoint::GetJoint()
+{
+    return mRevoluteJoint;
 }
 
 float Box2DRevoluteJoint::getJointAngle()

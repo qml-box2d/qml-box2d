@@ -148,6 +148,7 @@ void Box2DPulleyJoint::createJoint()
     mPulleyJoint = static_cast<b2PulleyJoint *>(world()->CreateJoint(&mPulleyJointDef));
     mPulleyJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DPulleyJoint::cleanup(b2World *world)
@@ -161,6 +162,11 @@ void Box2DPulleyJoint::cleanup(b2World *world)
         world->DestroyJoint(mPulleyJoint);
         mPulleyJoint = 0;
     }
+}
+
+b2Joint *Box2DPulleyJoint::GetJoint()
+{
+    return mPulleyJoint;
 }
 
 float Box2DPulleyJoint::GetCurrentLengthA() const

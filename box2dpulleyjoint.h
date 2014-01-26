@@ -23,8 +23,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#ifndef BOX2DULLEYJOINT_H
-#define BOX2DULLEYJOINT_H
+#ifndef BOX2PULLEYJOINT_H
+#define BOX2PULLEYJOINT_H
 
 #include "box2djoint.h"
 #include <Box2D.h>
@@ -72,6 +72,7 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
+    b2Joint * GetJoint();
 
     Q_INVOKABLE float GetCurrentLengthA() const;
     Q_INVOKABLE float GetCurrentLengthB() const;
@@ -94,4 +95,4 @@ private:
 
 
 
-#endif // BOX2DULLEYJOINT_H
+#endif // BOX2PULLEYJOINT_H

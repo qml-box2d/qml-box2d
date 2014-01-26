@@ -198,15 +198,25 @@ void Box2DPrismaticJoint::createJoint()
             (world()->CreateJoint(&mPrismaticJointDef));
     mPrismaticJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DPrismaticJoint::cleanup(b2World *world)
 {
+    if(!world) {
+        qWarning() << "PrismaticJoint: There is no world connected";
+        return;
+    }
     if (mPrismaticJoint && bodyA() && bodyB()) {
         mPrismaticJoint->SetUserData(0);
         world->DestroyJoint(mPrismaticJoint);
         mPrismaticJoint = 0;
-    }        
+    }
+}
+
+b2Joint *Box2DPrismaticJoint::GetJoint()
+{
+    return mPrismaticJoint;
 }
 
 float Box2DPrismaticJoint::GetJointTranslation()

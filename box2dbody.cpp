@@ -148,7 +148,10 @@ void Box2DBody::setLinearVelocity(const QPointF &linearVelocity)
 QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
 {
     return QQmlListProperty<Box2DFixture>(this, 0,
-                                                  &Box2DBody::append_fixture, 0, 0, 0);
+                                          &Box2DBody::append_fixture,
+                                          &Box2DBody::count_fixture,
+                                          &Box2DBody::at_fixture,
+                                          0);
 }
 
 void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
@@ -157,6 +160,18 @@ void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
     fixture->setParentItem(body);
     body->mFixtures.append(fixture);
+}
+
+int Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
+{
+    Box2DBody *body = static_cast<Box2DBody*>(list->object);
+    return body->mFixtures.length();
+}
+
+Box2DFixture * Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int index)
+{
+    Box2DBody *body = static_cast<Box2DBody*>(list->object);
+    return body->mFixtures.at(index);
 }
 
 void Box2DBody::initialize(b2World *world)
@@ -306,3 +321,9 @@ float Box2DBody::getMass() const
     return 0.0;
 }
 
+QPointF Box2DBody::GetLinearVelocityFromWorldPoint(const QPointF &point)
+{
+    const b2Vec2 &b2Point = mBody->GetLinearVelocityFromWorldPoint(b2Vec2(point.x() / scaleRatio,
+                                                  -point.y() / scaleRatio));
+    return QPointF(b2Point.x * scaleRatio,-b2Point.y * scaleRatio);
+}

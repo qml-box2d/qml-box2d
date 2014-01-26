@@ -133,6 +133,7 @@ void Box2DWeldJoint::createJoint()
 
     mWeldJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DWeldJoint::cleanup(b2World *world)
@@ -146,4 +147,9 @@ void Box2DWeldJoint::cleanup(b2World *world)
         world->DestroyJoint(mWeldJoint);
         mWeldJoint = 0;
     }
+}
+
+b2Joint *Box2DWeldJoint::GetJoint()
+{
+    return mWeldJoint;
 }

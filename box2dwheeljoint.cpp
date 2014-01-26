@@ -196,6 +196,7 @@ void Box2DWheelJoint::createJoint()
     mWheelJoint = static_cast<b2WheelJoint*>(world()->CreateJoint(&mWheelJointDef));
     mWheelJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DWheelJoint::cleanup(b2World *world)
@@ -209,6 +210,11 @@ void Box2DWheelJoint::cleanup(b2World *world)
         world->DestroyJoint(mWheelJoint);
         mWheelJoint = 0;
     }
+}
+
+b2Joint *Box2DWheelJoint::GetJoint()
+{
+    return mWheelJoint;
 }
 
 float Box2DWheelJoint::GetJointTranslation() const

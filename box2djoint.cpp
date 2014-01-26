@@ -120,7 +120,8 @@ void Box2DJoint::initialize()
 
 b2World *Box2DJoint::world() const
 {
-    return mWorld->world();
+    if(mWorld) return mWorld->world();
+    return NULL;
 }
 
 void Box2DJoint::bodyACreated()

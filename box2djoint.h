@@ -63,10 +63,12 @@ public:
 
     virtual void nullifyJoint() = 0;
     virtual void cleanup(b2World *world) = 0;
+    virtual b2Joint * GetJoint() = 0;
 
 protected:
     virtual void createJoint() = 0;
     b2World *world() const;
+
 
 private slots:
     void bodyACreated();
@@ -77,6 +79,7 @@ signals:
     void worldChanged();
     void bodyAChanged();
     void bodyBChanged();
+    void created();
 
 protected:
     bool mInitializePending;
@@ -94,6 +97,7 @@ private:
  */
 inline Box2DJoint *toBox2DJoint(b2Joint *joint)
 {
+    if(!joint) return 0;
     return static_cast<Box2DJoint*>(joint->GetUserData());
 }
 

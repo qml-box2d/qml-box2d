@@ -121,6 +121,7 @@ void Box2DFrictionJoint::createJoint()
     mFrictionJoint = static_cast<b2FrictionJoint *>(world()->CreateJoint(&mFrictionJointDef));
     mFrictionJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DFrictionJoint::cleanup(b2World *world)
@@ -134,6 +135,11 @@ void Box2DFrictionJoint::cleanup(b2World *world)
         world->DestroyJoint(mFrictionJoint);
         mFrictionJoint = 0;
     }
+}
+
+b2Joint *Box2DFrictionJoint::GetJoint()
+{
+    return mFrictionJoint;
 }
 
 QPointF Box2DFrictionJoint::GetReactionForce(float32 inv_dt) const

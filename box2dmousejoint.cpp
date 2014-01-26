@@ -106,6 +106,7 @@ void Box2DMouseJoint::createJoint()
             (world()->CreateJoint(&mMouseJointDef));
     mMouseJoint->SetUserData(this);
     mInitializePending = false;
+    emit created();
 }
 
 void Box2DMouseJoint::cleanup(b2World *world)
@@ -119,6 +120,11 @@ void Box2DMouseJoint::cleanup(b2World *world)
         world->DestroyJoint(mMouseJoint);
         mMouseJoint = 0;
     }
+}
+
+b2Joint *Box2DMouseJoint::GetJoint()
+{
+    return mMouseJoint;
 }
 
 QPointF Box2DMouseJoint::GetReactionForce(float32 inv_dt) const

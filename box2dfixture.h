@@ -38,6 +38,7 @@ class b2Body;
 class b2Fixture;
 struct b2FixtureDef;
 class b2Shape;
+class Box2DBody;
 
 class Box2DFixture : public QQuickItem
 {
@@ -89,6 +90,8 @@ public:
 
     void createFixture(b2Body *body);
     virtual void scale(){}
+
+    Q_INVOKABLE Box2DBody * GetBody() const;
 
 protected:
     b2Fixture *mFixture;
@@ -197,7 +200,6 @@ protected:
     QVariantList mVertices;
     b2Vec2 * scaleVertices();
     virtual b2Shape *createShape(){ return NULL; }
-
 };
 
 class Box2DPolygon : public Box2DVerticesShape
