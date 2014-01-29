@@ -42,6 +42,7 @@
 #include "box2dwheeljoint.h"
 #include "box2dmousejoint.h"
 #include "box2dgearjoint.h"
+#include "box2dropejoint.h"
 
 Box2DPlugin::Box2DPlugin(QObject *parent) :
     QQmlExtensionPlugin(parent)
@@ -74,5 +75,6 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DWheelJoint>(uri, 1, 0, "WheelJoint");
     qmlRegisterType<Box2DMouseJoint>(uri, 1, 0, "MouseJoint");
     qmlRegisterType<Box2DGearJoint>(uri, 1, 0, "GearJoint");
+    qmlRegisterType<Box2DRopeJoint>(uri, 1, 0, "RopeJoint");
 
 }
