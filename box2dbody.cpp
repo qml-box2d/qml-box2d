@@ -38,15 +38,14 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     QQuickItem(parent),
     mBody(0),
     mWorld(0),
-    mLinearDamping(0.0f),
-    mAngularDamping(0.0f),
-    mBodyType(Dynamic),
-    mBullet(false),
-    mSleepingAllowed(true),
-    mFixedRotation(false),
-    mActive(true),
+    mBodyDef(),
     mSynchronizing(false),
-    mInitializePending(false)
+    mInitializePending(false),
+    mStretch(true),
+    mW(0),
+    mH(0),
+    mInitialized(false),
+    mGravityScale(1.0)
 {
     setTransformOrigin(TopLeft);
     connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
@@ -57,92 +56,195 @@ Box2DBody::~Box2DBody()
     cleanup(mWorld);
 }
 
-void Box2DBody::setLinearDamping(qreal linearDamping)
+qreal Box2DBody::linearDamping() const
 {
-    if (mLinearDamping == linearDamping)
-        return;
+    if(mBody) return mBody->GetLinearDamping();
+    return mBodyDef.linearDamping;
+}
 
-    mLinearDamping = linearDamping;
+void Box2DBody::setLinearDamping(qreal _linearDamping)
+{
+    if (linearDamping() == _linearDamping)
+        return;
     if (mBody)
-        mBody->SetLinearDamping(linearDamping);
+        mBody->SetLinearDamping(_linearDamping);
+    else
+        mBodyDef.linearDamping = _linearDamping;
+
     emit linearDampingChanged();
 }
 
-void Box2DBody::setAngularDamping(qreal angularDamping)
+qreal Box2DBody::angularDamping() const
 {
-    if (mAngularDamping == angularDamping)
+    if(mBody) return mBody->GetAngularDamping();
+    return mBodyDef.angularDamping;
+}
+void Box2DBody::setAngularDamping(qreal _angularDamping)
+{
+    if (angularDamping() == _angularDamping)
         return;
-
-    mAngularDamping = angularDamping;
     if (mBody)
-        mBody->SetAngularDamping(angularDamping);
+        mBody->SetAngularDamping(_angularDamping);
+    else
+        mBodyDef.angularDamping = _angularDamping;
+
     emit angularDampingChanged();
 }
 
-void Box2DBody::setBodyType(BodyType bodyType)
+Box2DBody::BodyType Box2DBody::bodyType() const
 {
-    if (mBodyType == bodyType)
-        return;
+    if(mBody) mBody->GetType();
+    return static_cast<Box2DBody::BodyType>(mBodyDef.type);
+}
 
-    mBodyType = bodyType;
+void Box2DBody::setBodyType(BodyType _bodyType)
+{
+    if (bodyType() == _bodyType)
+        return;
     if (mBody)
-        mBody->SetType(static_cast<b2BodyType>(bodyType));
+        mBody->SetType(static_cast<b2BodyType>(_bodyType));
+    else
+        mBodyDef.type = static_cast<b2BodyType>(_bodyType);
+
     emit bodyTypeChanged();
 }
 
-void Box2DBody::setBullet(bool bullet)
+bool Box2DBody::isBullet() const
 {
-    if (mBullet == bullet)
-        return;
+    if(mBody) mBody->IsBullet();
+    return mBodyDef.bullet;
+}
 
-    mBullet = bullet;
+void Box2DBody::setBullet(bool _bullet)
+{
+    if (isBullet() == _bullet)
+        return;
     if (mBody)
-        mBody->SetBullet(bullet);
+        mBody->SetBullet(_bullet);
+    else
+        mBodyDef.bullet = _bullet;
+
     emit bulletChanged();
+}
+
+bool Box2DBody::sleepingAllowed() const
+{
+    if(mBody) mBody->IsSleepingAllowed();
+    return mBodyDef.allowSleep;
 }
 
 void Box2DBody::setSleepingAllowed(bool allowed)
 {
-    if (mSleepingAllowed == allowed)
+    if (sleepingAllowed() == allowed)
         return;
-
-    mSleepingAllowed = allowed;
     if (mBody)
         mBody->SetSleepingAllowed(allowed);
+    else
+        mBodyDef.allowSleep = allowed;
+
     emit sleepingAllowedChanged();
 }
 
-void Box2DBody::setFixedRotation(bool fixedRotation)
+bool Box2DBody::fixedRotation() const
 {
-    if (mFixedRotation == fixedRotation)
-        return;
+    if(mBody) mBody->IsFixedRotation();
+    return mBodyDef.fixedRotation;
+}
 
-    mFixedRotation = fixedRotation;
+void Box2DBody::setFixedRotation(bool _fixedRotation)
+{
+    if (fixedRotation() == _fixedRotation)
+        return;
     if (mBody)
-        mBody->SetFixedRotation(fixedRotation);
+        mBody->SetFixedRotation(_fixedRotation);
+    else
+        mBodyDef.fixedRotation = _fixedRotation;
+
     emit fixedRotationChanged();
 }
 
-void Box2DBody::setActive(bool active)
+bool Box2DBody::active() const
 {
-    if (mActive == active)
-        return;
-
-    mActive = active;
-    if (mBody)
-        mBody->SetActive(active);
+    if(mBody) mBody->IsActive();
+    return mBodyDef.active;
 }
 
-void Box2DBody::setLinearVelocity(const QPointF &linearVelocity)
+void Box2DBody::setActive(bool _active)
 {
-    if (mLinearVelocity == linearVelocity)
+    if (active() == _active)
         return;
 
-    mLinearVelocity = linearVelocity;
     if (mBody)
-        mBody->SetLinearVelocity(b2Vec2(mLinearVelocity.x() / scaleRatio,
-                                        -mLinearVelocity.y() / scaleRatio));
+        mBody->SetActive(_active);
+    else
+        mBodyDef.active = _active;
+}
+
+bool Box2DBody::awake() const
+{
+    if(mBody) mBody->IsAwake();
+    return mBodyDef.awake;
+}
+
+void Box2DBody::setAwake(bool _awake)
+{
+    if (awake() == _awake)
+        return;
+
+    if (mBody)
+        mBody->SetAwake(_awake);
+    else
+        mBodyDef.awake = _awake;
+}
+
+QPointF Box2DBody::linearVelocity() const
+{
+    b2Vec2 point;
+    if(mBody) point = mBody->GetLinearVelocity();
+    else point = mBodyDef.linearVelocity;
+    return QPointF(point.x * scaleRatio,-point.y * scaleRatio);
+}
+
+void Box2DBody::setLinearVelocity(const QPointF &_linearVelocity)
+{
+    if (linearVelocity() == _linearVelocity)
+        return;
+    b2Vec2 point(_linearVelocity.x() / scaleRatio,
+                                            -_linearVelocity.y() / scaleRatio);
+    if (mBody)
+        mBody->SetLinearVelocity(point);
+    else
+        mBodyDef.linearVelocity = point;
+
     emit linearVelocityChanged();
+}
+
+qreal Box2DBody::gravityScale() const
+{
+    if(mBody) return mBody->GetGravityScale();
+    return mGravityScale;
+}
+
+void Box2DBody::setGravityScale(qreal _gravityScale)
+{
+    if(qFuzzyCompare(gravityScale(),_gravityScale))
+        return;
+    mGravityScale = _gravityScale;
+    if(mBody)
+    {
+        mBody->SetGravityScale(_gravityScale);
+        emit gravityScaleChanged();
+    }
+}
+
+bool Box2DBody::stretch() const
+{
+    return mStretch;
+}
+
+void Box2DBody::setStretch(bool stretch)
+{
+    mStretch = stretch;
 }
 
 QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
@@ -171,13 +273,13 @@ int Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
 Box2DFixture * Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int index)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
+    if(index < 0 || index >= body->mFixtures.length()) return NULL;
     return body->mFixtures.at(index);
 }
 
 void Box2DBody::initialize(b2World *world)
 {
     mWorld = world;
-    //this->setParent(world);
     if (!isComponentComplete()) {
         // When components are created dynamically, they get their parent
         // assigned before they have been completely initialized. In that case
@@ -185,23 +287,18 @@ void Box2DBody::initialize(b2World *world)
         mInitializePending = true;
         return;
     }
-
-    b2BodyDef bodyDef;
-    bodyDef.type = static_cast<b2BodyType>(mBodyType);
-    bodyDef.position.Set(x() / scaleRatio, -y() / scaleRatio);
-    bodyDef.angle = -(rotation() * (2 * b2_pi)) / 360.0;
-    bodyDef.linearDamping = mLinearDamping;
-    bodyDef.angularDamping = mAngularDamping;
-    bodyDef.bullet = mBullet;
-    bodyDef.allowSleep = mSleepingAllowed;
-    bodyDef.fixedRotation = mFixedRotation;
-
-    mBody = world->CreateBody(&bodyDef);
+    mBodyDef.position.Set(x() / scaleRatio, -y() / scaleRatio);
+    mBodyDef.angle = -(rotation() * (2 * b2_pi)) / 360.0;
+    mBody = world->CreateBody(&mBodyDef);
     mInitializePending = false;
-
+    if(mStretch && mW > 0 && mH > 0)
+        setSize(QSize(mW,mH));
+    if(mGravityScale != 1.0)
+        mBody->SetGravityScale(mGravityScale);
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->createFixture(mBody);
     mBody->SetUserData(this);
+    mInitialized = true;
     emit bodyCreated();
 }
 
@@ -218,9 +315,8 @@ void Box2DBody::synchronize()
 
     const qreal newX = position.x * scaleRatio;
     const qreal newY = -position.y * scaleRatio;
-    const qreal newRotation = -(angle * 360.0) / (2 * b2_pi);
+    const qreal newRotation = -(angle * 180.0) / b2_pi;
 
-    // Do fuzzy comparisions to avoid small inaccuracies causing repaints
     if (!qFuzzyCompare(x(), newX))
         setX(newX);
     if (!qFuzzyCompare(y(), newY))
@@ -228,10 +324,6 @@ void Box2DBody::synchronize()
 
     if (!qFuzzyCompare(rotation(), newRotation))
         setRotation(newRotation);
-
-    b2Vec2 linearVelocity = mBody->GetLinearVelocity();
-    setLinearVelocity(QPointF(linearVelocity.x * scaleRatio,
-                              -linearVelocity.y * scaleRatio));
 
     mSynchronizing = false;
 }
@@ -266,6 +358,31 @@ void Box2DBody::geometryChanged(const QRectF &newGeometry,
         }
     }
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
+}
+
+void Box2DBody::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value)
+{
+
+    if(mStretch && change == QQuickItem::ItemChildAddedChange)
+    {
+        QQuickItem * item = value.item;
+        if(item)
+        {
+            int x = item->x();
+            int y = item->y();
+            int w = item->width();
+            int h = item->height();
+            if((x + w) > width() || (y + h) > height()) {
+                if(!mInitialized)
+                {
+                    mW = x + w;
+                    mH = y + h;
+                }
+                else setSize(QSize(x + w,y + h));
+            }
+        }
+    }
+    QQuickItem::itemChange(change, value);
 }
 
 void Box2DBody::onRotationChanged()
@@ -317,13 +434,27 @@ void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 float Box2DBody::getMass() const
 {
     if (mBody)
-        return mBody->GetMass() / scaleRatio;
+        return mBody->GetMass() * scaleRatio;
+    return 0.0;
+}
+
+float Box2DBody::GetInertia() const
+{
+    if(mBody)
+        return mBody->GetInertia();
     return 0.0;
 }
 
 QPointF Box2DBody::GetLinearVelocityFromWorldPoint(const QPointF &point)
 {
     const b2Vec2 &b2Point = mBody->GetLinearVelocityFromWorldPoint(b2Vec2(point.x() / scaleRatio,
+                                                  -point.y() / scaleRatio));
+    return QPointF(b2Point.x * scaleRatio,-b2Point.y * scaleRatio);
+}
+
+QPointF Box2DBody::GetLinearVelocityFromLocalPoint(const QPointF &point)
+{
+    const b2Vec2 &b2Point = mBody->GetLinearVelocityFromLocalPoint(b2Vec2(point.x() / scaleRatio,
                                                   -point.y() / scaleRatio));
     return QPointF(b2Point.x * scaleRatio,-b2Point.y * scaleRatio);
 }

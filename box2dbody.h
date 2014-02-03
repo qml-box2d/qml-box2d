@@ -32,11 +32,13 @@
 #define BOX2DBODY_H
 
 #include <QQuickItem>
+#include <Box2D.h>
 
 class Box2DFixture;
 class Box2DWorld;
 
 class b2Body;
+class b2BodyDef;
 class b2World;
 
 /**
@@ -54,13 +56,15 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
     Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
     Q_PROPERTY(bool active READ active WRITE setActive)
+    Q_PROPERTY(bool awake READ awake WRITE setAwake)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
-
+    Q_PROPERTY(qreal gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
+    Q_PROPERTY(bool stretch READ stretch WRITE setStretch)
 
 public:
     enum BodyType {
-        Static,
+        Static = 0,
         Kinematic,
         Dynamic
     };
@@ -68,29 +72,38 @@ public:
     explicit Box2DBody(QQuickItem *parent = 0);
     ~Box2DBody();
 
-    qreal linearDamping() const { return mLinearDamping; }
-    void setLinearDamping(qreal linearDamping);
+    qreal linearDamping() const;
+    void setLinearDamping(qreal _linearDamping);
 
-    qreal angularDamping() const { return mAngularDamping; }
-    void setAngularDamping(qreal angularDamping);
+    qreal angularDamping() const;
+    void setAngularDamping(qreal _angularDamping);
 
-    BodyType bodyType() const { return mBodyType; }
-    void setBodyType(BodyType bodyType);
+    BodyType bodyType() const;
+    void setBodyType(BodyType _bodyType);
 
-    bool isBullet() const { return mBullet; }
-    void setBullet(bool bullet);
+    bool isBullet() const;
+    void setBullet(bool _bullet);
 
-    bool sleepingAllowed() const { return mSleepingAllowed; }
+    bool sleepingAllowed() const;
     void setSleepingAllowed(bool allowed);
 
-    bool fixedRotation() const { return mFixedRotation; }
-    void setFixedRotation(bool fixedRotation);
+    bool fixedRotation() const;
+    void setFixedRotation(bool _fixedRotation);
 
-    bool active() const { return mActive; }
-    void setActive(bool active);
+    bool active() const;
+    void setActive(bool _active);
 
-    QPointF linearVelocity() const { return mLinearVelocity; }
-    void setLinearVelocity(const QPointF &linearVelocity);
+    bool awake() const;
+    void setAwake(bool _awake);
+
+    QPointF linearVelocity() const;
+    void setLinearVelocity(const QPointF &_linearVelocity);
+
+    qreal gravityScale() const;
+    void setGravityScale(qreal _gravityScale);
+
+    bool stretch() const;
+    void setStretch(bool stretch);
 
     QQmlListProperty<Box2DFixture> fixtures();
 
@@ -98,23 +111,21 @@ public:
     void synchronize();
     void cleanup(b2World *world);
 
-    Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse,
-                                        const QPointF &point);
+    Q_INVOKABLE void applyForce(const QPointF &force,const QPointF &point);
     Q_INVOKABLE void applyTorque(qreal torque);
+    Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
     Q_INVOKABLE QPointF getWorldCenter() const;
-    Q_INVOKABLE void applyForce(const QPointF &force,
-                                        const QPointF &point);
     Q_INVOKABLE float getMass() const;
-
+    Q_INVOKABLE float GetInertia() const;
     Q_INVOKABLE QPointF GetLinearVelocityFromWorldPoint(const QPointF &point);
+    Q_INVOKABLE QPointF GetLinearVelocityFromLocalPoint (const QPointF &point);
 
     void componentComplete();
-
     b2Body *body() const;
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
-
+    void itemChange(ItemChange change, const ItemChangeData & value);
 signals:
     void linearDampingChanged();
     void angularDampingChanged();
@@ -124,30 +135,29 @@ signals:
     void fixedRotationChanged();
     void linearVelocityChanged();
     void bodyCreated();
+    void gravityScaleChanged();
 
 private slots:
     void onRotationChanged();
 
 private:
+    b2Body *mBody;
+    b2World *mWorld;
+    b2BodyDef mBodyDef;
+    bool mSynchronizing;
+    bool mInitializePending;
+    QList<Box2DFixture*> mFixtures;
+
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture * at_fixture(QQmlListProperty<Box2DFixture> *list,int index);
+    bool mStretch;
+    qreal mW;
+    qreal mH;
+    bool mInitialized;
+    qreal mGravityScale;
 
-
-    b2Body *mBody;
-    b2World *mWorld;
-    qreal mLinearDamping;
-    qreal mAngularDamping;
-    BodyType mBodyType;
-    bool mBullet;
-    bool mSleepingAllowed;
-    bool mFixedRotation;
-    bool mActive;
-    QPointF mLinearVelocity;
-    bool mSynchronizing;
-    bool mInitializePending;
-    QList<Box2DFixture*> mFixtures;
 };
 
 #endif // BOX2DBODY_H
