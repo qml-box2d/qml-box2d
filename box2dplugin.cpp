@@ -53,28 +53,28 @@ void Box2DPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(QLatin1String(uri) == QLatin1String("Box2D"));
 
-    qmlRegisterType<Box2DWorld>(uri, 1, 0, "World");
-    qmlRegisterType<Box2DBody>(uri, 1, 0, "Body");
-    qmlRegisterUncreatableType<Box2DFixture>(uri, 1, 0, "Fixture",
+    qmlRegisterType<Box2DWorld>(uri, 1, 1, "World");
+    qmlRegisterType<Box2DBody>(uri, 1, 1, "Body");
+    qmlRegisterUncreatableType<Box2DFixture>(uri, 1,0, "Fixture",
                                              QStringLiteral("Base type for Box, Circle etc."));
-    qmlRegisterType<Box2DBox>(uri, 1, 0, "Box");
-    qmlRegisterType<Box2DCircle>(uri, 1, 0, "Circle");
-    qmlRegisterType<Box2DPolygon>(uri, 1, 0, "Polygon");
-    qmlRegisterType<Box2DChain>(uri, 1, 0, "Chain");
-    qmlRegisterType<Box2DEdge>(uri, 1, 0, "Edge");
-    qmlRegisterType<Box2DDebugDraw>(uri, 1, 0, "DebugDraw");
-    qmlRegisterUncreatableType<Box2DJoint>(uri, 1, 0, "Joint",
+    qmlRegisterType<Box2DBox>(uri, 1, 1, "Box");
+    qmlRegisterType<Box2DCircle>(uri, 1, 1, "Circle");
+    qmlRegisterType<Box2DPolygon>(uri, 1, 1, "Polygon");
+    qmlRegisterType<Box2DChain>(uri, 1, 1, "Chain");
+    qmlRegisterType<Box2DEdge>(uri, 1, 1, "Edge");
+    qmlRegisterType<Box2DDebugDraw>(uri, 1, 1, "DebugDraw");
+    qmlRegisterUncreatableType<Box2DJoint>(uri, 1, 1, "Joint",
                                            QStringLiteral("Base type for DistanceJoint, RevoluteJoint etc."));
-    qmlRegisterType<Box2DDistanceJoint>(uri, 1, 0, "DistanceJoint");
-    qmlRegisterType<Box2DPrismaticJoint>(uri, 1, 0, "PrismaticJoint");
-    qmlRegisterType<Box2DRevoluteJoint>(uri, 1, 0, "RevoluteJoint");
-    qmlRegisterType<Box2DMotorJoint>(uri, 1, 0, "MotorJoint");
-    qmlRegisterType<Box2DWeldJoint>(uri, 1, 0, "WeldJoint");
-    qmlRegisterType<Box2DPulleyJoint>(uri, 1, 0, "PulleyJoint");
-    qmlRegisterType<Box2DFrictionJoint>(uri, 1, 0, "FrictionJoint");
-    qmlRegisterType<Box2DWheelJoint>(uri, 1, 0, "WheelJoint");
-    qmlRegisterType<Box2DMouseJoint>(uri, 1, 0, "MouseJoint");
-    qmlRegisterType<Box2DGearJoint>(uri, 1, 0, "GearJoint");
-    qmlRegisterType<Box2DRopeJoint>(uri, 1, 0, "RopeJoint");
+    qmlRegisterType<Box2DDistanceJoint>(uri, 1, 1, "DistanceJoint");
+    qmlRegisterType<Box2DPrismaticJoint>(uri, 1, 1, "PrismaticJoint");
+    qmlRegisterType<Box2DRevoluteJoint>(uri, 1, 1, "RevoluteJoint");
+    qmlRegisterType<Box2DMotorJoint>(uri, 1, 1, "MotorJoint");
+    qmlRegisterType<Box2DWeldJoint>(uri, 1, 1, "WeldJoint");
+    qmlRegisterType<Box2DPulleyJoint>(uri, 1, 1, "PulleyJoint");
+    qmlRegisterType<Box2DFrictionJoint>(uri, 1, 1, "FrictionJoint");
+    qmlRegisterType<Box2DWheelJoint>(uri, 1, 1, "WheelJoint");
+    qmlRegisterType<Box2DMouseJoint>(uri, 1, 1, "MouseJoint");
+    qmlRegisterType<Box2DGearJoint>(uri, 1, 1, "GearJoint");
+    qmlRegisterType<Box2DRopeJoint>(uri, 1, 1, "RopeJoint");
 
 }
