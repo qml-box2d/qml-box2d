@@ -1,10 +1,9 @@
 import QtQuick 2.0
-import Box2D 1.0
-
+import Box2D 1.1
 Body {
     fixedRotation: false
     sleepingAllowed: false
-
+	bodyType: Body.Dynamic
     fixtures: Box {
         anchors.fill: parent
         density: 10;

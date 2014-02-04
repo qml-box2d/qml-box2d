@@ -95,12 +95,12 @@ void Box2DRevoluteJoint::setMaxMotorTorque(float maxMotorTorque)
 
 float Box2DRevoluteJoint::motorSpeed() const
 {
-    return -mRevoluteJointDef.motorSpeed * b2_pi / 180;
+    return -mRevoluteJointDef.motorSpeed * 180 / b2_pi;
 }
 
 void Box2DRevoluteJoint::setMotorSpeed(float motorSpeed)
 {
-    float motorSpeedRad = motorSpeed  * b2_pi / -180;
+    float motorSpeedRad = -motorSpeed * ( b2_pi / 180);
     if (qFuzzyCompare(mRevoluteJointDef.motorSpeed,motorSpeedRad))
         return;
 

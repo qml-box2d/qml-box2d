@@ -1,5 +1,5 @@
 import QtQuick 2.2
-import Box2D 1.0
+import Box2D 1.1
 
 Rectangle {
     width: 800
@@ -26,6 +26,7 @@ Rectangle {
             height:20
             sleepingAllowed: true
             property color boxColor: "blue"
+			bodyType: Body.Dynamic
             fixtures: Box {
                 anchors.fill: parent
                 density: 0.1

@@ -1,5 +1,5 @@
 import QtQuick 2.2
-import Box2D 1.0
+import Box2D 1.1
 
 
 Rectangle {
@@ -14,6 +14,7 @@ Rectangle {
             height:20
             property string color: "#EFEFEF"
             sleepingAllowed: true
+			bodyType: Body.Dynamic
             fixtures: Circle {
                 radius: parent.width / 2
                 anchors.centerIn: parent
@@ -242,6 +243,7 @@ Rectangle {
             y: 500
             width: 10
             height: 50
+			bodyType: Body.Dynamic
             fixtures: Box {
                 anchors.fill: parent
                 density: 0.5
@@ -267,6 +269,7 @@ Rectangle {
             y: 500
             width: 10
             height: 50
+			bodyType: Body.Dynamic
             fixtures: Box {
                 anchors.fill: parent
                 density: 0.5

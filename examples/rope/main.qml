@@ -1,5 +1,5 @@
 import QtQuick 2.2
-import Box2D 1.0
+import Box2D 1.1
 import QtQuick.Controls 1.1
 
 Rectangle {
@@ -23,6 +23,7 @@ Rectangle {
             width: 20
             height:20
             sleepingAllowed: true
+			bodyType: Body.Dynamic;
             property color color: "#EFEFEF"
             fixtures: Circle {
                 radius: parent.width / 2

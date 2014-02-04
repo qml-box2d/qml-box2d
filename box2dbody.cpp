@@ -41,10 +41,6 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mBodyDef(),
     mSynchronizing(false),
     mInitializePending(false),
-    mStretch(true),
-    mW(0),
-    mH(0),
-    mInitialized(false),
     mGravityScale(1.0)
 {
     setTransformOrigin(TopLeft);
@@ -237,16 +233,6 @@ void Box2DBody::setGravityScale(qreal _gravityScale)
     }
 }
 
-bool Box2DBody::stretch() const
-{
-    return mStretch;
-}
-
-void Box2DBody::setStretch(bool stretch)
-{
-    mStretch = stretch;
-}
-
 QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
 {
     return QQmlListProperty<Box2DFixture>(this, 0,
@@ -291,14 +277,11 @@ void Box2DBody::initialize(b2World *world)
     mBodyDef.angle = -(rotation() * (2 * b2_pi)) / 360.0;
     mBody = world->CreateBody(&mBodyDef);
     mInitializePending = false;
-    if(mStretch && mW > 0 && mH > 0)
-        setSize(QSize(mW,mH));
     if(mGravityScale != 1.0)
         mBody->SetGravityScale(mGravityScale);
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->createFixture(mBody);
     mBody->SetUserData(this);
-    mInitialized = true;
     emit bodyCreated();
 }
 
@@ -358,31 +341,6 @@ void Box2DBody::geometryChanged(const QRectF &newGeometry,
         }
     }
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
-}
-
-void Box2DBody::itemChange(QQuickItem::ItemChange change, const QQuickItem::ItemChangeData &value)
-{
-
-    if(mStretch && change == QQuickItem::ItemChildAddedChange)
-    {
-        QQuickItem * item = value.item;
-        if(item)
-        {
-            int x = item->x();
-            int y = item->y();
-            int w = item->width();
-            int h = item->height();
-            if((x + w) > width() || (y + h) > height()) {
-                if(!mInitialized)
-                {
-                    mW = x + w;
-                    mH = y + h;
-                }
-                else setSize(QSize(x + w,y + h));
-            }
-        }
-    }
-    QQuickItem::itemChange(change, value);
 }
 
 void Box2DBody::onRotationChanged()

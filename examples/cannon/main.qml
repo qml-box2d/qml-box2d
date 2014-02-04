@@ -1,6 +1,6 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.1
-import Box2D 1.0
+import Box2D 1.1
 import QtMultimedia 5.0
 
 Rectangle {
@@ -13,6 +13,7 @@ Rectangle {
             width: 20
             height: 20
             x: 400
+			bodyType: Body.Dynamic
             fixtures: Circle {
                 radius: 10
                 anchors.centerIn: parent
@@ -41,7 +42,10 @@ Rectangle {
     Component {
         id: ball
         Body {
+			width: 10
+            height: 10
             bullet: true
+			bodyType: Body.Dynamic
             fixtures: Circle {
                 radius: 5
                 density: 0.9
@@ -359,7 +363,7 @@ Rectangle {
                     var offsetY = 65 * Math.sin(angle * Math.PI / 180);
                     var newBall = ball.createObject(world);
                     newBall.x = 125 + offsetX;
-                    newBall.y = 511 - offsetY;
+                    newBall.y = 505 - offsetY;
                     var impulse = power.value;
                     var impulseX = impulse * Math.cos(angle * Math.PI / 180);
                     var impulseY = impulse * Math.sin(angle * Math.PI / 180);

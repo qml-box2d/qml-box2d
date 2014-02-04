@@ -1,20 +1,19 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Body {
     id: speciesInfo
-
     property string speciesName: ""
     property alias descriptionText: descriptionText.text
     property alias photoUrl: image.source
     property bool expanded: false
     property real radius: 50
-
     signal selected()
-
     linearDamping: 0.3
     angularDamping: 0.2
-
+	width: 100
+	height: 100
+	bodyType: Body.Dynamic
     fixtures: Circle {
         radius: parent.radius
         density: 0.2
@@ -47,7 +46,7 @@ Body {
                 var dy = mouseY - image.height / 2;
                 var abs = Math.sqrt(dx * dx + dy * dy)
                 var point = Qt.point(speciesInfo.x, speciesInfo.y);
-                var force = Qt.point(-1000 * dx / abs, -1000 * dy / abs);
+                var force = Qt.point(-100 * dx / abs, -100 * dy / abs);
                 speciesInfo.applyLinearImpulse(force, point);
                 speciesInfo.fixedRotation = true;
                 speciesInfo.fixedRotation = false;

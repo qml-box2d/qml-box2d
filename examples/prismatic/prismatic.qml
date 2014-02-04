@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Item {
     id: screen
@@ -11,7 +11,10 @@ Item {
     Component {
         id: heavyBall
         Body {
-            fixtures: Circle {
+			bodyType: Body.Dynamic
+            width: 80
+			height: 80
+			fixtures: Circle {
                 radius: 40
                 density: 5
                 friction: 0.3
@@ -77,15 +80,15 @@ Item {
 
         PrismaticJoint {
             id: prismatic
-            lowerTranslation: -7
-            upperTranslation: 4
+            lowerTranslation: -250
+            upperTranslation: 150
             enableLimit: true
             maxMotorForce: 3000
-            motorSpeed: -10
+            motorSpeed: -100
             enableMotor: true
             bodyB: square
             bodyA: middle
-            axis: Qt.point(0.7, 0.3)
+            axis: Qt.point(100, 40)
             world: world
         }
 

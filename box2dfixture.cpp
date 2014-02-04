@@ -266,6 +266,10 @@ b2Shape *Box2DCircle::createShape()
     b2CircleShape *shape = new b2CircleShape;
     shape->m_radius = mRadius / scaleRatio;
     shape->m_p.Set(shape->m_radius, -shape->m_radius);
+    if(height() == 0 || width() == 0) {
+        this->setWidth(shape->m_radius);
+        this->setHeight(shape->m_radius);
+    }
     return shape;
 }
 

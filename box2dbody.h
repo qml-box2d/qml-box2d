@@ -60,7 +60,6 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
     Q_PROPERTY(qreal gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
-    Q_PROPERTY(bool stretch READ stretch WRITE setStretch)
 
 public:
     enum BodyType {
@@ -102,9 +101,6 @@ public:
     qreal gravityScale() const;
     void setGravityScale(qreal _gravityScale);
 
-    bool stretch() const;
-    void setStretch(bool stretch);
-
     QQmlListProperty<Box2DFixture> fixtures();
 
     void initialize(b2World *world);
@@ -125,7 +121,6 @@ public:
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
-    void itemChange(ItemChange change, const ItemChangeData & value);
 signals:
     void linearDampingChanged();
     void angularDampingChanged();
@@ -152,10 +147,6 @@ private:
                                Box2DFixture *fixture);
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture * at_fixture(QQmlListProperty<Box2DFixture> *list,int index);
-    bool mStretch;
-    qreal mW;
-    qreal mH;
-    bool mInitialized;
     qreal mGravityScale;
 
 };
