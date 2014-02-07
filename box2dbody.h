@@ -118,6 +118,7 @@ public:
 
     void componentComplete();
     b2Body *body() const;
+    b2World * world() const;
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
