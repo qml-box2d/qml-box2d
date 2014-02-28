@@ -209,7 +209,7 @@ b2Joint *Box2DRevoluteJoint::GetJoint()
 
 float Box2DRevoluteJoint::getJointAngle()
 {
-    if(mRevoluteJoint) return mRevoluteJoint->GetJointAngle() * 180 / b2_pi;
+    if(mRevoluteJoint) return -mRevoluteJoint->GetJointAngle() * 180 / b2_pi;
     return 0.0;
 }
 
