@@ -91,7 +91,7 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mVelocityIterations(10),
     mPositionIterations(10),
     mFrameTime(1000 / 60),
-    mGravity(qreal(0), qreal(-10)),
+    mGravity(qreal(0), qreal(10)),
     mIsRunning(true)
 {
     connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
@@ -139,7 +139,7 @@ void Box2DWorld::setGravity(const QPointF &gravity)
 
     mGravity = gravity;
     if (mWorld)
-        mWorld->SetGravity(b2Vec2(gravity.x(), gravity.y()));
+        mWorld->SetGravity(b2Vec2(gravity.x(), -gravity.y()));
 
     emit gravityChanged();
 }
@@ -148,7 +148,7 @@ void Box2DWorld::componentComplete()
 {
     QQuickItem::componentComplete();
 
-    const b2Vec2 gravity(mGravity.x(), mGravity.y());
+    const b2Vec2 gravity(mGravity.x(), -mGravity.y());
 
     mWorld = new b2World(gravity);
     mWorld->SetContactListener(mContactListener);
