@@ -94,9 +94,6 @@ Image {
             width: screen.width
             height: screen.height
 
-            gravity.x: 0
-            gravity.y: -9.81
-
             MouseArea {
                 anchors.fill: parent
                 onPressAndHold: {
