@@ -17,7 +17,7 @@ Rectangle {
             bodyA: anchor
             dampingRatio: 0.8
             target: Qt.point(350.0,200.0);
-            maxForce: 10000
+            maxForce: 100
 
         }
     }
@@ -49,8 +49,7 @@ Rectangle {
         var mouseJoint = jointComponent.createObject(world);
         mouseJoint.target = Qt.point(x,y);
         mouseJoint.bodyB = body;
-        mouseJoint.world = world;
-        mouseJoint.maxForce = body.getMass() * 3000.0;
+        mouseJoint.maxForce = body.getMass() * 30.0;
         global.dragged = true;
         global.joint = mouseJoint;
     }

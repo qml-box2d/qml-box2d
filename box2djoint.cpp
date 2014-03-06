@@ -59,7 +59,7 @@ Box2DWorld *Box2DJoint::box2DWorld() const
 
 void Box2DJoint::setWorld(Box2DWorld *world)
 {
-    if (mWorld == world)
+    if (mWorld == world || world == NULL)
         return;
 
     mWorld = world;

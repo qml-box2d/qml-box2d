@@ -357,8 +357,7 @@ Rectangle {
                 acceptedButtons: Qt.LeftButton
                 anchors.fill: parent
                 onClicked: {
-                    var angle = joint.getJointAngle();
-                    if(angle < 0) angle = 0;
+                    var angle = Math.abs(joint.getJointAngle());
                     var offsetX = 65 * Math.cos(angle * Math.PI / 180);
                     var offsetY = 65 * Math.sin(angle * Math.PI / 180);
                     var newBall = ball.createObject(world);
