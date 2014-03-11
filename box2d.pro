@@ -1,6 +1,6 @@
 TEMPLATE = lib
 CONFIG += plugin
-QT += quick
+QT += declarative
 TARGET = $$qtLibraryTarget(Box2D)
 TARGETPATH = Box2D
 MOC_DIR = .moc
@@ -11,10 +11,10 @@ contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 INCLUDEPATH += .
 include(Box2D/box2d.pri)
 
-target.path = $$[QT_INSTALL_QML]/$$replace(TARGETPATH, \\., /)
+target.path = $$[QT_INSTALL_IMPORTS]/$$TARGETPATH
 
-qmldir.path = $$[QT_INSTALL_QML]/$$replace(TARGETPATH, \\., /)
 qmldir.files += $$PWD/qmldir
+qmldir.path += $$[QT_INSTALL_IMPORTS]/$$TARGETPATH
 
 INSTALLS += target qmldir
 
@@ -27,7 +27,15 @@ SOURCES += box2dplugin.cpp \
     box2ddistancejoint.cpp \
     box2dprismaticjoint.cpp \
     box2drevolutejoint.cpp \
-    box2ddestructionlistener.cpp
+    box2ddestructionlistener.cpp \
+    box2dmotorjoint.cpp \
+    box2dweldjoint.cpp \
+    box2dpulleyjoint.cpp \
+    box2dfrictionjoint.cpp \
+    box2dwheeljoint.cpp \
+    box2dmousejoint.cpp \
+    box2dgearjoint.cpp \
+    box2dropejoint.cpp
 
 HEADERS += \
     box2dplugin.h \
@@ -39,4 +47,12 @@ HEADERS += \
     box2ddistancejoint.h \
     box2dprismaticjoint.h \
     box2drevolutejoint.h \
-    box2ddestructionlistener.h
+    box2ddestructionlistener.h \
+    box2dmotorjoint.h \
+    box2dweldjoint.h \
+    box2dpulleyjoint.h \
+    box2dfrictionjoint.h \
+    box2dwheeljoint.h \
+    box2dmousejoint.h \
+    box2dgearjoint.h \
+    box2dropejoint.h

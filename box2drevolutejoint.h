@@ -37,7 +37,6 @@ class b2RevoluteJointDef;
 class Box2DRevoluteJoint : public Box2DJoint
 {
     Q_OBJECT
-
     Q_PROPERTY(float lowerAngle READ lowerAngle WRITE setLowerAngle NOTIFY lowerAngleChanged)
     Q_PROPERTY(float upperAngle READ upperAngle WRITE setUpperAngle NOTIFY upperAngleChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
@@ -45,6 +44,7 @@ class Box2DRevoluteJoint : public Box2DJoint
     Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
     Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
 
 public:
     explicit Box2DRevoluteJoint(QObject *parent = 0);
@@ -71,9 +71,16 @@ public:
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
 
+    QPointF localAnchorB() const;
+    void setLocalAnchorB(const QPointF &localAnchorB);
+
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
+    b2Joint * GetJoint();
+
+    Q_INVOKABLE float getJointAngle();
+    Q_INVOKABLE float getJointSpeed();
 
 signals:
     void lowerAngleChanged();
@@ -83,12 +90,12 @@ signals:
     void enableLimitChanged();
     void enableMotorChanged();
     void localAnchorAChanged();
+    void localAnchorBChanged();
 
 private:
     b2RevoluteJointDef mRevoluteJointDef;
     b2RevoluteJoint *mRevoluteJoint;
-    bool mOverrideLocalAnchorA;
-    QPointF mLocalAnchorA;
+    bool anchorsAuto;
 };
 
 #endif // BOX2DREVOLUTEJOINT_H

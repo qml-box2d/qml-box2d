@@ -91,7 +91,7 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mVelocityIterations(10),
     mPositionIterations(10),
     mFrameTime(1000 / 60),
-    mGravity(qreal(0), qreal(-10)),
+    mGravity(qreal(0), qreal(10)),
     mIsRunning(true)
 {
     connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
@@ -102,7 +102,13 @@ Box2DWorld::~Box2DWorld()
 {
     // Bodies must be deleted before the world
     foreach (Box2DBody *body, mBodies)
-        delete body;
+    {
+        if(body->parent() == this)
+            delete body;
+        else
+            body->cleanup(this->world());
+
+    }
     mBodies.clear();
 
     delete mWorld;
@@ -133,7 +139,7 @@ void Box2DWorld::setGravity(const QPointF &gravity)
 
     mGravity = gravity;
     if (mWorld)
-        mWorld->SetGravity(b2Vec2(gravity.x(), gravity.y()));
+        mWorld->SetGravity(b2Vec2(gravity.x(), -gravity.y()));
 
     emit gravityChanged();
 }
@@ -142,20 +148,23 @@ void Box2DWorld::componentComplete()
 {
     QQuickItem::componentComplete();
 
-    const b2Vec2 gravity(mGravity.x(), mGravity.y());
+    const b2Vec2 gravity(mGravity.x(), -mGravity.y());
 
     mWorld = new b2World(gravity);
     mWorld->SetContactListener(mContactListener);
     mWorld->SetDestructionListener(mDestructionListener);
 
-    foreach (QObject *child, childItems())
-        if (Box2DBody *body = dynamic_cast<Box2DBody*>(child)) {
-            registerBody(body);
-            connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
-        }
+    QList<Box2DBody *> list;
+    GetAllBodies(this,list);
+    foreach(Box2DBody * body,list)
+    {
+        registerBody(body);
+    }
 
+    emit initialized();
     if (mIsRunning)
         mTimer.start(mFrameTime, this);
+
 }
 
 /**
@@ -166,6 +175,7 @@ void Box2DWorld::registerBody(Box2DBody *body)
 {
     mBodies.append(body);
     body->initialize(mWorld);
+    connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
 }
 
 /**
@@ -236,10 +246,21 @@ void Box2DWorld::itemChange(ItemChange change,
             QObject *child = value.item;
             if (Box2DBody *body = dynamic_cast<Box2DBody*>(child)) {
                 registerBody(body);
-                connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
             }
         }
     }
 
     QQuickItem::itemChange(change, value);
+}
+
+// Get all Box2DBodies attached to this world
+void Box2DWorld::GetAllBodies(QQuickItem *parent, QList<Box2DBody *> & list)
+{
+    QList<QQuickItem *> children = parent->childItems();
+    foreach(QQuickItem * item,children)
+    {
+        Box2DBody * body = dynamic_cast<Box2DBody *>(item);
+        if(body) list.append(body);
+        GetAllBodies(item,list);
+    }
 }

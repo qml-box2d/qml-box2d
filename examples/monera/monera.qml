@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Rectangle {
     id: root
@@ -62,14 +62,12 @@ Rectangle {
             anchors { left: parent.right; bottom: ground.top; top: ceiling.bottom }
         }
 
-        // DebugDraw {
-        //     anchors.fill: parent
-        //     world: parent
-        // }
+         DebugDraw {
+             anchors.fill: parent
+             world: parent
+			 visible: false
+         }
 
     }
 
-    Component.onCompleted: {
-
-    }
 }

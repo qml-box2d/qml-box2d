@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Item {
     id: screen
@@ -11,13 +11,13 @@ Item {
     Component {
         id: heavyBall
         Body {
-            fixtures: Circle {
+            bodyType: Body.Dynamic
+			fixtures: Circle {
                 radius: 40
                 density: 5
                 friction: 0.3
                 restitution: 0.2
             }
-
             Rectangle {
                 anchors.centerIn: parent
                 radius: 40
@@ -32,6 +32,7 @@ Item {
     Component {
         id: lightBall
         Body {
+			bodyType: Body.Dynamic
             fixtures: Circle {
                 radius: 40
                 density: 2
@@ -159,8 +160,8 @@ Item {
             anchors.fill: parent
             onClicked: {
                 ball.applyLinearImpulse(
-                            Qt.point(40 * (mouseX - ball.x),
-                                     40 * (mouseY - ball.y)),
+                            Qt.point(10 * (mouseX - ball.x),
+                                     10 * (mouseY - ball.y)),
                             Qt.point(ball.x, ball.y))
             }
         }

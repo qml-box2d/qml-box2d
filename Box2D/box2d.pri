@@ -45,7 +45,8 @@ SOURCES += \
     $$PWD/Dynamics/b2Fixture.cpp \
     $$PWD/Dynamics/b2ContactManager.cpp \
     $$PWD/Dynamics/b2Body.cpp \
-    $$PWD/Rope/b2Rope.cpp
+    $$PWD/Rope/b2Rope.cpp \
+    $$PWD/Dynamics/Joints/b2MotorJoint.cpp
 
 HEADERS += \
         $$PWD/Box2D.h \
@@ -93,4 +94,5 @@ HEADERS += \
     $$PWD/Dynamics/b2Fixture.h \
     $$PWD/Dynamics/b2ContactManager.h \
     $$PWD/Dynamics/b2Body.h \
-    $$PWD/Rope/b2Rope.h
+    $$PWD/Rope/b2Rope.h \
+    $$PWD/Dynamics/Joints/b2MotorJoint.h

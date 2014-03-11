@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Item {
     id: screen
@@ -55,8 +55,8 @@ Item {
             anchors.fill: parent
             onClicked: {
                 ball.applyLinearImpulse(
-                            Qt.point(1000 * (mouseX - ball.x),
-                                     1000 * (mouseY - ball.y)),
+                            Qt.point(10 * (mouseX - ball.x),
+                                     10 * (mouseY - ball.y)),
                             Qt.point(ball.x, ball.y))
             }
         }

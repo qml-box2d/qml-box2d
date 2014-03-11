@@ -65,6 +65,10 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
+    b2Joint * GetJoint();
+
+    Q_INVOKABLE QPointF GetReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE float GetReactionTorque(float32 inv_dt) const;
 
 signals:
     void lengthChanged();
@@ -76,12 +80,7 @@ signals:
 private:
     b2DistanceJointDef mDistanceJointDef;
     b2DistanceJoint *mDistanceJoint;
-    bool mOverrideAnchorLength;
-    float mLength;
-    bool mOverrideLocalAnchorA;
-    QPointF mLocalAnchorA;
-    bool mOverrideLocalAnchorB;
-    QPointF mLocalAnchorB;
+    bool anchorsAuto;
 };
 
 #endif // BOX2DDISTANCEJOINT_H

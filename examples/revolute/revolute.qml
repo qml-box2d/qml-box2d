@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Item {
     id: screen
@@ -10,11 +10,22 @@ Item {
 
     function onKeysPressed(event) {
         if (event.key == Qt.Key_Left) {
-            revolute.motorSpeed -= 5
+            revolute.motorSpeed -= 10;
         }
         else if (event.key == Qt.Key_Right) {
-            revolute.motorSpeed += 5
+            revolute.motorSpeed += 10
         }
+    }
+
+    Text {
+        anchors {
+            right: parent.right
+            top: parent.top
+            left: parent.left
+        }
+        height: 40
+        horizontalAlignment: Text.AlignHCenter;
+        text: "Left/Right buttons to control the speed, Mouse click to activate/deactivate motor"
     }
 
     // BOX2D WORLD
@@ -47,7 +58,7 @@ Item {
             id: rod
             fixedRotation: false
             sleepingAllowed: false
-
+            bodyType: Body.Dynamic
             x: 350
             y: 300 - circleShape.radius
 
@@ -99,11 +110,14 @@ Item {
 
         RevoluteJoint {
             id: revolute
-            maxMotorTorque: 300
+            maxMotorTorque: 1000
             motorSpeed: 0
+            enableMotor: false
             bodyA: middle
             bodyB: rod
             world: world
+            localAnchorA: Qt.point(20,20)
+            localAnchorB: Qt.point(40,20)
         }
 
         // Debug
