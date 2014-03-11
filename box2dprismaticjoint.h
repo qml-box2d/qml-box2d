@@ -44,6 +44,9 @@ class Box2DPrismaticJoint : public Box2DJoint
     Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
     Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
     Q_PROPERTY(QPointF axis READ axis WRITE setAxis NOTIFY axisChanged)
+    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+
 
 public:
     explicit Box2DPrismaticJoint(QObject *parent = 0);
@@ -70,9 +73,19 @@ public:
     QPointF axis() const;
     void setAxis(const QPointF &axis);
 
+    QPointF localAnchorA() const;
+    void setLocalAnchorA(const QPointF &localAnchorA);
+
+    QPointF localAnchorB() const;
+    void setLocalAnchorB(const QPointF &localAnchorB);
+
+    Q_INVOKABLE float GetJointTranslation();
+    Q_INVOKABLE float GetJointSpeed();
+
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
+    b2Joint * GetJoint();
 
 signals:
     void lowerTranslationChanged();
@@ -88,6 +101,9 @@ signals:
 private:
     b2PrismaticJointDef mPrismaticJointDef;
     b2PrismaticJoint *mPrismaticJoint;
+    bool anchorsAuto;
 };
+
+
 
 #endif // BOX2DPRISMATICJOINT_H

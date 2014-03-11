@@ -1,13 +1,12 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Body {
     id: polygon
-
     width: 100;
     height: 100;
     sleepingAllowed: false
-
+	bodyType: Body.Dynamic
     fixtures: Polygon {
         density: 1
         friction: 0.3

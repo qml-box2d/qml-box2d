@@ -1,14 +1,11 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Image {
     id: screen;
-
     width: 640; height: 360
     source: "images/background.png"
-
     Image {
-
         id: skyline
         anchors {
             bottom: parent.bottom
@@ -22,37 +19,27 @@ Image {
     // A wheel that will be created dynamically
     Component {
         id: wheelComponent
-
         Body {
             id: wheelBody
-
             sleepingAllowed: true
-
+			bodyType: Body.Dynamic
+			width:80
+			height:80
             fixtures: Circle {
                 id: circle
-
                 radius: 40
                 density: 6
                 friction: 1.0
                 restitution: 0.6
             }
-
             Image {
                 id: circleRect
-
                 anchors.centerIn: parent
-                width: circle.radius * 2
-                height: width
                 smooth: true
-
                 source: "images/wheel.png"
-
-
                 MouseArea {
                     anchors.fill: parent
-
                     onReleased: timer.running = false
-
                     onPressed: {
                         if(wheelBody.x < (world.width / 2)) {
                             timer.clockwise = true
@@ -66,9 +53,7 @@ Image {
 
                     Timer {
                         id: timer
-
                         property bool clockwise
-
                         interval: 100
                         repeat: true
                         onTriggered: {
@@ -109,9 +94,6 @@ Image {
             width: screen.width
             height: screen.height
 
-            gravity.x: 0
-            gravity.y: -9.81
-
             MouseArea {
                 anchors.fill: parent
                 onPressAndHold: {
@@ -123,7 +105,6 @@ Image {
 
             Building {
                 id: victim
-
                 anchors {
                     bottom: ground.top
                 }
@@ -143,7 +124,6 @@ Image {
 
             Wall {
                 id: ceiling
-
                 height: 20
                 anchors {
                     top: parent.top
@@ -174,23 +154,18 @@ Image {
 
             Wall {
                 id: ground
-
                 height: 20
                 anchors {
                     left: parent.left
                     right: parent.right
                     bottom: parent.bottom
                 }
-
-                //rotation: -1
             }
 
             Wall {
                 id: exitWall
-
                 width: 85
                 height: 20
-
                 anchors {
                     top: ceiling.bottom
                     right: rightWall.left
@@ -207,23 +182,24 @@ Image {
         }
 
         fillMode: Image.PreserveAspectFit
-
         source: "images/plate.png"
         smooth: true
-
         MouseArea {
             anchors.fill: parent
-
             scale: 1.4
-
             Behavior on scale {
                 PropertyAnimation { duration: 100 }
             }
-
             onClicked: Qt.quit()
-
             onPressed: parent.scale = 0.9
             onReleased: parent.scale = 1.0
         }
     }
+	DebugDraw {
+            id: debugDraw
+            anchors.fill: parent
+            world: world
+            opacity: 0.75
+            visible: false
+        }
 }

@@ -150,7 +150,7 @@ void DebugDraw::DrawTransform(const b2Transform &xf)
 
 
 Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
-    QQuickItem(parent),
+    QQuickPaintedItem (parent),
     mWorld(0)
 {
     setFlag(QQuickItem::ItemHasContents, true);
@@ -185,5 +185,7 @@ void Box2DDebugDraw::paint(QPainter *p)
 void Box2DDebugDraw::onWorldStepped()
 {
     if (isVisible() && opacity() > 0)
+    {
         update();
+    }
 }

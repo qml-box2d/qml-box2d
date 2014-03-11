@@ -38,6 +38,7 @@ class b2Body;
 class b2Fixture;
 struct b2FixtureDef;
 class b2Shape;
+class Box2DBody;
 
 class Box2DFixture : public QQuickItem
 {
@@ -59,10 +60,10 @@ public:
     explicit Box2DFixture(QQuickItem *parent = 0);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
-                Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
-                Category9 = 0x0100, Category10 = 0x0200, Category11 = 0x0400, Category12 = 0x0800,
-                Category13 = 0x1000, Category14 = 0x2000, Category15 = 0x4000, Category16 = 0x8000,
-                All = 0xFFFF, None=0x0000};
+                       Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
+                       Category9 = 0x0100, Category10 = 0x0200, Category11 = 0x0400, Category12 = 0x0800,
+                       Category13 = 0x1000, Category14 = 0x2000, Category15 = 0x4000, Category16 = 0x8000,
+                       All = 0xFFFF, None=0x0000};
 
     Q_DECLARE_FLAGS(CategoryFlags, CategoryFlag)
 
@@ -88,9 +89,19 @@ public:
     void setGroupIndex(int groupIndex);
 
     void createFixture(b2Body *body);
+    virtual void scale(){}
+
+    Q_INVOKABLE Box2DBody * GetBody() const;
 
 protected:
+    b2Fixture *mFixture;
+    b2FixtureDef mFixtureDef;
+    b2Body * mBody;
+    float factorWidth;
+    float factorHeight;
     virtual b2Shape *createShape() = 0;
+    void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
+    void applyShape(b2Shape * shape);
 
 signals:
     void densityChanged();
@@ -105,6 +116,7 @@ signals:
     void contactChanged(Box2DFixture *other);
     void endContact(Box2DFixture *other);
 
+
 private:
     friend class Box2DWorld;
 
@@ -112,8 +124,9 @@ private:
     void emitContactChanged(Box2DFixture *other);
     void emitEndContact(Box2DFixture *other);
 
-    b2FixtureDef mFixtureDef;
-    b2Fixture *mFixture;
+
+
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
@@ -126,9 +139,11 @@ public:
     explicit Box2DBox(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
+    void scale();
 
 protected:
     b2Shape *createShape();
+    b2Vec2 vertices[4];
 };
 
 
@@ -148,9 +163,10 @@ public:
         if (mRadius == radius)
             return;
         mRadius = radius;
+        scale();
         emit radiusChanged();
     }
-
+    void scale();
 signals:
     void radiusChanged();
 
@@ -162,17 +178,14 @@ private:
 };
 
 
-class Box2DPolygon : public Box2DFixture
+class Box2DVerticesShape : public Box2DFixture
 {
     Q_OBJECT
-
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
-
 public:
-    explicit Box2DPolygon(QQuickItem *parent = 0) :
+    explicit Box2DVerticesShape(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
-
     QVariantList vertices() const { return mVertices; }
     void setVertices(const QVariantList &vertices) {
         if (vertices == mVertices)
@@ -180,17 +193,82 @@ public:
         mVertices = vertices;
         emit verticesChanged();
     }
-
 signals:
     void verticesChanged();
 
 protected:
-    b2Shape *createShape();
-
-private:
     QVariantList mVertices;
+    b2Vec2 * scaleVertices();
+    virtual b2Shape *createShape(){ return NULL; }
 };
 
+class Box2DPolygon : public Box2DVerticesShape
+{
+public:
+    explicit Box2DPolygon(QQuickItem *parent = 0) :
+        Box2DVerticesShape(parent)
+    { }
+    void scale();
+
+protected:
+    b2Shape *createShape();
+};
+
+
+class Box2DChain : public Box2DVerticesShape
+{
+    Q_OBJECT
+    Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
+    Q_PROPERTY(QPointF prevVertex READ prevVertex WRITE setPrevVertex NOTIFY prevVertexChanged)
+    Q_PROPERTY(QPointF nextVertex READ nextVertex WRITE setNextVertex NOTIFY nextVertexChanged)
+public:
+    explicit Box2DChain(QQuickItem *parent = 0) :
+        Box2DVerticesShape(parent),
+        mLoop(false)
+    { }
+    void scale();
+    bool loop() const { return mLoop; }
+    void setLoop(bool loop) {
+        mLoop = loop;
+        emit loopChanged();
+    }
+    QPointF prevVertex() const { return mPrevVertex; }
+    void setPrevVertex(QPointF &prevVertex) {
+        mPrevVertex = prevVertex;
+        prevVertexFlag = true;
+    }
+    QPointF nextVertex() const { return mNextVertex; }
+    void setNextVertex(QPointF &nextVertex) {
+        mNextVertex = nextVertex;
+        nextVertexFlag = true;
+    }
+
+protected:
+    b2Shape *createShape();
+    bool mLoop;
+    bool prevVertexFlag;
+    bool nextVertexFlag;
+    QPointF mPrevVertex;
+    QPointF mNextVertex;
+signals:
+    void loopChanged();
+    void prevVertexChanged();
+    void nextVertexChanged();
+};
+
+class Box2DEdge : public Box2DVerticesShape
+{
+    Q_OBJECT
+public:
+    explicit Box2DEdge(QQuickItem *parent = 0) :
+        Box2DVerticesShape(parent)
+    { }
+    void scale();
+
+protected:
+    b2Shape *createShape();
+
+};
 
 /**
  * Convenience function to get the Box2DFixture wrapping a b2Fixture.

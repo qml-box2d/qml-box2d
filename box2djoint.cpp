@@ -59,7 +59,7 @@ Box2DWorld *Box2DJoint::box2DWorld() const
 
 void Box2DJoint::setWorld(Box2DWorld *world)
 {
-    if (mWorld == world)
+    if (mWorld == world || world == NULL)
         return;
 
     mWorld = world;
@@ -107,20 +107,25 @@ void Box2DJoint::setBodyB(Box2DBody *bodyB)
 
 void Box2DJoint::initialize()
 {
-    if (!mBodyA || !mBodyB || !mWorld) {
+    if (!mBodyA || !mBodyB) {
         // When components are created dynamically, they get their parent
         // assigned before they have been completely initialized. In that case
         // we need to delay initialization.
         mInitializePending = true;
         return;
     }
-
-    createJoint();
+    if(mBodyA->world() != mBodyB->world())
+        qWarning() << "bodyA and bodyB from different worlds";
+    else
+        createJoint();
 }
 
 b2World *Box2DJoint::world() const
 {
-    return mWorld->world();
+    if(mWorld) return mWorld->world();
+    else if(mBodyA && mBodyA->world()) return mBodyA->world();
+    else if(mBodyB && mBodyB->world()) return mBodyB->world();
+    return NULL;
 }
 
 void Box2DJoint::bodyACreated()

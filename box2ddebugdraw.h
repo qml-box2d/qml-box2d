@@ -26,11 +26,12 @@
 #ifndef BOX2DDEBUGDRAW_H
 #define BOX2DDEBUGDRAW_H
 
+#include <QQuickPaintedItem>
 #include <QQuickItem>
 
 class Box2DWorld;
 
-class Box2DDebugDraw : public QQuickItem
+class Box2DDebugDraw : public QQuickPaintedItem
 {
     Q_OBJECT
 

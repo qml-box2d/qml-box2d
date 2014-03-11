@@ -1,11 +1,11 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Body {
     sleepingAllowed: false
     bullet: true
     fixedRotation: true
-
+	bodyType: Body.Dynamic
     function moveForward() {
         linearVelocity.x = 300;
     }

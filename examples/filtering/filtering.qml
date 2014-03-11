@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import Box2D 1.0
+import Box2D 1.1
 
 Item {
     id: screen
@@ -17,7 +17,7 @@ Item {
                 width: 50;
                 height: 50;
                 sleepingAllowed: false
-
+				bodyType: Body.Dynamic
                 fixtures: Box {
                     anchors.fill: parent
                     density: 1
@@ -43,7 +43,7 @@ Item {
                 width: 50;
                 height: 50;
                 sleepingAllowed: false
-
+				bodyType: Body.Dynamic
                 fixtures: Box {
                     anchors.fill: parent
                     density: 1
@@ -70,7 +70,7 @@ Item {
                 height: 50;
                 sleepingAllowed: false
                 fixedRotation: true
-
+				bodyType: Body.Dynamic
                 fixtures: Box {
                     anchors.fill: parent
                     density: 1
