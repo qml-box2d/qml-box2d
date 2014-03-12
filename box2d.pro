@@ -1,6 +1,6 @@
 TEMPLATE = lib
 CONFIG += plugin
-QT += declarative
+QT += quick
 TARGET = $$qtLibraryTarget(Box2D)
 TARGETPATH = Box2D
 MOC_DIR = .moc
@@ -11,10 +11,13 @@ contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 INCLUDEPATH += .
 include(Box2D/box2d.pri)
 
-target.path = $$[QT_INSTALL_IMPORTS]/$$TARGETPATH
+importPath = $$[QT_INSTALL_QML]
+isEmpty(importPath): importPath = $$[QT_INSTALL_IMPORTS]
+target.path = $${importPath}/$$TARGETPATH
 
+qmldir.path +=  $${importPath}/$$TARGETPATH
 qmldir.files += $$PWD/qmldir
-qmldir.path += $$[QT_INSTALL_IMPORTS]/$$TARGETPATH
+
 
 INSTALLS += target qmldir
 
