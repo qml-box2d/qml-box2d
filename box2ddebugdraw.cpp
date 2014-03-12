@@ -149,11 +149,11 @@ void DebugDraw::DrawTransform(const b2Transform &xf)
 }
 
 
-Box2DDebugDraw::Box2DDebugDraw(QDeclarativeItem *parent) :
-    QDeclarativeItem(parent),
+Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
+    QQuickPaintedItem (parent),
     mWorld(0)
 {
-    setFlag(QGraphicsItem::ItemHasNoContents, false);
+    setFlag(QQuickItem::ItemHasContents, true);
 }
 
 void Box2DDebugDraw::setWorld(Box2DWorld *world)
@@ -170,8 +170,7 @@ void Box2DDebugDraw::setWorld(Box2DWorld *world)
         connect(mWorld, SIGNAL(stepped()), SLOT(onWorldStepped()));
 }
 
-void Box2DDebugDraw::paint(QPainter *p, const QStyleOptionGraphicsItem *,
-                           QWidget *)
+void Box2DDebugDraw::paint(QPainter *p)
 {
     if (!mWorld)
         return;
@@ -186,5 +185,7 @@ void Box2DDebugDraw::paint(QPainter *p, const QStyleOptionGraphicsItem *,
 void Box2DDebugDraw::onWorldStepped()
 {
     if (isVisible() && opacity() > 0)
+    {
         update();
+    }
 }

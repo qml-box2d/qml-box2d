@@ -26,23 +26,24 @@
 #ifndef BOX2DDEBUGDRAW_H
 #define BOX2DDEBUGDRAW_H
 
-#include <QDeclarativeItem>
+#include <QQuickPaintedItem>
+#include <QQuickItem>
 
 class Box2DWorld;
 
-class Box2DDebugDraw : public QDeclarativeItem
+class Box2DDebugDraw : public QQuickPaintedItem
 {
     Q_OBJECT
 
     Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld)
 
 public:
-    explicit Box2DDebugDraw(QDeclarativeItem *parent = 0);
+    explicit Box2DDebugDraw(QQuickItem *parent = 0);
 
     Box2DWorld *world() const { return mWorld; }
     void setWorld(Box2DWorld *world);
 
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+    void paint(QPainter *);
 
 private slots:
     void onWorldStepped();

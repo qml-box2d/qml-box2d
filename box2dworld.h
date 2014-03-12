@@ -28,7 +28,7 @@
 #ifndef BOX2DWORLD_H
 #define BOX2DWORLD_H
 
-#include <QDeclarativeItem>
+#include <QQuickItem>
 #include <QList>
 #include <QBasicTimer>
 
@@ -47,7 +47,7 @@ static const float scaleRatio = 32.0f; // 32 pixels in one meter
 /**
  * Wrapper class around a Box2D world.
  */
-class Box2DWorld : public QDeclarativeItem
+class Box2DWorld : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
@@ -58,7 +58,7 @@ class Box2DWorld : public QDeclarativeItem
     Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
 
 public:
-    explicit Box2DWorld(QDeclarativeItem *parent = 0);
+    explicit Box2DWorld(QQuickItem *parent = 0);
     ~Box2DWorld();
 
     /**
@@ -116,10 +116,12 @@ signals:
     void gravityChanged();
     void runningChanged();
     void stepped();
+    void initialized();
 
 protected:
     void timerEvent(QTimerEvent *);
-    QVariant itemChange(GraphicsItemChange, const QVariant &);
+    void itemChange(ItemChange, const ItemChangeData &);
+    void GetAllBodies(QQuickItem * parent, QList<Box2DBody *> &list);
 
 private:
     b2World *mWorld;
