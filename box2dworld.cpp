@@ -26,14 +26,12 @@
  */
 
 #include "box2dworld.h"
-
 #include "box2dbody.h"
 #include "box2dfixture.h"
 #include "box2djoint.h"
 #include "box2ddestructionlistener.h"
-
+#include "box2dcontact.h"
 #include <QTimerEvent>
-
 #include <Box2D.h>
 
 class ContactEvent
@@ -52,16 +50,26 @@ public:
 class ContactListener : public b2ContactListener
 {
 public:
+    explicit ContactListener(Box2DWorld * world);
     void BeginContact(b2Contact *contact);
     void EndContact(b2Contact *contact);
-
+    void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
     void removeEvent(int index) { mEvents.removeAt(index); }
     void clearEvents() { mEvents.clear(); }
     const QList<ContactEvent> &events() { return mEvents; }
 
 private:
     QList<ContactEvent> mEvents;
+    Box2DWorld * mWorld;
+    Box2DContact mContact;
+
+
 };
+
+ContactListener::ContactListener(Box2DWorld *world) :
+    mWorld(world)
+{
+}
 
 void ContactListener::BeginContact(b2Contact *contact)
 {
@@ -81,11 +89,20 @@ void ContactListener::EndContact(b2Contact *contact)
     mEvents.append(event);
 }
 
+void ContactListener::PreSolve(b2Contact *contact, const b2Manifold *oldManifold)
+{
+    Q_UNUSED(oldManifold)
+    if(contact)
+    {
+        mContact.setContact(contact);
+        mWorld->emitContact(&mContact);
+    }
+}
 
 Box2DWorld::Box2DWorld(QQuickItem *parent) :
     QQuickItem(parent),
     mWorld(0),
-    mContactListener(new ContactListener),
+    mContactListener(new ContactListener(this)),
     mDestructionListener(new Box2DDestructionListener),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(10),
@@ -96,6 +113,7 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
 {
     connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
             this, SLOT(fixtureDestroyed(Box2DFixture*)));
+    // mContactListener->world = this;
 }
 
 Box2DWorld::~Box2DWorld()
@@ -239,7 +257,7 @@ void Box2DWorld::timerEvent(QTimerEvent *event)
 }
 
 void Box2DWorld::itemChange(ItemChange change,
-                                const ItemChangeData &value)
+                            const ItemChangeData &value)
 {
     if (isComponentComplete()) {
         if (change == ItemChildAddedChange) {
@@ -263,4 +281,9 @@ void Box2DWorld::GetAllBodies(QQuickItem *parent, QList<Box2DBody *> & list)
         if(body) list.append(body);
         GetAllBodies(item,list);
     }
+}
+
+void Box2DWorld::emitContact(Box2DContact *contact)
+{
+    emit contacted(contact);
 }
