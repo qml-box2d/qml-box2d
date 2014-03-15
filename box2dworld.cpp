@@ -104,8 +104,8 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mContactListener(new ContactListener),
     mDestructionListener(new Box2DDestructionListener),
     mTimeStep(1.0f / 60.0f),
-    mVelocityIterations(10),
-    mPositionIterations(10),
+    mVelocityIterations(8),
+    mPositionIterations(3),
     mGravity(qreal(0), qreal(10)),
     mIsRunning(true),
     mStepDriver(new StepDriver(this))

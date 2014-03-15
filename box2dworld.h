@@ -94,7 +94,7 @@ public:
 
     /**
      * The number of velocity iterations used to process one step.
-     * 10 by default.
+     * 8 by default.
      */
     int velocityIterations() const
     { return mVelocityIterations; }
@@ -105,7 +105,7 @@ public:
 
     /**
      * The number of position iterations used to process one step.
-     * 10 by default.
+     * 3 by default.
      */
     int positionIterations() const
     { return mPositionIterations; }
