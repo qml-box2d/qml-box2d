@@ -1,5 +1,10 @@
 *.o
 Makefile
 moc_*
-libBox2D.so
+*.so
+*.dll
 box2d.pro.user*
+*.Debug
+*.Release
+release/
+debug/

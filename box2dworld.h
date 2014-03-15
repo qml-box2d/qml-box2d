@@ -39,7 +39,7 @@ class ContactListener;
 class Box2DDestructionListener;
 
 class b2World;
-
+class Box2DContact;
 // TODO: Maybe turn this into a property of the world, though it can't be
 // changed dynamically.
 static const float scaleRatio = 32.0f; // 32 pixels in one meter
@@ -108,6 +108,8 @@ public:
 
     b2World *world() const { return mWorld; }
 
+    void emitContact(Box2DContact * contact);
+
 private slots:
     void unregisterBody();
     void fixtureDestroyed(Box2DFixture *fixture);
@@ -117,6 +119,8 @@ signals:
     void runningChanged();
     void stepped();
     void initialized();
+    void contacted(Box2DContact * contact);
+
 
 protected:
     void timerEvent(QTimerEvent *);
@@ -135,6 +139,7 @@ private:
     bool mIsRunning;
     QBasicTimer mTimer;
     QList<Box2DBody*> mBodies;
+
 };
 
 QML_DECLARE_TYPE(Box2DWorld)
