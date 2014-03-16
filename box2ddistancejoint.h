@@ -31,7 +31,6 @@
 
 class b2World;
 class b2DistanceJoint;
-class b2DistanceJointDef;
 
 class Box2DDistanceJoint : public Box2DJoint
 {

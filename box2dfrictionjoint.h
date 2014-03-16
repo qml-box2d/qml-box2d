@@ -31,7 +31,6 @@
 
 class b2World;
 class b2FrictionJoint;
-class b2FrictionJointDef;
 
 class Box2DFrictionJoint : public Box2DJoint
 {

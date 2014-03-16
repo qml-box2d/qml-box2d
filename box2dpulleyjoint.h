@@ -31,7 +31,6 @@
 
 class b2World;
 class b2PulleyJoint;
-class b2PulleyJointDef;
 
 class Box2DPulleyJoint : public Box2DJoint
 {

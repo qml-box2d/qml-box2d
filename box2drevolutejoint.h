@@ -32,7 +32,6 @@
 
 class b2World;
 class b2RevoluteJoint;
-class b2RevoluteJointDef;
 
 class Box2DRevoluteJoint : public Box2DJoint
 {

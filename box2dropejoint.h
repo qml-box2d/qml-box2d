@@ -32,7 +32,6 @@
 
 class b2World;
 class b2RopeJoint;
-class b2RopeJointDef;
 
 class Box2DRopeJoint : public Box2DJoint
 {

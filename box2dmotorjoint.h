@@ -32,7 +32,6 @@
 
 class b2World;
 class b2MotorJoint;
-class b2MotorJointDef;
 
 class Box2DMotorJoint : public Box2DJoint
 {

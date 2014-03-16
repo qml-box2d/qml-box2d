@@ -31,7 +31,6 @@
 
 class b2World;
 class b2GearJoint;
-class b2GearJointDef;
 
 class Box2DGearJoint : public Box2DJoint
 {

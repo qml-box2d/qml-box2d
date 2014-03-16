@@ -31,7 +31,6 @@
 
 class b2World;
 class b2MouseJoint;
-class b2MouseJointDef;
 
 class Box2DMouseJoint : public Box2DJoint
 {

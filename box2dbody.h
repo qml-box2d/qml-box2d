@@ -38,7 +38,6 @@ class Box2DFixture;
 class Box2DWorld;
 
 class b2Body;
-class b2BodyDef;
 class b2World;
 
 /**
@@ -122,6 +121,7 @@ public:
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+
 signals:
     void linearDampingChanged();
     void angularDampingChanged();
@@ -149,7 +149,6 @@ private:
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture * at_fixture(QQmlListProperty<Box2DFixture> *list,int index);
     qreal mGravityScale;
-
 };
 
 #endif // BOX2DBODY_H
