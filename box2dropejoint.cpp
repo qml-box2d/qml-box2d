@@ -31,7 +31,6 @@
 
 Box2DRopeJoint::Box2DRopeJoint(QObject *parent) :
     Box2DJoint(parent),
-    mRopeJointDef(),
     mRopeJoint(0)
 {
 }

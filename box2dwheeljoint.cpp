@@ -31,7 +31,6 @@
 
 Box2DWheelJoint::Box2DWheelJoint(QObject *parent) :
     Box2DJoint(parent),
-    mWheelJointDef(),
     mWheelJoint(0),
     anchorsAuto(true)
 {

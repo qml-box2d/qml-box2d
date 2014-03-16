@@ -30,7 +30,6 @@
 
 Box2DFrictionJoint::Box2DFrictionJoint(QObject *parent) :
     Box2DJoint(parent),
-    mFrictionJointDef(),
     mFrictionJoint(0),
     anchorsAuto(true)
 {

@@ -30,7 +30,6 @@
 
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
     Box2DJoint(parent),
-    mWeldJointDef(),
     mWeldJoint(0),
     anchorsAuto(true)
 {

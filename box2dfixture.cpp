@@ -33,7 +33,6 @@
 Box2DFixture::Box2DFixture(QQuickItem *parent) :
     QQuickItem(parent),
     mFixture(0),
-    mFixtureDef(),
     factorWidth(1.0),
     factorHeight(1.0)
 {

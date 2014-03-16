@@ -31,7 +31,6 @@
 
 Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
     Box2DJoint(parent),
-    mRevoluteJointDef(),
     mRevoluteJoint(0),
     anchorsAuto(true)
 {

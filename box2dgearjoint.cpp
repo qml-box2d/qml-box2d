@@ -29,7 +29,6 @@
 
 Box2DGearJoint::Box2DGearJoint(QObject *parent) :
     Box2DJoint(parent),
-    mGearJointDef(),
     mGearJoint(0)
 {
 }

@@ -30,7 +30,6 @@
 
 Box2DMouseJoint::Box2DMouseJoint(QObject *parent) :
     Box2DJoint(parent),
-    mMouseJointDef(),
     mMouseJoint(0)
 {
 }

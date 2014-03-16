@@ -30,7 +30,6 @@
 
 Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
     Box2DJoint(parent),
-    mPrismaticJointDef(),
     mPrismaticJoint(0),
     anchorsAuto(true)
 {

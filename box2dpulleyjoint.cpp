@@ -30,7 +30,6 @@
 
 Box2DPulleyJoint::Box2DPulleyJoint(QObject *parent) :
     Box2DJoint(parent),
-    mPulleyJointDef(),
     mPulleyJoint(0)
 {
 }

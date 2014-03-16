@@ -31,7 +31,6 @@
 
 Box2DMotorJoint::Box2DMotorJoint(QObject *parent) :
     Box2DJoint(parent),
-    mMotorJointDef(),
     mMotorJoint(0)
 {
 }

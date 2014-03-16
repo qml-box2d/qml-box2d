@@ -30,7 +30,6 @@
 
 Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent) :
     Box2DJoint(parent),
-    mDistanceJointDef(),
     mDistanceJoint(0),
     anchorsAuto(true)
 {

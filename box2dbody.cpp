@@ -38,7 +38,6 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     QQuickItem(parent),
     mBody(0),
     mWorld(0),
-    mBodyDef(),
     mSynchronizing(false),
     mInitializePending(false)
 {
