@@ -58,7 +58,7 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(bool awake READ awake WRITE setAwake)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
-    Q_PROPERTY(qreal gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
+    Q_PROPERTY(float gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
 
 public:
     enum BodyType {
@@ -97,8 +97,8 @@ public:
     QPointF linearVelocity() const;
     void setLinearVelocity(const QPointF &_linearVelocity);
 
-    qreal gravityScale() const;
-    void setGravityScale(qreal _gravityScale);
+    float gravityScale() const;
+    void setGravityScale(float gravityScale);
 
     QQmlListProperty<Box2DFixture> fixtures();
 
@@ -148,7 +148,6 @@ private:
                                Box2DFixture *fixture);
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture * at_fixture(QQmlListProperty<Box2DFixture> *list,int index);
-    qreal mGravityScale;
 };
 
 #endif // BOX2DBODY_H

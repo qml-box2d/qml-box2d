@@ -40,8 +40,7 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mWorld(0),
     mBodyDef(),
     mSynchronizing(false),
-    mInitializePending(false),
-    mGravityScale(1.0)
+    mInitializePending(false)
 {
     setTransformOrigin(TopLeft);
     connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
@@ -215,22 +214,19 @@ void Box2DBody::setLinearVelocity(const QPointF &_linearVelocity)
     emit linearVelocityChanged();
 }
 
-qreal Box2DBody::gravityScale() const
+float Box2DBody::gravityScale() const
 {
-    if(mBody) return mBody->GetGravityScale();
-    return mGravityScale;
+    return mBodyDef.gravityScale;
 }
 
-void Box2DBody::setGravityScale(qreal _gravityScale)
+void Box2DBody::setGravityScale(float gravityScale)
 {
-    if(qFuzzyCompare(gravityScale(),_gravityScale))
+    if (qFuzzyCompare(mBodyDef.gravityScale, gravityScale))
         return;
-    mGravityScale = _gravityScale;
-    if(mBody)
-    {
-        mBody->SetGravityScale(_gravityScale);
-        emit gravityScaleChanged();
-    }
+    mBodyDef.gravityScale = gravityScale;
+    if (mBody)
+        mBody->SetGravityScale(gravityScale);
+    emit gravityScaleChanged();
 }
 
 QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
@@ -277,8 +273,6 @@ void Box2DBody::initialize(b2World *world)
     mBodyDef.angle = -(rotation() * (2 * b2_pi)) / 360.0;
     mBody = world->CreateBody(&mBodyDef);
     mInitializePending = false;
-    if(mGravityScale != 1.0)
-        mBody->SetGravityScale(mGravityScale);
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->createFixture(mBody);
     mBody->SetUserData(this);
