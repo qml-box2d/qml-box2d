@@ -30,14 +30,9 @@
 
 #include <QQuickItem>
 #include <QFlags>
+
 #include <Box2D.h>
 
-#include "box2dfixture.h"
-
-class b2Body;
-class b2Fixture;
-struct b2FixtureDef;
-class b2Shape;
 class Box2DBody;
 
 class Box2DFixture : public QQuickItem
