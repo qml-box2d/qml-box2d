@@ -38,7 +38,6 @@ class Box2DFixture;
 class Box2DWorld;
 
 class b2Body;
-class b2BodyDef;
 class b2World;
 
 /**
@@ -59,7 +58,7 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(bool awake READ awake WRITE setAwake)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
-    Q_PROPERTY(qreal gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
+    Q_PROPERTY(float gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
 
 public:
     enum BodyType {
@@ -98,8 +97,8 @@ public:
     QPointF linearVelocity() const;
     void setLinearVelocity(const QPointF &_linearVelocity);
 
-    qreal gravityScale() const;
-    void setGravityScale(qreal _gravityScale);
+    float gravityScale() const;
+    void setGravityScale(float gravityScale);
 
     QQmlListProperty<Box2DFixture> fixtures();
 
@@ -112,16 +111,17 @@ public:
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
     Q_INVOKABLE QPointF getWorldCenter() const;
     Q_INVOKABLE float getMass() const;
-    Q_INVOKABLE float GetInertia() const;
-    Q_INVOKABLE QPointF GetLinearVelocityFromWorldPoint(const QPointF &point);
-    Q_INVOKABLE QPointF GetLinearVelocityFromLocalPoint (const QPointF &point);
+    Q_INVOKABLE float getInertia() const;
+    Q_INVOKABLE QPointF getLinearVelocityFromWorldPoint(const QPointF &point) const;
+    Q_INVOKABLE QPointF getLinearVelocityFromLocalPoint(const QPointF &point) const;
 
     void componentComplete();
     b2Body *body() const;
-    b2World * world() const;
+    b2World *world() const;
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+
 signals:
     void linearDampingChanged();
     void angularDampingChanged();
@@ -147,9 +147,7 @@ private:
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
-    static Box2DFixture * at_fixture(QQmlListProperty<Box2DFixture> *list,int index);
-    qreal mGravityScale;
-
+    static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
 };
 
 #endif // BOX2DBODY_H

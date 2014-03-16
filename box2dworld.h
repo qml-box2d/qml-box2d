@@ -136,7 +136,7 @@ signals:
 
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
-    void GetAllBodies(QQuickItem * parent, QList<Box2DBody *> &list);
+    void getAllBodies(QQuickItem * parent, QList<Box2DBody *> &list);
 
 private:
     b2World *mWorld;

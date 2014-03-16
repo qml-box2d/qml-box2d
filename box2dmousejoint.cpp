@@ -30,7 +30,6 @@
 
 Box2DMouseJoint::Box2DMouseJoint(QObject *parent) :
     Box2DJoint(parent),
-    mMouseJointDef(),
     mMouseJoint(0)
 {
 }
@@ -42,54 +41,54 @@ Box2DMouseJoint::~Box2DMouseJoint()
 
 float Box2DMouseJoint::dampingRatio() const
 {
-    if(mMouseJoint) return mMouseJoint->GetDampingRatio();
+    if (mMouseJoint) return mMouseJoint->GetDampingRatio();
     return mMouseJointDef.dampingRatio;
 }
 
 void Box2DMouseJoint::setDampingRatio(float dampingRatio)
 {
     mMouseJointDef.dampingRatio = dampingRatio;
-    if(mMouseJoint) mMouseJoint->SetDampingRatio(dampingRatio);
+    if (mMouseJoint) mMouseJoint->SetDampingRatio(dampingRatio);
 
 }
 
 float Box2DMouseJoint::frequencyHz() const
 {
-    if(mMouseJoint) return mMouseJoint->GetFrequency();
+    if (mMouseJoint) return mMouseJoint->GetFrequency();
     return mMouseJointDef.frequencyHz;
 }
 
 void Box2DMouseJoint::setFrequencyHz(float frequencyHz)
 {
     mMouseJointDef.frequencyHz = frequencyHz;
-    if(mMouseJoint) mMouseJoint->SetFrequency(frequencyHz);
+    if (mMouseJoint) mMouseJoint->SetFrequency(frequencyHz);
 }
 
 float Box2DMouseJoint::maxForce() const
 {
-    if(mMouseJoint) return mMouseJoint->GetMaxForce();
+    if (mMouseJoint) return mMouseJoint->GetMaxForce();
     return mMouseJointDef.maxForce;
 }
 
 void Box2DMouseJoint::setMaxForce(float maxForce)
 {
     mMouseJointDef.maxForce = maxForce;
-    if(mMouseJoint) mMouseJoint->SetMaxForce(maxForce);
+    if (mMouseJoint) mMouseJoint->SetMaxForce(maxForce);
 }
 
 QPointF Box2DMouseJoint::target() const
 {
     b2Vec2 point;
-    if(mMouseJoint) point = mMouseJoint->GetTarget();
+    if (mMouseJoint) point = mMouseJoint->GetTarget();
     else point = mMouseJointDef.target;
     return QPointF(point.x * scaleRatio,-point.y * scaleRatio);
 }
 
 void Box2DMouseJoint::setTarget(const QPointF &_target)
 {
-    if(_target == target()) return;
+    if (_target == target()) return;
     mMouseJointDef.target = b2Vec2(_target.x() / scaleRatio, -_target.y() / scaleRatio);
-    if(mMouseJoint) mMouseJoint->SetTarget(mMouseJointDef.target);
+    if (mMouseJoint) mMouseJoint->SetTarget(mMouseJointDef.target);
 }
 
 void Box2DMouseJoint::nullifyJoint()
@@ -111,7 +110,7 @@ void Box2DMouseJoint::createJoint()
 
 void Box2DMouseJoint::cleanup(b2World *world)
 {
-    if(!world) {
+    if (!world) {
         qWarning() << "MouseJoint: There is no world connected";
         return;
     }
@@ -122,23 +121,23 @@ void Box2DMouseJoint::cleanup(b2World *world)
     }
 }
 
-b2Joint *Box2DMouseJoint::GetJoint()
+b2Joint *Box2DMouseJoint::joint() const
 {
     return mMouseJoint;
 }
 
-QPointF Box2DMouseJoint::GetReactionForce(float32 inv_dt) const
+QPointF Box2DMouseJoint::getReactionForce(float32 inv_dt) const
 {
-    if(mMouseJoint)
-    {
+    if (mMouseJoint) {
         b2Vec2 point = mMouseJoint->GetReactionForce(inv_dt);
         return QPointF(point.x * scaleRatio,point.y * scaleRatio);
     }
     return QPointF();
 }
 
-float Box2DMouseJoint::GetReactionTorque(float32 inv_dt) const
+float Box2DMouseJoint::getReactionTorque(float32 inv_dt) const
 {
-    if(mMouseJoint) return mMouseJoint->GetReactionTorque(inv_dt);
+    if (mMouseJoint)
+        return mMouseJoint->GetReactionTorque(inv_dt);
     return 0.0f;
 }

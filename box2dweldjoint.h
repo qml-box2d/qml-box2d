@@ -31,7 +31,6 @@
 
 class b2World;
 class b2WeldJoint;
-class b2WeldJointDef;
 
 class Box2DWeldJoint : public Box2DJoint
 {
@@ -65,7 +64,7 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
 signals:
     void referenceAngleChanged();
@@ -76,7 +75,7 @@ signals:
 
 private:
     b2WeldJointDef mWeldJointDef;
-    b2WeldJoint * mWeldJoint;
+    b2WeldJoint *mWeldJoint;
     bool anchorsAuto;
 };
 

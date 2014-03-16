@@ -32,7 +32,6 @@
 
 class b2World;
 class b2WheelJoint;
-class b2WheelJointDef;
 
 class Box2DWheelJoint : public Box2DJoint
 {
@@ -77,12 +76,12 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
-    Q_INVOKABLE QPointF GetReactionForce(float32 inv_dt) const;
-    Q_INVOKABLE float GetReactionTorque(float32 inv_dt) const;
-    Q_INVOKABLE float GetJointTranslation() const;
-    Q_INVOKABLE float GetJointSpeed() const;
+    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
+    Q_INVOKABLE float getJointTranslation() const;
+    Q_INVOKABLE float getJointSpeed() const;
 
 signals:
     void dampingRatioChanged();

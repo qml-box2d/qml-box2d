@@ -32,7 +32,6 @@
 
 class b2World;
 class b2RevoluteJoint;
-class b2RevoluteJointDef;
 
 class Box2DRevoluteJoint : public Box2DJoint
 {
@@ -77,10 +76,10 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
-    Q_INVOKABLE float getJointAngle();
-    Q_INVOKABLE float getJointSpeed();
+    Q_INVOKABLE float getJointAngle() const;
+    Q_INVOKABLE float getJointSpeed() const;
 
 signals:
     void lowerAngleChanged();

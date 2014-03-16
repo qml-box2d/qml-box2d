@@ -31,14 +31,13 @@
 
 class b2World;
 class b2GearJoint;
-class b2GearJointDef;
 
 class Box2DGearJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(Box2DJoint * joint1 READ joint1 WRITE setJoint1 NOTIFY joint1Changed)
-    Q_PROPERTY(Box2DJoint * joint2 READ joint2 WRITE setJoint2 NOTIFY joint2Changed)
+    Q_PROPERTY(Box2DJoint *joint1 READ joint1 WRITE setJoint1 NOTIFY joint1Changed)
+    Q_PROPERTY(Box2DJoint *joint2 READ joint2 WRITE setJoint2 NOTIFY joint2Changed)
     Q_PROPERTY(float ratio READ ratio WRITE setRatio NOTIFY ratioChanged)
 
 public:
@@ -57,7 +56,7 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
 signals:
     void ratioChanged();
@@ -72,7 +71,5 @@ private:
     b2GearJointDef mGearJointDef;
     b2GearJoint *mGearJoint;
 };
-
-
 
 #endif // BOX2DGEARJOINT_H

@@ -31,7 +31,6 @@
 
 class b2World;
 class b2MouseJoint;
-class b2MouseJointDef;
 
 class Box2DMouseJoint : public Box2DJoint
 {
@@ -58,13 +57,13 @@ public:
     QPointF target() const;
     void setTarget(const QPointF &_target);
 
-    Q_INVOKABLE QPointF GetReactionForce(float32 inv_dt) const;
-    Q_INVOKABLE float GetReactionTorque(float32 inv_dt) const;
+    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
 signals:
     void targetChanged();
@@ -76,7 +75,5 @@ private:
     b2MouseJointDef mMouseJointDef;
     b2MouseJoint *mMouseJoint;
 };
-
-
 
 #endif // BOX2DMOUSEJOINT_H

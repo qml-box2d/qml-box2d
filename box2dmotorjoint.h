@@ -32,7 +32,6 @@
 
 class b2World;
 class b2MotorJoint;
-class b2MotorJointDef;
 
 class Box2DMotorJoint : public Box2DJoint
 {
@@ -66,7 +65,7 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
 signals:
     void linearOffsetChanged();

@@ -114,7 +114,7 @@ void Box2DJoint::initialize()
         mInitializePending = true;
         return;
     }
-    if(mBodyA->world() != mBodyB->world())
+    if (mBodyA->world() != mBodyB->world())
         qWarning() << "bodyA and bodyB from different worlds";
     else
         createJoint();
@@ -122,9 +122,9 @@ void Box2DJoint::initialize()
 
 b2World *Box2DJoint::world() const
 {
-    if(mWorld) return mWorld->world();
-    else if(mBodyA && mBodyA->world()) return mBodyA->world();
-    else if(mBodyB && mBodyB->world()) return mBodyB->world();
+    if (mWorld) return mWorld->world();
+    else if (mBodyA && mBodyA->world()) return mBodyA->world();
+    else if (mBodyB && mBodyB->world()) return mBodyB->world();
     return NULL;
 }
 

@@ -30,7 +30,6 @@
 
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
     Box2DJoint(parent),
-    mWeldJointDef(),
     mWeldJoint(0),
     anchorsAuto(true)
 {
@@ -49,7 +48,7 @@ float Box2DWeldJoint::referenceAngle() const
 void Box2DWeldJoint::setReferenceAngle(float referenceAngle)
 {
     float referenceAngleRad = referenceAngle * b2_pi / -180;
-    if (qFuzzyCompare(mWeldJointDef.referenceAngle,referenceAngleRad))
+    if (qFuzzyCompare(mWeldJointDef.referenceAngle, referenceAngleRad))
         return;
     mWeldJointDef.referenceAngle = referenceAngleRad;
     emit referenceAngleChanged();
@@ -62,7 +61,7 @@ float Box2DWeldJoint::frequencyHz() const
 
 void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
 {
-    if (qFuzzyCompare(mWeldJointDef.frequencyHz,frequencyHz))
+    if (qFuzzyCompare(mWeldJointDef.frequencyHz, frequencyHz))
         return;
 
     mWeldJointDef.frequencyHz = frequencyHz;
@@ -78,7 +77,7 @@ float Box2DWeldJoint::dampingRatio() const
 
 void Box2DWeldJoint::setDampingRatio(float dampingRatio)
 {
-    if (qFuzzyCompare(mWeldJointDef.dampingRatio,dampingRatio))
+    if (qFuzzyCompare(mWeldJointDef.dampingRatio, dampingRatio))
         return;
 
     mWeldJointDef.dampingRatio = dampingRatio;
@@ -120,7 +119,7 @@ void Box2DWeldJoint::nullifyJoint()
 
 void Box2DWeldJoint::createJoint()
 {
-    if(anchorsAuto)
+    if (anchorsAuto)
         mWeldJointDef.Initialize(bodyA()->body(), bodyB()->body(),bodyA()->body()->GetWorldCenter());
     else
     {
@@ -138,7 +137,7 @@ void Box2DWeldJoint::createJoint()
 
 void Box2DWeldJoint::cleanup(b2World *world)
 {
-    if(!world) {
+    if (!world) {
         qWarning() << "WeldJoint: There is no world connected";
         return;
     }
@@ -149,7 +148,7 @@ void Box2DWeldJoint::cleanup(b2World *world)
     }
 }
 
-b2Joint *Box2DWeldJoint::GetJoint()
+b2Joint *Box2DWeldJoint::joint() const
 {
     return mWeldJoint;
 }

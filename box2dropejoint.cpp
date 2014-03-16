@@ -31,7 +31,6 @@
 
 Box2DRopeJoint::Box2DRopeJoint(QObject *parent) :
     Box2DJoint(parent),
-    mRopeJointDef(),
     mRopeJoint(0)
 {
 }
@@ -43,17 +42,17 @@ Box2DRopeJoint::~Box2DRopeJoint()
 
 float Box2DRopeJoint::maxLength() const
 {
-    if(mRopeJoint) return mRopeJoint->GetMaxLength() * scaleRatio;
+    if (mRopeJoint) return mRopeJoint->GetMaxLength() * scaleRatio;
     return mRopeJointDef.maxLength * scaleRatio;
 }
 
 void Box2DRopeJoint::setMaxLength(float _maxLength)
 {
-    if(qFuzzyCompare(maxLength(),_maxLength))
+    if (qFuzzyCompare(maxLength(),_maxLength))
         return;
 
     mRopeJointDef.maxLength = _maxLength / scaleRatio;
-    if(mRopeJoint)
+    if (mRopeJoint)
         mRopeJoint->SetMaxLength(mRopeJointDef.maxLength);
 
     emit maxLengthChanged();
@@ -104,7 +103,7 @@ void Box2DRopeJoint::createJoint()
 
 void Box2DRopeJoint::cleanup(b2World *world)
 {
-    if(!world) {
+    if (!world) {
         qWarning() << "RopeJoint: There is no world connected";
         return;
     }
@@ -115,23 +114,23 @@ void Box2DRopeJoint::cleanup(b2World *world)
     }
 }
 
-b2Joint *Box2DRopeJoint::GetJoint()
+b2Joint *Box2DRopeJoint::joint() const
 {
     return mRopeJoint;
 }
 
-QPointF Box2DRopeJoint::GetReactionForce(float32 inv_dt) const
+QPointF Box2DRopeJoint::getReactionForce(float32 inv_dt) const
 {
-    if(mRopeJoint)
-    {
+    if (mRopeJoint) {
         b2Vec2 point = mRopeJoint->GetReactionForce(inv_dt);
         return QPointF(point.x * scaleRatio,point.y * scaleRatio);
     }
     return QPointF();
 }
 
-float Box2DRopeJoint::GetReactionTorque(float32 inv_dt) const
+float Box2DRopeJoint::getReactionTorque(float32 inv_dt) const
 {
-    if(mRopeJoint) return mRopeJoint->GetReactionTorque(inv_dt);
+    if (mRopeJoint)
+        return mRopeJoint->GetReactionTorque(inv_dt);
     return 0.0f;
 }

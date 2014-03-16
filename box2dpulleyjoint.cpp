@@ -30,7 +30,6 @@
 
 Box2DPulleyJoint::Box2DPulleyJoint(QObject *parent) :
     Box2DJoint(parent),
-    mPulleyJointDef(),
     mPulleyJoint(0)
 {
 }
@@ -42,13 +41,13 @@ Box2DPulleyJoint::~Box2DPulleyJoint()
 
 float Box2DPulleyJoint::lengthA() const
 {
-    if(mPulleyJoint) return mPulleyJoint->GetLengthA() * scaleRatio;
+    if (mPulleyJoint) return mPulleyJoint->GetLengthA() * scaleRatio;
     return mPulleyJointDef.lengthA * scaleRatio;
 }
 
 void Box2DPulleyJoint::setLengthA(float lengthA)
 {
-    if(mPulleyJointDef.lengthA * scaleRatio == lengthA)
+    if (mPulleyJointDef.lengthA * scaleRatio == lengthA)
         return;
     mPulleyJointDef.lengthA = lengthA / scaleRatio;
     emit lengthAChanged();
@@ -56,13 +55,13 @@ void Box2DPulleyJoint::setLengthA(float lengthA)
 
 float Box2DPulleyJoint::lengthB() const
 {
-    if(mPulleyJoint) return mPulleyJoint->GetLengthB() * scaleRatio;
+    if (mPulleyJoint) return mPulleyJoint->GetLengthB() * scaleRatio;
     return mPulleyJointDef.lengthB * scaleRatio;
 }
 
 void Box2DPulleyJoint::setLengthB(float lengthB)
 {
-    if(mPulleyJointDef.lengthB * scaleRatio == lengthB)
+    if (mPulleyJointDef.lengthB * scaleRatio == lengthB)
         return;
     mPulleyJointDef.lengthB = lengthB / scaleRatio;
     emit lengthBChanged();
@@ -70,13 +69,13 @@ void Box2DPulleyJoint::setLengthB(float lengthB)
 
 float Box2DPulleyJoint::ratio() const
 {
-    if(mPulleyJoint) return mPulleyJoint->GetRatio();
+    if (mPulleyJoint) return mPulleyJoint->GetRatio();
     return mPulleyJointDef.ratio;
 }
 
 void Box2DPulleyJoint::setRatio(float ratio)
 {
-    if(mPulleyJointDef.ratio == ratio)
+    if (mPulleyJointDef.ratio == ratio)
         return;
     mPulleyJointDef.ratio = ratio;
     emit ratioChanged();
@@ -84,7 +83,7 @@ void Box2DPulleyJoint::setRatio(float ratio)
 
 QPointF Box2DPulleyJoint::groundAnchorA() const
 {
-    if(mPulleyJoint) QPointF(mPulleyJoint->GetGroundAnchorA().x * scaleRatio,-mPulleyJoint->GetGroundAnchorA().y * scaleRatio);
+    if (mPulleyJoint) QPointF(mPulleyJoint->GetGroundAnchorA().x * scaleRatio,-mPulleyJoint->GetGroundAnchorA().y * scaleRatio);
     return QPointF(mPulleyJointDef.groundAnchorA.x * scaleRatio, mPulleyJointDef.groundAnchorA.y * scaleRatio);
 }
 
@@ -96,7 +95,7 @@ void Box2DPulleyJoint::setGroundAnchorA(const QPointF &groundAnchorA)
 
 QPointF Box2DPulleyJoint::groundAnchorB() const
 {
-    if(mPulleyJoint) QPointF(mPulleyJoint->GetGroundAnchorB().x * scaleRatio,-mPulleyJoint->GetGroundAnchorB().y * scaleRatio);
+    if (mPulleyJoint) QPointF(mPulleyJoint->GetGroundAnchorB().x * scaleRatio,-mPulleyJoint->GetGroundAnchorB().y * scaleRatio);
     return QPointF(mPulleyJointDef.groundAnchorB.x * scaleRatio, mPulleyJointDef.groundAnchorB.y * scaleRatio);
 }
 
@@ -108,7 +107,7 @@ void Box2DPulleyJoint::setGroundAnchorB(const QPointF &groundAnchorB)
 
 QPointF Box2DPulleyJoint::localAnchorA() const
 {
-    if(mPulleyJoint) QPointF(mPulleyJoint->GetAnchorA().x * scaleRatio,-mPulleyJoint->GetAnchorA().y * scaleRatio);
+    if (mPulleyJoint) QPointF(mPulleyJoint->GetAnchorA().x * scaleRatio,-mPulleyJoint->GetAnchorA().y * scaleRatio);
     return QPointF(mPulleyJointDef.localAnchorA.x * scaleRatio, mPulleyJointDef.localAnchorA.y * scaleRatio);
 }
 
@@ -120,7 +119,7 @@ void Box2DPulleyJoint::setLocalAnchorA(const QPointF &localAnchorA)
 
 QPointF Box2DPulleyJoint::localAnchorB() const
 {
-    if(mPulleyJoint) QPointF(mPulleyJoint->GetAnchorB().x * scaleRatio,-mPulleyJoint->GetAnchorB().y * scaleRatio);
+    if (mPulleyJoint) QPointF(mPulleyJoint->GetAnchorB().x * scaleRatio,-mPulleyJoint->GetAnchorB().y * scaleRatio);
     return QPointF(mPulleyJointDef.localAnchorB.x * scaleRatio, mPulleyJointDef.localAnchorB.y * scaleRatio);
 }
 
@@ -137,7 +136,7 @@ void Box2DPulleyJoint::nullifyJoint()
 
 void Box2DPulleyJoint::createJoint()
 {
-    if(qFuzzyCompare(mPulleyJointDef.lengthA,0.0f) || qFuzzyCompare(mPulleyJointDef.lengthB,0.0f))
+    if (qFuzzyCompare(mPulleyJointDef.lengthA,0.0f) || qFuzzyCompare(mPulleyJointDef.lengthB,0.0f))
     {
         qWarning() << "PulleyJoint: the joint length cannot be zero";
         return;
@@ -153,7 +152,7 @@ void Box2DPulleyJoint::createJoint()
 
 void Box2DPulleyJoint::cleanup(b2World *world)
 {
-    if(!world) {
+    if (!world) {
         qWarning() << "PulleyJoint: There is no world connected";
         return;
     }
@@ -164,36 +163,38 @@ void Box2DPulleyJoint::cleanup(b2World *world)
     }
 }
 
-b2Joint *Box2DPulleyJoint::GetJoint()
+b2Joint *Box2DPulleyJoint::joint() const
 {
     return mPulleyJoint;
 }
 
-float Box2DPulleyJoint::GetCurrentLengthA() const
+float Box2DPulleyJoint::getCurrentLengthA() const
 {
-    if(mPulleyJoint) return mPulleyJoint->GetCurrentLengthA() * scaleRatio;
+    if (mPulleyJoint)
+        return mPulleyJoint->GetCurrentLengthA() * scaleRatio;
     return 0.0f;
 }
 
-float Box2DPulleyJoint::GetCurrentLengthB() const
+float Box2DPulleyJoint::getCurrentLengthB() const
 {
-    if(mPulleyJoint) return mPulleyJoint->GetCurrentLengthB() * scaleRatio;
+    if (mPulleyJoint)
+        return mPulleyJoint->GetCurrentLengthB() * scaleRatio;
     return 0.0f;
 }
 
-QPointF Box2DPulleyJoint::GetReactionForce(float32 inv_dt) const
+QPointF Box2DPulleyJoint::getReactionForce(float32 inv_dt) const
 {
-    if(mPulleyJoint)
-    {
+    if (mPulleyJoint) {
         b2Vec2 point = mPulleyJoint->GetReactionForce(inv_dt);
         return QPointF(point.x * scaleRatio,point.y * scaleRatio);
     }
     return QPointF();
 }
 
-float Box2DPulleyJoint::GetReactionTorque(float32 inv_dt) const
+float Box2DPulleyJoint::getReactionTorque(float32 inv_dt) const
 {
-    if(mPulleyJoint) return mPulleyJoint->GetReactionTorque(inv_dt);
+    if (mPulleyJoint)
+        return mPulleyJoint->GetReactionTorque(inv_dt);
     return 0.0f;
 }
 

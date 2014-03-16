@@ -31,7 +31,6 @@
 
 class b2World;
 class b2PulleyJoint;
-class b2PulleyJointDef;
 
 class Box2DPulleyJoint : public Box2DJoint
 {
@@ -72,12 +71,12 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
-    Q_INVOKABLE float GetCurrentLengthA() const;
-    Q_INVOKABLE float GetCurrentLengthB() const;
-    Q_INVOKABLE QPointF GetReactionForce(float32 inv_dt) const;
-    Q_INVOKABLE float GetReactionTorque(float32 inv_dt) const;
+    Q_INVOKABLE float getCurrentLengthA() const;
+    Q_INVOKABLE float getCurrentLengthB() const;
+    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
 signals:
     void lengthAChanged();

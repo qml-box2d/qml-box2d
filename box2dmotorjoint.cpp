@@ -31,7 +31,6 @@
 
 Box2DMotorJoint::Box2DMotorJoint(QObject *parent) :
     Box2DJoint(parent),
-    mMotorJointDef(),
     mMotorJoint(0)
 {
 }
@@ -48,10 +47,10 @@ QPointF Box2DMotorJoint::linearOffset() const
 
 void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 {
-    if(this->linearOffset() == linearOffset)
+    if (this->linearOffset() == linearOffset)
         return;
     mMotorJointDef.linearOffset = b2Vec2(linearOffset.x() / scaleRatio,-linearOffset.y() / scaleRatio);
-    if(mMotorJoint)
+    if (mMotorJoint)
         mMotorJoint->SetLinearOffset(mMotorJointDef.linearOffset);
     emit linearOffsetChanged();
 }
@@ -64,10 +63,10 @@ float Box2DMotorJoint::angularOffset() const
 void Box2DMotorJoint::setAngularOffset(const float angularOffset)
 {
     float angularOffsetRad = angularOffset * ( b2_pi / 180);
-    if(mMotorJointDef.angularOffset == angularOffsetRad)
+    if (mMotorJointDef.angularOffset == angularOffsetRad)
         return;
     mMotorJointDef.angularOffset = angularOffsetRad;
-    if(mMotorJoint)
+    if (mMotorJoint)
         mMotorJoint->SetAngularOffset(angularOffsetRad);
     emit angularOffsetChanged();
 }
@@ -79,10 +78,10 @@ float Box2DMotorJoint::maxForce() const
 
 void Box2DMotorJoint::setMaxForce(const float maxForce)
 {
-    if(mMotorJointDef.maxForce == maxForce)
+    if (mMotorJointDef.maxForce == maxForce)
         return;
     mMotorJointDef.maxForce = maxForce;
-    if(mMotorJoint)
+    if (mMotorJoint)
         mMotorJoint->SetMaxForce(maxForce);
     emit maxForceChanged();
 }
@@ -94,10 +93,10 @@ float Box2DMotorJoint::maxTorque() const
 
 void Box2DMotorJoint::setMaxTorque(const float maxTorque)
 {
-    if(mMotorJointDef.maxTorque == maxTorque)
+    if (mMotorJointDef.maxTorque == maxTorque)
         return;
     mMotorJointDef.maxTorque = maxTorque;
-    if(mMotorJoint)
+    if (mMotorJoint)
         mMotorJoint->SetMaxTorque(maxTorque);
     emit maxTorqueChanged();
 }
@@ -109,10 +108,10 @@ float Box2DMotorJoint::correctionFactor() const
 
 void Box2DMotorJoint::setCorrectionFactor(const float correctionFactor)
 {
-    if(mMotorJointDef.correctionFactor == correctionFactor)
+    if (mMotorJointDef.correctionFactor == correctionFactor)
         return;
     mMotorJointDef.correctionFactor = correctionFactor;
-    if(mMotorJoint)
+    if (mMotorJoint)
         mMotorJoint->SetCorrectionFactor(correctionFactor);
     emit correctionFactorChanged();
 }
@@ -136,7 +135,7 @@ void Box2DMotorJoint::createJoint()
 
 void Box2DMotorJoint::cleanup(b2World *world)
 {
-    if(!world) {
+    if (!world) {
         qWarning() << "MotorJoint: There is no world connected";
         return;
     }
@@ -147,7 +146,7 @@ void Box2DMotorJoint::cleanup(b2World *world)
     }
 }
 
-b2Joint *Box2DMotorJoint::GetJoint()
+b2Joint *Box2DMotorJoint::joint() const
 {
     return mMotorJoint;
 }
