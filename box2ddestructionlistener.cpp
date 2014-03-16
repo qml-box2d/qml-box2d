@@ -36,8 +36,7 @@ Box2DDestructionListener::Box2DDestructionListener(QObject *parent) :
 
 void Box2DDestructionListener::SayGoodbye(b2Joint *joint)
 {
-    if (joint->GetUserData()) {
-        Box2DJoint *temp = toBox2DJoint(joint);
+    if (Box2DJoint *temp = toBox2DJoint(joint)) {
         temp->nullifyJoint();
         delete temp;
     }

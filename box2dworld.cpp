@@ -119,7 +119,7 @@ Box2DWorld::~Box2DWorld()
     // Bodies must be deleted before the world
     foreach (Box2DBody *body, mBodies)
     {
-        if(body->parent() == this)
+        if (body->parent() == this)
             delete body;
         else
             body->cleanup(this->world());
@@ -171,9 +171,8 @@ void Box2DWorld::componentComplete()
     mWorld->SetDestructionListener(mDestructionListener);
 
     QList<Box2DBody *> list;
-    GetAllBodies(this,list);
-    foreach(Box2DBody * body,list)
-    {
+    getAllBodies(this, list);
+    foreach (Box2DBody * body,list) {
         registerBody(body);
     }
 
@@ -266,13 +265,12 @@ void Box2DWorld::itemChange(ItemChange change,
 }
 
 // Get all Box2DBodies attached to this world
-void Box2DWorld::GetAllBodies(QQuickItem *parent, QList<Box2DBody *> & list)
+void Box2DWorld::getAllBodies(QQuickItem *parent, QList<Box2DBody *> & list)
 {
     QList<QQuickItem *> children = parent->childItems();
-    foreach(QQuickItem * item,children)
-    {
+    foreach (QQuickItem *item, children) {
         Box2DBody * body = dynamic_cast<Box2DBody *>(item);
-        if(body) list.append(body);
-        GetAllBodies(item,list);
+        if (body) list.append(body);
+        getAllBodies(item,list);
     }
 }

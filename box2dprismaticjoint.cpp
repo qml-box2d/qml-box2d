@@ -47,7 +47,7 @@ float Box2DPrismaticJoint::lowerTranslation() const
 
 void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.lowerTranslation,lowerTranslation / scaleRatio))
+    if (qFuzzyCompare(mPrismaticJointDef.lowerTranslation, lowerTranslation / scaleRatio))
         return;
     mPrismaticJointDef.lowerTranslation = lowerTranslation / scaleRatio;
     if (mPrismaticJoint)
@@ -63,7 +63,7 @@ float Box2DPrismaticJoint::upperTranslation() const
 
 void Box2DPrismaticJoint::setUpperTranslation(float upperTranslation)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.upperTranslation,upperTranslation / scaleRatio))
+    if (qFuzzyCompare(mPrismaticJointDef.upperTranslation, upperTranslation / scaleRatio))
         return;
 
     mPrismaticJointDef.upperTranslation = upperTranslation / scaleRatio;
@@ -80,7 +80,7 @@ float Box2DPrismaticJoint::maxMotorForce() const
 
 void Box2DPrismaticJoint::setMaxMotorForce(float maxMotorForce)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.maxMotorForce,maxMotorForce))
+    if (qFuzzyCompare(mPrismaticJointDef.maxMotorForce, maxMotorForce))
         return;
 
     mPrismaticJointDef.maxMotorForce = maxMotorForce;
@@ -96,7 +96,7 @@ float Box2DPrismaticJoint::motorSpeed() const
 
 void Box2DPrismaticJoint::setMotorSpeed(float motorSpeed)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.motorSpeed,motorSpeed / scaleRatio))
+    if (qFuzzyCompare(mPrismaticJointDef.motorSpeed, motorSpeed / scaleRatio))
         return;
 
     mPrismaticJointDef.motorSpeed = motorSpeed / scaleRatio;
@@ -181,7 +181,7 @@ void Box2DPrismaticJoint::nullifyJoint()
 
 void Box2DPrismaticJoint::createJoint()
 {
-    if(anchorsAuto)
+    if (anchorsAuto)
         mPrismaticJointDef.Initialize(bodyA()->body(), bodyB()->body(),
                                  bodyA()->body()->GetWorldCenter(),
                                  mPrismaticJointDef.localAxisA);
@@ -202,7 +202,7 @@ void Box2DPrismaticJoint::createJoint()
 
 void Box2DPrismaticJoint::cleanup(b2World *world)
 {
-    if(!world) {
+    if (!world) {
         qWarning() << "PrismaticJoint: There is no world connected";
         return;
     }
@@ -213,19 +213,21 @@ void Box2DPrismaticJoint::cleanup(b2World *world)
     }
 }
 
-b2Joint *Box2DPrismaticJoint::GetJoint()
+b2Joint *Box2DPrismaticJoint::joint() const
 {
     return mPrismaticJoint;
 }
 
-float Box2DPrismaticJoint::GetJointTranslation()
+float Box2DPrismaticJoint::getJointTranslation() const
 {
-    if(mPrismaticJoint) return mPrismaticJoint->GetJointTranslation() * scaleRatio;
+    if (mPrismaticJoint)
+        return mPrismaticJoint->GetJointTranslation() * scaleRatio;
     return 0.0;
 }
 
-float Box2DPrismaticJoint::GetJointSpeed()
+float Box2DPrismaticJoint::getJointSpeed() const
 {
-    if(mPrismaticJoint) return mPrismaticJoint->GetJointSpeed();
+    if (mPrismaticJoint)
+        return mPrismaticJoint->GetJointSpeed();
     return 0.0;
 }

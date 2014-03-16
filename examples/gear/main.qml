@@ -335,9 +335,8 @@ Rectangle {
                 anchors.fill: parent
                 sensor: true
                 onBeginContact: {
-                    if(other.GetBody().color === "#EFEFEF")
-                    {
-                        other.GetBody().color = "lightgreen"
+                    if (other.getBody().color === "#EFEFEF") {
+                        other.getBody().color = "lightgreen"
                         leftCounter.count ++;
                     }
                 }
@@ -355,8 +354,8 @@ Rectangle {
                 anchors.fill: parent
                 sensor: true
                 onBeginContact: {
-                    if(other.GetBody().color === "#EFEFEF") {
-                        other.GetBody().color = "orange"
+                    if (other.getBody().color === "#EFEFEF") {
+                        other.getBody().color = "orange"
                         rightCounter.count ++;
                     }
                 }

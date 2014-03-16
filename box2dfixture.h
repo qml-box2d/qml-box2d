@@ -89,14 +89,14 @@ public:
     void setGroupIndex(int groupIndex);
 
     void createFixture(b2Body *body);
-    virtual void scale(){}
+    virtual void scale() {}
 
-    Q_INVOKABLE Box2DBody * GetBody() const;
+    Q_INVOKABLE Box2DBody *getBody() const;
 
 protected:
     b2Fixture *mFixture;
     b2FixtureDef mFixtureDef;
-    b2Body * mBody;
+    b2Body *mBody;
     float factorWidth;
     float factorHeight;
     virtual b2Shape *createShape() = 0;
@@ -123,10 +123,6 @@ private:
     void emitBeginContact(Box2DFixture *other);
     void emitContactChanged(Box2DFixture *other);
     void emitEndContact(Box2DFixture *other);
-
-
-
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
@@ -138,7 +134,8 @@ class Box2DBox : public Box2DFixture
 public:
     explicit Box2DBox(QQuickItem *parent = 0) :
         Box2DFixture(parent)
-    { }
+    {}
+
     void scale();
 
 protected:
@@ -198,7 +195,7 @@ signals:
 
 protected:
     QVariantList mVertices;
-    b2Vec2 * scaleVertices();
+    b2Vec2 *scaleVertices();
     virtual b2Shape *createShape(){ return NULL; }
 };
 
@@ -267,7 +264,6 @@ public:
 
 protected:
     b2Shape *createShape();
-
 };
 
 /**

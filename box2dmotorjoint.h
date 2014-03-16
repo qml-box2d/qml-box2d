@@ -65,7 +65,7 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
 signals:
     void linearOffsetChanged();

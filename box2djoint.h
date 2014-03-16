@@ -63,7 +63,7 @@ public:
 
     virtual void nullifyJoint() = 0;
     virtual void cleanup(b2World *world) = 0;
-    virtual b2Joint * GetJoint() = 0;
+    virtual b2Joint *joint() const = 0;
 
 protected:
     virtual void createJoint() = 0;
@@ -97,7 +97,8 @@ private:
  */
 inline Box2DJoint *toBox2DJoint(b2Joint *joint)
 {
-    if(!joint) return 0;
+    if (!joint)
+        return 0;
     return static_cast<Box2DJoint*>(joint->GetUserData());
 }
 

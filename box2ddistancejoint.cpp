@@ -42,7 +42,7 @@ Box2DDistanceJoint::~Box2DDistanceJoint()
 
 float Box2DDistanceJoint::length() const
 {
-    if(mDistanceJoint) return mDistanceJoint->GetLength();
+    if (mDistanceJoint) return mDistanceJoint->GetLength();
     return mDistanceJointDef.length;
 }
 
@@ -58,7 +58,7 @@ void Box2DDistanceJoint::setLength(float _length)
 
 float Box2DDistanceJoint::frequencyHz() const
 {
-    if(mDistanceJoint) return mDistanceJoint->GetFrequency();
+    if (mDistanceJoint) return mDistanceJoint->GetFrequency();
     return mDistanceJointDef.frequencyHz;
 }
 
@@ -74,7 +74,7 @@ void Box2DDistanceJoint::setFrequencyHz(float _frequencyHz)
 
 float Box2DDistanceJoint::dampingRatio() const
 {
-    if(mDistanceJoint) mDistanceJoint->GetDampingRatio();
+    if (mDistanceJoint) mDistanceJoint->GetDampingRatio();
     return mDistanceJointDef.dampingRatio;
 }
 
@@ -124,7 +124,7 @@ void Box2DDistanceJoint::nullifyJoint()
 
 void Box2DDistanceJoint::createJoint()
 {
-    if(anchorsAuto) mDistanceJointDef.Initialize(bodyA()->body(),
+    if (anchorsAuto) mDistanceJointDef.Initialize(bodyA()->body(),
                                  bodyB()->body(),
                                  bodyA()->body()->GetWorldCenter(),
                                  bodyB()->body()->GetWorldCenter());
@@ -143,7 +143,7 @@ void Box2DDistanceJoint::createJoint()
 
 void Box2DDistanceJoint::cleanup(b2World *world)
 {
-    if(!world) {
+    if (!world) {
         qWarning() << "DistanceJoint: There is no world connected";
         return;
     }
@@ -154,23 +154,23 @@ void Box2DDistanceJoint::cleanup(b2World *world)
     }
 }
 
-b2Joint *Box2DDistanceJoint::GetJoint()
+b2Joint *Box2DDistanceJoint::joint() const
 {
     return mDistanceJoint;
 }
 
-QPointF Box2DDistanceJoint::GetReactionForce(float32 inv_dt) const
+QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const
 {
-    if(mDistanceJoint)
-    {
+    if (mDistanceJoint) {
         b2Vec2 point = mDistanceJoint->GetReactionForce(inv_dt);
         return QPointF(point.x * scaleRatio,point.y * scaleRatio);
     }
     return QPointF();
 }
 
-float Box2DDistanceJoint::GetReactionTorque(float32 inv_dt) const
+float Box2DDistanceJoint::getReactionTorque(float32 inv_dt) const
 {
-    if(mDistanceJoint) return mDistanceJoint->GetReactionTorque(inv_dt);
+    if (mDistanceJoint)
+        return mDistanceJoint->GetReactionTorque(inv_dt);
     return 0.0f;
 }

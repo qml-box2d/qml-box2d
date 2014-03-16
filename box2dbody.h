@@ -111,13 +111,13 @@ public:
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
     Q_INVOKABLE QPointF getWorldCenter() const;
     Q_INVOKABLE float getMass() const;
-    Q_INVOKABLE float GetInertia() const;
-    Q_INVOKABLE QPointF GetLinearVelocityFromWorldPoint(const QPointF &point);
-    Q_INVOKABLE QPointF GetLinearVelocityFromLocalPoint (const QPointF &point);
+    Q_INVOKABLE float getInertia() const;
+    Q_INVOKABLE QPointF getLinearVelocityFromWorldPoint(const QPointF &point) const;
+    Q_INVOKABLE QPointF getLinearVelocityFromLocalPoint(const QPointF &point) const;
 
     void componentComplete();
     b2Body *body() const;
-    b2World * world() const;
+    b2World *world() const;
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
@@ -147,7 +147,7 @@ private:
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
-    static Box2DFixture * at_fixture(QQmlListProperty<Box2DFixture> *list,int index);
+    static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
 };
 
 #endif // BOX2DBODY_H

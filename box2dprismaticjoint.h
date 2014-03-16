@@ -78,13 +78,13 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
-    Q_INVOKABLE float GetJointTranslation();
-    Q_INVOKABLE float GetJointSpeed();
+    Q_INVOKABLE float getJointTranslation() const;
+    Q_INVOKABLE float getJointSpeed() const;
 
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
 signals:
     void lowerTranslationChanged();

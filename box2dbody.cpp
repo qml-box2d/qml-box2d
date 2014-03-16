@@ -52,7 +52,7 @@ Box2DBody::~Box2DBody()
 
 qreal Box2DBody::linearDamping() const
 {
-    if(mBody) return mBody->GetLinearDamping();
+    if (mBody) return mBody->GetLinearDamping();
     return mBodyDef.linearDamping;
 }
 
@@ -70,7 +70,7 @@ void Box2DBody::setLinearDamping(qreal _linearDamping)
 
 qreal Box2DBody::angularDamping() const
 {
-    if(mBody) return mBody->GetAngularDamping();
+    if (mBody) return mBody->GetAngularDamping();
     return mBodyDef.angularDamping;
 }
 void Box2DBody::setAngularDamping(qreal _angularDamping)
@@ -87,7 +87,7 @@ void Box2DBody::setAngularDamping(qreal _angularDamping)
 
 Box2DBody::BodyType Box2DBody::bodyType() const
 {
-    if(mBody) mBody->GetType();
+    if (mBody) mBody->GetType();
     return static_cast<Box2DBody::BodyType>(mBodyDef.type);
 }
 
@@ -105,7 +105,7 @@ void Box2DBody::setBodyType(BodyType _bodyType)
 
 bool Box2DBody::isBullet() const
 {
-    if(mBody) mBody->IsBullet();
+    if (mBody) mBody->IsBullet();
     return mBodyDef.bullet;
 }
 
@@ -123,7 +123,7 @@ void Box2DBody::setBullet(bool _bullet)
 
 bool Box2DBody::sleepingAllowed() const
 {
-    if(mBody) mBody->IsSleepingAllowed();
+    if (mBody) mBody->IsSleepingAllowed();
     return mBodyDef.allowSleep;
 }
 
@@ -141,7 +141,7 @@ void Box2DBody::setSleepingAllowed(bool allowed)
 
 bool Box2DBody::fixedRotation() const
 {
-    if(mBody) mBody->IsFixedRotation();
+    if (mBody) mBody->IsFixedRotation();
     return mBodyDef.fixedRotation;
 }
 
@@ -159,7 +159,7 @@ void Box2DBody::setFixedRotation(bool _fixedRotation)
 
 bool Box2DBody::active() const
 {
-    if(mBody) mBody->IsActive();
+    if (mBody) mBody->IsActive();
     return mBodyDef.active;
 }
 
@@ -176,7 +176,7 @@ void Box2DBody::setActive(bool _active)
 
 bool Box2DBody::awake() const
 {
-    if(mBody) mBody->IsAwake();
+    if (mBody) mBody->IsAwake();
     return mBodyDef.awake;
 }
 
@@ -194,7 +194,7 @@ void Box2DBody::setAwake(bool _awake)
 QPointF Box2DBody::linearVelocity() const
 {
     b2Vec2 point;
-    if(mBody) point = mBody->GetLinearVelocity();
+    if (mBody) point = mBody->GetLinearVelocity();
     else point = mBodyDef.linearVelocity;
     return QPointF(point.x * scaleRatio,-point.y * scaleRatio);
 }
@@ -254,7 +254,7 @@ int Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
 Box2DFixture * Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int index)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
-    if(index < 0 || index >= body->mFixtures.length()) return NULL;
+    if (index < 0 || index >= body->mFixtures.length()) return NULL;
     return body->mFixtures.at(index);
 }
 
@@ -306,7 +306,7 @@ void Box2DBody::synchronize()
 
 void Box2DBody::cleanup(b2World *world)
 {
-    if(mBody) world->DestroyBody(mBody);
+    if (mBody) world->DestroyBody(mBody);
     mBody = 0;
     mWorld = 0;
 }
@@ -389,28 +389,26 @@ void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 
 float Box2DBody::getMass() const
 {
-    if (mBody)
-        return mBody->GetMass() * scaleRatio;
-    return 0.0;
+    return mBody ? mBody->GetMass() * scaleRatio : 0.0;
 }
 
-float Box2DBody::GetInertia() const
+float Box2DBody::getInertia() const
 {
-    if(mBody)
-        return mBody->GetInertia();
-    return 0.0;
+    return mBody ? mBody->GetInertia() : 0.0;
 }
 
-QPointF Box2DBody::GetLinearVelocityFromWorldPoint(const QPointF &point)
+QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
 {
-    const b2Vec2 &b2Point = mBody->GetLinearVelocityFromWorldPoint(b2Vec2(point.x() / scaleRatio,
-                                                  -point.y() / scaleRatio));
-    return QPointF(b2Point.x * scaleRatio,-b2Point.y * scaleRatio);
+    const b2Vec2 b2Point = mBody->GetLinearVelocityFromWorldPoint(b2Vec2(point.x() / scaleRatio,
+                                                                         -point.y() / scaleRatio));
+    return QPointF(b2Point.x * scaleRatio,
+                   -b2Point.y * scaleRatio);
 }
 
-QPointF Box2DBody::GetLinearVelocityFromLocalPoint(const QPointF &point)
+QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 {
-    const b2Vec2 &b2Point = mBody->GetLinearVelocityFromLocalPoint(b2Vec2(point.x() / scaleRatio,
-                                                  -point.y() / scaleRatio));
-    return QPointF(b2Point.x * scaleRatio,-b2Point.y * scaleRatio);
+    const b2Vec2 b2Point = mBody->GetLinearVelocityFromLocalPoint(b2Vec2(point.x() / scaleRatio,
+                                                                         -point.y() / scaleRatio));
+    return QPointF(b2Point.x * scaleRatio,
+                   -b2Point.y * scaleRatio);
 }

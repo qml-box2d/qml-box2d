@@ -64,10 +64,10 @@ public:
     void nullifyJoint();
     void createJoint();
     void cleanup(b2World *world);
-    b2Joint * GetJoint();
+    b2Joint *joint() const;
 
-    Q_INVOKABLE QPointF GetReactionForce(float32 inv_dt) const;
-    Q_INVOKABLE float GetReactionTorque(float32 inv_dt) const;
+    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
 signals:
     void lengthChanged();
