@@ -32,9 +32,25 @@
 #include "box2djoint.h"
 #include "box2ddestructionlistener.h"
 
-#include <QTimerEvent>
-
 #include <Box2D.h>
+
+StepDriver::StepDriver(Box2DWorld *world)
+    : QAbstractAnimation(world)
+    , mWorld(world)
+{
+    setLoopCount(-1); // loop forever
+}
+
+int StepDriver::duration() const
+{
+    return 1000;
+}
+
+void StepDriver::updateCurrentTime(int)
+{
+    mWorld->step();
+}
+
 
 class ContactEvent
 {
@@ -88,11 +104,11 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mContactListener(new ContactListener),
     mDestructionListener(new Box2DDestructionListener),
     mTimeStep(1.0f / 60.0f),
-    mVelocityIterations(10),
-    mPositionIterations(10),
-    mFrameTime(1000 / 60),
+    mVelocityIterations(8),
+    mPositionIterations(3),
     mGravity(qreal(0), qreal(10)),
-    mIsRunning(true)
+    mIsRunning(true),
+    mStepDriver(new StepDriver(this))
 {
     connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
             this, SLOT(fixtureDestroyed(Box2DFixture*)));
@@ -126,9 +142,9 @@ void Box2DWorld::setRunning(bool running)
 
     if (isComponentComplete()) {
         if (running)
-            mTimer.start(mFrameTime, this);
+            mStepDriver->start();
         else
-            mTimer.stop();
+            mStepDriver->stop();
     }
 }
 
@@ -163,8 +179,7 @@ void Box2DWorld::componentComplete()
 
     emit initialized();
     if (mIsRunning)
-        mTimer.start(mFrameTime, this);
-
+        mStepDriver->start();
 }
 
 /**
@@ -198,44 +213,41 @@ void Box2DWorld::fixtureDestroyed(Box2DFixture *fixture)
     }
 }
 
-void Box2DWorld::timerEvent(QTimerEvent *event)
+void Box2DWorld::step()
 {
-    if (event->timerId() == mTimer.timerId()) {
-        mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
-        foreach (Box2DBody *body, mBodies)
-            body->synchronize();
+    mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
 
-        // Emit contact signals
-        foreach (const ContactEvent &event, mContactListener->events()) {
-            switch (event.type) {
-            case ContactEvent::BeginContact:
-                event.fixtureA->emitBeginContact(event.fixtureB);
-                event.fixtureB->emitBeginContact(event.fixtureA);
-                break;
-            case ContactEvent::EndContact:
-                event.fixtureA->emitEndContact(event.fixtureB);
-                event.fixtureB->emitEndContact(event.fixtureA);
-                break;
-            }
+    foreach (Box2DBody *body, mBodies)
+        body->synchronize();
+
+    // Emit contact signals
+    foreach (const ContactEvent &event, mContactListener->events()) {
+        switch (event.type) {
+        case ContactEvent::BeginContact:
+            event.fixtureA->emitBeginContact(event.fixtureB);
+            event.fixtureB->emitBeginContact(event.fixtureA);
+            break;
+        case ContactEvent::EndContact:
+            event.fixtureA->emitEndContact(event.fixtureB);
+            event.fixtureB->emitEndContact(event.fixtureA);
+            break;
         }
-        mContactListener->clearEvents();
+    }
+    mContactListener->clearEvents();
 
-        // Emit signals for the current state of the contacts
-        b2Contact *contact = mWorld->GetContactList();
-        while (contact) {
-            Box2DFixture *fixtureA = toBox2DFixture(contact->GetFixtureA());
-            Box2DFixture *fixtureB = toBox2DFixture(contact->GetFixtureB());
+    // Emit signals for the current state of the contacts
+    b2Contact *contact = mWorld->GetContactList();
+    while (contact) {
+        Box2DFixture *fixtureA = toBox2DFixture(contact->GetFixtureA());
+        Box2DFixture *fixtureB = toBox2DFixture(contact->GetFixtureB());
 
-            fixtureA->emitContactChanged(fixtureB);
-            fixtureB->emitContactChanged(fixtureA);
+        fixtureA->emitContactChanged(fixtureB);
+        fixtureB->emitContactChanged(fixtureA);
 
-            contact = contact->GetNext();
-        }
-
-        emit stepped();
+        contact = contact->GetNext();
     }
 
-    QQuickItem::timerEvent(event);
+    emit stepped();
 }
 
 void Box2DWorld::itemChange(ItemChange change,
