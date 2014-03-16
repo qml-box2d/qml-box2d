@@ -23,6 +23,7 @@ INSTALLS += target qmldir
 
 SOURCES += box2dplugin.cpp \
     box2dworld.cpp \
+    box2dcontact.cpp \
     box2dbody.cpp \
     box2dfixture.cpp \
     box2ddebugdraw.cpp \
@@ -38,11 +39,12 @@ SOURCES += box2dplugin.cpp \
     box2dwheeljoint.cpp \
     box2dmousejoint.cpp \
     box2dgearjoint.cpp \
-    box2dropejoint.cpp
+    box2dropejoint.cpp 
 
 HEADERS += \
     box2dplugin.h \
     box2dworld.h \
+    box2dcontact.h \
     box2dbody.h \
     box2dfixture.h \
     box2ddebugdraw.h \

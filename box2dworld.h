@@ -33,6 +33,7 @@
 #include <QList>
 
 class Box2DBody;
+class Box2DContact;
 class Box2DFixture;
 class Box2DJoint;
 class Box2DWorld;
@@ -124,15 +125,21 @@ public:
 
     void step();
 
+    void emitPreSolve(Box2DContact * contact);
+    void emitPostSolve(Box2DContact * contact);
+
 private slots:
     void unregisterBody();
     void fixtureDestroyed(Box2DFixture *fixture);
 
 signals:
+    void initialized();
+    void preSolve(Box2DContact * contact);
+    void postSolve(Box2DContact * contact);
     void gravityChanged();
     void runningChanged();
     void stepped();
-    void initialized();
+
 
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
