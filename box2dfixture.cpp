@@ -113,6 +113,9 @@ void Box2DFixture::setCategories(CategoryFlags layers)
         return;
 
     mFixtureDef.filter.categoryBits = layers;
+    if(mFixture)
+        mFixture->SetFilterData(mFixtureDef.filter);
+
     emit categoriesChanged();
 }
 
@@ -127,6 +130,9 @@ void Box2DFixture::setCollidesWith(CategoryFlags layers)
         return;
 
     mFixtureDef.filter.maskBits = layers;
+    if(mFixture)
+        mFixture->SetFilterData(mFixtureDef.filter);
+
     emit collidesWithChanged();
 }
 
@@ -141,6 +147,9 @@ void Box2DFixture::setGroupIndex(int groupIndex)
         return;
 
     mFixtureDef.filter.groupIndex = groupIndex;
+    if(mFixture)
+        mFixture->SetFilterData(mFixtureDef.filter);
+
     emit groupIndexChanged();
 }
 
