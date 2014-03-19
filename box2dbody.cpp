@@ -293,10 +293,21 @@ void Box2DBody::synchronize()
     const qreal newY = -position.y * scaleRatio;
     const qreal newRotation = -(angle * 180.0) / b2_pi;
 
-    if (!qFuzzyCompare(x(), newX))
+    bool xChanged = false;
+    bool yChanged = false;
+
+    if (!qFuzzyCompare(x(), newX)) {
         setX(newX);
-    if (!qFuzzyCompare(y(), newY))
+        xChanged = true;
+    }
+
+    if (!qFuzzyCompare(y(), newY)) {
         setY(newY);
+        yChanged = true;
+    }
+
+    if (xChanged || yChanged)
+        emit positionChanged(QPointF(newX, newY));
 
     if (!qFuzzyCompare(rotation(), newRotation))
         setRotation(newRotation);
