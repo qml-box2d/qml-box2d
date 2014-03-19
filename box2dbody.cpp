@@ -213,6 +213,24 @@ void Box2DBody::setLinearVelocity(const QPointF &_linearVelocity)
     emit linearVelocityChanged();
 }
 
+qreal Box2DBody::angularVelocity() const
+{
+    return - mBodyDef.angularVelocity * 180 / b2_pi;
+}
+
+void Box2DBody::setAngularVelocity(qreal velocity)
+{
+    qreal velocityRad = - velocity * (b2_pi / 180);
+    if (qFuzzyCompare(angularVelocity(), velocityRad))
+        return;
+
+    mBodyDef.angularVelocity = velocityRad;
+    if (mBody)
+        mBody->SetAngularVelocity(velocityRad);
+
+    emit angularVelocityChanged();
+}
+
 float Box2DBody::gravityScale() const
 {
     return mBodyDef.gravityScale;
