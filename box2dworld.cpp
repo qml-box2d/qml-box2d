@@ -142,13 +142,13 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
 Box2DWorld::~Box2DWorld()
 {
     // Bodies must be deleted before the world
-    foreach (Box2DBody *body, mBodies)
+    while(!mBodies.empty())
     {
+        Box2DBody* body = mBodies.takeFirst();
         if (body->parent() == this)
             delete body;
         else
             body->cleanup(this->world());
-
     }
     mBodies.clear();
 
@@ -213,6 +213,7 @@ void Box2DWorld::componentComplete()
 void Box2DWorld::registerBody(Box2DBody *body)
 {
     mBodies.append(body);
+
     body->initialize(mWorld);
     connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
 }
