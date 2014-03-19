@@ -405,6 +405,12 @@ float Box2DBody::getMass() const
     return mBody ? mBody->GetMass() * scaleRatio : 0.0;
 }
 
+void Box2DBody::resetMassData()
+{
+    if (mBody)
+        mBody->ResetMassData();
+}
+
 float Box2DBody::getInertia() const
 {
     return mBody ? mBody->GetInertia() : 0.0;
