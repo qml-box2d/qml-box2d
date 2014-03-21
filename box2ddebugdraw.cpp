@@ -53,7 +53,6 @@ public:
 
     qreal mAxisScale;
     Box2DDebugDraw::DebugShow mDebugShow;
-    Box2DDebugDraw::DebugFlag mDebugFlag;
 
 private:
     QPainter *mPainter;
@@ -64,9 +63,9 @@ private:
 DebugDraw::DebugDraw():
     mAxisScale(0.5),
     mDebugShow(Box2DDebugDraw::DebugShowAll),
-    mDebugFlag(Box2DDebugDraw::DebugFlagAll),
     mWorld(0)
 {
+    SetFlags(Box2DDebugDraw::DebugFlagAll);
 }
 
 void DebugDraw::setWorld(Box2DWorld *world)
