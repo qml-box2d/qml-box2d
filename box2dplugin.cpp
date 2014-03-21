@@ -44,6 +44,7 @@
 #include "box2dgearjoint.h"
 #include "box2dropejoint.h"
 #include "box2dcontact.h"
+#include "box2draycast.h"
 
 Box2DPlugin::Box2DPlugin(QObject *parent) :
     QQmlExtensionPlugin(parent)
@@ -78,5 +79,7 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DGearJoint>(uri, 1, 1, "GearJoint");
     qmlRegisterType<Box2DRopeJoint>(uri, 1, 1, "RopeJoint");
 
-    qmlRegisterUncreatableType<Box2DContact>(uri, 1,0, "Contact",QStringLiteral("Contact class"));
+    qmlRegisterUncreatableType<Box2DContact>(uri, 1,1, "Contact",QStringLiteral("Contact class"));
+    qmlRegisterType<Box2DRayCast>(uri, 1,1, "RayCast");
+
 }
