@@ -1,6 +1,7 @@
 /*
  * box2ddebugdraw.cpp
  * Copyright (c) 2010 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (c) 2014 Ruslan Moukhlynin <ruslan@khvmntk.ru>
  *
  * This file is part of the Box2D QML plugin.
  *
@@ -26,7 +27,6 @@
 #include "box2ddebugdraw.h"
 
 #include "box2dworld.h"
-
 #include <Box2D.h>
 
 #include <QPainter>
@@ -34,10 +34,9 @@
 class DebugDraw : public b2Draw
 {
 public:
-    DebugDraw(QPainter *painter, Box2DWorld *world);
-
-    void draw();
-
+    explicit DebugDraw();
+    void setWorld(Box2DWorld *world);
+    void draw(QPainter *painter);
     void DrawPolygon(const b2Vec2 *vertices, int32 vertexCount,
                      const b2Color &color);
     void DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount,
@@ -49,28 +48,36 @@ public:
     void DrawSegment(const b2Vec2 &p1, const b2Vec2 &p2,
                      const b2Color &color);
     void DrawTransform(const b2Transform &xf);
+    void setAxisLength(qreal _axisLength);
+    void setDebugShow(Box2DDebugDraw::DebugShape _debugShow);
+
+    qreal mAxisScale;
+    Box2DDebugDraw::DebugShape mDebugShape;
 
 private:
-    QPainter *mP;
+    QPainter *mPainter;
     b2World *mWorld;
 };
 
-DebugDraw::DebugDraw(QPainter *painter, Box2DWorld *world)
-    : mP(painter)
-    , mWorld(world->world())
+
+DebugDraw::DebugDraw():
+    mAxisScale(0.5),
+    mDebugShape(Box2DDebugDraw::DebugShowAll),
+    mWorld(0)
 {
-    SetFlags(e_shapeBit |
-             e_jointBit |
-             e_aabbBit |
-             e_pairBit |
-             e_centerOfMassBit);
+    SetFlags(Box2DDebugDraw::DebugFlagAll);
 }
 
-void DebugDraw::draw()
+void DebugDraw::setWorld(Box2DWorld *world)
 {
+    mWorld = world->world();
     mWorld->SetDebugDraw(this);
+}
+
+void DebugDraw::draw(QPainter *painter)
+{
+    mPainter = painter;
     mWorld->DrawDebugData();
-    mWorld->SetDebugDraw(0);
 }
 
 static QPointF toQPointF(const b2Vec2 &vec)
@@ -100,72 +107,151 @@ static QPolygonF toQPolygonF(const b2Vec2 *vertices, int32 vertexCount)
 void DebugDraw::DrawPolygon(const b2Vec2 *vertices, int32 vertexCount,
                             const b2Color &color)
 {
-    mP->setPen(toQColor(color));
-    mP->setBrush(Qt::NoBrush);
-    mP->drawPolygon(toQPolygonF(vertices, vertexCount));
+    if (mDebugShape & Box2DDebugDraw::Polygon)
+    {
+        mPainter->setPen(toQColor(color));
+        mPainter->setBrush(Qt::NoBrush);
+        mPainter->drawPolygon(toQPolygonF(vertices, vertexCount));
+    }
 }
 
 void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount,
                                  const b2Color &color)
 {
-    mP->setPen(Qt::NoPen);
-    mP->setBrush(toQColor(color));
-    mP->drawPolygon(toQPolygonF(vertices, vertexCount));
+    if (mDebugShape & Box2DDebugDraw::SolidPolygon)
+    {
+        mPainter->setPen(Qt::NoPen);
+        mPainter->setBrush(toQColor(color));
+        mPainter->drawPolygon(toQPolygonF(vertices, vertexCount));
+    }
 }
 
 void DebugDraw::DrawCircle(const b2Vec2 &center, float32 radius,
                            const b2Color &color)
 {
-    mP->setPen(toQColor(color));
-    mP->setBrush(Qt::NoBrush);
-    mP->drawEllipse(toQPointF(center),
-                    radius * scaleRatio,
-                    radius * scaleRatio);
+    if (mDebugShape & Box2DDebugDraw::Circle)
+    {
+        mPainter->setPen(toQColor(color));
+        mPainter->setBrush(Qt::NoBrush);
+        mPainter->drawEllipse(toQPointF(center),
+                        radius * scaleRatio,
+                        radius * scaleRatio);
+    }
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
                                 const b2Vec2 &axis, const b2Color &color)
 {
     Q_UNUSED(axis)
-
-    mP->setPen(Qt::NoPen);
-    mP->setBrush(toQColor(color));
-    mP->drawEllipse(toQPointF(center),
-                   radius * scaleRatio,
-                   radius * scaleRatio);
+    if (mDebugShape & Box2DDebugDraw::SolidCircle)
+    {
+        mPainter->setPen(Qt::NoPen);
+        mPainter->setBrush(toQColor(color));
+        QPointF p1 = toQPointF(center);
+        QPointF p2 = toQPointF(axis);
+        mPainter->drawEllipse(p1,
+                        radius * scaleRatio,
+                        radius * scaleRatio);
+        mPainter->setPen(qRgb(200,64,0));
+        p2.setX(p1.x() + radius * p2.x());
+        p2.setY(p1.y() + radius * p2.y());
+        mPainter->drawLine(p1,p2);
+    }
 }
 
 void DebugDraw::DrawSegment(const b2Vec2 &p1, const b2Vec2 &p2,
                             const b2Color &color)
 {
-    mP->setPen(toQColor(color));
-    mP->drawLine(toQPointF(p1), toQPointF(p2));
+    if (mDebugShape & Box2DDebugDraw::Segment)
+    {
+        mPainter->setPen(toQColor(color));
+        mPainter->drawLine(toQPointF(p1), toQPointF(p2));
+    }
 }
 
 void DebugDraw::DrawTransform(const b2Transform &xf)
 {
-    Q_UNUSED(xf)
-    // TODO: Not sure how to draw transforms
+    if (mDebugShape & Box2DDebugDraw::Transform)
+    {
+        QPointF p1 = toQPointF(xf.p);
+        QPointF p2 =  toQPointF(xf.q.GetXAxis());
+        p2 = QPointF(p1.x() + mAxisScale * p2.x(),p1.y() + mAxisScale * p2.y());
+
+        mPainter->setPen(Qt::blue); // X axis
+        mPainter->drawLine(p1,p2);
+
+        p2 =  toQPointF(xf.q.GetYAxis());
+        p2 = QPointF(p1.x() + mAxisScale * p2.x(),p1.y() + mAxisScale * p2.y());
+
+        mPainter->setPen(Qt::yellow); // Y axis
+        mPainter->drawLine(p1,p2);
+    }
 }
 
 
 Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
     QQuickPaintedItem (parent),
-    mWorld(0)
+    mWorld(0),
+    mDebugDraw(new DebugDraw())
 {
     setFlag(QQuickItem::ItemHasContents, true);
+}
+
+Box2DDebugDraw::~Box2DDebugDraw()
+{
+    if (mDebugDraw)
+        delete mDebugDraw;
+}
+
+qreal Box2DDebugDraw::axisScale() const
+{
+    return mDebugDraw->mAxisScale;
+}
+
+void Box2DDebugDraw::setAxisScale(qreal _axisScale)
+{
+    if (mDebugDraw->mAxisScale != _axisScale)
+    {
+        mDebugDraw->mAxisScale = _axisScale;
+        emit axisScaleChanged();
+    }
+}
+
+Box2DDebugDraw::DebugFlag Box2DDebugDraw::debugFlag() const
+{
+    return static_cast<Box2DDebugDraw::DebugFlag>(mDebugDraw->GetFlags());
+}
+
+void Box2DDebugDraw::setDebugFlag(Box2DDebugDraw::DebugFlag _debugFlag)
+{
+    if (mDebugDraw->GetFlags() != _debugFlag)
+    {
+        mDebugDraw->SetFlags(_debugFlag);
+        emit debugFlagChanged();
+    }
+}
+
+Box2DDebugDraw::DebugShape Box2DDebugDraw::debugShape() const
+{
+    return mDebugDraw->mDebugShape;
+}
+
+void Box2DDebugDraw::setDebugShape(Box2DDebugDraw::DebugShape _debugShow)
+{
+    if (mDebugDraw->mDebugShape != _debugShow)
+    {
+        mDebugDraw->mDebugShape = _debugShow;
+        emit debugShapeChanged();
+    }
 }
 
 void Box2DDebugDraw::setWorld(Box2DWorld *world)
 {
     if (mWorld == world)
         return;
-
     if (mWorld)
         mWorld->disconnect(this);
-
     mWorld = world;
-
     if (mWorld)
         connect(mWorld, SIGNAL(stepped()), SLOT(onWorldStepped()));
 }
@@ -177,15 +263,22 @@ void Box2DDebugDraw::paint(QPainter *p)
 
     // Darken the view to make the debug draw stand out more
     p->fillRect(0, 0, width(), height(), QColor(0, 0, 0, 128));
+    mDebugDraw->draw(p);
+}
 
-    DebugDraw debugDraw(p, mWorld);
-    debugDraw.draw();
+void Box2DDebugDraw::componentComplete()
+{
+    QQuickItem::componentComplete();
+    connect(mWorld,SIGNAL(initialized()),this,SLOT(onWorldInitialized()));
 }
 
 void Box2DDebugDraw::onWorldStepped()
 {
     if (isVisible() && opacity() > 0)
-    {
         update();
-    }
+}
+
+void Box2DDebugDraw::onWorldInitialized()
+{
+    mDebugDraw->setWorld(mWorld);
 }
