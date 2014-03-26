@@ -348,15 +348,18 @@ b2Shape *Box2DChain::createShape()
     }
 
     b2ChainShape *shape = new b2ChainShape;
-    if (mLoop)
+    if (mLoop) {
         shape->CreateLoop(vertices.data(), count);
-    else
+    } else {
         shape->CreateChain(vertices.data(), count);
 
-    if (prevVertexFlag)
-        shape->SetPrevVertex(b2Vec2(mPrevVertex.x() / scaleRatio, mPrevVertex.y() / scaleRatio));
-    if (nextVertexFlag)
-        shape->SetNextVertex(b2Vec2(mNextVertex.x() / scaleRatio, mNextVertex.y() / scaleRatio));
+        if (prevVertexFlag)
+            shape->SetPrevVertex(b2Vec2(mPrevVertex.x() / scaleRatio,
+                                        -mPrevVertex.y() / scaleRatio));
+        if (nextVertexFlag)
+            shape->SetNextVertex(b2Vec2(mNextVertex.x() / scaleRatio,
+                                        -mNextVertex.y() / scaleRatio));
+    }
 
     return shape;
 }
