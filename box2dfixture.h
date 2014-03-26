@@ -96,7 +96,7 @@ protected:
     float factorHeight;
     virtual b2Shape *createShape() = 0;
     void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-    void applyShape(b2Shape * shape);
+    void applyShape(b2Shape *shape);
 
 signals:
     void densityChanged();
@@ -178,8 +178,11 @@ public:
     explicit Box2DVerticesShape(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
+
     QVariantList vertices() const { return mVertices; }
-    void setVertices(const QVariantList &vertices) {
+
+    void setVertices(const QVariantList &vertices)
+    {
         if (vertices == mVertices)
             return;
         mVertices = vertices;
@@ -200,6 +203,7 @@ public:
     explicit Box2DPolygon(QQuickItem *parent = 0) :
         Box2DVerticesShape(parent)
     { }
+
     void scale();
 
 protected:
