@@ -229,25 +229,23 @@ b2Shape *Box2DBox::createShape()
     const qreal _width = width() / scaleRatio;
     const qreal _height = height() / scaleRatio;
 
+    b2Vec2 vertices[4];
     vertices[0].Set(_x, _y);
     vertices[1].Set(_x , _y - _height);
     vertices[2].Set(_x + _width , _y - _height);
-    vertices[3].Set(_x + _width , _y );
-    for(int i = 1;i < 4;i ++)
-    {
-        if (i > 0)
-        {
-            if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop)
-            {
+    vertices[3].Set(_x + _width , _y);
+
+    for (int i = 1; i < 4; i++) {
+        if (i > 0) {
+            if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
                 qWarning() << "Box: vertices are too close together";
                 return 0;
             }
         }
     }
 
-    int32 count = 4;
     b2PolygonShape *shape = new b2PolygonShape;
-    shape->Set(vertices, count);
+    shape->Set(vertices, 4);
     return shape;
 }
 

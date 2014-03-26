@@ -135,7 +135,6 @@ public:
 
 protected:
     b2Shape *createShape();
-    b2Vec2 vertices[4];
 };
 
 
