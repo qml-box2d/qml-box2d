@@ -224,28 +224,16 @@ b2Vec2 *Box2DVerticesShape::scaleVertices()
 
 b2Shape *Box2DBox::createShape()
 {
-    const qreal _x = x() / scaleRatio;
-    const qreal _y = -y() / scaleRatio;
-    const qreal _width = width() / scaleRatio;
-    const qreal _height = height() / scaleRatio;
-
-    b2Vec2 vertices[4];
-    vertices[0].Set(_x, _y);
-    vertices[1].Set(_x , _y - _height);
-    vertices[2].Set(_x + _width , _y - _height);
-    vertices[3].Set(_x + _width , _y);
-
-    for (int i = 1; i < 4; i++) {
-        if (i > 0) {
-            if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
-                qWarning() << "Box: vertices are too close together";
-                return 0;
-            }
-        }
-    }
+    const qreal _halfWidth = width() / scaleRatio / 2;
+    const qreal _halfHeight = height() / scaleRatio / 2;
+    const qreal _centerX = x() / scaleRatio + _halfWidth;
+    const qreal _centerY = -y() / scaleRatio - _halfHeight;
 
     b2PolygonShape *shape = new b2PolygonShape;
-    shape->Set(vertices, 4);
+    shape->SetAsBox(_halfWidth, _halfHeight,
+                    b2Vec2(_centerX, _centerY),
+                    rotation() * b2_pi / -180);
+
     return shape;
 }
 
