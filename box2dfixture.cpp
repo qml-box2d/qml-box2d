@@ -182,7 +182,7 @@ void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldG
     qreal ow = oldGeometry.width();
     qreal oh = oldGeometry.height();
 
-    if ((nw != ow && !qFuzzyCompare(ow, 0.0)) ||  (nh != oh && !qFuzzyCompare(oh, 0.0))) {
+    if (!qFuzzyCompare(ow, 0.0) && !qFuzzyCompare(oh, 0.0) && newGeometry != oldGeometry) {
         factorWidth = nw / ow;
         factorHeight = nh / oh;
         scale();
