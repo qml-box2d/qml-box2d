@@ -111,6 +111,7 @@ public:
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
     Q_INVOKABLE QPointF getWorldCenter() const;
     Q_INVOKABLE float getMass() const;
+    Q_INVOKABLE void resetMassData();
     Q_INVOKABLE float getInertia() const;
     Q_INVOKABLE QPointF getLinearVelocityFromWorldPoint(const QPointF &point) const;
     Q_INVOKABLE QPointF getLinearVelocityFromLocalPoint(const QPointF &point) const;
