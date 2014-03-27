@@ -164,6 +164,8 @@ Box2DBody *Box2DFixture::getBody() const
 
 void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+
     if (!isComponentComplete()) return;
 
     qreal nw = newGeometry.width();
