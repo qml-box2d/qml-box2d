@@ -213,6 +213,28 @@ void Box2DBody::setLinearVelocity(const QPointF &_linearVelocity)
     emit linearVelocityChanged();
 }
 
+qreal Box2DBody::angularVelocity() const
+{
+    qreal velocity;
+    if(mBody) velocity = mBody->GetAngularVelocity();
+    else velocity = mBodyDef.angularVelocity;
+
+    return velocity;
+}
+
+void Box2DBody::setAngularVelocity(qreal velocity)
+{
+    if(qFuzzyCompare(angularVelocity(), velocity))
+        return;
+
+    if (mBody)
+        mBody->SetAngularVelocity(velocity);
+    else
+        mBodyDef.angularVelocity = velocity;
+
+    emit angularVelocityChanged();
+}
+
 float Box2DBody::gravityScale() const
 {
     return mBodyDef.gravityScale;
@@ -293,10 +315,23 @@ void Box2DBody::synchronize()
     const qreal newY = -position.y * scaleRatio;
     const qreal newRotation = -(angle * 180.0) / b2_pi;
 
+    bool xChanged = false;
+    bool yChanged = false;
+
     if (!qFuzzyCompare(x(), newX))
+    {
         setX(newX);
+        xChanged = true;
+    }
+
     if (!qFuzzyCompare(y(), newY))
+    {
         setY(newY);
+        yChanged = true;
+    }
+
+    if(xChanged || yChanged)
+        emit positionChanged(QPointF(newX, newY));
 
     if (!qFuzzyCompare(rotation(), newRotation))
         setRotation(newRotation);
@@ -390,6 +425,12 @@ void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 float Box2DBody::getMass() const
 {
     return mBody ? mBody->GetMass() * scaleRatio : 0.0;
+}
+
+void Box2DBody::resetMassData()
+{
+    if (mBody)
+        mBody->ResetMassData();
 }
 
 float Box2DBody::getInertia() const

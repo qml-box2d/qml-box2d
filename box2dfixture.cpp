@@ -113,6 +113,9 @@ void Box2DFixture::setCategories(CategoryFlags layers)
         return;
 
     mFixtureDef.filter.categoryBits = layers;
+    if(mFixture)
+        mFixture->SetFilterData(mFixtureDef.filter);
+
     emit categoriesChanged();
 }
 
@@ -127,6 +130,9 @@ void Box2DFixture::setCollidesWith(CategoryFlags layers)
         return;
 
     mFixtureDef.filter.maskBits = layers;
+    if(mFixture)
+        mFixture->SetFilterData(mFixtureDef.filter);
+
     emit collidesWithChanged();
 }
 
@@ -141,6 +147,9 @@ void Box2DFixture::setGroupIndex(int groupIndex)
         return;
 
     mFixtureDef.filter.groupIndex = groupIndex;
+    if(mFixture)
+        mFixture->SetFilterData(mFixtureDef.filter);
+
     emit groupIndexChanged();
 }
 
@@ -164,6 +173,8 @@ Box2DBody *Box2DFixture::getBody() const
 
 void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+
     if (!isComponentComplete()) return;
 
     qreal nw = newGeometry.width();
@@ -171,7 +182,7 @@ void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldG
     qreal ow = oldGeometry.width();
     qreal oh = oldGeometry.height();
 
-    if ((nw != ow && !qFuzzyCompare(ow, 0.0)) ||  (nh != oh && !qFuzzyCompare(oh, 0.0))) {
+    if (!qFuzzyCompare(ow, 0.0) && !qFuzzyCompare(oh, 0.0) && newGeometry != oldGeometry) {
         factorWidth = nw / ow;
         factorHeight = nh / oh;
         scale();
@@ -261,11 +272,18 @@ b2Shape *Box2DCircle::createShape()
 {
     b2CircleShape *shape = new b2CircleShape;
     shape->m_radius = mRadius / scaleRatio;
-    shape->m_p.Set(shape->m_radius, -shape->m_radius);
-    if (height() == 0 || width() == 0) {
+
+    const QPointF parentSize = QPointF(parentItem()->width(), parentItem()->height());
+    const float shapeX = (parentSize.x() / 2 + x()) / scaleRatio;
+    const float shapeY = (parentSize.y() / 2 + y()) / scaleRatio;
+
+    shape->m_p.Set(shapeX, -shapeY);
+
+    if(height() == 0 || width() == 0) {
         this->setWidth(shape->m_radius);
         this->setHeight(shape->m_radius);
     }
+
     return shape;
 }
 
