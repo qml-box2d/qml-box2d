@@ -133,6 +133,7 @@ signals:
     void linearVelocityChanged();
     void bodyCreated();
     void gravityScaleChanged();
+    void positionChanged(const QPointF &position);
 
 private slots:
     void onRotationChanged();
