@@ -154,6 +154,7 @@ public:
         if (mRadius == radius)
             return;
         mRadius = radius;
+        setImplicitSize(mRadius * 2, mRadius * 2);
         scale();
         emit radiusChanged();
     }
@@ -193,7 +194,6 @@ signals:
 protected:
     QVariantList mVertices;
     b2Vec2 *scaleVertices();
-    virtual b2Shape *createShape(){ return NULL; }
 };
 
 class Box2DPolygon : public Box2DVerticesShape
