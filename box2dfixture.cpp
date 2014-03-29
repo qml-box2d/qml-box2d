@@ -182,7 +182,7 @@ void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldG
     qreal ow = oldGeometry.width();
     qreal oh = oldGeometry.height();
 
-    if ((nw != ow && !qFuzzyCompare(ow, 0.0)) ||  (nh != oh && !qFuzzyCompare(oh, 0.0))) {
+    if (!qFuzzyCompare(ow, 0.0) && !qFuzzyCompare(oh, 0.0) && newGeometry != oldGeometry) {
         factorWidth = nw / ow;
         factorHeight = nh / oh;
         scale();
@@ -272,11 +272,18 @@ b2Shape *Box2DCircle::createShape()
 {
     b2CircleShape *shape = new b2CircleShape;
     shape->m_radius = mRadius / scaleRatio;
-    shape->m_p.Set(shape->m_radius, -shape->m_radius);
-    if (height() == 0 || width() == 0) {
+
+    const QPointF parentSize = QPointF(parentItem()->width(), parentItem()->height());
+    const float shapeX = (parentSize.x() / 2 + x()) / scaleRatio;
+    const float shapeY = (parentSize.y() / 2 + y()) / scaleRatio;
+
+    shape->m_p.Set(shapeX, -shapeY);
+
+    if(height() == 0 || width() == 0) {
         this->setWidth(shape->m_radius);
         this->setHeight(shape->m_radius);
     }
+
     return shape;
 }
 
