@@ -269,10 +269,9 @@ int Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
     return body->mFixtures.length();
 }
 
-Box2DFixture * Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int index)
+Box2DFixture *Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int index)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
-    if (index < 0 || index >= body->mFixtures.length()) return NULL;
     return body->mFixtures.at(index);
 }
 
