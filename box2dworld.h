@@ -137,7 +137,6 @@ signals:
     void runningChanged();
     void stepped();
 
-
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
     void registerBodies(QQuickItem *parent);

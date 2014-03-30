@@ -92,6 +92,7 @@ signals:
     void localAnchorAChanged();
     void localAnchorBChanged();
     void localAxisAChanged();
+
 private:
     b2WheelJointDef mWheelJointDef;
     b2WheelJoint *mWheelJoint;

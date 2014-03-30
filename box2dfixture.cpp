@@ -178,7 +178,8 @@ void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldG
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
 
-    if (!isComponentComplete()) return;
+    if (!isComponentComplete())
+        return;
 
     qreal nw = newGeometry.width();
     qreal nh = newGeometry.height();

@@ -65,6 +65,7 @@ signals:
     void maxLengthChanged();
     void localAnchorAChanged();
     void localAnchorBChanged();
+
 private:
     b2RopeJointDef mRopeJointDef;
     b2RopeJoint *mRopeJoint;
