@@ -49,7 +49,7 @@ Rectangle {
         var mouseJoint = jointComponent.createObject(world);
         mouseJoint.target = Qt.point(x,y);
         mouseJoint.bodyB = body;
-        mouseJoint.maxForce = body.getMass() * 30.0;
+        mouseJoint.maxForce = body.getMass();
         global.dragged = true;
         global.joint = mouseJoint;
     }

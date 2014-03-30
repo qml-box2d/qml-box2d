@@ -373,7 +373,7 @@ void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 
 float Box2DBody::getMass() const
 {
-    return mBody ? mBody->GetMass() * scaleRatio : 0.0;
+    return mBody ? mBody->GetMass() * scaleRatio * scaleRatio : 0.0;
 }
 
 void Box2DBody::resetMassData()
