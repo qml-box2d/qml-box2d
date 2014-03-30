@@ -119,14 +119,11 @@ public:
 
     void componentComplete();
 
-    void registerBody(Box2DBody *body);
-
     b2World *world() const { return mWorld; }
 
     void step();
 
 private slots:
-    void unregisterBody();
     void fixtureDestroyed(Box2DFixture *fixture);
 
 signals:
@@ -139,7 +136,7 @@ signals:
 
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
-    void registerBodies(QQuickItem *parent);
+    void initializeBodies(QQuickItem *parent);
 
 private:
     b2World *mWorld;

@@ -108,7 +108,7 @@ public:
 
     void initialize(b2World *world);
     void synchronize();
-    void cleanup(b2World *world);
+    void nullifyBody();
 
     Q_INVOKABLE void applyForce(const QPointF &force,const QPointF &point);
     Q_INVOKABLE void applyTorque(qreal torque);
@@ -195,6 +195,11 @@ inline bool Box2DBody::isActive() const
 inline float Box2DBody::gravityScale() const
 {
     return mBodyDef.gravityScale;
+}
+
+inline void Box2DBody::nullifyBody()
+{
+    mBody = 0;
 }
 
 #endif // BOX2DBODY_H

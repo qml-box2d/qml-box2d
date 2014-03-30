@@ -141,16 +141,10 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
 
 Box2DWorld::~Box2DWorld()
 {
-    // Bodies must be deleted before the world
-    while (!mBodies.empty())
-    {
-        Box2DBody* body = mBodies.takeFirst();
-        if (body->parent() == this)
-            delete body;
-        else
-            body->cleanup(this->world());
-    }
-    mBodies.clear();
+    // The bodies will be deleted as part of the world, so it's important
+    // that they are no longer referenced from the Box2DBody instances.
+    for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
+        static_cast<Box2DBody *>(body->GetUserData())->nullifyBody();
 
     delete mWorld;
     delete mContactListener;
@@ -195,33 +189,11 @@ void Box2DWorld::componentComplete()
     mWorld->SetContactListener(mContactListener);
     mWorld->SetDestructionListener(mDestructionListener);
 
-    registerBodies(this);
+    initializeBodies(this);
 
     emit initialized();
     if (mIsRunning)
         mStepDriver->start();
-}
-
-/**
- * Registers a Box2D body with this world. When the world component is
- * complete, it will initialize the body.
- */
-void Box2DWorld::registerBody(Box2DBody *body)
-{
-    mBodies.append(body);
-
-    body->initialize(mWorld);
-    connect(body, SIGNAL(destroyed()), this, SLOT(unregisterBody()));
-}
-
-/**
- * Unregisters a Box2D body from this world. Called when a dynamically
- * created Box2D body has been deleted.
- */
-void Box2DWorld::unregisterBody()
-{
-    Box2DBody *body = static_cast<Box2DBody*>(sender());
-    mBodies.removeOne(body);
 }
 
 void Box2DWorld::fixtureDestroyed(Box2DFixture *fixture)
@@ -238,8 +210,8 @@ void Box2DWorld::step()
 {
     mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
 
-    foreach (Box2DBody *body, mBodies)
-        body->synchronize();
+    for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
+        static_cast<Box2DBody *>(body->GetUserData())->synchronize();
 
     // Emit contact signals
     foreach (const ContactEvent &event, mContactListener->events()) {
@@ -271,26 +243,25 @@ void Box2DWorld::step()
     emit stepped();
 }
 
-void Box2DWorld::itemChange(ItemChange change,
-                                const ItemChangeData &value)
+void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)
 {
     if (isComponentComplete()) {
         if (change == ItemChildAddedChange) {
             QObject *child = value.item;
-            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child)) {
-                registerBody(body);
-            }
+            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
+                body->initialize(mWorld);
         }
     }
 
     QQuickItem::itemChange(change, value);
 }
 
-void Box2DWorld::registerBodies(QQuickItem *parent)
+void Box2DWorld::initializeBodies(QQuickItem *parent)
 {
     foreach (QQuickItem *item, parent->childItems()) {
         if (Box2DBody *body = dynamic_cast<Box2DBody *>(item))
-            registerBody(body);
-        registerBodies(item);
+            body->initialize(mWorld);
+
+        initializeBodies(item);
     }
 }

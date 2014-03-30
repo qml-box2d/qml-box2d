@@ -47,7 +47,8 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
 
 Box2DBody::~Box2DBody()
 {
-    cleanup(mWorld);
+    if (mBody)
+        mWorld->DestroyBody(mBody);
 }
 
 void Box2DBody::setLinearDamping(float linearDamping)
@@ -285,13 +286,6 @@ void Box2DBody::synchronize()
         setRotation(newRotation);
 
     mSynchronizing = false;
-}
-
-void Box2DBody::cleanup(b2World *world)
-{
-    if (mBody) world->DestroyBody(mBody);
-    mBody = 0;
-    mWorld = 0;
 }
 
 void Box2DBody::componentComplete()
