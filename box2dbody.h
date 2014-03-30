@@ -57,6 +57,7 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(bool active READ active WRITE setActive)
     Q_PROPERTY(bool awake READ awake WRITE setAwake)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
+    Q_PROPERTY(qreal angularVelocity READ angularVelocity WRITE setAngularVelocity NOTIFY angularVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
     Q_PROPERTY(float gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
 
@@ -97,6 +98,9 @@ public:
     QPointF linearVelocity() const;
     void setLinearVelocity(const QPointF &_linearVelocity);
 
+    qreal angularVelocity() const;
+    void setAngularVelocity(qreal angularVelocity);
+
     float gravityScale() const;
     void setGravityScale(float gravityScale);
 
@@ -131,6 +135,7 @@ signals:
     void sleepingAllowedChanged();
     void fixedRotationChanged();
     void linearVelocityChanged();
+    void angularVelocityChanged();
     void bodyCreated();
     void gravityScaleChanged();
     void positionChanged(const QPointF &position);
