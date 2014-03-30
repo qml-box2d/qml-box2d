@@ -143,7 +143,7 @@ signals:
 
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
-    void getAllBodies(QQuickItem * parent, QList<Box2DBody *> &list);
+    void registerBodies(QQuickItem *parent);
 
 private:
     b2World *mWorld;
