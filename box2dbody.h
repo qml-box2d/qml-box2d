@@ -48,16 +48,16 @@ class Box2DBody : public QQuickItem
     Q_OBJECT
 
     Q_ENUMS(BodyType)
-    Q_PROPERTY(qreal linearDamping READ linearDamping WRITE setLinearDamping NOTIFY linearDampingChanged)
-    Q_PROPERTY(qreal angularDamping READ angularDamping WRITE setAngularDamping NOTIFY angularDampingChanged)
+    Q_PROPERTY(float linearDamping READ linearDamping WRITE setLinearDamping NOTIFY linearDampingChanged)
+    Q_PROPERTY(float angularDamping READ angularDamping WRITE setAngularDamping NOTIFY angularDampingChanged)
     Q_PROPERTY(BodyType bodyType READ bodyType WRITE setBodyType NOTIFY bodyTypeChanged)
     Q_PROPERTY(bool bullet READ isBullet WRITE setBullet NOTIFY bulletChanged)
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
     Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
-    Q_PROPERTY(bool active READ active WRITE setActive)
-    Q_PROPERTY(bool awake READ awake WRITE setAwake)
+    Q_PROPERTY(bool active READ isActive WRITE setActive)
+    Q_PROPERTY(bool awake READ isAwake WRITE setAwake)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
-    Q_PROPERTY(qreal angularVelocity READ angularVelocity WRITE setAngularVelocity NOTIFY angularVelocityChanged)
+    Q_PROPERTY(float angularVelocity READ angularVelocity WRITE setAngularVelocity NOTIFY angularVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
     Q_PROPERTY(float gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
 
@@ -71,35 +71,35 @@ public:
     explicit Box2DBody(QQuickItem *parent = 0);
     ~Box2DBody();
 
-    qreal linearDamping() const;
-    void setLinearDamping(qreal _linearDamping);
+    float linearDamping() const;
+    void setLinearDamping(float linearDamping);
 
-    qreal angularDamping() const;
-    void setAngularDamping(qreal _angularDamping);
+    float angularDamping() const;
+    void setAngularDamping(float angularDamping);
 
     BodyType bodyType() const;
-    void setBodyType(BodyType _bodyType);
+    void setBodyType(BodyType bodyType);
 
     bool isBullet() const;
-    void setBullet(bool _bullet);
+    void setBullet(bool bullet);
 
     bool sleepingAllowed() const;
-    void setSleepingAllowed(bool allowed);
+    void setSleepingAllowed(bool sleepingAllowed);
 
     bool fixedRotation() const;
-    void setFixedRotation(bool _fixedRotation);
+    void setFixedRotation(bool fixedRotation);
 
-    bool active() const;
-    void setActive(bool _active);
+    bool isActive() const;
+    void setActive(bool active);
 
-    bool awake() const;
-    void setAwake(bool _awake);
+    bool isAwake() const;
+    void setAwake(bool awake);
 
     QPointF linearVelocity() const;
-    void setLinearVelocity(const QPointF &_linearVelocity);
+    void setLinearVelocity(const QPointF &velocity);
 
-    qreal angularVelocity() const;
-    void setAngularVelocity(qreal angularVelocity);
+    float angularVelocity() const;
+    void setAngularVelocity(float velocity);
 
     float gravityScale() const;
     void setGravityScale(float gravityScale);
@@ -156,5 +156,45 @@ private:
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
 };
+
+inline float Box2DBody::linearDamping() const
+{
+    return mBodyDef.linearDamping;
+}
+
+inline float Box2DBody::angularDamping() const
+{
+    return mBodyDef.angularDamping;
+}
+
+inline Box2DBody::BodyType Box2DBody::bodyType() const
+{
+    return static_cast<Box2DBody::BodyType>(mBodyDef.type);
+}
+
+inline bool Box2DBody::isBullet() const
+{
+    return mBodyDef.bullet;
+}
+
+inline bool Box2DBody::sleepingAllowed() const
+{
+    return mBodyDef.allowSleep;
+}
+
+inline bool Box2DBody::fixedRotation() const
+{
+    return mBodyDef.fixedRotation;
+}
+
+inline bool Box2DBody::isActive() const
+{
+    return mBodyDef.active;
+}
+
+inline float Box2DBody::gravityScale() const
+{
+    return mBodyDef.gravityScale;
+}
 
 #endif // BOX2DBODY_H
