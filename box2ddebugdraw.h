@@ -33,23 +33,46 @@ class Box2DWorld;
 
 class Box2DDebugDraw : public QQuickPaintedItem
 {
+    Q_ENUMS(DebugFlag)
     Q_OBJECT
 
+    Q_PROPERTY(qreal axisScale READ axisScale WRITE setAxisScale NOTIFY axisScaleChanged)
+    Q_PROPERTY(DebugFlag flags READ flags WRITE setFlags NOTIFY flagsChanged)
     Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld)
 
 public:
+    enum DebugFlag {
+        Shape = 1,
+        Joint = 2,
+        AABB = 4,
+        Pair = 8,
+        CenterOfMass = 16,
+        Everything = 31
+    };
     explicit Box2DDebugDraw(QQuickItem *parent = 0);
+
+    qreal axisScale() const;
+    void setAxisScale(qreal _axisScale);
+
+    DebugFlag flags() const;
+    void setFlags(DebugFlag flags);
 
     Box2DWorld *world() const { return mWorld; }
     void setWorld(Box2DWorld *world);
 
     void paint(QPainter *);
 
+signals:
+    void axisScaleChanged();
+    void flagsChanged();
+
 private slots:
     void onWorldStepped();
 
 private:
     Box2DWorld *mWorld;
+    qreal mAxisScale;
+    DebugFlag mFlags;
 };
 
 #endif // BOX2DDEBUGDRAW_H
