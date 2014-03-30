@@ -223,9 +223,6 @@ void Box2DDebugDraw::paint(QPainter *p)
     if (!mWorld)
         return;
 
-    // Darken the view to make the debug draw stand out more
-    p->fillRect(0, 0, width(), height(), QColor(0, 0, 0, 128));
-
     DebugDraw debugDraw(p, mWorld);
     debugDraw.SetFlags(mFlags);
     debugDraw.setAxisScale(mAxisScale);
