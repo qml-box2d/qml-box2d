@@ -269,7 +269,7 @@ void Box2DBody::initialize(b2World *world)
         return;
     }
     mBodyDef.position.Set(x() / scaleRatio, -y() / scaleRatio);
-    mBodyDef.angle = -(rotation() * (2 * b2_pi)) / 360.0;
+    mBodyDef.angle = rotation() * b2_pi / -180;
     mBody = world->CreateBody(&mBodyDef);
     mInitializePending = false;
     foreach (Box2DFixture *fixture, mFixtures)
@@ -356,7 +356,7 @@ void Box2DBody::onRotationChanged()
 {
     if (!mSynchronizing && mBody) {
         mBody->SetTransform(mBody->GetPosition(),
-                            (rotation() * b2_pi) / -180.0);
+                            rotation() * b2_pi / -180.0);
     }
 }
 

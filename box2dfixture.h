@@ -96,7 +96,7 @@ protected:
     float factorHeight;
     virtual b2Shape *createShape() = 0;
     void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-    void applyShape(b2Shape * shape);
+    void applyShape(b2Shape *shape);
 
 signals:
     void densityChanged();
@@ -135,7 +135,6 @@ public:
 
 protected:
     b2Shape *createShape();
-    b2Vec2 vertices[4];
 };
 
 
@@ -155,6 +154,7 @@ public:
         if (mRadius == radius)
             return;
         mRadius = radius;
+        setImplicitSize(mRadius * 2, mRadius * 2);
         scale();
         emit radiusChanged();
     }
@@ -178,8 +178,11 @@ public:
     explicit Box2DVerticesShape(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
+
     QVariantList vertices() const { return mVertices; }
-    void setVertices(const QVariantList &vertices) {
+
+    void setVertices(const QVariantList &vertices)
+    {
         if (vertices == mVertices)
             return;
         mVertices = vertices;
@@ -191,7 +194,6 @@ signals:
 protected:
     QVariantList mVertices;
     b2Vec2 *scaleVertices();
-    virtual b2Shape *createShape(){ return NULL; }
 };
 
 class Box2DPolygon : public Box2DVerticesShape
@@ -200,6 +202,7 @@ public:
     explicit Box2DPolygon(QQuickItem *parent = 0) :
         Box2DVerticesShape(parent)
     { }
+
     void scale();
 
 protected:
