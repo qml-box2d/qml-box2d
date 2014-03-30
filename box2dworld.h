@@ -125,9 +125,6 @@ public:
 
     void step();
 
-    void emitPreSolve(Box2DContact * contact);
-    void emitPostSolve(Box2DContact * contact);
-
 private slots:
     void unregisterBody();
     void fixtureDestroyed(Box2DFixture *fixture);

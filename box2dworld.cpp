@@ -112,14 +112,14 @@ void ContactListener::PreSolve(b2Contact *contact, const b2Manifold *oldManifold
 {
     Q_UNUSED(oldManifold)
     mContact.setContact(contact);
-    mWorld->emitPreSolve(&mContact);
+    emit mWorld->preSolve(&mContact);
 }
 
 void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impulse)
 {
     Q_UNUSED(impulse)
     mContact.setContact(contact);
-    mWorld->emitPostSolve(&mContact);
+    emit mWorld->postSolve(&mContact);
 }
 
 
@@ -245,12 +245,12 @@ void Box2DWorld::step()
     foreach (const ContactEvent &event, mContactListener->events()) {
         switch (event.type) {
         case ContactEvent::BeginContact:
-            event.fixtureA->emitBeginContact(event.fixtureB);
-            event.fixtureB->emitBeginContact(event.fixtureA);
+            emit event.fixtureA->beginContact(event.fixtureB);
+            emit event.fixtureB->beginContact(event.fixtureA);
             break;
         case ContactEvent::EndContact:
-            event.fixtureA->emitEndContact(event.fixtureB);
-            event.fixtureB->emitEndContact(event.fixtureA);
+            emit event.fixtureA->endContact(event.fixtureB);
+            emit event.fixtureB->endContact(event.fixtureA);
             break;
         }
     }
@@ -262,8 +262,8 @@ void Box2DWorld::step()
         Box2DFixture *fixtureA = toBox2DFixture(contact->GetFixtureA());
         Box2DFixture *fixtureB = toBox2DFixture(contact->GetFixtureB());
 
-        fixtureA->emitContactChanged(fixtureB);
-        fixtureB->emitContactChanged(fixtureA);
+        emit fixtureA->contactChanged(fixtureB);
+        emit fixtureB->contactChanged(fixtureA);
 
         contact = contact->GetNext();
     }
@@ -293,14 +293,4 @@ void Box2DWorld::registerBodies(QQuickItem *parent)
             registerBody(body);
         registerBodies(item);
     }
-}
-
-void Box2DWorld::emitPreSolve(Box2DContact *contact)
-{
-    emit preSolve(contact);
-}
-
-void Box2DWorld::emitPostSolve(Box2DContact *contact)
-{
-    emit postSolve(contact);
 }

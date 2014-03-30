@@ -192,21 +192,6 @@ void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldG
     }
 }
 
-void Box2DFixture::emitBeginContact(Box2DFixture *other)
-{
-    emit beginContact(other);
-}
-
-void Box2DFixture::emitContactChanged(Box2DFixture *other)
-{
-    emit contactChanged(other);
-}
-
-void Box2DFixture::emitEndContact(Box2DFixture *other)
-{
-    emit endContact(other);
-}
-
 void Box2DFixture::applyShape(b2Shape *shape)
 {
     if (mFixture)

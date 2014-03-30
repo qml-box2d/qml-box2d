@@ -51,7 +51,6 @@ class Box2DFixture : public QQuickItem
     Q_FLAGS(CategoryFlags)
 
 public:
-
     explicit Box2DFixture(QQuickItem *parent = 0);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
@@ -110,14 +109,6 @@ signals:
     void beginContact(Box2DFixture *other);
     void contactChanged(Box2DFixture *other);
     void endContact(Box2DFixture *other);
-
-
-private:
-    friend class Box2DWorld;
-
-    void emitBeginContact(Box2DFixture *other);
-    void emitContactChanged(Box2DFixture *other);
-    void emitEndContact(Box2DFixture *other);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
