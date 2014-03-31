@@ -30,9 +30,7 @@
 
 #include <QAbstractAnimation>
 #include <QQuickItem>
-#include <QList>
 
-class Box2DBody;
 class Box2DContact;
 class Box2DFixture;
 class Box2DJoint;
@@ -148,7 +146,6 @@ private:
     QPointF mGravity;
     bool mIsRunning;
     StepDriver *mStepDriver;
-    QList<Box2DBody*> mBodies;
 };
 
 QML_DECLARE_TYPE(Box2DWorld)
