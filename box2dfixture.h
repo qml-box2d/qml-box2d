@@ -51,7 +51,6 @@ class Box2DFixture : public QQuickItem
     Q_FLAGS(CategoryFlags)
 
 public:
-
     explicit Box2DFixture(QQuickItem *parent = 0);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
@@ -88,16 +87,6 @@ public:
 
     Q_INVOKABLE Box2DBody *getBody() const;
 
-protected:
-    b2Fixture *mFixture;
-    b2FixtureDef mFixtureDef;
-    b2Body *mBody;
-    float factorWidth;
-    float factorHeight;
-    virtual b2Shape *createShape() = 0;
-    void geometryChanged(const QRectF & newGeometry, const QRectF & oldGeometry);
-    void applyShape(b2Shape *shape);
-
 signals:
     void densityChanged();
     void frictionChanged();
@@ -111,13 +100,16 @@ signals:
     void contactChanged(Box2DFixture *other);
     void endContact(Box2DFixture *other);
 
+protected:
+    virtual b2Shape *createShape() = 0;
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+    void applyShape(b2Shape *shape);
 
-private:
-    friend class Box2DWorld;
-
-    void emitBeginContact(Box2DFixture *other);
-    void emitContactChanged(Box2DFixture *other);
-    void emitEndContact(Box2DFixture *other);
+    b2Fixture *mFixture;
+    b2FixtureDef mFixtureDef;
+    b2Body *mBody;
+    float factorWidth;
+    float factorHeight;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
@@ -159,6 +151,7 @@ public:
         emit radiusChanged();
     }
     void scale();
+
 signals:
     void radiusChanged();
 
@@ -173,7 +166,9 @@ private:
 class Box2DVerticesShape : public Box2DFixture
 {
     Q_OBJECT
+
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
+
 public:
     explicit Box2DVerticesShape(QQuickItem *parent = 0) :
         Box2DFixture(parent)
@@ -196,6 +191,7 @@ protected:
     b2Vec2 *scaleVertices();
 };
 
+
 class Box2DPolygon : public Box2DVerticesShape
 {
 public:
@@ -213,9 +209,11 @@ protected:
 class Box2DChain : public Box2DVerticesShape
 {
     Q_OBJECT
+
     Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
     Q_PROPERTY(QPointF prevVertex READ prevVertex WRITE setPrevVertex NOTIFY prevVertexChanged)
     Q_PROPERTY(QPointF nextVertex READ nextVertex WRITE setNextVertex NOTIFY nextVertexChanged)
+
 public:
     explicit Box2DChain(QQuickItem *parent = 0) :
         Box2DVerticesShape(parent),
@@ -238,18 +236,22 @@ public:
         nextVertexFlag = true;
     }
 
+signals:
+    void loopChanged();
+    void prevVertexChanged();
+    void nextVertexChanged();
+
 protected:
     b2Shape *createShape();
+
+private:
     bool mLoop;
     bool prevVertexFlag;
     bool nextVertexFlag;
     QPointF mPrevVertex;
     QPointF mNextVertex;
-signals:
-    void loopChanged();
-    void prevVertexChanged();
-    void nextVertexChanged();
 };
+
 
 class Box2DEdge : public Box2DVerticesShape
 {

@@ -119,17 +119,11 @@ public:
 
     void componentComplete();
 
-    void registerBody(Box2DBody *body);
-
     b2World *world() const { return mWorld; }
 
     void step();
 
-    void emitPreSolve(Box2DContact * contact);
-    void emitPostSolve(Box2DContact * contact);
-
 private slots:
-    void unregisterBody();
     void fixtureDestroyed(Box2DFixture *fixture);
 
 signals:
@@ -140,10 +134,9 @@ signals:
     void runningChanged();
     void stepped();
 
-
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
-    void getAllBodies(QQuickItem * parent, QList<Box2DBody *> &list);
+    void initializeBodies(QQuickItem *parent);
 
 private:
     b2World *mWorld;

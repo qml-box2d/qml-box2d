@@ -163,7 +163,7 @@ QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const
 {
     if (mDistanceJoint) {
         b2Vec2 point = mDistanceJoint->GetReactionForce(inv_dt);
-        return QPointF(point.x * scaleRatio,point.y * scaleRatio);
+        return QPointF(point.x * scaleRatio, point.y * scaleRatio);
     }
     return QPointF();
 }
