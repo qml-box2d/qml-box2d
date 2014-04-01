@@ -72,47 +72,28 @@ class Box2DWorld : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
-    Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep)
-    Q_PROPERTY(int velocityIterations READ velocityIterations WRITE setVelocityIterations)
-    Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations)
+    Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep NOTIFY timeStepChanged)
+    Q_PROPERTY(int velocityIterations READ velocityIterations WRITE setVelocityIterations NOTIFY velocityIterationsChanged)
+    Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations NOTIFY positionIterationsChanged)
     Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
 
 public:
     explicit Box2DWorld(QQuickItem *parent = 0);
     ~Box2DWorld();
 
-    /**
-     * The amount of time to step through each frame in seconds.
-     * By default it is 1 / 60.
-     */
-    float timeStep() const { return mTimeStep; }
-    void setTimeStep(float timeStep) { mTimeStep = timeStep; }
+    float timeStep() const;
+    void setTimeStep(float timeStep);
 
-    bool isRunning() const { return mIsRunning; }
+    bool isRunning() const;
     void setRunning(bool running);
 
-    /**
-     * The number of velocity iterations used to process one step.
-     * 8 by default.
-     */
-    int velocityIterations() const
-    { return mVelocityIterations; }
+    int velocityIterations() const;
+    void setVelocityIterations(int iterations);
 
-    void setVelocityIterations(int iterations)
-    { mVelocityIterations = iterations; }
+    int positionIterations() const;
+    void setPositionIterations(int iterations);
 
-
-    /**
-     * The number of position iterations used to process one step.
-     * 3 by default.
-     */
-    int positionIterations() const
-    { return mPositionIterations; }
-
-    void setPositionIterations(int iterations)
-    { mPositionIterations = iterations; }
-
-    QPointF gravity() const { return mGravity; }
+    QPointF gravity() const;
     void setGravity(const QPointF &gravity);
 
     void componentComplete();
@@ -128,6 +109,10 @@ signals:
     void initialized();
     void preSolve(Box2DContact * contact);
     void postSolve(Box2DContact * contact);
+
+    void timeStepChanged();
+    void velocityIterationsChanged();
+    void positionIterationsChanged();
     void gravityChanged();
     void runningChanged();
     void stepped();
@@ -147,6 +132,43 @@ private:
     bool mIsRunning;
     StepDriver *mStepDriver;
 };
+
+/**
+ * The amount of time to step through each frame in seconds.
+ * By default it is 1 / 60.
+ */
+inline float Box2DWorld::timeStep() const
+{
+    return mTimeStep;
+}
+
+inline bool Box2DWorld::isRunning() const
+{
+    return mIsRunning;
+}
+
+/**
+ * The number of velocity iterations used to process one step.
+ * 8 by default.
+ */
+inline int Box2DWorld::velocityIterations() const
+{
+    return mVelocityIterations;
+}
+
+/**
+ * The number of position iterations used to process one step.
+ * 3 by default.
+ */
+inline int Box2DWorld::positionIterations() const
+{
+    return mPositionIterations;
+}
+
+inline QPointF Box2DWorld::gravity() const
+{
+    return mGravity;
+}
 
 QML_DECLARE_TYPE(Box2DWorld)
 

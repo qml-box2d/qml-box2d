@@ -151,6 +151,14 @@ Box2DWorld::~Box2DWorld()
     delete mDestructionListener;
 }
 
+void Box2DWorld::setTimeStep(float timeStep)
+{
+    if (mTimeStep != timeStep) {
+        mTimeStep = timeStep;
+        emit timeStepChanged();
+    }
+}
+
 void Box2DWorld::setRunning(bool running)
 {
     if (mIsRunning == running)
@@ -164,6 +172,22 @@ void Box2DWorld::setRunning(bool running)
             mStepDriver->start();
         else
             mStepDriver->stop();
+    }
+}
+
+void Box2DWorld::setVelocityIterations(int iterations)
+{
+    if (mVelocityIterations != iterations) {
+        mVelocityIterations = iterations;
+        emit velocityIterationsChanged();
+    }
+}
+
+void Box2DWorld::setPositionIterations(int iterations)
+{
+    if (mPositionIterations != iterations) {
+        mPositionIterations = iterations;
+        emit positionIterationsChanged();
     }
 }
 
