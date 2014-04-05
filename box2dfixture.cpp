@@ -27,6 +27,7 @@
 
 #include "box2dfixture.h"
 
+#include "box2dbody.h"
 #include "box2dworld.h"
 
 #include <QDebug>
@@ -36,6 +37,7 @@
 Box2DFixture::Box2DFixture(QQuickItem *parent) :
     QQuickItem(parent),
     mFixture(0),
+    mBody(0),
     factorWidth(1.0),
     factorHeight(1.0)
 {
@@ -171,7 +173,7 @@ void Box2DFixture::createFixture(b2Body *body)
 
 Box2DBody *Box2DFixture::getBody() const
 {
-    return static_cast<Box2DBody *>(mBody->GetUserData());
+    return mBody ? toBox2DBody(mBody) : 0;
 }
 
 void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)

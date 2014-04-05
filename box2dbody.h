@@ -202,4 +202,12 @@ inline void Box2DBody::nullifyBody()
     mBody = 0;
 }
 
+/**
+ * Convenience function to get the Box2DBody wrapping a b2Body.
+ */
+inline Box2DBody *toBox2DBody(b2Body *body)
+{
+    return static_cast<Box2DBody*>(body->GetUserData());
+}
+
 #endif // BOX2DBODY_H

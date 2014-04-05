@@ -145,9 +145,9 @@ Box2DWorld::~Box2DWorld()
     // important that they are no longer referenced from the Box2DBody and
     // Box2DJoint instances.
     for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
-        static_cast<Box2DBody *>(body->GetUserData())->nullifyBody();
+        toBox2DBody(body)->nullifyBody();
     for (b2Joint *joint = mWorld->GetJointList(); joint; joint = joint->GetNext())
-        static_cast<Box2DJoint *>(joint->GetUserData())->nullifyJoint();
+        toBox2DJoint(joint)->nullifyJoint();
 
     delete mWorld;
     delete mContactListener;
@@ -238,7 +238,7 @@ void Box2DWorld::step()
     mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
 
     for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
-        static_cast<Box2DBody *>(body->GetUserData())->synchronize();
+        toBox2DBody(body)->synchronize();
 
     // Emit contact signals
     foreach (const ContactEvent &event, mContactListener->events()) {
