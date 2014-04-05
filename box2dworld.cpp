@@ -141,10 +141,8 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
 
 Box2DWorld::~Box2DWorld()
 {
-    // The bodies will be deleted as part of the world, so it's important
-    // that they are no longer referenced from the Box2DBody instances.
     for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
-        static_cast<Box2DBody *>(body->GetUserData())->nullifyBody();
+        static_cast<Box2DBody *>(body->GetUserData())->cleanup();
 
     delete mWorld;
     delete mContactListener;
