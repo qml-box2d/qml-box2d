@@ -33,67 +33,56 @@ Box2DMouseJoint::Box2DMouseJoint(QObject *parent) :
 {
 }
 
-float Box2DMouseJoint::dampingRatio() const
-{
-    if (mouseJoint())
-        return mouseJoint()->GetDampingRatio();
-    return mMouseJointDef.dampingRatio;
-}
-
 void Box2DMouseJoint::setDampingRatio(float dampingRatio)
 {
+    if (mMouseJointDef.dampingRatio == dampingRatio)
+        return;
+
     mMouseJointDef.dampingRatio = dampingRatio;
     if (mouseJoint())
         mouseJoint()->SetDampingRatio(dampingRatio);
-
-}
-
-float Box2DMouseJoint::frequencyHz() const
-{
-    if (mouseJoint())
-        return mouseJoint()->GetFrequency();
-    return mMouseJointDef.frequencyHz;
+    emit dampingRatioChanged();
 }
 
 void Box2DMouseJoint::setFrequencyHz(float frequencyHz)
 {
+    if (mMouseJointDef.frequencyHz == frequencyHz)
+        return;
+
     mMouseJointDef.frequencyHz = frequencyHz;
     if (mouseJoint())
         mouseJoint()->SetFrequency(frequencyHz);
-}
-
-float Box2DMouseJoint::maxForce() const
-{
-    if (mouseJoint())
-        return mouseJoint()->GetMaxForce();
-    return mMouseJointDef.maxForce;
+    emit frequencyHzChanged();
 }
 
 void Box2DMouseJoint::setMaxForce(float maxForce)
 {
+    if (mMouseJointDef.maxForce == maxForce)
+        return;
+
     mMouseJointDef.maxForce = maxForce;
     if (mouseJoint())
         mouseJoint()->SetMaxForce(maxForce);
+    emit maxForceChanged();
 }
 
 QPointF Box2DMouseJoint::target() const
 {
-    b2Vec2 point;
-    if (mouseJoint())
-        point = mouseJoint()->GetTarget();
-    else
-        point = mMouseJointDef.target;
-    return QPointF(point.x * scaleRatio, -point.y * scaleRatio);
+    return QPointF(mMouseJointDef.target.x * scaleRatio,
+                   -mMouseJointDef.target.y * scaleRatio);
 }
 
-void Box2DMouseJoint::setTarget(const QPointF &_target)
+void Box2DMouseJoint::setTarget(const QPointF &target)
 {
-    if (_target == target())
+    const b2Vec2 targetMeters(target.x() / scaleRatio,
+                              -target.y() / scaleRatio);
+    if (mMouseJointDef.target == targetMeters)
         return;
-    mMouseJointDef.target = b2Vec2(_target.x() / scaleRatio,
-                                   -_target.y() / scaleRatio);
+
+    mMouseJointDef.target = targetMeters;
     if (mouseJoint())
-        mouseJoint()->SetTarget(mMouseJointDef.target);
+        mouseJoint()->SetTarget(targetMeters);
+    emit targetChanged();
 }
 
 b2Joint *Box2DMouseJoint::createJoint()

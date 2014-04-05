@@ -74,6 +74,21 @@ private:
     bool anchorsAuto;
 };
 
+inline float Box2DWeldJoint::referenceAngle() const
+{
+    return mWeldJointDef.referenceAngle * -180 / b2_pi;
+}
+
+inline float Box2DWeldJoint::frequencyHz() const
+{
+    return mWeldJointDef.frequencyHz;
+}
+
+inline float Box2DWeldJoint::dampingRatio() const
+{
+    return mWeldJointDef.dampingRatio;
+}
+
 inline b2WeldJoint *Box2DWeldJoint::weldJoint() const
 {
     return static_cast<b2WeldJoint*>(joint());

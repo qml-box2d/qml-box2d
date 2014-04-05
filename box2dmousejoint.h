@@ -51,7 +51,7 @@ public:
     void setMaxForce(float maxForce);
 
     QPointF target() const;
-    void setTarget(const QPointF &_target);
+    void setTarget(const QPointF &target);
 
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
@@ -70,6 +70,21 @@ protected:
 private:
     b2MouseJointDef mMouseJointDef;
 };
+
+inline float Box2DMouseJoint::dampingRatio() const
+{
+    return mMouseJointDef.dampingRatio;
+}
+
+inline float Box2DMouseJoint::frequencyHz() const
+{
+    return mMouseJointDef.frequencyHz;
+}
+
+inline float Box2DMouseJoint::maxForce() const
+{
+    return mMouseJointDef.maxForce;
+}
 
 inline b2MouseJoint *Box2DMouseJoint::mouseJoint() const
 {

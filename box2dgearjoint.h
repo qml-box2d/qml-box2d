@@ -41,7 +41,7 @@ public:
     explicit Box2DGearJoint(QObject *parent = 0);
 
     float ratio() const;
-    void setRatio(float _ratio);
+    void setRatio(float ratio);
 
     Box2DJoint *joint1() const;
     void setJoint1(Box2DJoint *_joint1);
@@ -66,6 +66,11 @@ private slots:
 private:
     b2GearJointDef mGearJointDef;
 };
+
+inline float Box2DGearJoint::ratio() const
+{
+    return mGearJointDef.ratio;
+}
 
 inline b2GearJoint *Box2DGearJoint::gearJoint() const
 {

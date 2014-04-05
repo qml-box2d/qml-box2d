@@ -72,6 +72,16 @@ private:
     bool anchorsAuto;
 };
 
+inline float Box2DFrictionJoint::maxForce() const
+{
+    return mFrictionJointDef.maxForce;
+}
+
+inline float Box2DFrictionJoint::maxTorque() const
+{
+    return mFrictionJointDef.maxTorque;
+}
+
 inline b2FrictionJoint *Box2DFrictionJoint::frictionJoint() const
 {
     return static_cast<b2FrictionJoint*>(joint());

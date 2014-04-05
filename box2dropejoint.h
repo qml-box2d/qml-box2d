@@ -44,7 +44,7 @@ public:
     explicit Box2DRopeJoint(QObject *parent = 0);
 
     float maxLength() const;
-    void setMaxLength(float _maxLength);
+    void setMaxLength(float maxLength);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);

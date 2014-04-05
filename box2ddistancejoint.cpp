@@ -36,53 +36,39 @@ Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent) :
 
 float Box2DDistanceJoint::length() const
 {
-    if (distanceJoint())
-        return distanceJoint()->GetLength();
-    return mDistanceJointDef.length;
+    return mDistanceJointDef.length * scaleRatio;
 }
 
-void Box2DDistanceJoint::setLength(float _length)
+void Box2DDistanceJoint::setLength(float length)
 {
-    if (qFuzzyCompare(length(), _length / scaleRatio))
+    if (mDistanceJointDef.length == length / scaleRatio)
         return;
-    mDistanceJointDef.length = _length / scaleRatio;
+
+    mDistanceJointDef.length = length / scaleRatio;
     if (distanceJoint())
         distanceJoint()->SetLength(mDistanceJointDef.length);
     emit lengthChanged();
 }
 
-float Box2DDistanceJoint::frequencyHz() const
+void Box2DDistanceJoint::setFrequencyHz(float frequencyHz)
 {
-    if (distanceJoint())
-        return distanceJoint()->GetFrequency();
-    return mDistanceJointDef.frequencyHz;
-}
-
-void Box2DDistanceJoint::setFrequencyHz(float _frequencyHz)
-{
-    if (frequencyHz() == _frequencyHz)
+    if (mDistanceJointDef.frequencyHz == frequencyHz)
         return;
-    mDistanceJointDef.frequencyHz = _frequencyHz;
+
+    mDistanceJointDef.frequencyHz = frequencyHz;
     if (distanceJoint())
-        distanceJoint()->SetFrequency(_frequencyHz);
+        distanceJoint()->SetFrequency(frequencyHz);
     emit frequencyHzChanged();
 }
 
-float Box2DDistanceJoint::dampingRatio() const
+void Box2DDistanceJoint::setDampingRatio(float dampingRatio)
 {
-    if (distanceJoint())
-        return distanceJoint()->GetDampingRatio();
-    return mDistanceJointDef.dampingRatio;
-}
-
-void Box2DDistanceJoint::setDampingRatio(float _dampingRatio)
-{
-    if (dampingRatio() == _dampingRatio)
+    if (mDistanceJointDef.dampingRatio == dampingRatio)
         return;
 
-    mDistanceJointDef.dampingRatio = _dampingRatio;
+    mDistanceJointDef.dampingRatio = dampingRatio;
     if (distanceJoint())
-        distanceJoint()->SetDampingRatio(_dampingRatio);
+        distanceJoint()->SetDampingRatio(dampingRatio);
     emit dampingRatioChanged();
 }
 

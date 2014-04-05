@@ -93,6 +93,36 @@ private:
     bool anchorsAuto;
 };
 
+inline float Box2DRevoluteJoint::lowerAngle() const
+{
+    return -mRevoluteJointDef.lowerAngle * 180 / b2_pi;
+}
+
+inline float Box2DRevoluteJoint::upperAngle() const
+{
+    return -mRevoluteJointDef.upperAngle * 180 / b2_pi;
+}
+
+inline float Box2DRevoluteJoint::maxMotorTorque() const
+{
+    return mRevoluteJointDef.maxMotorTorque;
+}
+
+inline float Box2DRevoluteJoint::motorSpeed() const
+{
+    return -mRevoluteJointDef.motorSpeed * 180 / b2_pi;
+}
+
+inline bool Box2DRevoluteJoint::enableLimit() const
+{
+    return mRevoluteJointDef.enableLimit;
+}
+
+inline bool Box2DRevoluteJoint::enableMotor() const
+{
+    return mRevoluteJointDef.enableMotor;
+}
+
 inline b2RevoluteJoint *Box2DRevoluteJoint::revoluteJoint() const
 {
     return static_cast<b2RevoluteJoint*>(joint());

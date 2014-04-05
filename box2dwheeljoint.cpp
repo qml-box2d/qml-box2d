@@ -35,72 +35,43 @@ Box2DWheelJoint::Box2DWheelJoint(QObject *parent) :
 {
 }
 
-float Box2DWheelJoint::dampingRatio() const
+void Box2DWheelJoint::setDampingRatio(float dampingRatio)
 {
-    if (wheelJoint())
-        return wheelJoint()->GetSpringDampingRatio();
-    return mWheelJointDef.dampingRatio;
-}
-
-void Box2DWheelJoint::setDampingRatio(float _dampingRatio)
-{
-    if (qFuzzyCompare(dampingRatio(), _dampingRatio))
+    if (mWheelJointDef.dampingRatio == dampingRatio)
         return;
 
+    mWheelJointDef.dampingRatio = dampingRatio;
     if (wheelJoint())
-        wheelJoint()->SetSpringDampingRatio(_dampingRatio);
-    mWheelJointDef.dampingRatio = _dampingRatio;
-
+        wheelJoint()->SetSpringDampingRatio(dampingRatio);
     emit dampingRatioChanged();
 }
 
-float Box2DWheelJoint::frequencyHz() const
+void Box2DWheelJoint::setFrequencyHz(float frequencyHz)
 {
-    if (wheelJoint())
-        return wheelJoint()->GetSpringFrequencyHz();
-    return mWheelJointDef.frequencyHz;
-}
-
-void Box2DWheelJoint::setFrequencyHz(float _frequencyHz)
-{
-    if (qFuzzyCompare(frequencyHz(), _frequencyHz))
+    if (mWheelJointDef.frequencyHz == frequencyHz)
         return;
 
+    mWheelJointDef.frequencyHz = frequencyHz;
     if (wheelJoint())
-        wheelJoint()->SetSpringFrequencyHz(_frequencyHz);
-    mWheelJointDef.frequencyHz = _frequencyHz;
+        wheelJoint()->SetSpringFrequencyHz(frequencyHz);
     emit frequencyHzChanged();
 }
 
-float Box2DWheelJoint::maxMotorTorque() const
+void Box2DWheelJoint::setMaxMotorTorque(float maxMotorTorque)
 {
-    if (wheelJoint())
-        return wheelJoint()->GetMaxMotorTorque();
-    return mWheelJointDef.maxMotorTorque;
-}
-
-void Box2DWheelJoint::setMaxMotorTorque(float _maxMotorTorque)
-{
-    if (qFuzzyCompare(maxMotorTorque(), _maxMotorTorque))
+    if (mWheelJointDef.maxMotorTorque == maxMotorTorque)
         return;
 
-    mWheelJointDef.maxMotorTorque = _maxMotorTorque;
+    mWheelJointDef.maxMotorTorque = maxMotorTorque;
     if (wheelJoint())
-        wheelJoint()->SetMaxMotorTorque(_maxMotorTorque);
+        wheelJoint()->SetMaxMotorTorque(maxMotorTorque);
     emit maxMotorTorqueChanged();
 }
 
-float Box2DWheelJoint::motorSpeed() const
+void Box2DWheelJoint::setMotorSpeed(float motorSpeed)
 {
-    if (wheelJoint())
-        return wheelJoint()->GetMotorSpeed() * b2_pi / 180;
-    return -mWheelJointDef.motorSpeed * b2_pi / 180;
-}
-
-void Box2DWheelJoint::setMotorSpeed(float _motorSpeed)
-{
-    float motorSpeedRad = _motorSpeed  * b2_pi / -180;
-    if (qFuzzyCompare(motorSpeed(), motorSpeedRad))
+    float motorSpeedRad = motorSpeed  * b2_pi / -180;
+    if (mWheelJointDef.motorSpeed == motorSpeedRad)
         return;
 
     mWheelJointDef.motorSpeed = motorSpeedRad;
@@ -109,21 +80,14 @@ void Box2DWheelJoint::setMotorSpeed(float _motorSpeed)
     emit motorSpeedChanged();
 }
 
-bool Box2DWheelJoint::enableMotor() const
+void Box2DWheelJoint::setEnableMotor(bool enableMotor)
 {
-    if (wheelJoint())
-        return wheelJoint()->IsMotorEnabled();
-    return mWheelJointDef.enableMotor;
-}
-
-void Box2DWheelJoint::setEnableMotor(bool _enableMotor)
-{
-    if (enableMotor() == _enableMotor)
+    if (mWheelJointDef.enableMotor == enableMotor)
         return;
 
-    mWheelJointDef.enableMotor = _enableMotor;
+    mWheelJointDef.enableMotor = enableMotor;
     if (wheelJoint())
-        wheelJoint()->EnableMotor(_enableMotor);
+        wheelJoint()->EnableMotor(enableMotor);
     emit enableMotorChanged();
 }
 

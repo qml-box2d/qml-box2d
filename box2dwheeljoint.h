@@ -47,16 +47,16 @@ public:
     explicit Box2DWheelJoint(QObject *parent = 0);
 
     float dampingRatio() const;
-    void setDampingRatio(float _dampingRatio);
+    void setDampingRatio(float dampingRatio);
 
     float frequencyHz() const;
-    void setFrequencyHz(float _frequencyHz);
+    void setFrequencyHz(float frequencyHz);
 
     float maxMotorTorque() const;
-    void setMaxMotorTorque(float _maxMotorTorque);
+    void setMaxMotorTorque(float maxMotorTorque);
 
     float motorSpeed() const;
-    void setMotorSpeed(float _motorSpeed);
+    void setMotorSpeed(float motorSpeed);
 
     bool enableMotor() const;
     void setEnableMotor(bool enableMotor);
@@ -94,6 +94,31 @@ private:
     b2WheelJointDef mWheelJointDef;
     bool anchorsAuto;
 };
+
+inline float Box2DWheelJoint::dampingRatio() const
+{
+    return mWheelJointDef.dampingRatio;
+}
+
+inline float Box2DWheelJoint::frequencyHz() const
+{
+    return mWheelJointDef.frequencyHz;
+}
+
+inline float Box2DWheelJoint::maxMotorTorque() const
+{
+    return mWheelJointDef.maxMotorTorque;
+}
+
+inline float Box2DWheelJoint::motorSpeed() const
+{
+    return -mWheelJointDef.motorSpeed * b2_pi / 180;
+}
+
+inline bool Box2DWheelJoint::enableMotor() const
+{
+    return mWheelJointDef.enableMotor;
+}
 
 inline b2WheelJoint *Box2DWheelJoint::wheelJoint() const
 {

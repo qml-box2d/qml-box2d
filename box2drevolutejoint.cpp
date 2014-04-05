@@ -35,32 +35,23 @@ Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
 {
 }
 
-float Box2DRevoluteJoint::lowerAngle() const
-{
-    return -mRevoluteJointDef.lowerAngle * 180 / b2_pi;
-}
-
 void Box2DRevoluteJoint::setLowerAngle(float lowerAngle)
 {
     float lowerAngleRad = lowerAngle * b2_pi / -180;
-    if (qFuzzyCompare(mRevoluteJointDef.lowerAngle, lowerAngleRad))
+    if (mRevoluteJointDef.lowerAngle == lowerAngleRad)
         return;
 
     mRevoluteJointDef.lowerAngle = lowerAngleRad;
     if (revoluteJoint())
-        revoluteJoint()->SetLimits(lowerAngleRad, mRevoluteJointDef.upperAngle);
+        revoluteJoint()->SetLimits(lowerAngleRad,
+                                   mRevoluteJointDef.upperAngle);
     emit lowerAngleChanged();
-}
-
-float Box2DRevoluteJoint::upperAngle() const
-{
-    return -mRevoluteJointDef.upperAngle * 180 / b2_pi;
 }
 
 void Box2DRevoluteJoint::setUpperAngle(float upperAngle)
 {
     float upperAngleRad = upperAngle * b2_pi / -180;
-    if (qFuzzyCompare(mRevoluteJointDef.upperAngle, upperAngleRad))
+    if (mRevoluteJointDef.upperAngle == upperAngleRad)
         return;
 
     mRevoluteJointDef.upperAngle = upperAngleRad;
@@ -70,14 +61,9 @@ void Box2DRevoluteJoint::setUpperAngle(float upperAngle)
     emit upperAngleChanged();
 }
 
-float Box2DRevoluteJoint::maxMotorTorque() const
-{
-    return mRevoluteJointDef.maxMotorTorque;
-}
-
 void Box2DRevoluteJoint::setMaxMotorTorque(float maxMotorTorque)
 {
-    if (qFuzzyCompare(mRevoluteJointDef.maxMotorTorque, maxMotorTorque))
+    if (mRevoluteJointDef.maxMotorTorque == maxMotorTorque)
         return;
 
     mRevoluteJointDef.maxMotorTorque = maxMotorTorque;
@@ -86,26 +72,16 @@ void Box2DRevoluteJoint::setMaxMotorTorque(float maxMotorTorque)
     emit maxMotorTorqueChanged();
 }
 
-float Box2DRevoluteJoint::motorSpeed() const
-{
-    return -mRevoluteJointDef.motorSpeed * 180 / b2_pi;
-}
-
 void Box2DRevoluteJoint::setMotorSpeed(float motorSpeed)
 {
-    float motorSpeedRad = -motorSpeed * (b2_pi / 180);
-    if (qFuzzyCompare(mRevoluteJointDef.motorSpeed, motorSpeedRad))
+    const float motorSpeedRad = -motorSpeed * b2_pi / 180;
+    if (mRevoluteJointDef.motorSpeed == motorSpeedRad)
         return;
 
     mRevoluteJointDef.motorSpeed = motorSpeedRad;
     if (revoluteJoint())
         revoluteJoint()->SetMotorSpeed(motorSpeedRad);
     emit motorSpeedChanged();
-}
-
-bool Box2DRevoluteJoint::enableLimit() const
-{
-    return mRevoluteJointDef.enableLimit;
 }
 
 void Box2DRevoluteJoint::setEnableLimit(bool enableLimit)
@@ -117,11 +93,6 @@ void Box2DRevoluteJoint::setEnableLimit(bool enableLimit)
     if (revoluteJoint())
         revoluteJoint()->EnableLimit(enableLimit);
     emit enableLimitChanged();
-}
-
-bool Box2DRevoluteJoint::enableMotor() const
-{
-    return mRevoluteJointDef.enableMotor;
 }
 
 void Box2DRevoluteJoint::setEnableMotor(bool enableMotor)

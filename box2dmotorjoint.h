@@ -74,6 +74,26 @@ private:
     b2MotorJointDef mMotorJointDef;
 };
 
+inline float Box2DMotorJoint::angularOffset() const
+{
+    return mMotorJointDef.angularOffset * -180 / b2_pi;
+}
+
+inline float Box2DMotorJoint::maxForce() const
+{
+    return mMotorJointDef.maxForce;
+}
+
+inline float Box2DMotorJoint::maxTorque() const
+{
+    return mMotorJointDef.maxTorque;
+}
+
+inline float Box2DMotorJoint::correctionFactor() const
+{
+    return mMotorJointDef.correctionFactor;
+}
+
 inline b2MotorJoint *Box2DMotorJoint::motorJoint() const
 {
     return static_cast<b2MotorJoint*>(joint());

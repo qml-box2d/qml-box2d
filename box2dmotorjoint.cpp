@@ -42,70 +42,56 @@ QPointF Box2DMotorJoint::linearOffset() const
 
 void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 {
-    if (this->linearOffset() == linearOffset)
+    const b2Vec2 linearOffsetMeters(linearOffset.x() / scaleRatio,
+                                    -linearOffset.y() / scaleRatio);
+    if (mMotorJointDef.linearOffset == linearOffsetMeters)
         return;
-    mMotorJointDef.linearOffset = b2Vec2(linearOffset.x() / scaleRatio,
-                                         -linearOffset.y() / scaleRatio);
-    if (motorJoint())
-        motorJoint()->SetLinearOffset(mMotorJointDef.linearOffset);
-    emit linearOffsetChanged();
-}
 
-float Box2DMotorJoint::angularOffset() const
-{
-    return mMotorJointDef.angularOffset * 180 / b2_pi;
+    mMotorJointDef.linearOffset = linearOffsetMeters;
+    if (motorJoint())
+        motorJoint()->SetLinearOffset(linearOffsetMeters);
+    emit linearOffsetChanged();
 }
 
 void Box2DMotorJoint::setAngularOffset(float angularOffset)
 {
-    float angularOffsetRad = angularOffset * ( b2_pi / 180);
+    const float angularOffsetRad = angularOffset * -b2_pi / 180;
     if (mMotorJointDef.angularOffset == angularOffsetRad)
         return;
+
     mMotorJointDef.angularOffset = angularOffsetRad;
     if (motorJoint())
         motorJoint()->SetAngularOffset(angularOffsetRad);
     emit angularOffsetChanged();
 }
 
-float Box2DMotorJoint::maxForce() const
-{
-    return mMotorJointDef.maxForce;
-}
-
 void Box2DMotorJoint::setMaxForce(float maxForce)
 {
     if (mMotorJointDef.maxForce == maxForce)
         return;
+
     mMotorJointDef.maxForce = maxForce;
     if (motorJoint())
         motorJoint()->SetMaxForce(maxForce);
     emit maxForceChanged();
 }
 
-float Box2DMotorJoint::maxTorque() const
-{
-    return mMotorJointDef.maxTorque;
-}
-
 void Box2DMotorJoint::setMaxTorque(float maxTorque)
 {
     if (mMotorJointDef.maxTorque == maxTorque)
         return;
+
     mMotorJointDef.maxTorque = maxTorque;
     if (motorJoint())
         motorJoint()->SetMaxTorque(maxTorque);
     emit maxTorqueChanged();
 }
 
-float Box2DMotorJoint::correctionFactor() const
-{
-    return mMotorJointDef.correctionFactor;
-}
-
 void Box2DMotorJoint::setCorrectionFactor(float correctionFactor)
 {
     if (mMotorJointDef.correctionFactor == correctionFactor)
         return;
+
     mMotorJointDef.correctionFactor = correctionFactor;
     if (motorJoint())
         motorJoint()->SetCorrectionFactor(correctionFactor);

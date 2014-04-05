@@ -105,8 +105,6 @@ inline b2Joint *Box2DJoint::joint() const
  */
 inline Box2DJoint *toBox2DJoint(b2Joint *joint)
 {
-    if (!joint)
-        return 0;
     return static_cast<Box2DJoint*>(joint->GetUserData());
 }
 

@@ -77,6 +77,16 @@ private:
     bool anchorsAuto;
 };
 
+inline float Box2DDistanceJoint::frequencyHz() const
+{
+    return mDistanceJointDef.frequencyHz;
+}
+
+inline float Box2DDistanceJoint::dampingRatio() const
+{
+    return mDistanceJointDef.dampingRatio;
+}
+
 inline b2DistanceJoint *Box2DDistanceJoint::distanceJoint() const
 {
     return static_cast<b2DistanceJoint*>(joint());

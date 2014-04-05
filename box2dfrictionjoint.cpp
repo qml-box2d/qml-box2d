@@ -34,39 +34,33 @@ Box2DFrictionJoint::Box2DFrictionJoint(QObject *parent) :
 {
 }
 
-float Box2DFrictionJoint::maxForce() const
-{
-    if (frictionJoint())
-        return frictionJoint()->GetMaxForce();
-    return mFrictionJointDef.maxForce;
-}
-
 void Box2DFrictionJoint::setMaxForce(float maxForce)
 {
-    if (frictionJoint() && frictionJoint()->GetMaxForce() == maxForce)
+    if (!(b2IsValid(maxForce) && maxForce >= 0.0f)) {
+        qWarning() << "FrictionJoint: Invalid maxForce:" << maxForce;
         return;
+    }
+    if (mFrictionJointDef.maxForce == maxForce)
+        return;
+
+    mFrictionJointDef.maxForce = maxForce;
     if (frictionJoint())
         frictionJoint()->SetMaxForce(maxForce);
-    else
-        mFrictionJointDef.maxForce = maxForce;
     emit maxForceChanged();
-}
-
-float Box2DFrictionJoint::maxTorque() const
-{
-    if (frictionJoint())
-        return frictionJoint()->GetMaxTorque();
-    return mFrictionJointDef.maxTorque;
 }
 
 void Box2DFrictionJoint::setMaxTorque(float maxTorque)
 {
-    if (frictionJoint() && frictionJoint()->GetMaxTorque() == maxTorque)
+    if (!(b2IsValid(maxTorque) && maxTorque >= 0.0f)) {
+        qWarning() << "FrictionJoint: Invalid maxTorque:" << maxTorque;
         return;
+    }
+    if (mFrictionJointDef.maxTorque == maxTorque)
+        return;
+
+    mFrictionJointDef.maxTorque = maxTorque;
     if (frictionJoint())
-        frictionJoint()->SetMaxForce(maxTorque);
-    else
-        mFrictionJointDef.maxTorque = maxTorque;
+        frictionJoint()->SetMaxTorque(maxTorque);
     emit maxTorqueChanged();
 }
 

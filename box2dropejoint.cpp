@@ -36,20 +36,18 @@ Box2DRopeJoint::Box2DRopeJoint(QObject *parent) :
 
 float Box2DRopeJoint::maxLength() const
 {
-    if (ropeJoint())
-        return ropeJoint()->GetMaxLength() * scaleRatio;
     return mRopeJointDef.maxLength * scaleRatio;
 }
 
-void Box2DRopeJoint::setMaxLength(float _maxLength)
+void Box2DRopeJoint::setMaxLength(float maxLength)
 {
-    if (qFuzzyCompare(maxLength(), _maxLength))
+    const float maxLengthMeters = maxLength / scaleRatio;
+    if (mRopeJointDef.maxLength == maxLengthMeters)
         return;
 
-    mRopeJointDef.maxLength = _maxLength / scaleRatio;
+    mRopeJointDef.maxLength = maxLengthMeters;
     if (ropeJoint())
-        ropeJoint()->SetMaxLength(mRopeJointDef.maxLength);
-
+        ropeJoint()->SetMaxLength(maxLengthMeters);
     emit maxLengthChanged();
 }
 

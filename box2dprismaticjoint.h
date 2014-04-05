@@ -98,6 +98,26 @@ private:
     bool anchorsAuto;
 };
 
+inline float Box2DPrismaticJoint::maxMotorForce() const
+{
+    return mPrismaticJointDef.maxMotorForce;
+}
+
+inline float Box2DPrismaticJoint::motorSpeed() const
+{
+    return mPrismaticJointDef.motorSpeed * -180 / b2_pi;
+}
+
+inline bool Box2DPrismaticJoint::enableLimit() const
+{
+    return mPrismaticJointDef.enableLimit;
+}
+
+inline bool Box2DPrismaticJoint::enableMotor() const
+{
+    return mPrismaticJointDef.enableMotor;
+}
+
 inline b2PrismaticJoint *Box2DPrismaticJoint::prismaticJoint() const
 {
     return static_cast<b2PrismaticJoint*>(joint());

@@ -34,28 +34,19 @@ Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
 {
 }
 
-float Box2DWeldJoint::referenceAngle() const
-{
-    return mWeldJointDef.referenceAngle;
-}
-
 void Box2DWeldJoint::setReferenceAngle(float referenceAngle)
 {
     float referenceAngleRad = referenceAngle * b2_pi / -180;
-    if (qFuzzyCompare(mWeldJointDef.referenceAngle, referenceAngleRad))
+    if (mWeldJointDef.referenceAngle == referenceAngleRad)
         return;
+
     mWeldJointDef.referenceAngle = referenceAngleRad;
     emit referenceAngleChanged();
 }
 
-float Box2DWeldJoint::frequencyHz() const
-{
-    return mWeldJointDef.frequencyHz;
-}
-
 void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
 {
-    if (qFuzzyCompare(mWeldJointDef.frequencyHz, frequencyHz))
+    if (mWeldJointDef.frequencyHz == frequencyHz)
         return;
 
     mWeldJointDef.frequencyHz = frequencyHz;
@@ -64,14 +55,9 @@ void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
     emit frequencyHzChanged();
 }
 
-float Box2DWeldJoint::dampingRatio() const
-{
-    return mWeldJointDef.dampingRatio;
-}
-
 void Box2DWeldJoint::setDampingRatio(float dampingRatio)
 {
-    if (qFuzzyCompare(mWeldJointDef.dampingRatio, dampingRatio))
+    if (mWeldJointDef.dampingRatio == dampingRatio)
         return;
 
     mWeldJointDef.dampingRatio = dampingRatio;

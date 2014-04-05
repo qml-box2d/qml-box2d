@@ -41,9 +41,11 @@ float Box2DPrismaticJoint::lowerTranslation() const
 
 void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.lowerTranslation, lowerTranslation / scaleRatio))
+    const float lowerTranslationMeters = lowerTranslation / scaleRatio;
+    if (mPrismaticJointDef.lowerTranslation == lowerTranslationMeters)
         return;
-    mPrismaticJointDef.lowerTranslation = lowerTranslation / scaleRatio;
+
+    mPrismaticJointDef.lowerTranslation = lowerTranslationMeters;
     if (prismaticJoint())
         prismaticJoint()->SetLimits(mPrismaticJointDef.lowerTranslation,
                                     mPrismaticJointDef.upperTranslation);
@@ -57,24 +59,20 @@ float Box2DPrismaticJoint::upperTranslation() const
 
 void Box2DPrismaticJoint::setUpperTranslation(float upperTranslation)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.upperTranslation, upperTranslation / scaleRatio))
+    const float upperTranslationMeters = upperTranslation / scaleRatio;
+    if (mPrismaticJointDef.upperTranslation == upperTranslationMeters)
         return;
 
-    mPrismaticJointDef.upperTranslation = upperTranslation / scaleRatio;
+    mPrismaticJointDef.upperTranslation = upperTranslationMeters;
     if (prismaticJoint())
         prismaticJoint()->SetLimits(mPrismaticJointDef.lowerTranslation,
                                     mPrismaticJointDef.upperTranslation);
     emit upperTranslationChanged();
 }
 
-float Box2DPrismaticJoint::maxMotorForce() const
-{
-    return mPrismaticJointDef.maxMotorForce;
-}
-
 void Box2DPrismaticJoint::setMaxMotorForce(float maxMotorForce)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.maxMotorForce, maxMotorForce))
+    if (mPrismaticJointDef.maxMotorForce == maxMotorForce)
         return;
 
     mPrismaticJointDef.maxMotorForce = maxMotorForce;
@@ -83,25 +81,16 @@ void Box2DPrismaticJoint::setMaxMotorForce(float maxMotorForce)
     emit maxMotorForceChanged();
 }
 
-float Box2DPrismaticJoint::motorSpeed() const
-{
-    return mPrismaticJointDef.motorSpeed * scaleRatio;
-}
-
 void Box2DPrismaticJoint::setMotorSpeed(float motorSpeed)
 {
-    if (qFuzzyCompare(mPrismaticJointDef.motorSpeed, motorSpeed / scaleRatio))
+    const float motorSpeedRad = motorSpeed * -b2_pi / 180;
+    if (mPrismaticJointDef.motorSpeed == motorSpeedRad)
         return;
 
-    mPrismaticJointDef.motorSpeed = motorSpeed / scaleRatio;
+    mPrismaticJointDef.motorSpeed = motorSpeedRad;
     if (prismaticJoint())
-        prismaticJoint()->SetMotorSpeed(mPrismaticJointDef.motorSpeed);
+        prismaticJoint()->SetMotorSpeed(motorSpeedRad);
     emit motorSpeedChanged();
-}
-
-bool Box2DPrismaticJoint::enableLimit() const
-{
-    return mPrismaticJointDef.enableLimit;
 }
 
 void Box2DPrismaticJoint::setEnableLimit(bool enableLimit)
@@ -113,11 +102,6 @@ void Box2DPrismaticJoint::setEnableLimit(bool enableLimit)
     if (prismaticJoint())
         prismaticJoint()->EnableLimit(enableLimit);
     emit enableLimitChanged();
-}
-
-bool Box2DPrismaticJoint::enableMotor() const
-{
-    return mPrismaticJointDef.enableMotor;
 }
 
 void Box2DPrismaticJoint::setEnableMotor(bool enableMotor)
@@ -139,7 +123,8 @@ QPointF Box2DPrismaticJoint::axis() const
 
 void Box2DPrismaticJoint::setAxis(const QPointF &axis)
 {
-    mPrismaticJointDef.localAxisA = b2Vec2(axis.x() / scaleRatio, -axis.y() / scaleRatio);
+    mPrismaticJointDef.localAxisA = b2Vec2(axis.x() / scaleRatio,
+                                           -axis.y() / scaleRatio);
     mPrismaticJointDef.localAxisA.Normalize();
     emit axisChanged();
 }

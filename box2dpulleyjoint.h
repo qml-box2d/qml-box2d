@@ -88,6 +88,11 @@ private:
     b2PulleyJointDef mPulleyJointDef;
 };
 
+inline float Box2DPulleyJoint::ratio() const
+{
+    return mPulleyJointDef.ratio;
+}
+
 inline b2PulleyJoint *Box2DPulleyJoint::pulleyJoint() const
 {
     return static_cast<b2PulleyJoint*>(joint());
