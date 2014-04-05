@@ -81,9 +81,9 @@ QPointF Box2DFrictionJoint::localAnchorA() const
 
 void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mFrictionJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio
-                                            ,-localAnchorA.y() / scaleRatio);
-    anchorsAuto = true;
+    mFrictionJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
+                                            -localAnchorA.y() / scaleRatio);
+    anchorsAuto = false;
     emit localAnchorAChanged();
 }
 
@@ -100,19 +100,19 @@ void Box2DFrictionJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
     mFrictionJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
                                             -localAnchorB.y() / scaleRatio);
-    anchorsAuto = true;
+    anchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 b2Joint *Box2DFrictionJoint::createJoint()
 {
     if (anchorsAuto) {
-        mFrictionJointDef.bodyA = bodyA()->body();
-        mFrictionJointDef.bodyB = bodyB()->body();
-    } else {
         mFrictionJointDef.Initialize(bodyA()->body(),
                                      bodyB()->body(),
                                      bodyA()->body()->GetWorldCenter());
+    } else {
+        mFrictionJointDef.bodyA = bodyA()->body();
+        mFrictionJointDef.bodyB = bodyB()->body();
     }
     mFrictionJointDef.collideConnected = collideConnected();
 
@@ -134,4 +134,3 @@ float Box2DFrictionJoint::getReactionTorque(float32 inv_dt) const
         return frictionJoint()->GetReactionTorque(inv_dt);
     return 0.0f;
 }
-
