@@ -141,10 +141,13 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
 
 Box2DWorld::~Box2DWorld()
 {
-    // The bodies will be deleted as part of the world, so it's important
-    // that they are no longer referenced from the Box2DBody instances.
+    // The bodies and joints will be deleted as part of the world, so it's
+    // important that they are no longer referenced from the Box2DBody and
+    // Box2DJoint instances.
     for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
         static_cast<Box2DBody *>(body->GetUserData())->nullifyBody();
+    for (b2Joint *joint = mWorld->GetJointList(); joint; joint = joint->GetNext())
+        static_cast<Box2DJoint *>(joint->GetUserData())->nullifyJoint();
 
     delete mWorld;
     delete mContactListener;
