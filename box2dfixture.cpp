@@ -39,6 +39,7 @@ Box2DFixture::Box2DFixture(QQuickItem *parent) :
     factorWidth(1.0),
     factorHeight(1.0)
 {
+    mFixtureDef.userData = this;
 }
 
 float Box2DFixture::density() const
@@ -164,7 +165,6 @@ void Box2DFixture::createFixture(b2Body *body)
 
     mFixtureDef.shape = shape;
     mFixture = body->CreateFixture(&mFixtureDef);
-    mFixture->SetUserData(this);
     mBody = body;
     delete shape;
 }
