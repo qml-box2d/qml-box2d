@@ -199,7 +199,6 @@ Rectangle {
 
         WheelJoint {
             id: wheelJointA
-            world: world
             bodyA: body
             bodyB: wheelA
             localAnchorA: Qt.point(100,10)
@@ -212,7 +211,6 @@ Rectangle {
 
         WheelJoint {
             id: wheelJointB
-            world: world
             bodyA: body
             bodyB: wheelB
             localAnchorA: Qt.point(0,10)
@@ -283,8 +281,7 @@ Rectangle {
                 wheelJointB.maxMotorTorque = torqueSlider.value;
             }
         }
-        Rectangle
-        {
+        Rectangle {
             id: leftButton
             x: 50
             y: 150
@@ -306,8 +303,7 @@ Rectangle {
                 }
             }
         }
-        Rectangle
-        {
+        Rectangle {
             id: rightButton
             x: 90
             y: 150
@@ -350,6 +346,5 @@ Rectangle {
                 newBox.y = 50;
             }
         }
-
     }
 }

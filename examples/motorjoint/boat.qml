@@ -80,7 +80,6 @@ Rectangle {
 
         MotorJoint {
             id: joint
-            world: world
             bodyA: berth
             bodyB: boat
             maxForce: 1000

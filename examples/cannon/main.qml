@@ -32,7 +32,6 @@ Rectangle {
     Component {
         id: linkJoint
         RevoluteJoint {
-            world: world
             localAnchorA: Qt.point(10, 30)
             localAnchorB: Qt.point(10, 5)
             collideConnected: true
@@ -123,7 +122,6 @@ Rectangle {
                 var newLink = link.createObject(world);
                 newLink.y = y;
                 var newJoint = linkJoint.createObject(world);
-                newJoint.world = world;
                 newJoint.bodyA = prev;
                 newJoint.bodyB = newLink;
                 prev = newLink;
@@ -225,7 +223,6 @@ Rectangle {
 
         RevoluteJoint {
             id: joint
-            world: world
             bodyA: canonBase
             bodyB: canon
             localAnchorA: Qt.point(75, 18)

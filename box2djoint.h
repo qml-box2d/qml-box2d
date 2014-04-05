@@ -40,7 +40,6 @@ class Box2DJoint : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool collideConnected READ collideConnected WRITE setCollideConnected NOTIFY collideConnectedChanged)
-    Q_PROPERTY(Box2DWorld *world READ box2DWorld WRITE setWorld NOTIFY worldChanged)
     Q_PROPERTY(Box2DBody *bodyA READ bodyA WRITE setBodyA NOTIFY bodyAChanged)
     Q_PROPERTY(Box2DBody *bodyB READ bodyB WRITE setBodyB NOTIFY bodyBChanged)
 
@@ -51,9 +50,6 @@ public:
     bool collideConnected() const;
     void setCollideConnected(bool collideConnected);
 
-    Box2DWorld *box2DWorld() const;
-    void setWorld(Box2DWorld *world);
-
     Box2DBody *bodyA() const;
     void setBodyA(Box2DBody *bodyA);
 
@@ -63,12 +59,11 @@ public:
     void initialize();
 
     void nullifyJoint();
-    void cleanup(b2World *world);
+    b2World *world() const;
     b2Joint *joint() const;
 
 protected:
     virtual b2Joint *createJoint() = 0;
-    b2World *world() const;
 
 private slots:
     void bodyACreated();
@@ -76,23 +71,27 @@ private slots:
 
 signals:
     void collideConnectedChanged();
-    void worldChanged();
     void bodyAChanged();
     void bodyBChanged();
     void created();
 
 private:
-    Box2DWorld *mWorld;
     bool mInitializePending;
     bool mCollideConnected;
     Box2DBody *mBodyA;
     Box2DBody *mBodyB;
+    b2World *mWorld;
     b2Joint *mJoint;
 };
 
 inline void Box2DJoint::nullifyJoint()
 {
     mJoint = 0;
+}
+
+inline b2World *Box2DJoint::world() const
+{
+    return mWorld;
 }
 
 inline b2Joint *Box2DJoint::joint() const

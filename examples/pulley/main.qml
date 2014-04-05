@@ -246,7 +246,6 @@ Rectangle {
             }
         }
         PulleyJoint {
-            world: world
             bodyA: bodyA
             bodyB: bodyB
             groundAnchorA: Qt.point(225,100)

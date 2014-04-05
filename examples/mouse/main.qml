@@ -13,41 +13,33 @@ Rectangle {
     Component {
         id: jointComponent
         MouseJoint {
-            world: world
             bodyA: anchor
             dampingRatio: 0.8
             target: Qt.point(350.0,200.0);
             maxForce: 100
-
         }
     }
 
     MouseArea {
         id: mouseArea
-        onPressed: {
-            global.createJoint(mouse.x,mouse.y);
-        }
-        onReleased: {
-            global.destroyJoint();
-        }
+        onPressed: global.createJoint(mouse.x, mouse.y);
+        onReleased: global.destroyJoint();
 
         onPositionChanged: {
-            if(global.dragged == true)
-            {
-                global.joint.target = Qt.point(mouse.x,mouse.y);
-            }
+            if (global.dragged)
+                global.joint.target = Qt.point(mouse.x, mouse.y);
         }
         anchors.fill: parent
-
-
     }
 
-    function createJoint(x,y) {
-        if(global.joint != null) destroyJoint();
+    function createJoint(x, y) {
+        if (global.joint != null)
+            destroyJoint();
         var body = global.body;
-        if(body == null) return;
+        if (body == null)
+            return;
         var mouseJoint = jointComponent.createObject(world);
-        mouseJoint.target = Qt.point(x,y);
+        mouseJoint.target = Qt.point(x, y);
         mouseJoint.bodyB = body;
         mouseJoint.maxForce = body.getMass();
         global.dragged = true;

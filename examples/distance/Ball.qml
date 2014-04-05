@@ -17,16 +17,12 @@ Body {
     Rectangle {
         id: itemShape
         radius: 180
-        width: parent.width
-        height: parent.height
-        x: circleShape.x - circleShape.radius
-        y: circleShape.y - circleShape.radius
+        anchors.fill: circleShape
         
         gradient: Gradient {
             GradientStop { position: 0.0; color: "red" }
             GradientStop { position: 0.5; color: "yellow" }
             GradientStop { position: 1.0; color: "green" }
         }
-        
     }
 }

@@ -142,15 +142,13 @@ Rectangle {
                 newBox.y = world.height / 2;
                 var x = ((Math.random() * 800) - 400) / 15;
                 var y = ((Math.random() * 600) - 300) / 15;
-                if(Math.round(Math.random() * 5) == 1) {
+                if (Math.round(Math.random() * 5) == 1) {
                     newBox.boxColor = "red";
-                }
-                else {
+                } else {
                     var joint = frictionJoint.createObject(world);
-                    joint.world = world;
                     joint.bodyB = newBox;
                 }
-                newBox.applyLinearImpulse(Qt.point(x,y),Qt.point(10,10));
+                newBox.applyLinearImpulse(Qt.point(x,y), Qt.point(10,10));
             }
         }
     }
