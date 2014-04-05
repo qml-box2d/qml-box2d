@@ -110,7 +110,8 @@ public:
     Q_INVOKABLE void applyForce(const QPointF &force,const QPointF &point);
     Q_INVOKABLE void applyTorque(qreal torque);
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
-    Q_INVOKABLE QPointF getWorldCenter() const;
+	Q_INVOKABLE void applyAngularImpulse(qreal impulse);
+	Q_INVOKABLE QPointF getWorldCenter() const;
     Q_INVOKABLE float getMass() const;
     Q_INVOKABLE float GetInertia() const;
     Q_INVOKABLE QPointF GetLinearVelocityFromWorldPoint(const QPointF &point);
