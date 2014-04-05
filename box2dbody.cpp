@@ -263,6 +263,13 @@ Box2DFixture * Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int i
     return body->mFixtures.at(index);
 }
 
+void Box2DBody::appendFixture(Box2DFixture *fixture)
+{
+	fixture->createFixture(mBody);
+	fixture->setParentItem(this);
+	mFixtures.append(fixture);
+}
+
 void Box2DBody::initialize(b2World *world)
 {
     mWorld = world;
