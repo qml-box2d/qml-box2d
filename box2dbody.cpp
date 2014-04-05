@@ -396,3 +396,11 @@ QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
     return QPointF(b2Point.x * scaleRatio,
                    -b2Point.y * scaleRatio);
 }
+
+
+void Box2DBody::cleanup()
+{
+    if (mBody) mWorld->DestroyBody(mBody);
+    mBody = 0;
+    mWorld = 0;
+}
