@@ -29,9 +29,6 @@
 #include "box2djoint.h"
 #include <Box2D.h>
 
-class b2World;
-class b2MouseJoint;
-
 class Box2DMouseJoint : public Box2DJoint
 {
     Q_OBJECT
@@ -43,7 +40,6 @@ class Box2DMouseJoint : public Box2DJoint
 
 public:
     explicit Box2DMouseJoint(QObject *parent = 0);
-    ~Box2DMouseJoint();
 
     float dampingRatio() const;
     void setDampingRatio(float dampingRatio);
@@ -60,10 +56,7 @@ public:
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2MouseJoint *mouseJoint() const;
 
 signals:
     void targetChanged();
@@ -71,9 +64,16 @@ signals:
     void frequencyHzChanged();
     void dampingRatioChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2MouseJointDef mMouseJointDef;
-    b2MouseJoint *mMouseJoint;
 };
+
+inline b2MouseJoint *Box2DMouseJoint::mouseJoint() const
+{
+    return static_cast<b2MouseJoint*>(joint());
+}
 
 #endif // BOX2DMOUSEJOINT_H

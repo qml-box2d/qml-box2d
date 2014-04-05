@@ -28,37 +28,31 @@
 #include "box2dbody.h"
 
 Box2DGearJoint::Box2DGearJoint(QObject *parent) :
-    Box2DJoint(parent),
-    mGearJoint(0)
+    Box2DJoint(parent)
 {
-}
-
-Box2DGearJoint::~Box2DGearJoint()
-{
-    cleanup(world());
 }
 
 float Box2DGearJoint::ratio() const
 {
-    if (mGearJoint)
-        mGearJoint->GetRatio();
+    if (gearJoint())
+        gearJoint()->GetRatio();
     return mGearJointDef.ratio;
 }
 
 void Box2DGearJoint::setRatio(float _ratio)
 {
-    if (qFuzzyCompare(_ratio,ratio()))
+    if (qFuzzyCompare(_ratio, ratio()))
         return;
     mGearJointDef.ratio = _ratio;
-    if (mGearJoint)
-        mGearJoint->SetRatio(_ratio);
+    if (gearJoint())
+        gearJoint()->SetRatio(_ratio);
     emit ratioChanged();
 }
 
 Box2DJoint *Box2DGearJoint::joint1() const
 {
-    if (mGearJoint)
-        return toBox2DJoint(mGearJoint->GetJoint1());
+    if (gearJoint())
+        return toBox2DJoint(gearJoint()->GetJoint1());
     return toBox2DJoint(mGearJointDef.joint1);
 }
 
@@ -76,8 +70,8 @@ void Box2DGearJoint::setJoint1(Box2DJoint *_joint1)
 
 Box2DJoint *Box2DGearJoint::joint2() const
 {
-    if (mGearJoint)
-        return toBox2DJoint(mGearJoint->GetJoint2());
+    if (gearJoint())
+        return toBox2DJoint(gearJoint()->GetJoint2());
     return toBox2DJoint(mGearJointDef.joint2);
 }
 
@@ -93,40 +87,14 @@ void Box2DGearJoint::setJoint2(Box2DJoint *_joint2)
     else connect(_joint2,SIGNAL(created()),this,SLOT(joint2Created()));
 }
 
-void Box2DGearJoint::nullifyJoint()
-{
-    mGearJoint = 0;
-}
-
-void Box2DGearJoint::createJoint()
+b2Joint *Box2DGearJoint::createJoint()
 {    
     if (!mGearJointDef.joint1 || !mGearJointDef.joint2)
-        return;
+        return 0;
     mGearJointDef.bodyA = bodyA()->body();
     mGearJointDef.bodyB = bodyB()->body();
 
-    mGearJoint = static_cast<b2GearJoint*>(world()->CreateJoint(&mGearJointDef));
-    mGearJoint->SetUserData(this);
-    mInitializePending = false;
-    emit created();
-}
-
-void Box2DGearJoint::cleanup(b2World *world)
-{
-    if (!world) {
-        qWarning() << "GearJoint: There is no world connected";
-        return;
-    }
-    if (mGearJoint) {
-        mGearJoint->SetUserData(0);
-        world->DestroyJoint(mGearJoint);
-        mGearJoint = 0;
-    }
-}
-
-b2Joint *Box2DGearJoint::joint() const
-{
-    return mGearJoint;
+    return world()->CreateJoint(&mGearJointDef);
 }
 
 void Box2DGearJoint::joint1Created()

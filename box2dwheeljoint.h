@@ -30,12 +30,10 @@
 #include "box2djoint.h"
 #include <Box2D.h>
 
-class b2World;
-class b2WheelJoint;
-
 class Box2DWheelJoint : public Box2DJoint
 {
     Q_OBJECT
+
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
     Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
@@ -47,7 +45,6 @@ class Box2DWheelJoint : public Box2DJoint
 
 public:
     explicit Box2DWheelJoint(QObject *parent = 0);
-    ~Box2DWheelJoint();
 
     float dampingRatio() const;
     void setDampingRatio(float _dampingRatio);
@@ -73,10 +70,7 @@ public:
     QPointF localAxisA() const;
     void setLocalAxisA(const QPointF &localAxisA);
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2WheelJoint *wheelJoint() const;
 
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
@@ -93,10 +87,17 @@ signals:
     void localAnchorBChanged();
     void localAxisAChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2WheelJointDef mWheelJointDef;
-    b2WheelJoint *mWheelJoint;
     bool anchorsAuto;
 };
+
+inline b2WheelJoint *Box2DWheelJoint::wheelJoint() const
+{
+    return static_cast<b2WheelJoint*>(joint());
+}
 
 #endif // BOX2DWHEELJOINT_H

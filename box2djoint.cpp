@@ -29,12 +29,18 @@
 
 Box2DJoint::Box2DJoint(QObject *parent) :
     QObject(parent),
-    mInitializePending(false),
     mWorld(0),
+    mInitializePending(false),
     mCollideConnected(false),
     mBodyA(0),
-    mBodyB(0)
+    mBodyB(0),
+    mJoint(0)
 {
+}
+
+Box2DJoint::~Box2DJoint()
+{
+    cleanup(world());
 }
 
 bool Box2DJoint::collideConnected() const
@@ -77,13 +83,13 @@ void Box2DJoint::setBodyA(Box2DBody *bodyA)
     if (mBodyA)
         return;
 
-    if (bodyA->body() != NULL) {
+    if (bodyA->body()) {
         mBodyA = bodyA;
         emit bodyAChanged();
         initialize();
-    }
-    else
+    } else {
         connect(bodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
+    }
 }
 
 Box2DBody *Box2DJoint::bodyB() const
@@ -96,13 +102,13 @@ void Box2DJoint::setBodyB(Box2DBody *bodyB)
     if (mBodyB)
         return;
 
-    if (bodyB->body() != NULL) {
+    if (bodyB->body()) {
         mBodyB = bodyB;
         emit bodyBChanged();
         initialize();
-    }
-    else
+    } else {
         connect(bodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
+    }
 }
 
 void Box2DJoint::initialize()
@@ -114,10 +120,29 @@ void Box2DJoint::initialize()
         mInitializePending = true;
         return;
     }
-    if (mBodyA->world() != mBodyB->world())
+    if (mBodyA->world() != mBodyB->world()) {
         qWarning() << "bodyA and bodyB from different worlds";
-    else
-        createJoint();
+    } else {
+        mJoint = createJoint();
+        if (mJoint) {
+            mJoint->SetUserData(this);
+            mInitializePending = false;
+            emit created();
+        }
+    }
+}
+
+void Box2DJoint::cleanup(b2World *world)
+{
+    if (!world) {
+        qWarning() << "Joint: There is no world connected";
+        return;
+    }
+    if (mJoint && bodyA() && bodyB()) {
+        mJoint->SetUserData(0);
+        world->DestroyJoint(mJoint);
+        mJoint = 0;
+    }
 }
 
 b2World *Box2DJoint::world() const

@@ -30,14 +30,8 @@
 
 Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
     Box2DJoint(parent),
-    mPrismaticJoint(0),
     anchorsAuto(true)
 {
-}
-
-Box2DPrismaticJoint::~Box2DPrismaticJoint()
-{
-    cleanup(world());
 }
 
 float Box2DPrismaticJoint::lowerTranslation() const
@@ -50,9 +44,9 @@ void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
     if (qFuzzyCompare(mPrismaticJointDef.lowerTranslation, lowerTranslation / scaleRatio))
         return;
     mPrismaticJointDef.lowerTranslation = lowerTranslation / scaleRatio;
-    if (mPrismaticJoint)
-        mPrismaticJoint->SetLimits(mPrismaticJointDef.lowerTranslation,
-                                   mPrismaticJointDef.upperTranslation);
+    if (prismaticJoint())
+        prismaticJoint()->SetLimits(mPrismaticJointDef.lowerTranslation,
+                                    mPrismaticJointDef.upperTranslation);
     emit lowerTranslationChanged();
 }
 
@@ -67,9 +61,9 @@ void Box2DPrismaticJoint::setUpperTranslation(float upperTranslation)
         return;
 
     mPrismaticJointDef.upperTranslation = upperTranslation / scaleRatio;
-    if (mPrismaticJoint)
-        mPrismaticJoint->SetLimits(mPrismaticJointDef.lowerTranslation,
-                                   mPrismaticJointDef.upperTranslation);
+    if (prismaticJoint())
+        prismaticJoint()->SetLimits(mPrismaticJointDef.lowerTranslation,
+                                    mPrismaticJointDef.upperTranslation);
     emit upperTranslationChanged();
 }
 
@@ -84,8 +78,8 @@ void Box2DPrismaticJoint::setMaxMotorForce(float maxMotorForce)
         return;
 
     mPrismaticJointDef.maxMotorForce = maxMotorForce;
-    if (mPrismaticJoint)
-        mPrismaticJoint->SetMaxMotorForce(maxMotorForce);
+    if (prismaticJoint())
+        prismaticJoint()->SetMaxMotorForce(maxMotorForce);
     emit maxMotorForceChanged();
 }
 
@@ -100,8 +94,8 @@ void Box2DPrismaticJoint::setMotorSpeed(float motorSpeed)
         return;
 
     mPrismaticJointDef.motorSpeed = motorSpeed / scaleRatio;
-    if (mPrismaticJoint)
-        mPrismaticJoint->SetMotorSpeed(mPrismaticJointDef.motorSpeed);
+    if (prismaticJoint())
+        prismaticJoint()->SetMotorSpeed(mPrismaticJointDef.motorSpeed);
     emit motorSpeedChanged();
 }
 
@@ -116,8 +110,8 @@ void Box2DPrismaticJoint::setEnableLimit(bool enableLimit)
         return;
 
     mPrismaticJointDef.enableLimit = enableLimit;
-    if (mPrismaticJoint)
-        mPrismaticJoint->EnableLimit(enableLimit);
+    if (prismaticJoint())
+        prismaticJoint()->EnableLimit(enableLimit);
     emit enableLimitChanged();
 }
 
@@ -132,8 +126,8 @@ void Box2DPrismaticJoint::setEnableMotor(bool enableMotor)
         return;
 
     mPrismaticJointDef.enableMotor = enableMotor;
-    if (mPrismaticJoint)
-        mPrismaticJoint->EnableMotor(enableMotor);
+    if (prismaticJoint())
+        prismaticJoint()->EnableMotor(enableMotor);
     emit enableMotorChanged();
 }
 
@@ -152,82 +146,59 @@ void Box2DPrismaticJoint::setAxis(const QPointF &axis)
 
 QPointF Box2DPrismaticJoint::localAnchorA() const
 {
-    return QPointF(mPrismaticJointDef.localAnchorA.x * scaleRatio, mPrismaticJointDef.localAnchorA.y * scaleRatio);
+    return QPointF(mPrismaticJointDef.localAnchorA.x * scaleRatio,
+                   -mPrismaticJointDef.localAnchorA.y * scaleRatio);
 }
 
 QPointF Box2DPrismaticJoint::localAnchorB() const
 {
-    return QPointF(mPrismaticJointDef.localAnchorB.x * scaleRatio, mPrismaticJointDef.localAnchorB.y * scaleRatio);
+    return QPointF(mPrismaticJointDef.localAnchorB.x * scaleRatio,
+                   -mPrismaticJointDef.localAnchorB.y * scaleRatio);
 }
 
 void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mPrismaticJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,-localAnchorA.y() / scaleRatio);
+    mPrismaticJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
+                                             -localAnchorA.y() / scaleRatio);
     anchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mPrismaticJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,-localAnchorB.y() / scaleRatio);
+    mPrismaticJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
+                                             -localAnchorB.y() / scaleRatio);
     anchorsAuto = false;
     emit localAnchorBChanged();
 }
 
-void Box2DPrismaticJoint::nullifyJoint()
+b2Joint *Box2DPrismaticJoint::createJoint()
 {
-    mPrismaticJoint = 0;
-}
-
-void Box2DPrismaticJoint::createJoint()
-{
-    if (anchorsAuto)
-        mPrismaticJointDef.Initialize(bodyA()->body(), bodyB()->body(),
-                                 bodyA()->body()->GetWorldCenter(),
-                                 mPrismaticJointDef.localAxisA);
-    else
-    {
+    if (anchorsAuto) {
+        mPrismaticJointDef.Initialize(bodyA()->body(),
+                                      bodyB()->body(),
+                                      bodyA()->body()->GetWorldCenter(),
+                                      mPrismaticJointDef.localAxisA);
+    } else {
         mPrismaticJointDef.bodyA = bodyA()->body();
         mPrismaticJointDef.bodyB = bodyB()->body();
         mPrismaticJointDef.referenceAngle = 0.0;
     }
     mPrismaticJointDef.collideConnected = collideConnected();
 
-    mPrismaticJoint = static_cast<b2PrismaticJoint*>
-            (world()->CreateJoint(&mPrismaticJointDef));
-    mPrismaticJoint->SetUserData(this);
-    mInitializePending = false;
-    emit created();
-}
-
-void Box2DPrismaticJoint::cleanup(b2World *world)
-{
-    if (!world) {
-        qWarning() << "PrismaticJoint: There is no world connected";
-        return;
-    }
-    if (mPrismaticJoint && bodyA() && bodyB()) {
-        mPrismaticJoint->SetUserData(0);
-        world->DestroyJoint(mPrismaticJoint);
-        mPrismaticJoint = 0;
-    }
-}
-
-b2Joint *Box2DPrismaticJoint::joint() const
-{
-    return mPrismaticJoint;
+    return world()->CreateJoint(&mPrismaticJointDef);
 }
 
 float Box2DPrismaticJoint::getJointTranslation() const
 {
-    if (mPrismaticJoint)
-        return mPrismaticJoint->GetJointTranslation() * scaleRatio;
+    if (prismaticJoint())
+        return prismaticJoint()->GetJointTranslation() * scaleRatio;
     return 0.0;
 }
 
 float Box2DPrismaticJoint::getJointSpeed() const
 {
-    if (mPrismaticJoint)
-        return mPrismaticJoint->GetJointSpeed();
+    if (prismaticJoint())
+        return prismaticJoint()->GetJointSpeed();
     return 0.0;
 }
