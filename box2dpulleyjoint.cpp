@@ -144,7 +144,7 @@ void Box2DPulleyJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DPulleyJoint::createJoint()
 {
-    if (qFuzzyCompare(mPulleyJointDef.lengthA, 0.0f) || qFuzzyCompare(mPulleyJointDef.lengthB, 0.0f)) {
+    if (qFuzzyIsNull(mPulleyJointDef.lengthA) || qFuzzyIsNull(mPulleyJointDef.lengthB)) {
         qWarning() << "PulleyJoint: the joint length cannot be zero";
         return 0;
     }
