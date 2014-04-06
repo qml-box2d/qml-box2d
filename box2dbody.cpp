@@ -240,7 +240,7 @@ void Box2DBody::initialize(b2World *world)
     mBody = world->CreateBody(&mBodyDef);
     mInitializePending = false;
     foreach (Box2DFixture *fixture, mFixtures)
-        fixture->createFixture(mBody);
+        fixture->initialize(mBody);
     emit bodyCreated();
 }
 

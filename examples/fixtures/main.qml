@@ -45,21 +45,21 @@ Rectangle {
         anchors.fill: parent
 
         Body {
-            function getVertices() {
-                var pos = 40;
+            function getVertices(height) {
+                var pos = height;
                 var arr = [];
                 arr.push(Qt.point(0,0));
-                arr.push(Qt.point(40,0));
+                arr.push(Qt.point(height,0));
                 while(pos < 700) {
-                    var y = Math.round(Math.random() * 30);
+                    var y = Math.round(Math.random() * height);
                     var x = Math.round(20 + Math.random() * 40);
                     pos += x;
                     arr.push(Qt.point(pos,y));
                 }
                 arr.push(Qt.point(760,0));
                 arr.push(Qt.point(800,0));
-                arr.push(Qt.point(800,40));
-                arr.push(Qt.point(0,40));
+                arr.push(Qt.point(800,height));
+                arr.push(Qt.point(0,height));
                 return arr;
             }
             height: 40
@@ -71,7 +71,7 @@ Rectangle {
             bodyType: Body.Static
             fixtures: Chain {
                 id: groundShape
-                vertices: ground.getVertices()
+                vertices: ground.getVertices(ground.height)
                 anchors.fill: parent
                 loop: true
             }
@@ -91,7 +91,6 @@ Rectangle {
                     }
                     context.fillStyle = "#000000";
                     context.fill();
-
                 }
             }
         }
