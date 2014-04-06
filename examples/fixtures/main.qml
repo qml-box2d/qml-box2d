@@ -181,21 +181,19 @@ Rectangle {
             bodyType: Body.Dynamic
             x: 600
             y: 100
-            width: 100
-            height: 100
-            fixtures:
+            fixtures: [
                 Circle {
-                radius: parent.width / 2
-                anchors.centerIn: parent
-                density: 0.9
-                friction: 0.3
-                restitution: 0.8
-            }
+                    id: circleShape
+                    radius: 50
+                    anchors.centerIn: parent
+                    density: 0.9
+                    friction: 0.3
+                    restitution: 0.8
+                }
+            ]
             Rectangle {
-                anchors.centerIn: parent
-                radius: parent.width / 2
-                width: parent.width
-                height: parent.height
+                anchors.fill: circleShape
+                radius: circleShape.width / 2
                 color: "red"
             }
         }
@@ -360,16 +358,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if(radiusTest.width == 150)
-                    {
-                        radiusTest.width = 100
-                        radiusTest.height = 100
-                    }
+                    if (circleShape.radius == 75)
+                        circleShape.radius = 50
                     else
-                    {
-                        radiusTest.width = 150
-                        radiusTest.height = 150
-                    }
+                        circleShape.radius = 75
                 }
             }
         }
