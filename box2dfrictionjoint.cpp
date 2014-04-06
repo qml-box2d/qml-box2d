@@ -67,16 +67,13 @@ void Box2DFrictionJoint::setMaxTorque(float maxTorque)
 QPointF Box2DFrictionJoint::localAnchorA() const
 {
     if (frictionJoint())
-        return QPointF(frictionJoint()->GetAnchorA().x * scaleRatio,
-                       -frictionJoint()->GetAnchorA().y * scaleRatio);
-    return QPointF(mFrictionJointDef.localAnchorA.x * scaleRatio,
-                   -mFrictionJointDef.localAnchorA.y * scaleRatio);
+        return toPixels(frictionJoint()->GetAnchorA());
+    return toPixels(mFrictionJointDef.localAnchorA);
 }
 
 void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mFrictionJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
-                                            -localAnchorA.y() / scaleRatio);
+    mFrictionJointDef.localAnchorA = toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
@@ -84,16 +81,13 @@ void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
 QPointF Box2DFrictionJoint::localAnchorB() const
 {
     if (frictionJoint())
-        return QPointF(frictionJoint()->GetAnchorB().x * scaleRatio,
-                       -frictionJoint()->GetAnchorB().y * scaleRatio);
-    return QPointF(mFrictionJointDef.localAnchorB.x * scaleRatio,
-                   -mFrictionJointDef.localAnchorB.y * scaleRatio);
+        return toPixels(frictionJoint()->GetAnchorB());
+    return toPixels(mFrictionJointDef.localAnchorB);
 }
 
 void Box2DFrictionJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mFrictionJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
-                                            -localAnchorB.y() / scaleRatio);
+    mFrictionJointDef.localAnchorB = toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -114,10 +108,8 @@ b2Joint *Box2DFrictionJoint::createJoint()
 
 QPointF Box2DFrictionJoint::getReactionForce(float32 inv_dt) const
 {
-    if (frictionJoint()) {
-        b2Vec2 point = frictionJoint()->GetReactionForce(inv_dt);
-        return QPointF(point.x * scaleRatio, point.y * scaleRatio);
-    }
+    if (frictionJoint())
+        return toPixels(frictionJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

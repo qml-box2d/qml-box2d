@@ -74,11 +74,6 @@ private:
     bool mAnchorsAuto;
 };
 
-inline float Box2DWeldJoint::referenceAngle() const
-{
-    return mWeldJointDef.referenceAngle * -180 / b2_pi;
-}
-
 inline float Box2DWeldJoint::frequencyHz() const
 {
     return mWeldJointDef.frequencyHz;

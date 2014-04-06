@@ -36,14 +36,12 @@ Box2DMotorJoint::Box2DMotorJoint(QObject *parent) :
 
 QPointF Box2DMotorJoint::linearOffset() const
 {
-    return QPointF(mMotorJointDef.linearOffset.x * scaleRatio,
-                   -mMotorJointDef.linearOffset.y * scaleRatio);
+    return toPixels(mMotorJointDef.linearOffset);
 }
 
 void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 {
-    const b2Vec2 linearOffsetMeters(linearOffset.x() / scaleRatio,
-                                    -linearOffset.y() / scaleRatio);
+    const b2Vec2 linearOffsetMeters = toMeters(linearOffset);
     if (mMotorJointDef.linearOffset == linearOffsetMeters)
         return;
 
@@ -53,9 +51,14 @@ void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
     emit linearOffsetChanged();
 }
 
+float Box2DMotorJoint::angularOffset() const
+{
+    return toDegrees(mMotorJointDef.angularOffset);
+}
+
 void Box2DMotorJoint::setAngularOffset(float angularOffset)
 {
-    const float angularOffsetRad = angularOffset * -b2_pi / 180;
+    const float angularOffsetRad = toRadians(angularOffset);
     if (mMotorJointDef.angularOffset == angularOffsetRad)
         return;
 

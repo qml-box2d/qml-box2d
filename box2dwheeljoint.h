@@ -110,11 +110,6 @@ inline float Box2DWheelJoint::maxMotorTorque() const
     return mWheelJointDef.maxMotorTorque;
 }
 
-inline float Box2DWheelJoint::motorSpeed() const
-{
-    return -mWheelJointDef.motorSpeed * b2_pi / 180;
-}
-
 inline bool Box2DWheelJoint::enableMotor() const
 {
     return mWheelJointDef.enableMotor;

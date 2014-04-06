@@ -35,9 +35,14 @@ Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
 {
 }
 
+float Box2DRevoluteJoint::lowerAngle() const
+{
+    return toDegrees(mRevoluteJointDef.lowerAngle);
+}
+
 void Box2DRevoluteJoint::setLowerAngle(float lowerAngle)
 {
-    float lowerAngleRad = lowerAngle * b2_pi / -180;
+    float lowerAngleRad = toRadians(lowerAngle);
     if (mRevoluteJointDef.lowerAngle == lowerAngleRad)
         return;
 
@@ -48,9 +53,14 @@ void Box2DRevoluteJoint::setLowerAngle(float lowerAngle)
     emit lowerAngleChanged();
 }
 
+float Box2DRevoluteJoint::upperAngle() const
+{
+    return toDegrees(mRevoluteJointDef.upperAngle);
+}
+
 void Box2DRevoluteJoint::setUpperAngle(float upperAngle)
 {
-    float upperAngleRad = upperAngle * b2_pi / -180;
+    float upperAngleRad = toRadians(upperAngle);
     if (mRevoluteJointDef.upperAngle == upperAngleRad)
         return;
 
@@ -72,9 +82,14 @@ void Box2DRevoluteJoint::setMaxMotorTorque(float maxMotorTorque)
     emit maxMotorTorqueChanged();
 }
 
+float Box2DRevoluteJoint::motorSpeed() const
+{
+    return toDegrees(mRevoluteJointDef.motorSpeed);
+}
+
 void Box2DRevoluteJoint::setMotorSpeed(float motorSpeed)
 {
-    const float motorSpeedRad = -motorSpeed * b2_pi / 180;
+    const float motorSpeedRad = toRadians(motorSpeed);
     if (mRevoluteJointDef.motorSpeed == motorSpeedRad)
         return;
 
@@ -108,28 +123,24 @@ void Box2DRevoluteJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DRevoluteJoint::localAnchorA() const
 {
-    return QPointF(mRevoluteJointDef.localAnchorA.x * scaleRatio,
-                   -mRevoluteJointDef.localAnchorA.y * scaleRatio);
+    return toPixels(mRevoluteJointDef.localAnchorA);
 }
 
 QPointF Box2DRevoluteJoint::localAnchorB() const
 {
-    return QPointF(mRevoluteJointDef.localAnchorB.x * scaleRatio,
-                   -mRevoluteJointDef.localAnchorB.y * scaleRatio);
+    return toPixels(mRevoluteJointDef.localAnchorB);
 }
 
 void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mRevoluteJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
-                                            -localAnchorA.y() / scaleRatio);
+    mRevoluteJointDef.localAnchorA = toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mRevoluteJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
-                                            -localAnchorB.y() / scaleRatio);
+    mRevoluteJointDef.localAnchorB = toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -151,7 +162,7 @@ b2Joint *Box2DRevoluteJoint::createJoint()
 float Box2DRevoluteJoint::getJointAngle() const
 {
     if (revoluteJoint())
-        return -revoluteJoint()->GetJointAngle() * 180 / b2_pi;
+        return toDegrees(revoluteJoint()->GetJointAngle());
     return 0.0;
 }
 

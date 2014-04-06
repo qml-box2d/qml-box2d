@@ -36,12 +36,12 @@ Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
 
 float Box2DPrismaticJoint::lowerTranslation() const
 {
-    return mPrismaticJointDef.lowerTranslation * scaleRatio;
+    return toPixels(mPrismaticJointDef.lowerTranslation);
 }
 
 void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
 {
-    const float lowerTranslationMeters = lowerTranslation / scaleRatio;
+    const float lowerTranslationMeters = toMeters(lowerTranslation);
     if (mPrismaticJointDef.lowerTranslation == lowerTranslationMeters)
         return;
 
@@ -54,12 +54,12 @@ void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
 
 float Box2DPrismaticJoint::upperTranslation() const
 {
-    return mPrismaticJointDef.upperTranslation * scaleRatio;
+    return toPixels(mPrismaticJointDef.upperTranslation);
 }
 
 void Box2DPrismaticJoint::setUpperTranslation(float upperTranslation)
 {
-    const float upperTranslationMeters = upperTranslation / scaleRatio;
+    const float upperTranslationMeters = toMeters(upperTranslation);
     if (mPrismaticJointDef.upperTranslation == upperTranslationMeters)
         return;
 
@@ -81,9 +81,14 @@ void Box2DPrismaticJoint::setMaxMotorForce(float maxMotorForce)
     emit maxMotorForceChanged();
 }
 
+float Box2DPrismaticJoint::motorSpeed() const
+{
+    return toDegrees(mPrismaticJointDef.motorSpeed);
+}
+
 void Box2DPrismaticJoint::setMotorSpeed(float motorSpeed)
 {
-    const float motorSpeedRad = motorSpeed * -b2_pi / 180;
+    const float motorSpeedRad = toRadians(motorSpeed);
     if (mPrismaticJointDef.motorSpeed == motorSpeedRad)
         return;
 
@@ -117,42 +122,36 @@ void Box2DPrismaticJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DPrismaticJoint::axis() const
 {
-    return QPointF(mPrismaticJointDef.localAxisA.x * scaleRatio,
-                   -mPrismaticJointDef.localAxisA.y * scaleRatio);
+    return toPixels(mPrismaticJointDef.localAxisA);
 }
 
 void Box2DPrismaticJoint::setAxis(const QPointF &axis)
 {
-    mPrismaticJointDef.localAxisA = b2Vec2(axis.x() / scaleRatio,
-                                           -axis.y() / scaleRatio);
+    mPrismaticJointDef.localAxisA = toMeters(axis);
     mPrismaticJointDef.localAxisA.Normalize();
     emit axisChanged();
 }
 
 QPointF Box2DPrismaticJoint::localAnchorA() const
 {
-    return QPointF(mPrismaticJointDef.localAnchorA.x * scaleRatio,
-                   -mPrismaticJointDef.localAnchorA.y * scaleRatio);
+    return toPixels(mPrismaticJointDef.localAnchorA);
 }
 
 QPointF Box2DPrismaticJoint::localAnchorB() const
 {
-    return QPointF(mPrismaticJointDef.localAnchorB.x * scaleRatio,
-                   -mPrismaticJointDef.localAnchorB.y * scaleRatio);
+    return toPixels(mPrismaticJointDef.localAnchorB);
 }
 
 void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mPrismaticJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
-                                             -localAnchorA.y() / scaleRatio);
+    mPrismaticJointDef.localAnchorA = toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mPrismaticJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
-                                             -localAnchorB.y() / scaleRatio);
+    mPrismaticJointDef.localAnchorB = toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -176,7 +175,7 @@ b2Joint *Box2DPrismaticJoint::createJoint()
 float Box2DPrismaticJoint::getJointTranslation() const
 {
     if (prismaticJoint())
-        return prismaticJoint()->GetJointTranslation() * scaleRatio;
+        return toPixels(prismaticJoint()->GetJointTranslation());
     return 0.0;
 }
 

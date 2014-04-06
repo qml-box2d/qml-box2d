@@ -36,12 +36,12 @@ Box2DRopeJoint::Box2DRopeJoint(QObject *parent) :
 
 float Box2DRopeJoint::maxLength() const
 {
-    return mRopeJointDef.maxLength * scaleRatio;
+    return toPixels(mRopeJointDef.maxLength);
 }
 
 void Box2DRopeJoint::setMaxLength(float maxLength)
 {
-    const float maxLengthMeters = maxLength / scaleRatio;
+    const float maxLengthMeters = toMeters(maxLength);
     if (mRopeJointDef.maxLength == maxLengthMeters)
         return;
 
@@ -53,27 +53,23 @@ void Box2DRopeJoint::setMaxLength(float maxLength)
 
 QPointF Box2DRopeJoint::localAnchorA() const
 {
-    return QPointF(mRopeJointDef.localAnchorA.x * scaleRatio,
-                   -mRopeJointDef.localAnchorA.y * scaleRatio);
+    return toPixels(mRopeJointDef.localAnchorA);
 }
 
 void Box2DRopeJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mRopeJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
-                                        -localAnchorA.y() / scaleRatio);
+    mRopeJointDef.localAnchorA = toMeters(localAnchorA);
     emit localAnchorAChanged();
 }
 
 QPointF Box2DRopeJoint::localAnchorB() const
 {
-    return QPointF(mRopeJointDef.localAnchorB.x * scaleRatio,
-                   -mRopeJointDef.localAnchorB.y * scaleRatio);
+    return toPixels(mRopeJointDef.localAnchorB);
 }
 
 void Box2DRopeJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mRopeJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
-                                        -localAnchorB.y() / scaleRatio);
+    mRopeJointDef.localAnchorB = toMeters(localAnchorB);
     emit localAnchorBChanged();
 }
 
@@ -87,10 +83,8 @@ b2Joint *Box2DRopeJoint::createJoint()
 
 QPointF Box2DRopeJoint::getReactionForce(float32 inv_dt) const
 {
-    if (ropeJoint()) {
-        b2Vec2 point = ropeJoint()->GetReactionForce(inv_dt);
-        return QPointF(point.x * scaleRatio,point.y * scaleRatio);
-    }
+    if (ropeJoint())
+        return toPixels(ropeJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

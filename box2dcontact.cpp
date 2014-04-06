@@ -112,10 +112,10 @@ void Box2DContact::resetRestitution()
 
 qreal Box2DContact::getTangentSpeed() const
 {
-    return mContact->GetTangentSpeed() * scaleRatio;
+    return toPixels(mContact->GetTangentSpeed());
 }
 
 void Box2DContact::setTangentSpeed(qreal speed)
 {
-    mContact->SetTangentSpeed(speed / scaleRatio);
+    mContact->SetTangentSpeed(toMeters(speed));
 }

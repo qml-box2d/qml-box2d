@@ -34,9 +34,14 @@ Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
 {
 }
 
+float Box2DWeldJoint::referenceAngle() const
+{
+    return toDegrees(mWeldJointDef.referenceAngle);
+}
+
 void Box2DWeldJoint::setReferenceAngle(float referenceAngle)
 {
-    float referenceAngleRad = referenceAngle * b2_pi / -180;
+    float referenceAngleRad = toRadians(referenceAngle);
     if (mWeldJointDef.referenceAngle == referenceAngleRad)
         return;
 
@@ -68,28 +73,24 @@ void Box2DWeldJoint::setDampingRatio(float dampingRatio)
 
 QPointF Box2DWeldJoint::localAnchorA() const
 {
-    return QPointF(mWeldJointDef.localAnchorA.x * scaleRatio,
-                   -mWeldJointDef.localAnchorA.y * scaleRatio);
+    return toPixels(mWeldJointDef.localAnchorA);
 }
 
 void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mWeldJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
-                                        -localAnchorA.y() / scaleRatio);
+    mWeldJointDef.localAnchorA = toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 QPointF Box2DWeldJoint::localAnchorB() const
 {
-        return QPointF(mWeldJointDef.localAnchorB.x * scaleRatio,
-                       -mWeldJointDef.localAnchorB.y * scaleRatio);
+    return toPixels(mWeldJointDef.localAnchorB);
 }
 
 void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mWeldJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
-                                        -localAnchorB.y() / scaleRatio);
+    mWeldJointDef.localAnchorB = toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }

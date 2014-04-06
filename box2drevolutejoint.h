@@ -93,24 +93,9 @@ private:
     bool mAnchorsAuto;
 };
 
-inline float Box2DRevoluteJoint::lowerAngle() const
-{
-    return -mRevoluteJointDef.lowerAngle * 180 / b2_pi;
-}
-
-inline float Box2DRevoluteJoint::upperAngle() const
-{
-    return -mRevoluteJointDef.upperAngle * 180 / b2_pi;
-}
-
 inline float Box2DRevoluteJoint::maxMotorTorque() const
 {
     return mRevoluteJointDef.maxMotorTorque;
-}
-
-inline float Box2DRevoluteJoint::motorSpeed() const
-{
-    return -mRevoluteJointDef.motorSpeed * 180 / b2_pi;
 }
 
 inline bool Box2DRevoluteJoint::enableLimit() const

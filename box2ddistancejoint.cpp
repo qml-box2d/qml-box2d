@@ -36,15 +36,15 @@ Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent) :
 
 float Box2DDistanceJoint::length() const
 {
-    return mDistanceJointDef.length * scaleRatio;
+    return toPixels(mDistanceJointDef.length);
 }
 
 void Box2DDistanceJoint::setLength(float length)
 {
-    if (mDistanceJointDef.length == length / scaleRatio)
+    if (mDistanceJointDef.length == toMeters(length))
         return;
 
-    mDistanceJointDef.length = length / scaleRatio;
+    mDistanceJointDef.length = toMeters(length);
     if (distanceJoint())
         distanceJoint()->SetLength(mDistanceJointDef.length);
     emit lengthChanged();
@@ -74,28 +74,24 @@ void Box2DDistanceJoint::setDampingRatio(float dampingRatio)
 
 QPointF Box2DDistanceJoint::localAnchorA() const
 {
-    return QPointF(mDistanceJointDef.localAnchorA.x * scaleRatio,
-                   -mDistanceJointDef.localAnchorA.y * scaleRatio);
+    return toPixels(mDistanceJointDef.localAnchorA);
 }
 
 void Box2DDistanceJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mDistanceJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
-                                            -localAnchorA.y() / scaleRatio);
+    mDistanceJointDef.localAnchorA = toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 QPointF Box2DDistanceJoint::localAnchorB() const
 {
-    return QPointF(mDistanceJointDef.localAnchorB.x * scaleRatio,
-                   -mDistanceJointDef.localAnchorB.y * scaleRatio);
+    return toPixels(mDistanceJointDef.localAnchorB);
 }
 
 void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mDistanceJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
-                                            -localAnchorB.y() / scaleRatio);
+    mDistanceJointDef.localAnchorB = toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -117,10 +113,8 @@ b2Joint *Box2DDistanceJoint::createJoint()
 
 QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const
 {
-    if (distanceJoint()) {
-        b2Vec2 point = distanceJoint()->GetReactionForce(inv_dt);
-        return QPointF(point.x * scaleRatio, point.y * scaleRatio);
-    }
+    if (distanceJoint())
+        return toPixels(distanceJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

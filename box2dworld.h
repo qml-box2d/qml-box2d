@@ -31,6 +31,8 @@
 #include <QAbstractAnimation>
 #include <QQuickItem>
 
+#include <Box2D.h>
+
 class Box2DContact;
 class Box2DFixture;
 class Box2DJoint;
@@ -39,11 +41,12 @@ class ContactListener;
 class Box2DDestructionListener;
 class StepDriver;
 
-class b2World;
-
 // TODO: Maybe turn this into a property of the world, though it can't be
 // changed dynamically.
-static const float scaleRatio = 32.0f; // 32 pixels in one meter
+static const float pixelsPerMeter = 32.0f; // 32 pixels in one meter
+static const float metersPerPixel = 1.0f / pixelsPerMeter;
+static const float pixelsPerMeterY = -pixelsPerMeter; // Y-axis inverted
+static const float metersPerPixelY = -metersPerPixel;
 
 /**
  * Small utility class to synchronize the stepping with the framerate.
@@ -99,7 +102,7 @@ public:
 
     void componentComplete();
 
-    b2World *world() const { return mWorld; }
+    b2World *world() const;
 
     void step();
 
@@ -170,6 +173,63 @@ inline QPointF Box2DWorld::gravity() const
 {
     return mGravity;
 }
+
+inline b2World *Box2DWorld::world() const
+{
+    return mWorld;
+}
+
+
+/**
+ * Converts lengths from Box2D to QML units.
+ */
+inline float toPixels(float length)
+{
+    return length * pixelsPerMeter;
+}
+
+/**
+ * Converts lengths from QML to Box2D units.
+ */
+inline float toMeters(float length)
+{
+    return length * metersPerPixel;
+}
+
+/**
+ * Converts positions and sizes from Box2D to QML coordinates.
+ */
+inline QPointF toPixels(const b2Vec2 &vec)
+{
+    return QPointF(vec.x * pixelsPerMeter,
+                   vec.y * pixelsPerMeterY);
+}
+
+/**
+ * Converts positions and sizes from QML to Box2D coordinates.
+ */
+inline b2Vec2 toMeters(const QPointF &point)
+{
+    return b2Vec2(point.x() * metersPerPixel,
+                  point.y() * metersPerPixelY);
+}
+
+/**
+ * Converts angles from Box2D to QML values.
+ */
+inline float toDegrees(float radians)
+{
+    return -radians * 180 / b2_pi;
+}
+
+/**
+ * Converts angles from QML to Box2D values.
+ */
+inline float toRadians(float degrees)
+{
+    return -degrees * b2_pi / 180;
+}
+
 
 QML_DECLARE_TYPE(Box2DWorld)
 

@@ -71,12 +71,6 @@ void DebugDraw::draw()
     mWorld->SetDebugDraw(0);
 }
 
-static QPointF toQPointF(const b2Vec2 &vec)
-{
-    return QPointF(vec.x * scaleRatio,
-                   -vec.y * scaleRatio);
-}
-
 static QColor toQColor(const b2Color &color)
 {
     return QColor(color.r * 255,
@@ -90,7 +84,7 @@ static QPolygonF toQPolygonF(const b2Vec2 *vertices, int32 vertexCount)
     polygon.reserve(vertexCount);
 
     for (int i = 0; i < vertexCount; ++i)
-        polygon.append(toQPointF(vertices[i]));
+        polygon.append(toPixels(vertices[i]));
 
     return polygon;
 }
@@ -116,9 +110,9 @@ void DebugDraw::DrawCircle(const b2Vec2 &center, float32 radius,
 {
     mPainter->setPen(toQColor(color));
     mPainter->setBrush(Qt::NoBrush);
-    mPainter->drawEllipse(toQPointF(center),
-                          radius * scaleRatio,
-                          radius * scaleRatio);
+    mPainter->drawEllipse(toPixels(center),
+                          toPixels(radius),
+                          toPixels(radius));
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
@@ -126,12 +120,12 @@ void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
 {
     mPainter->setPen(Qt::NoPen);
     mPainter->setBrush(toQColor(color));
-    QPointF p1 = toQPointF(center);
-    QPointF p2 = toQPointF(axis);
+    QPointF p1 = toPixels(center);
+    QPointF p2 = toPixels(axis);
     mPainter->drawEllipse(p1,
-                          radius * scaleRatio,
-                          radius * scaleRatio);
-    mPainter->setPen(qRgb(200,64,0));
+                          toPixels(radius),
+                          toPixels(radius));
+    mPainter->setPen(qRgb(200, 64, 0));
     p2.setX(p1.x() + radius * p2.x());
     p2.setY(p1.y() + radius * p2.y());
     mPainter->drawLine(p1,p2);
@@ -141,20 +135,20 @@ void DebugDraw::DrawSegment(const b2Vec2 &p1, const b2Vec2 &p2,
                             const b2Color &color)
 {
     mPainter->setPen(toQColor(color));
-    mPainter->drawLine(toQPointF(p1), toQPointF(p2));
+    mPainter->drawLine(toPixels(p1), toPixels(p2));
 }
 
 void DebugDraw::DrawTransform(const b2Transform &xf)
 {
-    QPointF p1 = toQPointF(xf.p);
-    QPointF p2 = toQPointF(xf.q.GetXAxis());
+    QPointF p1 = toPixels(xf.p);
+    QPointF p2 = toPixels(xf.q.GetXAxis());
     p2 = QPointF(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 
     mPainter->setPen(Qt::blue); // X axis
     mPainter->drawLine(p1,p2);
 
-    p2 = toQPointF(xf.q.GetYAxis());
+    p2 = toPixels(xf.q.GetYAxis());
     p2 = QPointF(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 

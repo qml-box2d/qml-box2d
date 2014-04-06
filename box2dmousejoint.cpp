@@ -68,14 +68,12 @@ void Box2DMouseJoint::setMaxForce(float maxForce)
 
 QPointF Box2DMouseJoint::target() const
 {
-    return QPointF(mMouseJointDef.target.x * scaleRatio,
-                   -mMouseJointDef.target.y * scaleRatio);
+    return toPixels(mMouseJointDef.target);
 }
 
 void Box2DMouseJoint::setTarget(const QPointF &target)
 {
-    const b2Vec2 targetMeters(target.x() / scaleRatio,
-                              -target.y() / scaleRatio);
+    const b2Vec2 targetMeters = toMeters(target);
     if (mMouseJointDef.target == targetMeters)
         return;
 
@@ -95,10 +93,8 @@ b2Joint *Box2DMouseJoint::createJoint()
 
 QPointF Box2DMouseJoint::getReactionForce(float32 inv_dt) const
 {
-    if (mouseJoint()) {
-        b2Vec2 point = mouseJoint()->GetReactionForce(inv_dt);
-        return QPointF(point.x * scaleRatio,point.y * scaleRatio);
-    }
+    if (mouseJoint())
+        return toPixels(mouseJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

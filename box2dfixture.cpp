@@ -214,7 +214,7 @@ b2Vec2 *Box2DVerticesShape::scaleVertices()
         point.setX(point.x() * factorWidth);
         point.setY(point.y() * factorHeight);
         mVertices.replace(i, point);
-        vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+        vertices[i] = toMeters(point);
     }
     return vertices;
 }
@@ -223,15 +223,16 @@ b2Vec2 *Box2DVerticesShape::scaleVertices()
 
 b2Shape *Box2DBox::createShape()
 {
-    const qreal _halfWidth = width() / scaleRatio / 2;
-    const qreal _halfHeight = height() / scaleRatio / 2;
-    const qreal _centerX = x() / scaleRatio + _halfWidth;
-    const qreal _centerY = -y() / scaleRatio - _halfHeight;
+    const qreal halfWidth = width() * 0.5;
+    const qreal halfHeight = height() * 0.5;
+    const QPointF center(x() + halfWidth,
+                         y() + halfHeight);
 
     b2PolygonShape *shape = new b2PolygonShape;
-    shape->SetAsBox(_halfWidth, _halfHeight,
-                    b2Vec2(_centerX, _centerY),
-                    rotation() * b2_pi / -180);
+    shape->SetAsBox(toMeters(halfWidth),
+                    toMeters(halfHeight),
+                    toMeters(center),
+                    toRadians(rotation()));
 
     return shape;
 }
@@ -250,9 +251,8 @@ b2Shape *Box2DCircle::createShape()
 {
     b2CircleShape *shape = new b2CircleShape;
 
-    shape->m_radius = mRadius / scaleRatio;
-    shape->m_p.Set(x() / scaleRatio + shape->m_radius,
-                   -y() / scaleRatio - shape->m_radius);
+    shape->m_radius = toMeters(mRadius);
+    shape->m_p = toMeters(position() + QPointF(mRadius, mRadius));
 
     return shape;
 }
@@ -278,8 +278,7 @@ b2Shape *Box2DPolygon::createShape()
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
 
     for (int i = 0; i < count; ++i) {
-        const QPointF &point = mVertices.at(i).toPointF();
-        vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+        vertices[i] = toMeters(mVertices.at(i).toPointF());
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -320,8 +319,7 @@ b2Shape *Box2DChain::createShape()
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
 
     for (int i = 0; i < count; ++i) {
-        const QPointF &point = mVertices.at(i).toPointF();
-        vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+        vertices[i] = toMeters(mVertices.at(i).toPointF());
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -338,11 +336,9 @@ b2Shape *Box2DChain::createShape()
         shape->CreateChain(vertices.data(), count);
 
         if (prevVertexFlag)
-            shape->SetPrevVertex(b2Vec2(mPrevVertex.x() / scaleRatio,
-                                        -mPrevVertex.y() / scaleRatio));
+            shape->SetPrevVertex(toMeters(mPrevVertex));
         if (nextVertexFlag)
-            shape->SetNextVertex(b2Vec2(mNextVertex.x() / scaleRatio,
-                                        -mNextVertex.y() / scaleRatio));
+            shape->SetNextVertex(toMeters(mNextVertex));
     }
 
     return shape;
@@ -371,10 +367,8 @@ b2Shape *Box2DEdge::createShape()
         qWarning() << "Edge: Invalid number of vertices:" << count;
         return 0;
     }
-    QPointF point1 = mVertices.at(0).toPointF();
-    QPointF point2 = mVertices.at(1).toPointF();
-    b2Vec2 vertex1(point1.x() / scaleRatio, -point1.y() / scaleRatio);
-    b2Vec2 vertex2(point2.x() / scaleRatio, -point2.y() / scaleRatio);
+    const b2Vec2 vertex1 = toMeters(mVertices.at(0).toPointF());
+    const b2Vec2 vertex2 = toMeters(mVertices.at(1).toPointF());
     if (b2DistanceSquared(vertex1, vertex2) <= b2_linearSlop * b2_linearSlop) {
         qWarning() << "Edge: vertices are too close together";
         return 0;

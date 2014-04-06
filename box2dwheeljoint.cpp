@@ -68,9 +68,14 @@ void Box2DWheelJoint::setMaxMotorTorque(float maxMotorTorque)
     emit maxMotorTorqueChanged();
 }
 
+float Box2DWheelJoint::motorSpeed() const
+{
+    return toDegrees(mWheelJointDef.motorSpeed);
+}
+
 void Box2DWheelJoint::setMotorSpeed(float motorSpeed)
 {
-    float motorSpeedRad = motorSpeed  * b2_pi / -180;
+    float motorSpeedRad = toRadians(motorSpeed);
     if (mWheelJointDef.motorSpeed == motorSpeedRad)
         return;
 
@@ -93,42 +98,36 @@ void Box2DWheelJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DWheelJoint::localAnchorA() const
 {
-    return QPointF(mWheelJointDef.localAnchorA.x * scaleRatio,
-                   -mWheelJointDef.localAnchorA.y * scaleRatio);
+    return toPixels(mWheelJointDef.localAnchorA);
 }
 
 void Box2DWheelJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mWheelJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
-                                         -localAnchorA.y() / scaleRatio);
+    mWheelJointDef.localAnchorA = toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 QPointF Box2DWheelJoint::localAnchorB() const
 {
-    return QPointF(mWheelJointDef.localAnchorB.x * scaleRatio,
-                   -mWheelJointDef.localAnchorB.y * scaleRatio);
+    return toPixels(mWheelJointDef.localAnchorB);
 }
 
 void Box2DWheelJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mWheelJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
-                                         -localAnchorB.y() / scaleRatio);
+    mWheelJointDef.localAnchorB = toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 QPointF Box2DWheelJoint::localAxisA() const
 {
-    return QPointF(mWheelJointDef.localAxisA.x * scaleRatio,
-                   -mWheelJointDef.localAxisA.y * scaleRatio);
+    return toPixels(mWheelJointDef.localAxisA);
 }
 
 void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
 {
-    mWheelJointDef.localAnchorB = b2Vec2(localAxisA.x() / scaleRatio,
-                                         -localAxisA.y() / scaleRatio);
+    mWheelJointDef.localAnchorB = toMeters(localAxisA);
     mAnchorsAuto = false;
     emit localAxisAChanged();
 }
@@ -152,23 +151,21 @@ b2Joint *Box2DWheelJoint::createJoint()
 float Box2DWheelJoint::getJointTranslation() const
 {
     if (wheelJoint())
-        return wheelJoint()->GetJointTranslation() * scaleRatio;
+        return toPixels(wheelJoint()->GetJointTranslation());
     return 0;
 }
 
 float Box2DWheelJoint::getJointSpeed() const
 {
     if (wheelJoint())
-        return wheelJoint()->GetJointSpeed() * scaleRatio;
+        return toPixels(wheelJoint()->GetJointSpeed());
     return 0;
 }
 
 QPointF Box2DWheelJoint::getReactionForce(float32 inv_dt) const
 {
-    if (wheelJoint()) {
-        b2Vec2 point = wheelJoint()->GetReactionForce(inv_dt);
-        return QPointF(point.x * scaleRatio,point.y * scaleRatio);
-    }
+    if (wheelJoint())
+        return toPixels(wheelJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 
