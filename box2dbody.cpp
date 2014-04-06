@@ -338,6 +338,12 @@ void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
     }
 }
 
+void Box2DBody::applyForceToCenter(const QPointF &force)
+{
+    if (mBody)
+        mBody->ApplyForceToCenter(toMeters(force), true);
+}
+
 float Box2DBody::getMass() const
 {
     return mBody ? toPixels(toPixels(mBody->GetMass())) : 0.0;

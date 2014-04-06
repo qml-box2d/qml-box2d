@@ -107,7 +107,8 @@ public:
     void synchronize();
     void nullifyBody();
 
-    Q_INVOKABLE void applyForce(const QPointF &force,const QPointF &point);
+    Q_INVOKABLE void applyForce(const QPointF &force, const QPointF &point);
+    Q_INVOKABLE void applyForceToCenter(const QPointF &force);
     Q_INVOKABLE void applyTorque(qreal torque);
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
     Q_INVOKABLE QPointF getWorldCenter() const;
