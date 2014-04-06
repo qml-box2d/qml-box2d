@@ -124,8 +124,6 @@ b2Joint *Box2DPulleyJoint::createJoint()
         qWarning() << "PulleyJoint: the joint length cannot be zero";
         return 0;
     }
-    mPulleyJointDef.bodyA = bodyA()->body();
-    mPulleyJointDef.bodyB = bodyB()->body();
 
     return world()->CreateJoint(&mPulleyJointDef);
 }

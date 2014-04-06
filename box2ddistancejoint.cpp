@@ -99,13 +99,10 @@ void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
 b2Joint *Box2DDistanceJoint::createJoint()
 {
     if (mAnchorsAuto) {
-        mDistanceJointDef.Initialize(bodyA()->body(),
-                                     bodyB()->body(),
-                                     bodyA()->body()->GetWorldCenter(),
-                                     bodyB()->body()->GetWorldCenter());
-    } else {
-        mDistanceJointDef.bodyA = bodyA()->body();
-        mDistanceJointDef.bodyB = bodyB()->body();
+        mDistanceJointDef.Initialize(mDistanceJointDef.bodyA,
+                                     mDistanceJointDef.bodyB,
+                                     mDistanceJointDef.bodyA->GetWorldCenter(),
+                                     mDistanceJointDef.bodyB->GetWorldCenter());
     }
 
     return world()->CreateJoint(&mDistanceJointDef);

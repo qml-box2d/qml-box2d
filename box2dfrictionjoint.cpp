@@ -95,12 +95,9 @@ void Box2DFrictionJoint::setLocalAnchorB(const QPointF &localAnchorB)
 b2Joint *Box2DFrictionJoint::createJoint()
 {
     if (mAnchorsAuto) {
-        mFrictionJointDef.Initialize(bodyA()->body(),
-                                     bodyB()->body(),
-                                     bodyA()->body()->GetWorldCenter());
-    } else {
-        mFrictionJointDef.bodyA = bodyA()->body();
-        mFrictionJointDef.bodyB = bodyB()->body();
+        mFrictionJointDef.Initialize(mFrictionJointDef.bodyA,
+                                     mFrictionJointDef.bodyB,
+                                     mFrictionJointDef.bodyA->GetWorldCenter());
     }
 
     return world()->CreateJoint(&mFrictionJointDef);
