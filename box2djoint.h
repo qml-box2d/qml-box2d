@@ -29,15 +29,18 @@
 
 #include <QObject>
 #include <QPointF>
+#include <QQmlParserStatus>
+
 #include <Box2D.h>
 
 class b2World;
 class Box2DBody;
 class Box2DWorld;
 
-class Box2DJoint : public QObject
+class Box2DJoint : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
 
     Q_PROPERTY(bool collideConnected READ collideConnected WRITE setCollideConnected NOTIFY collideConnectedChanged)
     Q_PROPERTY(Box2DBody *bodyA READ bodyA WRITE setBodyA NOTIFY bodyAChanged)
@@ -62,6 +65,10 @@ public:
     b2World *world() const;
     b2Joint *joint() const;
 
+    // QQmlParserStatus interface
+    void classBegin() {}
+    void componentComplete();
+
 protected:
     virtual b2Joint *createJoint() = 0;
 
@@ -76,6 +83,7 @@ signals:
     void created();
 
 private:
+    bool mComponentComplete;
     bool mInitializePending;
     bool mCollideConnected;
     Box2DBody *mBodyA;
@@ -83,6 +91,21 @@ private:
     b2World *mWorld;
     b2Joint *mJoint;
 };
+
+inline bool Box2DJoint::collideConnected() const
+{
+    return mCollideConnected;
+}
+
+inline Box2DBody *Box2DJoint::bodyA() const
+{
+    return mBodyA;
+}
+
+inline Box2DBody *Box2DJoint::bodyB() const
+{
+    return mBodyB;
+}
 
 inline void Box2DJoint::nullifyJoint()
 {

@@ -24,11 +24,12 @@
  */
 
 #include "box2djoint.h"
+
 #include "box2dbody.h"
-#include "box2dworld.h"
 
 Box2DJoint::Box2DJoint(QObject *parent) :
     QObject(parent),
+    mComponentComplete(false),
     mInitializePending(false),
     mCollideConnected(false),
     mBodyA(0),
@@ -44,11 +45,6 @@ Box2DJoint::~Box2DJoint()
         mWorld->DestroyJoint(mJoint);
 }
 
-bool Box2DJoint::collideConnected() const
-{
-    return mCollideConnected;
-}
-
 void Box2DJoint::setCollideConnected(bool collideConnected)
 {
     if (mCollideConnected == collideConnected)
@@ -59,76 +55,85 @@ void Box2DJoint::setCollideConnected(bool collideConnected)
     emit collideConnectedChanged();
 }
 
-Box2DBody *Box2DJoint::bodyA() const
-{
-    return mBodyA;
-}
-
 void Box2DJoint::setBodyA(Box2DBody *bodyA)
 {
-    if (mBodyA)
+    if (mBodyA == bodyA)
         return;
 
-    if (bodyA->body()) {
-        mBodyA = bodyA;
-        emit bodyAChanged();
-        initialize();
-    } else {
-        connect(bodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
-    }
-}
+    mBodyA = bodyA;
 
-Box2DBody *Box2DJoint::bodyB() const
-{
-    return mBodyB;
+    if (!bodyA || bodyA->body())
+        initialize();
+    else
+        connect(bodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
+
+    emit bodyAChanged();
 }
 
 void Box2DJoint::setBodyB(Box2DBody *bodyB)
 {
-    if (mBodyB)
+    if (mBodyB == bodyB)
         return;
 
-    if (bodyB->body()) {
-        mBodyB = bodyB;
-        emit bodyBChanged();
+    mBodyB = bodyB;
+
+    if (!bodyB || bodyB->body())
         initialize();
-    } else {
+    else
         connect(bodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
-    }
+
+    emit bodyBChanged();
 }
 
 void Box2DJoint::initialize()
 {
-    if (!mBodyA || !mBodyB) {
-        // When components are created dynamically, they get their parent
-        // assigned before they have been completely initialized. In that case
-        // we need to delay initialization.
+    // Delay initialization until the component is complete
+    if (!mComponentComplete) {
         mInitializePending = true;
         return;
     }
-    if (mBodyA->world() != mBodyB->world()) {
-        qWarning() << "bodyA and bodyB from different worlds";
-    } else {
-        mWorld = mBodyA->world();
-        mJoint = createJoint();
-        if (mJoint) {
-            mJoint->SetUserData(this);
-            mInitializePending = false;
-            emit created();
-        }
+    mInitializePending = false;
+
+    // Destroy any previously created joint
+    if (mJoint) {
+        mWorld->DestroyJoint(mJoint);
+        mJoint = 0;
+        mWorld = 0;
     }
+
+    if (!mBodyA || !mBodyB)
+        return;
+    if (!mBodyA->body() || !mBodyB->body())
+        return;
+
+    if (mBodyA->world() != mBodyB->world()) {
+        qWarning() << "Joint: bodyA and bodyB from different worlds";
+        return;
+    }
+
+    mWorld = mBodyA->world();
+    mJoint = createJoint();
+    if (mJoint) {
+        mJoint->SetUserData(this);
+        emit created();
+    }
+}
+
+void Box2DJoint::componentComplete()
+{
+    mComponentComplete = true;
+    if (mInitializePending)
+        initialize();
 }
 
 void Box2DJoint::bodyACreated()
 {
-    mBodyA = static_cast<Box2DBody*>(sender());
-    emit bodyAChanged();
+    disconnect(mBodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
     initialize();
 }
 
 void Box2DJoint::bodyBCreated()
 {
-    mBodyB = static_cast<Box2DBody*>(sender());
-    emit bodyBChanged();
+    disconnect(mBodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
     initialize();
 }

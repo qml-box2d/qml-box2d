@@ -202,6 +202,16 @@ inline void Box2DBody::nullifyBody()
     mBody = 0;
 }
 
+inline b2Body *Box2DBody::body() const
+{
+    return mBody;
+}
+
+inline b2World *Box2DBody::world() const
+{
+    return mWorld;
+}
+
 /**
  * Convenience function to get the Box2DBody wrapping a b2Body.
  */

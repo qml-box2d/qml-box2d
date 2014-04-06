@@ -5,55 +5,25 @@ import Box2D 1.1
 Rectangle {
     width: 800
     height: 600
-    id: global
-    property bool dragged: false
-    property variant joint: null
-    property variant body: null
 
-    Component {
-        id: jointComponent
-        MouseJoint {
-            bodyA: anchor
-            dampingRatio: 0.8
-            target: Qt.point(350.0,200.0);
-            maxForce: 100
-        }
+    function randomColor() {
+        return Qt.rgba(Math.random(), Math.random(), Math.random(), Math.random());
+    }
+
+    MouseJoint {
+        id: mouseJoint
+        bodyA: anchor
+        dampingRatio: 0.8
+        target: Qt.point(mouseArea.mouseX,
+                         mouseArea.mouseY);
+        maxForce: 100
     }
 
     MouseArea {
         id: mouseArea
-        onPressed: global.createJoint(mouse.x, mouse.y);
-        onReleased: global.destroyJoint();
-
-        onPositionChanged: {
-            if (global.dragged)
-                global.joint.target = Qt.point(mouse.x, mouse.y);
-        }
+        onReleased: mouseJoint.bodyB = null
         anchors.fill: parent
-    }
-
-    function createJoint(x, y) {
-        if (global.joint != null)
-            destroyJoint();
-        var body = global.body;
-        if (body == null)
-            return;
-        var mouseJoint = jointComponent.createObject(world);
-        mouseJoint.target = Qt.point(x, y);
-        mouseJoint.bodyB = body;
-        mouseJoint.maxForce = body.getMass();
-        global.dragged = true;
-        global.joint = mouseJoint;
-    }
-
-    function destroyJoint() {
-        if(global.dragged == false) return;
-        if(global.joint != null) {
-            global.dragged = false;
-            global.joint.destroy();
-            global.joint = null;
-            global.body = null;
-        }
+        hoverEnabled: true
     }
 
     World {
@@ -123,10 +93,10 @@ Rectangle {
         Repeater {
             model: 20
             Body {
-                x: (40 + Math.random() * 720)
-                y: (40 + Math.random() * 520)
-                width: (20 + Math.random() * 100)
-                height: (20 + Math.random() * 100)
+                x: 40 + Math.random() * 720
+                y: 40 + Math.random() * 520
+                width: 20 + Math.random() * 100
+                height: 20 + Math.random() * 100
                 bodyType: Body.Dynamic
                 rotation: Math.random() * 360
                 fixtures: Box {
@@ -137,21 +107,21 @@ Rectangle {
                 }
                 Rectangle {
                     anchors.fill: parent
-                    color: Qt.rgba(Math.random(),Math.random(),Math.random(),Math.random())
-                    border.color:Qt.rgba(Math.random(),Math.random(),Math.random(),Math.random())
+                    color: randomColor()
+                    border.color: randomColor()
                     smooth: true
                 }
                 MouseArea {
                     anchors.fill: parent
                     propagateComposedEvents: true
                     onPressed: {
-                        global.body = parent
+                        mouseJoint.maxForce = parent.getMass();
+                        mouseJoint.bodyB = parent
                         mouse.accepted = false
                     }
                 }
             }
         }
-
 
         Rectangle {
             id: debugButton

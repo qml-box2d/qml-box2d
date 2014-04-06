@@ -86,7 +86,7 @@ void Box2DMouseJoint::setTarget(const QPointF &target)
 }
 
 b2Joint *Box2DMouseJoint::createJoint()
-{    
+{
     mMouseJointDef.bodyA = bodyA()->body();
     mMouseJointDef.bodyB = bodyB()->body();
 
