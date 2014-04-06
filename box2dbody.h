@@ -37,9 +37,6 @@
 class Box2DFixture;
 class Box2DWorld;
 
-class b2Body;
-class b2World;
-
 /**
  * The Box2D body, build up from a list of shapes.
  */

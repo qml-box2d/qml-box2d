@@ -30,7 +30,7 @@
 #include "box2dbody.h"
 
 Box2DRopeJoint::Box2DRopeJoint(QObject *parent) :
-    Box2DJoint(parent)
+    Box2DJoint(mRopeJointDef, parent)
 {
 }
 
@@ -81,7 +81,6 @@ b2Joint *Box2DRopeJoint::createJoint()
 {
     mRopeJointDef.bodyA = bodyA()->body();
     mRopeJointDef.bodyB = bodyB()->body();
-    mRopeJointDef.collideConnected = collideConnected();
 
     return world()->CreateJoint(&mRopeJointDef);
 }

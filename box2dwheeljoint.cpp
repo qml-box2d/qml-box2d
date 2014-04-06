@@ -30,7 +30,7 @@
 #include "box2dbody.h"
 
 Box2DWheelJoint::Box2DWheelJoint(QObject *parent) :
-    Box2DJoint(parent),
+    Box2DJoint(mWheelJointDef, parent),
     mAnchorsAuto(true)
 {
 }
@@ -145,7 +145,6 @@ b2Joint *Box2DWheelJoint::createJoint()
         mWheelJointDef.bodyA = bodyA()->body();
         mWheelJointDef.bodyB = bodyB()->body();
     }
-    mWheelJointDef.collideConnected = collideConnected();
 
     return world()->CreateJoint(&mWheelJointDef);
 }

@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
-    Box2DJoint(parent),
+    Box2DJoint(mPrismaticJointDef, parent),
     mAnchorsAuto(true)
 {
 }
@@ -169,7 +169,6 @@ b2Joint *Box2DPrismaticJoint::createJoint()
         mPrismaticJointDef.bodyB = bodyB()->body();
         mPrismaticJointDef.referenceAngle = 0.0;
     }
-    mPrismaticJointDef.collideConnected = collideConnected();
 
     return world()->CreateJoint(&mPrismaticJointDef);
 }

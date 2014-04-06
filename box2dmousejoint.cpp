@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DMouseJoint::Box2DMouseJoint(QObject *parent) :
-    Box2DJoint(parent)
+    Box2DJoint(mMouseJointDef, parent)
 {
 }
 

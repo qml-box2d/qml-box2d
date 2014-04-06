@@ -27,11 +27,11 @@
 
 #include "box2dbody.h"
 
-Box2DJoint::Box2DJoint(QObject *parent) :
+Box2DJoint::Box2DJoint(b2JointDef &jointDef, QObject *parent) :
     QObject(parent),
+    mJointDef(jointDef),
     mComponentComplete(false),
     mInitializePending(false),
-    mCollideConnected(false),
     mBodyA(0),
     mBodyB(0),
     mWorld(0),
@@ -47,10 +47,10 @@ Box2DJoint::~Box2DJoint()
 
 void Box2DJoint::setCollideConnected(bool collideConnected)
 {
-    if (mCollideConnected == collideConnected)
+    if (mJointDef.collideConnected == collideConnected)
         return;
 
-    mCollideConnected = collideConnected;
+    mJointDef.collideConnected = collideConnected;
 
     emit collideConnectedChanged();
 }

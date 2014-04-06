@@ -6,15 +6,14 @@ Rectangle {
     height: 600
     color: "#EFEFFF"
 
-    Component
-    {
+    Component {
         id: frictionJoint
         FrictionJoint {
             bodyA: anchor
             maxForce: 0.5
             maxTorque: 0.5
-            localAnchorA: Qt.point(10,10)
-            localAnchorB: Qt.point(10,10)
+            localAnchorA: Qt.point(10, 10)
+            localAnchorB: Qt.point(10, 10)
         }
     }
 

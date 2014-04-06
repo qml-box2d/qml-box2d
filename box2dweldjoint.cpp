@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
-    Box2DJoint(parent),
+    Box2DJoint(mWeldJointDef, parent),
     mAnchorsAuto(true)
 {
 }
@@ -104,7 +104,6 @@ b2Joint *Box2DWeldJoint::createJoint()
         mWeldJointDef.bodyA = bodyA()->body();
         mWeldJointDef.bodyB = bodyB()->body();
     }
-    mWeldJointDef.collideConnected = collideConnected();
 
     return world()->CreateJoint(&mWeldJointDef);
 }

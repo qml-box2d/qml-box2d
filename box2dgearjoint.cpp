@@ -28,7 +28,7 @@
 #include "box2dbody.h"
 
 Box2DGearJoint::Box2DGearJoint(QObject *parent) :
-    Box2DJoint(parent)
+    Box2DJoint(mGearJointDef, parent)
 {
 }
 

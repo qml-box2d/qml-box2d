@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DPulleyJoint::Box2DPulleyJoint(QObject *parent) :
-    Box2DJoint(parent)
+    Box2DJoint(mPulleyJointDef, parent)
 {
 }
 
@@ -136,7 +136,7 @@ b2Joint *Box2DPulleyJoint::createJoint()
     }
     mPulleyJointDef.bodyA = bodyA()->body();
     mPulleyJointDef.bodyB = bodyB()->body();
-    mPulleyJointDef.collideConnected = collideConnected();
+
     return world()->CreateJoint(&mPulleyJointDef);
 }
 

@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DFrictionJoint::Box2DFrictionJoint(QObject *parent) :
-    Box2DJoint(parent),
+    Box2DJoint(mFrictionJointDef, parent),
     mAnchorsAuto(true)
 {
 }
@@ -108,7 +108,6 @@ b2Joint *Box2DFrictionJoint::createJoint()
         mFrictionJointDef.bodyA = bodyA()->body();
         mFrictionJointDef.bodyB = bodyB()->body();
     }
-    mFrictionJointDef.collideConnected = collideConnected();
 
     return world()->CreateJoint(&mFrictionJointDef);
 }

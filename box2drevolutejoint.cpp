@@ -30,7 +30,7 @@
 #include "box2dbody.h"
 
 Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
-    Box2DJoint(parent),
+    Box2DJoint(mRevoluteJointDef, parent),
     mAnchorsAuto(true)
 {
 }
@@ -144,7 +144,6 @@ b2Joint *Box2DRevoluteJoint::createJoint()
         mRevoluteJointDef.bodyA = bodyA()->body();
         mRevoluteJointDef.bodyB = bodyB()->body();
     }
-    mRevoluteJointDef.collideConnected = collideConnected();
 
     return world()->CreateJoint(&mRevoluteJointDef);
 }

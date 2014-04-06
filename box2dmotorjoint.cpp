@@ -30,7 +30,7 @@
 #include "box2dbody.h"
 
 Box2DMotorJoint::Box2DMotorJoint(QObject *parent) :
-    Box2DJoint(parent)
+    Box2DJoint(mMotorJointDef, parent)
 {
 }
 
@@ -101,7 +101,6 @@ void Box2DMotorJoint::setCorrectionFactor(float correctionFactor)
 b2Joint *Box2DMotorJoint::createJoint()
 {
     mMotorJointDef.Initialize(bodyA()->body(), bodyB()->body());
-    mMotorJointDef.collideConnected = collideConnected();
 
     return world()->CreateJoint(&mMotorJointDef);
 }

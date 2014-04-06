@@ -42,13 +42,32 @@ class Box2DJoint : public QObject, public QQmlParserStatus
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
+    Q_ENUMS(JointType)
+    Q_PROPERTY(JointType jointType READ jointType CONSTANT)
     Q_PROPERTY(bool collideConnected READ collideConnected WRITE setCollideConnected NOTIFY collideConnectedChanged)
     Q_PROPERTY(Box2DBody *bodyA READ bodyA WRITE setBodyA NOTIFY bodyAChanged)
     Q_PROPERTY(Box2DBody *bodyB READ bodyB WRITE setBodyB NOTIFY bodyBChanged)
 
 public:
-    explicit Box2DJoint(QObject *parent = 0);
+    enum JointType { // Matches b2JointType
+        UnknownJoint,
+        RevoluteJoint,
+        PrismaticJoint,
+        DistanceJoint,
+        PulleyJoint,
+        MouseJoint,
+        GearJoint,
+        WheelJoint,
+        WeldJoint,
+        FrictionJoint,
+        RopeJoint,
+        MotorJoint
+    };
+
+    Box2DJoint(b2JointDef &jointDef, QObject *parent = 0);
     ~Box2DJoint();
+
+    JointType jointType() const;
 
     bool collideConnected() const;
     void setCollideConnected(bool collideConnected);
@@ -83,18 +102,23 @@ signals:
     void created();
 
 private:
+    b2JointDef &mJointDef;
     bool mComponentComplete;
     bool mInitializePending;
-    bool mCollideConnected;
     Box2DBody *mBodyA;
     Box2DBody *mBodyB;
     b2World *mWorld;
     b2Joint *mJoint;
 };
 
+inline Box2DJoint::JointType Box2DJoint::jointType() const
+{
+    return static_cast<JointType>(mJointDef.type);
+}
+
 inline bool Box2DJoint::collideConnected() const
 {
-    return mCollideConnected;
+    return mJointDef.collideConnected;
 }
 
 inline Box2DBody *Box2DJoint::bodyA() const
