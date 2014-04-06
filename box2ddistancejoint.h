@@ -74,7 +74,7 @@ protected:
 
 private:
     b2DistanceJointDef mDistanceJointDef;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
 
 inline float Box2DDistanceJoint::frequencyHz() const

@@ -30,7 +30,7 @@
 
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
     Box2DJoint(parent),
-    anchorsAuto(true)
+    mAnchorsAuto(true)
 {
 }
 
@@ -76,7 +76,7 @@ void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
     mWeldJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
                                         -localAnchorA.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
@@ -90,13 +90,13 @@ void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
     mWeldJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
                                         -localAnchorB.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 b2Joint *Box2DWeldJoint::createJoint()
 {
-    if (anchorsAuto) {
+    if (mAnchorsAuto) {
         mWeldJointDef.Initialize(bodyA()->body(),
                                  bodyB()->body(),
                                  bodyA()->body()->GetWorldCenter());

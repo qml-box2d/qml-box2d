@@ -31,7 +31,7 @@
 
 Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
     Box2DJoint(parent),
-    anchorsAuto(true)
+    mAnchorsAuto(true)
 {
 }
 
@@ -122,7 +122,7 @@ void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
     mRevoluteJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
                                             -localAnchorA.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
@@ -130,13 +130,13 @@ void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
     mRevoluteJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
                                             -localAnchorB.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 b2Joint *Box2DRevoluteJoint::createJoint()
 {
-    if (anchorsAuto) {
+    if (mAnchorsAuto) {
         mRevoluteJointDef.Initialize(bodyA()->body(),
                                      bodyB()->body(),
                                      bodyA()->body()->GetWorldCenter());

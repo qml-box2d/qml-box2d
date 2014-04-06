@@ -30,7 +30,7 @@
 
 Box2DFrictionJoint::Box2DFrictionJoint(QObject *parent) :
     Box2DJoint(parent),
-    anchorsAuto(true)
+    mAnchorsAuto(true)
 {
 }
 
@@ -77,7 +77,7 @@ void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
     mFrictionJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
                                             -localAnchorA.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
@@ -94,13 +94,13 @@ void Box2DFrictionJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
     mFrictionJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
                                             -localAnchorB.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 b2Joint *Box2DFrictionJoint::createJoint()
 {
-    if (anchorsAuto) {
+    if (mAnchorsAuto) {
         mFrictionJointDef.Initialize(bodyA()->body(),
                                      bodyB()->body(),
                                      bodyA()->body()->GetWorldCenter());

@@ -71,7 +71,7 @@ protected:
 
 private:
     b2WeldJointDef mWeldJointDef;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
 
 inline float Box2DWeldJoint::referenceAngle() const

@@ -90,7 +90,7 @@ protected:
 
 private:
     b2RevoluteJointDef mRevoluteJointDef;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
 
 inline float Box2DRevoluteJoint::lowerAngle() const

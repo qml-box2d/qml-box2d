@@ -30,7 +30,7 @@
 
 Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
     Box2DJoint(parent),
-    anchorsAuto(true)
+    mAnchorsAuto(true)
 {
 }
 
@@ -145,7 +145,7 @@ void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
     mPrismaticJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
                                              -localAnchorA.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
@@ -153,13 +153,13 @@ void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
     mPrismaticJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
                                              -localAnchorB.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 b2Joint *Box2DPrismaticJoint::createJoint()
 {
-    if (anchorsAuto) {
+    if (mAnchorsAuto) {
         mPrismaticJointDef.Initialize(bodyA()->body(),
                                       bodyB()->body(),
                                       bodyA()->body()->GetWorldCenter(),

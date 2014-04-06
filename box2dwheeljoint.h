@@ -92,7 +92,7 @@ protected:
 
 private:
     b2WheelJointDef mWheelJointDef;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
 
 inline float Box2DWheelJoint::dampingRatio() const

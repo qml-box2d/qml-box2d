@@ -30,7 +30,7 @@
 
 Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent) :
     Box2DJoint(parent),
-    anchorsAuto(true)
+    mAnchorsAuto(true)
 {
 }
 
@@ -82,7 +82,7 @@ void Box2DDistanceJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
     mDistanceJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
                                             -localAnchorA.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
@@ -96,13 +96,13 @@ void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
     mDistanceJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
                                             -localAnchorB.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 b2Joint *Box2DDistanceJoint::createJoint()
 {
-    if (anchorsAuto) {
+    if (mAnchorsAuto) {
         mDistanceJointDef.Initialize(bodyA()->body(),
                                      bodyB()->body(),
                                      bodyA()->body()->GetWorldCenter(),

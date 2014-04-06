@@ -95,7 +95,7 @@ protected:
 
 private:
     b2PrismaticJointDef mPrismaticJointDef;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
 
 inline float Box2DPrismaticJoint::maxMotorForce() const

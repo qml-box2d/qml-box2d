@@ -69,7 +69,7 @@ protected:
 
 private:
     b2FrictionJointDef mFrictionJointDef;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
 
 inline float Box2DFrictionJoint::maxForce() const
