@@ -28,7 +28,9 @@
 #include "box2dbody.h"
 
 Box2DGearJoint::Box2DGearJoint(QObject *parent) :
-    Box2DJoint(mGearJointDef, parent)
+    Box2DJoint(mGearJointDef, parent),
+    mJoint1(0),
+    mJoint2(0)
 {
 }
 
@@ -47,60 +49,79 @@ void Box2DGearJoint::setRatio(float ratio)
     emit ratioChanged();
 }
 
-Box2DJoint *Box2DGearJoint::joint1() const
+static bool validJoint(Box2DJoint *joint)
 {
-    return mGearJointDef.joint1 ? toBox2DJoint(mGearJointDef.joint1) : 0;
+    if (!joint)
+        return true;
+
+    const Box2DJoint::JointType type = joint->jointType();
+    return type == Box2DJoint::RevoluteJoint ||
+            type == Box2DJoint::PrismaticJoint;
 }
 
-void Box2DGearJoint::setJoint1(Box2DJoint *_joint1)
+void Box2DGearJoint::setJoint1(Box2DJoint *joint1)
 {
-    if (_joint1 == joint1())
+    if (mJoint1 == joint1)
         return;
-    mGearJointDef.joint1 = _joint1->joint();
-    if (mGearJointDef.joint1) {
-        initialize();
-        emit joint1Changed();
+
+    if (!validJoint(joint1)) {
+        qWarning() << "GearJoint.joint1: Invalid joint type";
+        joint1 = 0;
     }
-    else connect(_joint1, SIGNAL(created()), this, SLOT(joint1Created()));
+
+    mJoint1 = joint1;
+
+    if (!joint1 || joint1->joint())
+        initialize();
+    else
+        connect(joint1, SIGNAL(created()), this, SLOT(joint1Created()));
+
+    emit joint1Changed();
 }
 
-Box2DJoint *Box2DGearJoint::joint2() const
+void Box2DGearJoint::setJoint2(Box2DJoint *joint2)
 {
-    return mGearJointDef.joint2 ? toBox2DJoint(mGearJointDef.joint2) : 0;
-}
-
-void Box2DGearJoint::setJoint2(Box2DJoint *_joint2)
-{
-    if (_joint2 == joint2())
+    if (mJoint2 == joint2)
         return;
-    mGearJointDef.joint2 = _joint2->joint();
-    if (mGearJointDef.joint2) {
-        initialize();
-        emit joint2Changed();
+
+    if (!validJoint(joint2)) {
+        qWarning() << "GearJoint.joint2: Invalid joint type";
+        joint2 = 0;
     }
-    else connect(_joint2, SIGNAL(created()), this, SLOT(joint2Created()));
+
+    mJoint2 = joint2;
+
+    if (!joint2 || joint2->joint())
+        initialize();
+    else
+        connect(joint2, SIGNAL(created()), this, SLOT(joint2Created()));
+
+    emit joint2Changed();
 }
 
 b2Joint *Box2DGearJoint::createJoint()
-{    
-    if (!mGearJointDef.joint1 || !mGearJointDef.joint2)
+{
+    if (!mJoint1 || !mJoint2)
         return 0;
+    if (!mJoint1->joint() || !mJoint2->joint())
+        return 0;
+
     mGearJointDef.bodyA = bodyA()->body();
     mGearJointDef.bodyB = bodyB()->body();
+    mGearJointDef.joint1 = mJoint1->joint();
+    mGearJointDef.joint2 = mJoint2->joint();
 
     return world()->CreateJoint(&mGearJointDef);
 }
 
 void Box2DGearJoint::joint1Created()
 {
-    Box2DJoint * joint1 = static_cast<Box2DJoint *>(sender());
-    mGearJointDef.joint1 = joint1->joint();
+    disconnect(mJoint1, SIGNAL(created()), this, SLOT(joint1Created()));
     initialize();
 }
 
 void Box2DGearJoint::joint2Created()
 {
-    Box2DJoint * joint2 = static_cast<Box2DJoint *>(sender());
-    mGearJointDef.joint2 = joint2->joint();
+    disconnect(mJoint2, SIGNAL(created()), this, SLOT(joint2Created()));
     initialize();
 }

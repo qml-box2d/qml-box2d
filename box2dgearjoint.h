@@ -44,10 +44,10 @@ public:
     void setRatio(float ratio);
 
     Box2DJoint *joint1() const;
-    void setJoint1(Box2DJoint *_joint1);
+    void setJoint1(Box2DJoint *joint1);
 
     Box2DJoint *joint2() const;
-    void setJoint2(Box2DJoint *_joint2);
+    void setJoint2(Box2DJoint *joint2);
 
     b2GearJoint *gearJoint() const;
 
@@ -65,11 +65,23 @@ private slots:
 
 private:
     b2GearJointDef mGearJointDef;
+    Box2DJoint *mJoint1;
+    Box2DJoint *mJoint2;
 };
 
 inline float Box2DGearJoint::ratio() const
 {
     return mGearJointDef.ratio;
+}
+
+inline Box2DJoint *Box2DGearJoint::joint1() const
+{
+    return mJoint1;
+}
+
+inline Box2DJoint *Box2DGearJoint::joint2() const
+{
+    return mJoint2;
 }
 
 inline b2GearJoint *Box2DGearJoint::gearJoint() const

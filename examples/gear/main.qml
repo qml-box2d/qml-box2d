@@ -290,7 +290,7 @@ Rectangle {
             id: mixerJoint
             bodyA: mixerLeft
             bodyB: mixerRight
-            joint1:mixerLeftJoint
+            joint1: mixerLeftJoint
             joint2: mixerRightJoint
             ratio: 1
         }
