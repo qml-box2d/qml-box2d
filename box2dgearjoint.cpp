@@ -28,38 +28,28 @@
 #include "box2dbody.h"
 
 Box2DGearJoint::Box2DGearJoint(QObject *parent) :
-    Box2DJoint(parent),
-    mGearJoint(0)
+    Box2DJoint(mGearJointDef, parent)
 {
 }
 
-Box2DGearJoint::~Box2DGearJoint()
+void Box2DGearJoint::setRatio(float ratio)
 {
-    cleanup(world());
-}
-
-float Box2DGearJoint::ratio() const
-{
-    if (mGearJoint)
-        mGearJoint->GetRatio();
-    return mGearJointDef.ratio;
-}
-
-void Box2DGearJoint::setRatio(float _ratio)
-{
-    if (qFuzzyCompare(_ratio,ratio()))
+    if (!b2IsValid(ratio)) {
+        qWarning() << "GearJoint: Invalid ratio:" << ratio;
         return;
-    mGearJointDef.ratio = _ratio;
-    if (mGearJoint)
-        mGearJoint->SetRatio(_ratio);
+    }
+    if (mGearJointDef.ratio == ratio)
+        return;
+
+    mGearJointDef.ratio = ratio;
+    if (gearJoint())
+        gearJoint()->SetRatio(ratio);
     emit ratioChanged();
 }
 
 Box2DJoint *Box2DGearJoint::joint1() const
 {
-    if (mGearJoint)
-        return toBox2DJoint(mGearJoint->GetJoint1());
-    return toBox2DJoint(mGearJointDef.joint1);
+    return mGearJointDef.joint1 ? toBox2DJoint(mGearJointDef.joint1) : 0;
 }
 
 void Box2DGearJoint::setJoint1(Box2DJoint *_joint1)
@@ -71,14 +61,12 @@ void Box2DGearJoint::setJoint1(Box2DJoint *_joint1)
         initialize();
         emit joint1Changed();
     }
-    else connect(_joint1,SIGNAL(created()),this,SLOT(joint1Created()));
+    else connect(_joint1, SIGNAL(created()), this, SLOT(joint1Created()));
 }
 
 Box2DJoint *Box2DGearJoint::joint2() const
 {
-    if (mGearJoint)
-        return toBox2DJoint(mGearJoint->GetJoint2());
-    return toBox2DJoint(mGearJointDef.joint2);
+    return mGearJointDef.joint2 ? toBox2DJoint(mGearJointDef.joint2) : 0;
 }
 
 void Box2DGearJoint::setJoint2(Box2DJoint *_joint2)
@@ -90,43 +78,17 @@ void Box2DGearJoint::setJoint2(Box2DJoint *_joint2)
         initialize();
         emit joint2Changed();
     }
-    else connect(_joint2,SIGNAL(created()),this,SLOT(joint2Created()));
+    else connect(_joint2, SIGNAL(created()), this, SLOT(joint2Created()));
 }
 
-void Box2DGearJoint::nullifyJoint()
-{
-    mGearJoint = 0;
-}
-
-void Box2DGearJoint::createJoint()
+b2Joint *Box2DGearJoint::createJoint()
 {    
     if (!mGearJointDef.joint1 || !mGearJointDef.joint2)
-        return;
+        return 0;
     mGearJointDef.bodyA = bodyA()->body();
     mGearJointDef.bodyB = bodyB()->body();
 
-    mGearJoint = static_cast<b2GearJoint*>(world()->CreateJoint(&mGearJointDef));
-    mGearJoint->SetUserData(this);
-    mInitializePending = false;
-    emit created();
-}
-
-void Box2DGearJoint::cleanup(b2World *world)
-{
-    if (!world) {
-        qWarning() << "GearJoint: There is no world connected";
-        return;
-    }
-    if (mGearJoint) {
-        mGearJoint->SetUserData(0);
-        world->DestroyJoint(mGearJoint);
-        mGearJoint = 0;
-    }
-}
-
-b2Joint *Box2DGearJoint::joint() const
-{
-    return mGearJoint;
+    return world()->CreateJoint(&mGearJointDef);
 }
 
 void Box2DGearJoint::joint1Created()

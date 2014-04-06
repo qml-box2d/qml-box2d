@@ -62,12 +62,10 @@ Rectangle {
             anchors { left: parent.right; bottom: ground.top; top: ceiling.bottom }
         }
 
-         DebugDraw {
-             anchors.fill: parent
-             world: parent
-			 visible: false
-         }
-
+        DebugDraw {
+            anchors.fill: parent
+            world: parent
+            visible: false
+        }
     }
-
 }

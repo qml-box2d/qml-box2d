@@ -29,9 +29,6 @@
 #include "box2djoint.h"
 #include <Box2D.h>
 
-class b2World;
-class b2WeldJoint;
-
 class Box2DWeldJoint : public Box2DJoint
 {
     Q_OBJECT
@@ -44,7 +41,6 @@ class Box2DWeldJoint : public Box2DJoint
 
 public:
     explicit Box2DWeldJoint(QObject *parent = 0);
-    ~Box2DWeldJoint();
 
     float referenceAngle() const;
     void setReferenceAngle(float referenceAngle);
@@ -61,10 +57,7 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2WeldJoint *weldJoint() const;
 
 signals:
     void referenceAngleChanged();
@@ -73,10 +66,32 @@ signals:
     void localAnchorAChanged();
     void localAnchorBChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2WeldJointDef mWeldJointDef;
-    b2WeldJoint *mWeldJoint;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
+
+inline float Box2DWeldJoint::referenceAngle() const
+{
+    return mWeldJointDef.referenceAngle * -180 / b2_pi;
+}
+
+inline float Box2DWeldJoint::frequencyHz() const
+{
+    return mWeldJointDef.frequencyHz;
+}
+
+inline float Box2DWeldJoint::dampingRatio() const
+{
+    return mWeldJointDef.dampingRatio;
+}
+
+inline b2WeldJoint *Box2DWeldJoint::weldJoint() const
+{
+    return static_cast<b2WeldJoint*>(joint());
+}
 
 #endif // BOX2WELDJOINT_H

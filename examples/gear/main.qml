@@ -188,7 +188,6 @@ Rectangle {
 
         RevoluteJoint {
             id: revoluteJoint
-            world: world
             bodyA: prop
             bodyB: lever
             localAnchorA: Qt.point(110,50)
@@ -215,7 +214,6 @@ Rectangle {
 
         PrismaticJoint {
             id: prismaticJoint
-            world: world
             bodyA: prop
             bodyB: damper
             localAnchorA: Qt.point(610,50)
@@ -229,7 +227,6 @@ Rectangle {
 
         GearJoint {
             id: gearJoint
-            world: world
             bodyA: lever
             bodyB: damper
             joint1: revoluteJoint
@@ -256,7 +253,6 @@ Rectangle {
 
         RevoluteJoint {
             id: mixerLeftJoint
-            world: world
             bodyA: leftWall
             bodyB: mixerLeft
             localAnchorA: Qt.point(100,500)
@@ -282,7 +278,6 @@ Rectangle {
 
         RevoluteJoint {
             id: mixerRightJoint
-            world: world
             bodyA: rightWall
             bodyB: mixerRight
             localAnchorA: Qt.point(-60,500)
@@ -293,7 +288,6 @@ Rectangle {
         }
         GearJoint {
             id: mixerJoint
-            world: world
             bodyA: mixerLeft
             bodyB: mixerRight
             joint1:mixerLeftJoint

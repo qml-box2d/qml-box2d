@@ -29,29 +29,48 @@
 
 #include <QObject>
 #include <QPointF>
+#include <QQmlParserStatus>
+
 #include <Box2D.h>
 
 class b2World;
 class Box2DBody;
 class Box2DWorld;
 
-class Box2DJoint : public QObject
+class Box2DJoint : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
 
+    Q_ENUMS(JointType)
+    Q_PROPERTY(JointType jointType READ jointType CONSTANT)
     Q_PROPERTY(bool collideConnected READ collideConnected WRITE setCollideConnected NOTIFY collideConnectedChanged)
-    Q_PROPERTY(Box2DWorld *world READ box2DWorld WRITE setWorld NOTIFY worldChanged)
     Q_PROPERTY(Box2DBody *bodyA READ bodyA WRITE setBodyA NOTIFY bodyAChanged)
     Q_PROPERTY(Box2DBody *bodyB READ bodyB WRITE setBodyB NOTIFY bodyBChanged)
 
 public:
-    explicit Box2DJoint(QObject *parent = 0);
+    enum JointType { // Matches b2JointType
+        UnknownJoint,
+        RevoluteJoint,
+        PrismaticJoint,
+        DistanceJoint,
+        PulleyJoint,
+        MouseJoint,
+        GearJoint,
+        WheelJoint,
+        WeldJoint,
+        FrictionJoint,
+        RopeJoint,
+        MotorJoint
+    };
+
+    Box2DJoint(b2JointDef &jointDef, QObject *parent = 0);
+    ~Box2DJoint();
+
+    JointType jointType() const;
 
     bool collideConnected() const;
     void setCollideConnected(bool collideConnected);
-
-    Box2DWorld *box2DWorld() const;
-    void setWorld(Box2DWorld *world);
 
     Box2DBody *bodyA() const;
     void setBodyA(Box2DBody *bodyA);
@@ -61,14 +80,16 @@ public:
 
     void initialize();
 
-    virtual void nullifyJoint() = 0;
-    virtual void cleanup(b2World *world) = 0;
-    virtual b2Joint *joint() const = 0;
+    void nullifyJoint();
+    b2World *world() const;
+    b2Joint *joint() const;
+
+    // QQmlParserStatus interface
+    void classBegin() {}
+    void componentComplete();
 
 protected:
-    virtual void createJoint() = 0;
-    b2World *world() const;
-
+    virtual b2Joint *createJoint() = 0;
 
 private slots:
     void bodyACreated();
@@ -76,20 +97,54 @@ private slots:
 
 signals:
     void collideConnectedChanged();
-    void worldChanged();
     void bodyAChanged();
     void bodyBChanged();
     void created();
 
-protected:
-    bool mInitializePending;
-
 private:
-    Box2DWorld *mWorld;
-    bool mCollideConnected;
+    b2JointDef &mJointDef;
+    bool mComponentComplete;
+    bool mInitializePending;
     Box2DBody *mBodyA;
     Box2DBody *mBodyB;
+    b2World *mWorld;
+    b2Joint *mJoint;
 };
+
+inline Box2DJoint::JointType Box2DJoint::jointType() const
+{
+    return static_cast<JointType>(mJointDef.type);
+}
+
+inline bool Box2DJoint::collideConnected() const
+{
+    return mJointDef.collideConnected;
+}
+
+inline Box2DBody *Box2DJoint::bodyA() const
+{
+    return mBodyA;
+}
+
+inline Box2DBody *Box2DJoint::bodyB() const
+{
+    return mBodyB;
+}
+
+inline void Box2DJoint::nullifyJoint()
+{
+    mJoint = 0;
+}
+
+inline b2World *Box2DJoint::world() const
+{
+    return mWorld;
+}
+
+inline b2Joint *Box2DJoint::joint() const
+{
+    return mJoint;
+}
 
 
 /**
@@ -97,8 +152,6 @@ private:
  */
 inline Box2DJoint *toBox2DJoint(b2Joint *joint)
 {
-    if (!joint)
-        return 0;
     return static_cast<Box2DJoint*>(joint->GetUserData());
 }
 

@@ -30,123 +30,77 @@
 #include "box2dbody.h"
 
 Box2DMotorJoint::Box2DMotorJoint(QObject *parent) :
-    Box2DJoint(parent),
-    mMotorJoint(0)
+    Box2DJoint(mMotorJointDef, parent)
 {
-}
-
-Box2DMotorJoint::~Box2DMotorJoint()
-{
-    cleanup(world());
 }
 
 QPointF Box2DMotorJoint::linearOffset() const
 {
-    return QPointF(mMotorJointDef.linearOffset.x * scaleRatio,mMotorJointDef.linearOffset.y * scaleRatio);
+    return QPointF(mMotorJointDef.linearOffset.x * scaleRatio,
+                   -mMotorJointDef.linearOffset.y * scaleRatio);
 }
 
 void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 {
-    if (this->linearOffset() == linearOffset)
+    const b2Vec2 linearOffsetMeters(linearOffset.x() / scaleRatio,
+                                    -linearOffset.y() / scaleRatio);
+    if (mMotorJointDef.linearOffset == linearOffsetMeters)
         return;
-    mMotorJointDef.linearOffset = b2Vec2(linearOffset.x() / scaleRatio,-linearOffset.y() / scaleRatio);
-    if (mMotorJoint)
-        mMotorJoint->SetLinearOffset(mMotorJointDef.linearOffset);
+
+    mMotorJointDef.linearOffset = linearOffsetMeters;
+    if (motorJoint())
+        motorJoint()->SetLinearOffset(linearOffsetMeters);
     emit linearOffsetChanged();
 }
 
-float Box2DMotorJoint::angularOffset() const
+void Box2DMotorJoint::setAngularOffset(float angularOffset)
 {
-    return mMotorJointDef.angularOffset * 180 / b2_pi;
-}
-
-void Box2DMotorJoint::setAngularOffset(const float angularOffset)
-{
-    float angularOffsetRad = angularOffset * ( b2_pi / 180);
+    const float angularOffsetRad = angularOffset * -b2_pi / 180;
     if (mMotorJointDef.angularOffset == angularOffsetRad)
         return;
+
     mMotorJointDef.angularOffset = angularOffsetRad;
-    if (mMotorJoint)
-        mMotorJoint->SetAngularOffset(angularOffsetRad);
+    if (motorJoint())
+        motorJoint()->SetAngularOffset(angularOffsetRad);
     emit angularOffsetChanged();
 }
 
-float Box2DMotorJoint::maxForce() const
-{
-    return mMotorJointDef.maxForce;
-}
-
-void Box2DMotorJoint::setMaxForce(const float maxForce)
+void Box2DMotorJoint::setMaxForce(float maxForce)
 {
     if (mMotorJointDef.maxForce == maxForce)
         return;
+
     mMotorJointDef.maxForce = maxForce;
-    if (mMotorJoint)
-        mMotorJoint->SetMaxForce(maxForce);
+    if (motorJoint())
+        motorJoint()->SetMaxForce(maxForce);
     emit maxForceChanged();
 }
 
-float Box2DMotorJoint::maxTorque() const
-{
-    return mMotorJointDef.maxTorque;
-}
-
-void Box2DMotorJoint::setMaxTorque(const float maxTorque)
+void Box2DMotorJoint::setMaxTorque(float maxTorque)
 {
     if (mMotorJointDef.maxTorque == maxTorque)
         return;
+
     mMotorJointDef.maxTorque = maxTorque;
-    if (mMotorJoint)
-        mMotorJoint->SetMaxTorque(maxTorque);
+    if (motorJoint())
+        motorJoint()->SetMaxTorque(maxTorque);
     emit maxTorqueChanged();
 }
 
-float Box2DMotorJoint::correctionFactor() const
-{
-    return mMotorJointDef.correctionFactor;
-}
-
-void Box2DMotorJoint::setCorrectionFactor(const float correctionFactor)
+void Box2DMotorJoint::setCorrectionFactor(float correctionFactor)
 {
     if (mMotorJointDef.correctionFactor == correctionFactor)
         return;
+
     mMotorJointDef.correctionFactor = correctionFactor;
-    if (mMotorJoint)
-        mMotorJoint->SetCorrectionFactor(correctionFactor);
+    if (motorJoint())
+        motorJoint()->SetCorrectionFactor(correctionFactor);
     emit correctionFactorChanged();
 }
 
-void Box2DMotorJoint::nullifyJoint()
+b2Joint *Box2DMotorJoint::createJoint()
 {
-    mMotorJoint = 0;
-}
+    mMotorJointDef.Initialize(bodyA()->body(), bodyB()->body());
 
-void Box2DMotorJoint::createJoint()
-{
-
-    mMotorJointDef.Initialize(bodyA()->body(),bodyB()->body());
-    mMotorJointDef.collideConnected = collideConnected();
-    mMotorJoint = static_cast<b2MotorJoint*>(
-                world()->CreateJoint(&mMotorJointDef));
-    mMotorJoint->SetUserData(this);
-    mInitializePending = false;
-    emit created();
-}
-
-void Box2DMotorJoint::cleanup(b2World *world)
-{
-    if (!world) {
-        qWarning() << "MotorJoint: There is no world connected";
-        return;
-    }
-    if (mMotorJoint && bodyA() && bodyB()) {
-        mMotorJoint->SetUserData(0);
-        world->DestroyJoint(mMotorJoint);
-        mMotorJoint = 0;
-    }
-}
-
-b2Joint *Box2DMotorJoint::joint() const
-{
-    return mMotorJoint;
+    return world()->CreateJoint(&mMotorJointDef);
 }

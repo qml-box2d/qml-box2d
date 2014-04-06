@@ -30,9 +30,6 @@
 #include "box2djoint.h"
 #include <Box2D.h>
 
-class b2World;
-class b2MotorJoint;
-
 class Box2DMotorJoint : public Box2DJoint
 {
     Q_OBJECT
@@ -45,27 +42,23 @@ class Box2DMotorJoint : public Box2DJoint
 
 public:
     explicit Box2DMotorJoint(QObject *parent = 0);
-    ~Box2DMotorJoint();
 
     QPointF linearOffset() const;
     void setLinearOffset(const QPointF & linearOffset);
 
     float angularOffset() const;
-    void setAngularOffset(const float angularOffset);
+    void setAngularOffset(float angularOffset);
 
     float maxForce() const;
-    void setMaxForce(const float maxForce);
+    void setMaxForce(float maxForce);
 
     float maxTorque() const;
-    void setMaxTorque(const float maxTorque);
+    void setMaxTorque(float maxTorque);
 
     float correctionFactor() const;
-    void setCorrectionFactor(const float correctionFactor);
+    void setCorrectionFactor(float correctionFactor);
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2MotorJoint *motorJoint() const;
 
 signals:
     void linearOffsetChanged();
@@ -74,10 +67,36 @@ signals:
     void maxTorqueChanged();
     void correctionFactorChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2MotorJointDef mMotorJointDef;
-    b2MotorJoint *mMotorJoint;
 };
 
+inline float Box2DMotorJoint::angularOffset() const
+{
+    return mMotorJointDef.angularOffset * -180 / b2_pi;
+}
+
+inline float Box2DMotorJoint::maxForce() const
+{
+    return mMotorJointDef.maxForce;
+}
+
+inline float Box2DMotorJoint::maxTorque() const
+{
+    return mMotorJointDef.maxTorque;
+}
+
+inline float Box2DMotorJoint::correctionFactor() const
+{
+    return mMotorJointDef.correctionFactor;
+}
+
+inline b2MotorJoint *Box2DMotorJoint::motorJoint() const
+{
+    return static_cast<b2MotorJoint*>(joint());
+}
 
 #endif // BOX2DMOTORJOINT_H

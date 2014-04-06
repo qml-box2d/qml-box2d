@@ -141,14 +141,25 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
 
 Box2DWorld::~Box2DWorld()
 {
-    // The bodies will be deleted as part of the world, so it's important
-    // that they are no longer referenced from the Box2DBody instances.
+    // The bodies and joints will be deleted as part of the world, so it's
+    // important that they are no longer referenced from the Box2DBody and
+    // Box2DJoint instances.
     for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
-        static_cast<Box2DBody *>(body->GetUserData())->nullifyBody();
+        toBox2DBody(body)->nullifyBody();
+    for (b2Joint *joint = mWorld->GetJointList(); joint; joint = joint->GetNext())
+        toBox2DJoint(joint)->nullifyJoint();
 
     delete mWorld;
     delete mContactListener;
     delete mDestructionListener;
+}
+
+void Box2DWorld::setTimeStep(float timeStep)
+{
+    if (mTimeStep != timeStep) {
+        mTimeStep = timeStep;
+        emit timeStepChanged();
+    }
 }
 
 void Box2DWorld::setRunning(bool running)
@@ -164,6 +175,22 @@ void Box2DWorld::setRunning(bool running)
             mStepDriver->start();
         else
             mStepDriver->stop();
+    }
+}
+
+void Box2DWorld::setVelocityIterations(int iterations)
+{
+    if (mVelocityIterations != iterations) {
+        mVelocityIterations = iterations;
+        emit velocityIterationsChanged();
+    }
+}
+
+void Box2DWorld::setPositionIterations(int iterations)
+{
+    if (mPositionIterations != iterations) {
+        mPositionIterations = iterations;
+        emit positionIterationsChanged();
     }
 }
 
@@ -211,7 +238,7 @@ void Box2DWorld::step()
     mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
 
     for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
-        static_cast<Box2DBody *>(body->GetUserData())->synchronize();
+        toBox2DBody(body)->synchronize();
 
     // Emit contact signals
     foreach (const ContactEvent &event, mContactListener->events()) {

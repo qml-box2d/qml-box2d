@@ -37,9 +37,6 @@
 class Box2DFixture;
 class Box2DWorld;
 
-class b2Body;
-class b2World;
-
 /**
  * The Box2D body, build up from a list of shapes.
  */
@@ -200,6 +197,24 @@ inline float Box2DBody::gravityScale() const
 inline void Box2DBody::nullifyBody()
 {
     mBody = 0;
+}
+
+inline b2Body *Box2DBody::body() const
+{
+    return mBody;
+}
+
+inline b2World *Box2DBody::world() const
+{
+    return mWorld;
+}
+
+/**
+ * Convenience function to get the Box2DBody wrapping a b2Body.
+ */
+inline Box2DBody *toBox2DBody(b2Body *body)
+{
+    return static_cast<Box2DBody*>(body->GetUserData());
 }
 
 #endif // BOX2DBODY_H

@@ -29,73 +29,54 @@
 #include "box2dbody.h"
 
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
-    Box2DJoint(parent),
-    mWeldJoint(0),
-    anchorsAuto(true)
+    Box2DJoint(mWeldJointDef, parent),
+    mAnchorsAuto(true)
 {
-}
-
-Box2DWeldJoint::~Box2DWeldJoint()
-{
-    cleanup(world());
-}
-
-float Box2DWeldJoint::referenceAngle() const
-{
-    return mWeldJointDef.referenceAngle;
 }
 
 void Box2DWeldJoint::setReferenceAngle(float referenceAngle)
 {
     float referenceAngleRad = referenceAngle * b2_pi / -180;
-    if (qFuzzyCompare(mWeldJointDef.referenceAngle, referenceAngleRad))
+    if (mWeldJointDef.referenceAngle == referenceAngleRad)
         return;
+
     mWeldJointDef.referenceAngle = referenceAngleRad;
     emit referenceAngleChanged();
 }
 
-float Box2DWeldJoint::frequencyHz() const
-{
-    return mWeldJointDef.frequencyHz;
-}
-
 void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
 {
-    if (qFuzzyCompare(mWeldJointDef.frequencyHz, frequencyHz))
+    if (mWeldJointDef.frequencyHz == frequencyHz)
         return;
 
     mWeldJointDef.frequencyHz = frequencyHz;
-    if (mWeldJoint)
-        mWeldJoint->SetFrequency(frequencyHz);
+    if (weldJoint())
+        weldJoint()->SetFrequency(frequencyHz);
     emit frequencyHzChanged();
-}
-
-float Box2DWeldJoint::dampingRatio() const
-{
-    return mWeldJointDef.dampingRatio;
 }
 
 void Box2DWeldJoint::setDampingRatio(float dampingRatio)
 {
-    if (qFuzzyCompare(mWeldJointDef.dampingRatio, dampingRatio))
+    if (mWeldJointDef.dampingRatio == dampingRatio)
         return;
 
     mWeldJointDef.dampingRatio = dampingRatio;
-    if (mWeldJoint)
-        mWeldJoint->SetDampingRatio(dampingRatio);
+    if (weldJoint())
+        weldJoint()->SetDampingRatio(dampingRatio);
     emit dampingRatioChanged();
 }
 
 QPointF Box2DWeldJoint::localAnchorA() const
 {
     return QPointF(mWeldJointDef.localAnchorA.x * scaleRatio,
-                       -mWeldJointDef.localAnchorA.y * scaleRatio);
+                   -mWeldJointDef.localAnchorA.y * scaleRatio);
 }
 
 void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mWeldJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,-localAnchorA.y() / scaleRatio);
-    anchorsAuto = false;
+    mWeldJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
+                                        -localAnchorA.y() / scaleRatio);
+    mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
@@ -107,48 +88,22 @@ QPointF Box2DWeldJoint::localAnchorB() const
 
 void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mWeldJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,-localAnchorB.y() / scaleRatio);
-    anchorsAuto = false;
+    mWeldJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
+                                        -localAnchorB.y() / scaleRatio);
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
-void Box2DWeldJoint::nullifyJoint()
+b2Joint *Box2DWeldJoint::createJoint()
 {
-    mWeldJoint = 0;
-}
-
-void Box2DWeldJoint::createJoint()
-{
-    if (anchorsAuto)
-        mWeldJointDef.Initialize(bodyA()->body(), bodyB()->body(),bodyA()->body()->GetWorldCenter());
-    else
-    {
+    if (mAnchorsAuto) {
+        mWeldJointDef.Initialize(bodyA()->body(),
+                                 bodyB()->body(),
+                                 bodyA()->body()->GetWorldCenter());
+    } else {
         mWeldJointDef.bodyA = bodyA()->body();
         mWeldJointDef.bodyB = bodyB()->body();
     }
-    mWeldJointDef.collideConnected = collideConnected();
-    mWeldJoint = static_cast<b2WeldJoint*>
-            (world()->CreateJoint(&mWeldJointDef));
 
-    mWeldJoint->SetUserData(this);
-    mInitializePending = false;
-    emit created();
-}
-
-void Box2DWeldJoint::cleanup(b2World *world)
-{
-    if (!world) {
-        qWarning() << "WeldJoint: There is no world connected";
-        return;
-    }
-    if (mWeldJoint && bodyA() && bodyB()) {
-        mWeldJoint->SetUserData(0);
-        world->DestroyJoint(mWeldJoint);
-        mWeldJoint = 0;
-    }
-}
-
-b2Joint *Box2DWeldJoint::joint() const
-{
-    return mWeldJoint;
+    return world()->CreateJoint(&mWeldJointDef);
 }

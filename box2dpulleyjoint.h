@@ -29,12 +29,10 @@
 #include "box2djoint.h"
 #include <Box2D.h>
 
-class b2World;
-class b2PulleyJoint;
-
 class Box2DPulleyJoint : public Box2DJoint
 {
     Q_OBJECT
+
     Q_PROPERTY(float lengthA READ lengthA WRITE setLengthA NOTIFY lengthAChanged)
     Q_PROPERTY(float lengthB READ lengthB WRITE setLengthB NOTIFY lengthBChanged)
     Q_PROPERTY(float ratio READ ratio WRITE setRatio NOTIFY ratioChanged)
@@ -45,7 +43,6 @@ class Box2DPulleyJoint : public Box2DJoint
 
 public:
     explicit Box2DPulleyJoint(QObject *parent = 0);
-    ~Box2DPulleyJoint();
 
     float lengthA() const;
     void setLengthA(float lengthA);
@@ -68,10 +65,7 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2PulleyJoint *pulleyJoint() const;
 
     Q_INVOKABLE float getCurrentLengthA() const;
     Q_INVOKABLE float getCurrentLengthB() const;
@@ -87,11 +81,21 @@ signals:
     void localAnchorAChanged();
     void localAnchorBChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2PulleyJointDef mPulleyJointDef;
-    b2PulleyJoint *mPulleyJoint;
 };
 
+inline float Box2DPulleyJoint::ratio() const
+{
+    return mPulleyJointDef.ratio;
+}
 
+inline b2PulleyJoint *Box2DPulleyJoint::pulleyJoint() const
+{
+    return static_cast<b2PulleyJoint*>(joint());
+}
 
 #endif // BOX2PULLEYJOINT_H

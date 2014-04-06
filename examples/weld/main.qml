@@ -69,21 +69,18 @@ Rectangle {
                 var newLink = linkComponent.createObject(world);
                 newLink.width = 20;
                 newLink.height = 3 + count - i;
-                if(count % 2) {
+                if (count % 2) {
                     newLink.x = prevLink.x + prevLink.width;
                     newLink.y = prevLink.y - (prevLink.height / 2);
-                }
-                else {
+                } else {
                     newLink.x = prevLink.x - newLink.width;
                     newLink.y = prevLink.y - (prevLink.height / 2);
                 }
                 var newJoint = linkJoint.createObject(world);
-                newJoint.world = world;
-                if(count % 2) {
+                if (count % 2) {
                     newJoint.localAnchorA = Qt.point(prevLink.width,prevLink.height / 2);
                     newJoint.localAnchorB = Qt.point(0,newLink.height / 2);
-                }
-                else {
+                } else {
                     newJoint.localAnchorA = Qt.point(0,prevLink.height / 2);
                     newJoint.localAnchorB = Qt.point(newLink.width,newLink.height / 2);
                 }
@@ -103,9 +100,10 @@ Rectangle {
                 newLink.width = 20 - i * 1.5;
                 newLink.height = 40;
                 var newJoint = linkJoint.createObject(world);
-                newJoint.world = world;
-                if(i == 0) newJoint.localAnchorA = Qt.point(bodyA.width / 2,0);
-                else newJoint.localAnchorA = Qt.point(newLink.width / 2,0);
+                if (i == 0)
+                    newJoint.localAnchorA = Qt.point(bodyA.width / 2,0);
+                else
+                    newJoint.localAnchorA = Qt.point(newLink.width / 2,0);
                 newJoint.localAnchorB = Qt.point(newLink.width / 2,newLink.height);
                 newJoint.bodyA = prevLink;
                 newJoint.bodyB = newLink;

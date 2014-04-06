@@ -42,10 +42,9 @@ class Box2DRopeJoint : public Box2DJoint
 
 public:
     explicit Box2DRopeJoint(QObject *parent = 0);
-    ~Box2DRopeJoint();
 
     float maxLength() const;
-    void setMaxLength(float _maxLength);
+    void setMaxLength(float maxLength);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -53,10 +52,7 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2RopeJoint *ropeJoint() const;
 
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
@@ -66,9 +62,16 @@ signals:
     void localAnchorAChanged();
     void localAnchorBChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2RopeJointDef mRopeJointDef;
-    b2RopeJoint *mRopeJoint;
 };
+
+inline b2RopeJoint *Box2DRopeJoint::ropeJoint() const
+{
+    return static_cast<b2RopeJoint*>(joint());
+}
 
 #endif // BOX2DROPEJOINT_H

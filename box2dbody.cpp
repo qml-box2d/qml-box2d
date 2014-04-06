@@ -41,6 +41,8 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mSynchronizing(false),
     mInitializePending(false)
 {
+    mBodyDef.userData = this;
+
     setTransformOrigin(TopLeft);
     connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
 }
@@ -247,7 +249,6 @@ void Box2DBody::initialize(b2World *world)
     mInitializePending = false;
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->createFixture(mBody);
-    mBody->SetUserData(this);
     emit bodyCreated();
 }
 
@@ -294,16 +295,6 @@ void Box2DBody::componentComplete()
 
     if (mInitializePending)
         initialize(mWorld);
-}
-
-b2Body *Box2DBody::body() const
-{
-    return mBody;
-}
-
-b2World *Box2DBody::world() const
-{
-    return mWorld;
 }
 
 void Box2DBody::geometryChanged(const QRectF &newGeometry,

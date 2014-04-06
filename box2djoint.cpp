@@ -24,120 +24,116 @@
  */
 
 #include "box2djoint.h"
-#include "box2dbody.h"
-#include "box2dworld.h"
 
-Box2DJoint::Box2DJoint(QObject *parent) :
+#include "box2dbody.h"
+
+Box2DJoint::Box2DJoint(b2JointDef &jointDef, QObject *parent) :
     QObject(parent),
+    mJointDef(jointDef),
+    mComponentComplete(false),
     mInitializePending(false),
-    mWorld(0),
-    mCollideConnected(false),
     mBodyA(0),
-    mBodyB(0)
+    mBodyB(0),
+    mWorld(0),
+    mJoint(0)
 {
 }
 
-bool Box2DJoint::collideConnected() const
+Box2DJoint::~Box2DJoint()
 {
-    return mCollideConnected;
+    if (mJoint)
+        mWorld->DestroyJoint(mJoint);
 }
 
 void Box2DJoint::setCollideConnected(bool collideConnected)
 {
-    if (mCollideConnected == collideConnected)
+    if (mJointDef.collideConnected == collideConnected)
         return;
 
-    mCollideConnected = collideConnected;
+    mJointDef.collideConnected = collideConnected;
 
     emit collideConnectedChanged();
 }
 
-Box2DWorld *Box2DJoint::box2DWorld() const
-{
-    return mWorld;
-}
-
-void Box2DJoint::setWorld(Box2DWorld *world)
-{
-    if (mWorld == world || world == NULL)
-        return;
-
-    mWorld = world;
-    emit worldChanged();
-    initialize();
-}
-
-Box2DBody *Box2DJoint::bodyA() const
-{
-    return mBodyA;
-}
-
 void Box2DJoint::setBodyA(Box2DBody *bodyA)
 {
-    if (mBodyA)
+    if (mBodyA == bodyA)
         return;
 
-    if (bodyA->body() != NULL) {
-        mBodyA = bodyA;
-        emit bodyAChanged();
+    mBodyA = bodyA;
+
+    if (!bodyA || bodyA->body())
         initialize();
-    }
     else
         connect(bodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
-}
 
-Box2DBody *Box2DJoint::bodyB() const
-{
-    return mBodyB;
+    emit bodyAChanged();
 }
 
 void Box2DJoint::setBodyB(Box2DBody *bodyB)
 {
-    if (mBodyB)
+    if (mBodyB == bodyB)
         return;
 
-    if (bodyB->body() != NULL) {
-        mBodyB = bodyB;
-        emit bodyBChanged();
+    mBodyB = bodyB;
+
+    if (!bodyB || bodyB->body())
         initialize();
-    }
     else
         connect(bodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
+
+    emit bodyBChanged();
 }
 
 void Box2DJoint::initialize()
 {
-    if (!mBodyA || !mBodyB) {
-        // When components are created dynamically, they get their parent
-        // assigned before they have been completely initialized. In that case
-        // we need to delay initialization.
+    // Delay initialization until the component is complete
+    if (!mComponentComplete) {
         mInitializePending = true;
         return;
     }
-    if (mBodyA->world() != mBodyB->world())
-        qWarning() << "bodyA and bodyB from different worlds";
-    else
-        createJoint();
+    mInitializePending = false;
+
+    // Destroy any previously created joint
+    if (mJoint) {
+        mWorld->DestroyJoint(mJoint);
+        mJoint = 0;
+        mWorld = 0;
+    }
+
+    if (!mBodyA || !mBodyB)
+        return;
+    if (!mBodyA->body() || !mBodyB->body())
+        return;
+
+    if (mBodyA->world() != mBodyB->world()) {
+        qWarning() << "Joint: bodyA and bodyB from different worlds";
+        return;
+    }
+
+    mWorld = mBodyA->world();
+    mJoint = createJoint();
+    if (mJoint) {
+        mJoint->SetUserData(this);
+        emit created();
+    }
 }
 
-b2World *Box2DJoint::world() const
+void Box2DJoint::componentComplete()
 {
-    if (mWorld) return mWorld->world();
-    else if (mBodyA && mBodyA->world()) return mBodyA->world();
-    else if (mBodyB && mBodyB->world()) return mBodyB->world();
-    return NULL;
+    mComponentComplete = true;
+    if (mInitializePending)
+        initialize();
 }
 
 void Box2DJoint::bodyACreated()
 {
-    mBodyA = static_cast<Box2DBody*>(sender());
-    emit bodyAChanged();
+    disconnect(mBodyA, SIGNAL(bodyCreated()), this, SLOT(bodyACreated()));
     initialize();
 }
 
 void Box2DJoint::bodyBCreated()
 {
-    mBodyB = static_cast<Box2DBody*>(sender());
-    emit bodyBChanged();
+    disconnect(mBodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
     initialize();
 }

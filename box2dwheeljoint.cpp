@@ -30,210 +30,143 @@
 #include "box2dbody.h"
 
 Box2DWheelJoint::Box2DWheelJoint(QObject *parent) :
-    Box2DJoint(parent),
-    mWheelJoint(0),
-    anchorsAuto(true)
+    Box2DJoint(mWheelJointDef, parent),
+    mAnchorsAuto(true)
 {
 }
 
-Box2DWheelJoint::~Box2DWheelJoint()
+void Box2DWheelJoint::setDampingRatio(float dampingRatio)
 {
-    cleanup(world());
-}
-
-float Box2DWheelJoint::dampingRatio() const
-{
-    if (mWheelJoint) return mWheelJoint->GetSpringDampingRatio();
-    return mWheelJointDef.dampingRatio;
-}
-
-void Box2DWheelJoint::setDampingRatio(float _dampingRatio)
-{
-    if (qFuzzyCompare(dampingRatio(), _dampingRatio))
+    if (mWheelJointDef.dampingRatio == dampingRatio)
         return;
 
-    if (mWheelJoint)
-        mWheelJoint->SetSpringDampingRatio(_dampingRatio);
-    mWheelJointDef.dampingRatio = _dampingRatio;
-
+    mWheelJointDef.dampingRatio = dampingRatio;
+    if (wheelJoint())
+        wheelJoint()->SetSpringDampingRatio(dampingRatio);
     emit dampingRatioChanged();
 }
 
-float Box2DWheelJoint::frequencyHz() const
+void Box2DWheelJoint::setFrequencyHz(float frequencyHz)
 {
-    if (mWheelJoint) return mWheelJoint->GetSpringFrequencyHz();
-    return mWheelJointDef.frequencyHz;
-}
-
-void Box2DWheelJoint::setFrequencyHz(float _frequencyHz)
-{
-    if (qFuzzyCompare(frequencyHz(), _frequencyHz))
+    if (mWheelJointDef.frequencyHz == frequencyHz)
         return;
 
-    if (mWheelJoint)
-        mWheelJoint->SetSpringFrequencyHz(_frequencyHz);
-    mWheelJointDef.frequencyHz = _frequencyHz;
+    mWheelJointDef.frequencyHz = frequencyHz;
+    if (wheelJoint())
+        wheelJoint()->SetSpringFrequencyHz(frequencyHz);
     emit frequencyHzChanged();
 }
 
-float Box2DWheelJoint::maxMotorTorque() const
+void Box2DWheelJoint::setMaxMotorTorque(float maxMotorTorque)
 {
-    if (mWheelJoint)
-        return mWheelJoint->GetMaxMotorTorque();
-    return mWheelJointDef.maxMotorTorque;
-}
-
-void Box2DWheelJoint::setMaxMotorTorque(float _maxMotorTorque)
-{
-    if (qFuzzyCompare(maxMotorTorque(), _maxMotorTorque))
+    if (mWheelJointDef.maxMotorTorque == maxMotorTorque)
         return;
 
-    mWheelJointDef.maxMotorTorque = _maxMotorTorque;
-    if (mWheelJoint)
-        mWheelJoint->SetMaxMotorTorque(_maxMotorTorque);
+    mWheelJointDef.maxMotorTorque = maxMotorTorque;
+    if (wheelJoint())
+        wheelJoint()->SetMaxMotorTorque(maxMotorTorque);
     emit maxMotorTorqueChanged();
 }
 
-float Box2DWheelJoint::motorSpeed() const
+void Box2DWheelJoint::setMotorSpeed(float motorSpeed)
 {
-    if (mWheelJoint)
-        return mWheelJoint->GetMotorSpeed() * b2_pi / 180;
-    return -mWheelJointDef.motorSpeed * b2_pi / 180;
-}
-
-void Box2DWheelJoint::setMotorSpeed(float _motorSpeed)
-{
-    float motorSpeedRad = _motorSpeed  * b2_pi / -180;
-    if (qFuzzyCompare(motorSpeed(), motorSpeedRad))
+    float motorSpeedRad = motorSpeed  * b2_pi / -180;
+    if (mWheelJointDef.motorSpeed == motorSpeedRad)
         return;
 
     mWheelJointDef.motorSpeed = motorSpeedRad;
-    if (mWheelJoint)
-        mWheelJoint->SetMotorSpeed(motorSpeedRad);
+    if (wheelJoint())
+        wheelJoint()->SetMotorSpeed(motorSpeedRad);
     emit motorSpeedChanged();
 }
 
-bool Box2DWheelJoint::enableMotor() const
+void Box2DWheelJoint::setEnableMotor(bool enableMotor)
 {
-    if (mWheelJoint)
-        return mWheelJoint->IsMotorEnabled();
-    return mWheelJointDef.enableMotor;
-}
-
-void Box2DWheelJoint::setEnableMotor(bool _enableMotor)
-{
-    if (enableMotor() == _enableMotor)
+    if (mWheelJointDef.enableMotor == enableMotor)
         return;
 
-    mWheelJointDef.enableMotor = _enableMotor;
-    if (mWheelJoint)
-        mWheelJoint->EnableMotor(_enableMotor);
+    mWheelJointDef.enableMotor = enableMotor;
+    if (wheelJoint())
+        wheelJoint()->EnableMotor(enableMotor);
     emit enableMotorChanged();
 }
 
 QPointF Box2DWheelJoint::localAnchorA() const
 {
     return QPointF(mWheelJointDef.localAnchorA.x * scaleRatio,
-                   mWheelJointDef.localAnchorA.y * scaleRatio);
+                   -mWheelJointDef.localAnchorA.y * scaleRatio);
 }
 
 void Box2DWheelJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
     mWheelJointDef.localAnchorA = b2Vec2(localAnchorA.x() / scaleRatio,
                                          -localAnchorA.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 QPointF Box2DWheelJoint::localAnchorB() const
 {
     return QPointF(mWheelJointDef.localAnchorB.x * scaleRatio,
-                   mWheelJointDef.localAnchorB.y * scaleRatio);
+                   -mWheelJointDef.localAnchorB.y * scaleRatio);
 }
 
 void Box2DWheelJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
     mWheelJointDef.localAnchorB = b2Vec2(localAnchorB.x() / scaleRatio,
                                          -localAnchorB.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 QPointF Box2DWheelJoint::localAxisA() const
 {
     return QPointF(mWheelJointDef.localAxisA.x * scaleRatio,
-                   mWheelJointDef.localAxisA.y * scaleRatio);
+                   -mWheelJointDef.localAxisA.y * scaleRatio);
 }
 
 void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
 {
     mWheelJointDef.localAnchorB = b2Vec2(localAxisA.x() / scaleRatio,
                                          -localAxisA.y() / scaleRatio);
-    anchorsAuto = false;
+    mAnchorsAuto = false;
     emit localAxisAChanged();
 }
 
 
-void Box2DWheelJoint::nullifyJoint()
+b2Joint *Box2DWheelJoint::createJoint()
 {
-    mWheelJoint = 0;
-}
-
-void Box2DWheelJoint::createJoint()
-{
-    if (anchorsAuto)
+    if (mAnchorsAuto) {
         mWheelJointDef.Initialize(bodyA()->body(),
                                   bodyB()->body(),
                                   bodyA()->body()->GetWorldCenter(),
                                   mWheelJointDef.localAxisA);
-    else
-    {
+    } else {
         mWheelJointDef.bodyA = bodyA()->body();
         mWheelJointDef.bodyB = bodyB()->body();
     }
-    mWheelJointDef.collideConnected = collideConnected();
-    mWheelJoint = static_cast<b2WheelJoint*>(world()->CreateJoint(&mWheelJointDef));
-    mWheelJoint->SetUserData(this);
-    mInitializePending = false;
-    emit created();
-}
 
-void Box2DWheelJoint::cleanup(b2World *world)
-{
-    if (!world) {
-        qWarning() << "WheelJoint: There is no world connected";
-        return;
-    }
-    if (mWheelJoint && bodyA() && bodyB()) {
-        mWheelJoint->SetUserData(0);
-        world->DestroyJoint(mWheelJoint);
-        mWheelJoint = 0;
-    }
-}
-
-b2Joint *Box2DWheelJoint::joint() const
-{
-    return mWheelJoint;
+    return world()->CreateJoint(&mWheelJointDef);
 }
 
 float Box2DWheelJoint::getJointTranslation() const
 {
-    if (mWheelJoint)
-        return mWheelJoint->GetJointTranslation() * scaleRatio;
+    if (wheelJoint())
+        return wheelJoint()->GetJointTranslation() * scaleRatio;
     return 0;
 }
 
 float Box2DWheelJoint::getJointSpeed() const
 {
-    if (mWheelJoint)
-        return mWheelJoint->GetJointSpeed() * scaleRatio;
+    if (wheelJoint())
+        return wheelJoint()->GetJointSpeed() * scaleRatio;
     return 0;
 }
 
 QPointF Box2DWheelJoint::getReactionForce(float32 inv_dt) const
 {
-    if (mWheelJoint) {
-        b2Vec2 point = mWheelJoint->GetReactionForce(inv_dt);
+    if (wheelJoint()) {
+        b2Vec2 point = wheelJoint()->GetReactionForce(inv_dt);
         return QPointF(point.x * scaleRatio,point.y * scaleRatio);
     }
     return QPointF();
@@ -241,7 +174,7 @@ QPointF Box2DWheelJoint::getReactionForce(float32 inv_dt) const
 
 float Box2DWheelJoint::getReactionTorque(float32 inv_dt) const
 {
-    if (mWheelJoint)
-        return mWheelJoint->GetReactionTorque(inv_dt);
+    if (wheelJoint())
+        return wheelJoint()->GetReactionTorque(inv_dt);
     return 0.0f;
 }

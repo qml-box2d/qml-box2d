@@ -63,14 +63,12 @@ Rectangle {
                 newLink.y = 100;
                 var newJoint = jointComponent.createObject(world);
                 if(i === 60) newJoint.localAnchorA = Qt.point(40,100);
-                newJoint.world = world;
                 newJoint.bodyA = prev;
                 newJoint.bodyB = newLink;
                 prev = newLink;
             }
             newJoint = jointComponent.createObject(world);
             newJoint.localAnchorB = Qt.point(0,100);
-            newJoint.world = world;
             newJoint.bodyA = prev;
             newJoint.bodyB = rightWall;
         }

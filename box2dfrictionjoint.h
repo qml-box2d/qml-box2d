@@ -29,12 +29,10 @@
 #include "box2djoint.h"
 #include <Box2D.h>
 
-class b2World;
-class b2FrictionJoint;
-
 class Box2DFrictionJoint : public Box2DJoint
 {
     Q_OBJECT
+
     Q_PROPERTY(float maxForce READ maxForce WRITE setMaxForce NOTIFY maxForceChanged)
     Q_PROPERTY(float maxTorque READ maxTorque WRITE setMaxTorque NOTIFY maxTorqueChanged)
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
@@ -42,7 +40,6 @@ class Box2DFrictionJoint : public Box2DJoint
 
 public:
     explicit Box2DFrictionJoint(QObject *parent = 0);
-    ~Box2DFrictionJoint();
 
     float maxForce() const;
     void setMaxForce(float maxForce);
@@ -56,10 +53,7 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2FrictionJoint *frictionJoint() const;
 
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
@@ -70,12 +64,27 @@ signals:
     void localAnchorAChanged();
     void localAnchorBChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2FrictionJointDef mFrictionJointDef;
-    b2FrictionJoint *mFrictionJoint;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
 
+inline float Box2DFrictionJoint::maxForce() const
+{
+    return mFrictionJointDef.maxForce;
+}
 
+inline float Box2DFrictionJoint::maxTorque() const
+{
+    return mFrictionJointDef.maxTorque;
+}
+
+inline b2FrictionJoint *Box2DFrictionJoint::frictionJoint() const
+{
+    return static_cast<b2FrictionJoint*>(joint());
+}
 
 #endif // BOX2FRICTIONJOINT_H

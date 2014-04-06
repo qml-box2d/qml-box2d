@@ -30,12 +30,10 @@
 #include "box2djoint.h"
 #include <Box2D.h>
 
-class b2World;
-class b2RevoluteJoint;
-
 class Box2DRevoluteJoint : public Box2DJoint
 {
     Q_OBJECT
+
     Q_PROPERTY(float lowerAngle READ lowerAngle WRITE setLowerAngle NOTIFY lowerAngleChanged)
     Q_PROPERTY(float upperAngle READ upperAngle WRITE setUpperAngle NOTIFY upperAngleChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
@@ -47,7 +45,6 @@ class Box2DRevoluteJoint : public Box2DJoint
 
 public:
     explicit Box2DRevoluteJoint(QObject *parent = 0);
-    ~Box2DRevoluteJoint();
 
     float lowerAngle() const;
     void setLowerAngle(float lowerAngle);
@@ -73,10 +70,7 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
-    void nullifyJoint();
-    void createJoint();
-    void cleanup(b2World *world);
-    b2Joint *joint() const;
+    b2RevoluteJoint *revoluteJoint() const;
 
     Q_INVOKABLE float getJointAngle() const;
     Q_INVOKABLE float getJointSpeed() const;
@@ -91,10 +85,47 @@ signals:
     void localAnchorAChanged();
     void localAnchorBChanged();
 
+protected:
+    b2Joint *createJoint();
+
 private:
     b2RevoluteJointDef mRevoluteJointDef;
-    b2RevoluteJoint *mRevoluteJoint;
-    bool anchorsAuto;
+    bool mAnchorsAuto;
 };
+
+inline float Box2DRevoluteJoint::lowerAngle() const
+{
+    return -mRevoluteJointDef.lowerAngle * 180 / b2_pi;
+}
+
+inline float Box2DRevoluteJoint::upperAngle() const
+{
+    return -mRevoluteJointDef.upperAngle * 180 / b2_pi;
+}
+
+inline float Box2DRevoluteJoint::maxMotorTorque() const
+{
+    return mRevoluteJointDef.maxMotorTorque;
+}
+
+inline float Box2DRevoluteJoint::motorSpeed() const
+{
+    return -mRevoluteJointDef.motorSpeed * 180 / b2_pi;
+}
+
+inline bool Box2DRevoluteJoint::enableLimit() const
+{
+    return mRevoluteJointDef.enableLimit;
+}
+
+inline bool Box2DRevoluteJoint::enableMotor() const
+{
+    return mRevoluteJointDef.enableMotor;
+}
+
+inline b2RevoluteJoint *Box2DRevoluteJoint::revoluteJoint() const
+{
+    return static_cast<b2RevoluteJoint*>(joint());
+}
 
 #endif // BOX2DREVOLUTEJOINT_H

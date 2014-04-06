@@ -100,11 +100,8 @@ Item {
             Rectangle {
                 id: itemShape
                 radius: 180
-                width: parent.width
-                height: parent.height
+                anchors.fill: circleShape
                 color: "black"
-                x: circleShape.x - circleShape.radius
-                y: circleShape.y - circleShape.radius
             }
         }
 
@@ -115,7 +112,6 @@ Item {
             enableMotor: false
             bodyA: middle
             bodyB: rod
-            world: world
             localAnchorA: Qt.point(20,20)
             localAnchorB: Qt.point(40,20)
         }
