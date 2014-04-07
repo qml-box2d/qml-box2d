@@ -108,7 +108,12 @@ void Box2DJoint::initialize()
         return;
 
     if (mBodyA->world() != mBodyB->world()) {
-        qWarning() << "Joint: bodyA and bodyB from different worlds";
+        qWarning() << "Joint: bodyA and bodyB are not from the same world";
+        return;
+    }
+
+    if (mBodyA == mBodyB) {
+        qWarning() << "Joint: bodyA and bodyB cannot be the same body";
         return;
     }
 
