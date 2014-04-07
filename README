@@ -17,7 +17,7 @@ INSTALLING
 
 RUNNING THE EXAMPLE
 
- qmlviewer examples/boxes/boxes.qml
+ qmlscene examples/boxes/boxes.qml
 
 
 DEPLOYMENT
