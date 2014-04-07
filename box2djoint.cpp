@@ -37,7 +37,6 @@ Box2DJoint::Box2DJoint(b2JointDef &jointDef, QObject *parent) :
     mWorld(0),
     mJoint(0)
 {
-    mJointDef.userData = this;
 }
 
 Box2DJoint::~Box2DJoint()
@@ -117,6 +116,7 @@ void Box2DJoint::initialize()
         return;
     }
 
+    mJointDef.userData = this;
     mJointDef.bodyA = bodyA()->body();
     mJointDef.bodyB = bodyB()->body();
     mWorld = mBodyA->world();
