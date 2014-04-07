@@ -148,12 +148,9 @@ void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
 b2Joint *Box2DRevoluteJoint::createJoint()
 {
     if (mAnchorsAuto) {
-        mRevoluteJointDef.Initialize(bodyA()->body(),
-                                     bodyB()->body(),
-                                     bodyA()->body()->GetWorldCenter());
-    } else {
-        mRevoluteJointDef.bodyA = bodyA()->body();
-        mRevoluteJointDef.bodyB = bodyB()->body();
+        mRevoluteJointDef.Initialize(mRevoluteJointDef.bodyA,
+                                     mRevoluteJointDef.bodyB,
+                                     mRevoluteJointDef.bodyA->GetWorldCenter());
     }
 
     return world()->CreateJoint(&mRevoluteJointDef);

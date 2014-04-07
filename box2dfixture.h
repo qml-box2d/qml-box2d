@@ -82,8 +82,7 @@ public:
     int groupIndex() const;
     void setGroupIndex(int groupIndex);
 
-    void createFixture(b2Body *body);
-    virtual void scale() {}
+    void initialize(b2Body *body);
 
     Q_INVOKABLE Box2DBody *getBody() const;
 
@@ -102,14 +101,11 @@ signals:
 
 protected:
     virtual b2Shape *createShape() = 0;
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
-    void applyShape(b2Shape *shape);
+    void recreateFixture();
 
     b2Fixture *mFixture;
     b2FixtureDef mFixtureDef;
     b2Body *mBody;
-    float factorWidth;
-    float factorHeight;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
@@ -123,9 +119,9 @@ public:
         Box2DFixture(parent)
     {}
 
-    void scale();
-
 protected:
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+
     b2Shape *createShape();
 };
 
@@ -142,20 +138,14 @@ public:
     { }
 
     float radius() const { return mRadius; }
-    void setRadius(float radius) {
-        if (mRadius == radius)
-            return;
-        mRadius = radius;
-        setImplicitSize(mRadius * 2, mRadius * 2);
-        scale();
-        emit radiusChanged();
-    }
-    void scale();
+    void setRadius(float radius);
 
 signals:
     void radiusChanged();
 
 protected:
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+
     b2Shape *createShape();
 
 private:
@@ -163,80 +153,57 @@ private:
 };
 
 
-class Box2DVerticesShape : public Box2DFixture
+class Box2DPolygon : public Box2DFixture
 {
     Q_OBJECT
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
-    explicit Box2DVerticesShape(QQuickItem *parent = 0) :
+    explicit Box2DPolygon(QQuickItem *parent = 0) :
         Box2DFixture(parent)
     { }
 
     QVariantList vertices() const { return mVertices; }
+    void setVertices(const QVariantList &vertices);
 
-    void setVertices(const QVariantList &vertices)
-    {
-        if (vertices == mVertices)
-            return;
-        mVertices = vertices;
-        emit verticesChanged();
-    }
 signals:
     void verticesChanged();
 
 protected:
-    QVariantList mVertices;
-    b2Vec2 *scaleVertices();
-};
-
-
-class Box2DPolygon : public Box2DVerticesShape
-{
-public:
-    explicit Box2DPolygon(QQuickItem *parent = 0) :
-        Box2DVerticesShape(parent)
-    { }
-
-    void scale();
-
-protected:
     b2Shape *createShape();
+
+private:
+    QVariantList mVertices;
 };
 
 
-class Box2DChain : public Box2DVerticesShape
+class Box2DChain : public Box2DFixture
 {
     Q_OBJECT
 
+    Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
     Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
     Q_PROPERTY(QPointF prevVertex READ prevVertex WRITE setPrevVertex NOTIFY prevVertexChanged)
     Q_PROPERTY(QPointF nextVertex READ nextVertex WRITE setNextVertex NOTIFY nextVertexChanged)
 
 public:
-    explicit Box2DChain(QQuickItem *parent = 0) :
-        Box2DVerticesShape(parent),
-        mLoop(false)
-    { }
-    void scale();
+    explicit Box2DChain(QQuickItem *parent = 0);
+
+    QVariantList vertices() const { return mVertices; }
+    void setVertices(const QVariantList &vertices);
+
     bool loop() const { return mLoop; }
-    void setLoop(bool loop) {
-        mLoop = loop;
-        emit loopChanged();
-    }
+    void setLoop(bool loop);
+
     QPointF prevVertex() const { return mPrevVertex; }
-    void setPrevVertex(QPointF &prevVertex) {
-        mPrevVertex = prevVertex;
-        prevVertexFlag = true;
-    }
+    void setPrevVertex(const QPointF &prevVertex);
+
     QPointF nextVertex() const { return mNextVertex; }
-    void setNextVertex(QPointF &nextVertex) {
-        mNextVertex = nextVertex;
-        nextVertexFlag = true;
-    }
+    void setNextVertex(const QPointF &nextVertex);
 
 signals:
+    void verticesChanged();
     void loopChanged();
     void prevVertexChanged();
     void nextVertexChanged();
@@ -245,26 +212,39 @@ protected:
     b2Shape *createShape();
 
 private:
-    bool mLoop;
-    bool prevVertexFlag;
-    bool nextVertexFlag;
+    QVariantList mVertices;
     QPointF mPrevVertex;
     QPointF mNextVertex;
+    bool mLoop;
+    bool mPrevVertexFlag;
+    bool mNextVertexFlag;
 };
 
 
-class Box2DEdge : public Box2DVerticesShape
+class Box2DEdge : public Box2DFixture
 {
     Q_OBJECT
+
+    Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
+
 public:
     explicit Box2DEdge(QQuickItem *parent = 0) :
-        Box2DVerticesShape(parent)
+        Box2DFixture(parent)
     { }
-    void scale();
+
+    QVariantList vertices() const { return mVertices; }
+    void setVertices(const QVariantList &vertices);
+
+signals:
+    void verticesChanged();
 
 protected:
     b2Shape *createShape();
+
+private:
+    QVariantList mVertices;
 };
+
 
 /**
  * Convenience function to get the Box2DFixture wrapping a b2Fixture.

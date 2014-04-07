@@ -132,17 +132,13 @@ void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
     emit localAxisAChanged();
 }
 
-
 b2Joint *Box2DWheelJoint::createJoint()
 {
     if (mAnchorsAuto) {
-        mWheelJointDef.Initialize(bodyA()->body(),
-                                  bodyB()->body(),
-                                  bodyA()->body()->GetWorldCenter(),
+        mWheelJointDef.Initialize(mWheelJointDef.bodyA,
+                                  mWheelJointDef.bodyB,
+                                  mWheelJointDef.bodyA->GetWorldCenter(),
                                   mWheelJointDef.localAxisA);
-    } else {
-        mWheelJointDef.bodyA = bodyA()->body();
-        mWheelJointDef.bodyB = bodyB()->body();
     }
 
     return world()->CreateJoint(&mWheelJointDef);

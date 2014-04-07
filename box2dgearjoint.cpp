@@ -106,8 +106,6 @@ b2Joint *Box2DGearJoint::createJoint()
     if (!mJoint1->joint() || !mJoint2->joint())
         return 0;
 
-    mGearJointDef.bodyA = bodyA()->body();
-    mGearJointDef.bodyB = bodyB()->body();
     mGearJointDef.joint1 = mJoint1->joint();
     mGearJointDef.joint2 = mJoint2->joint();
 

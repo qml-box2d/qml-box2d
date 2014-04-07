@@ -75,9 +75,6 @@ void Box2DRopeJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DRopeJoint::createJoint()
 {
-    mRopeJointDef.bodyA = bodyA()->body();
-    mRopeJointDef.bodyB = bodyB()->body();
-
     return world()->CreateJoint(&mRopeJointDef);
 }
 

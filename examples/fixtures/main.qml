@@ -45,21 +45,21 @@ Rectangle {
         anchors.fill: parent
 
         Body {
-            function getVertices() {
-                var pos = 40;
+            function getVertices(height) {
+                var pos = height;
                 var arr = [];
                 arr.push(Qt.point(0,0));
-                arr.push(Qt.point(40,0));
+                arr.push(Qt.point(height,0));
                 while(pos < 700) {
-                    var y = Math.round(Math.random() * 30);
+                    var y = Math.round(Math.random() * height);
                     var x = Math.round(20 + Math.random() * 40);
                     pos += x;
                     arr.push(Qt.point(pos,y));
                 }
                 arr.push(Qt.point(760,0));
                 arr.push(Qt.point(800,0));
-                arr.push(Qt.point(800,40));
-                arr.push(Qt.point(0,40));
+                arr.push(Qt.point(800,height));
+                arr.push(Qt.point(0,height));
                 return arr;
             }
             height: 40
@@ -71,7 +71,7 @@ Rectangle {
             bodyType: Body.Static
             fixtures: Chain {
                 id: groundShape
-                vertices: ground.getVertices()
+                vertices: ground.getVertices(ground.height)
                 anchors.fill: parent
                 loop: true
             }
@@ -91,7 +91,6 @@ Rectangle {
                     }
                     context.fillStyle = "#000000";
                     context.fill();
-
                 }
             }
         }
@@ -182,21 +181,19 @@ Rectangle {
             bodyType: Body.Dynamic
             x: 600
             y: 100
-            width: 100
-            height: 100
-            fixtures:
+            fixtures: [
                 Circle {
-                radius: parent.width / 2
-                anchors.centerIn: parent
-                density: 0.9
-                friction: 0.3
-                restitution: 0.8
-            }
+                    id: circleShape
+                    radius: 50
+                    anchors.centerIn: parent
+                    density: 0.9
+                    friction: 0.3
+                    restitution: 0.8
+                }
+            ]
             Rectangle {
-                anchors.centerIn: parent
-                radius: parent.width / 2
-                width: parent.width
-                height: parent.height
+                anchors.fill: circleShape
+                radius: circleShape.width / 2
                 color: "red"
             }
         }
@@ -361,16 +358,10 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if(radiusTest.width == 150)
-                    {
-                        radiusTest.width = 100
-                        radiusTest.height = 100
-                    }
+                    if (circleShape.radius == 75)
+                        circleShape.radius = 50
                     else
-                    {
-                        radiusTest.width = 150
-                        radiusTest.height = 150
-                    }
+                        circleShape.radius = 75
                 }
             }
         }

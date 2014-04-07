@@ -159,13 +159,11 @@ void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
 b2Joint *Box2DPrismaticJoint::createJoint()
 {
     if (mAnchorsAuto) {
-        mPrismaticJointDef.Initialize(bodyA()->body(),
-                                      bodyB()->body(),
-                                      bodyA()->body()->GetWorldCenter(),
+        mPrismaticJointDef.Initialize(mPrismaticJointDef.bodyA,
+                                      mPrismaticJointDef.bodyB,
+                                      mPrismaticJointDef.bodyA->GetWorldCenter(),
                                       mPrismaticJointDef.localAxisA);
     } else {
-        mPrismaticJointDef.bodyA = bodyA()->body();
-        mPrismaticJointDef.bodyB = bodyB()->body();
         mPrismaticJointDef.referenceAngle = 0.0;
     }
 

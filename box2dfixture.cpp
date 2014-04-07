@@ -37,9 +37,7 @@
 Box2DFixture::Box2DFixture(QQuickItem *parent) :
     QQuickItem(parent),
     mFixture(0),
-    mBody(0),
-    factorWidth(1.0),
-    factorHeight(1.0)
+    mBody(0)
 {
     mFixtureDef.userData = this;
 }
@@ -159,7 +157,7 @@ void Box2DFixture::setGroupIndex(int groupIndex)
     emit groupIndexChanged();
 }
 
-void Box2DFixture::createFixture(b2Body *body)
+void Box2DFixture::initialize(b2Body *body)
 {
     b2Shape *shape = createShape();
     if (!shape)
@@ -176,50 +174,23 @@ Box2DBody *Box2DFixture::getBody() const
     return mBody ? toBox2DBody(mBody) : 0;
 }
 
-void Box2DFixture::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void Box2DFixture::recreateFixture()
 {
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
-
-    if (!isComponentComplete())
+    if (!mBody)
         return;
-
-    qreal nw = newGeometry.width();
-    qreal nh = newGeometry.height();
-    qreal ow = oldGeometry.width();
-    qreal oh = oldGeometry.height();
-
-    if (!qFuzzyIsNull(ow) && !qFuzzyIsNull(oh) && newGeometry != oldGeometry) {
-        factorWidth = nw / ow;
-        factorHeight = nh / oh;
-        scale();
-    }
-}
-
-void Box2DFixture::applyShape(b2Shape *shape)
-{
     if (mFixture)
         mBody->DestroyFixture(mFixture);
-    mFixtureDef.shape = shape;
-    mFixture = mBody->CreateFixture(&mFixtureDef);
-    mFixture->SetUserData(this);
-    delete shape;
-}
-
-b2Vec2 *Box2DVerticesShape::scaleVertices()
-{
-    const int count = mVertices.length();
-    b2Vec2 *vertices = new b2Vec2[count];
-    for (int i = 0; i < count; ++i) {
-        QPointF point = mVertices.at(i).toPointF();
-        point.setX(point.x() * factorWidth);
-        point.setY(point.y() * factorHeight);
-        mVertices.replace(i, point);
-        vertices[i] = toMeters(point);
-    }
-    return vertices;
+    initialize(mBody);
 }
 
 //=================== BOX =======================
+
+void Box2DBox::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+{
+    Box2DFixture::geometryChanged(newGeometry, oldGeometry);
+    if (newGeometry != oldGeometry)
+        recreateFixture();
+}
 
 b2Shape *Box2DBox::createShape()
 {
@@ -237,15 +208,24 @@ b2Shape *Box2DBox::createShape()
     return shape;
 }
 
-void Box2DBox::scale()
+//=================== CIRCLE =======================
+
+void Box2DCircle::setRadius(float radius)
 {
-    if (mFixture) {
-        b2Shape *shape = createShape();
-        applyShape(shape);
-    }
+    if (mRadius == radius)
+        return;
+    mRadius = radius;
+    setImplicitSize(mRadius * 2, mRadius * 2);
+    recreateFixture();
+    emit radiusChanged();
 }
 
-//=================== CIRCLE =======================
+void Box2DCircle::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+{
+    Box2DFixture::geometryChanged(newGeometry, oldGeometry);
+    if (newGeometry.topLeft() != oldGeometry.topLeft())
+        recreateFixture();
+}
 
 b2Shape *Box2DCircle::createShape()
 {
@@ -257,15 +237,17 @@ b2Shape *Box2DCircle::createShape()
     return shape;
 }
 
-void Box2DCircle::scale()
-{
-    if (mFixture) {
-        b2Shape *shape = createShape();
-        applyShape(shape);
-    }
-}
-
 //=================== POLYGON =======================
+
+void Box2DPolygon::setVertices(const QVariantList &vertices)
+{
+    if (vertices == mVertices)
+        return;
+
+    mVertices = vertices;
+    recreateFixture();
+    emit verticesChanged();
+}
 
 b2Shape *Box2DPolygon::createShape()
 {
@@ -294,18 +276,57 @@ b2Shape *Box2DPolygon::createShape()
     return shape;
 }
 
-void Box2DPolygon::scale()
+//=================== CHAIN =======================
+
+Box2DChain::Box2DChain(QQuickItem *parent) :
+    Box2DFixture(parent),
+    mLoop(false),
+    mPrevVertexFlag(false),
+    mNextVertexFlag(false)
 {
-    if (mFixture) {
-        b2Vec2 *vertices = scaleVertices();
-        b2PolygonShape *shape = new b2PolygonShape;
-        shape->Set(vertices, mVertices.count());
-        delete[] vertices;
-        applyShape(shape);
-    }
 }
 
-//=================== CHAIN =======================
+void Box2DChain::setVertices(const QVariantList &vertices)
+{
+    if (vertices == mVertices)
+        return;
+
+    mVertices = vertices;
+    recreateFixture();
+    emit verticesChanged();
+}
+
+void Box2DChain::setLoop(bool loop)
+{
+    if (mLoop == loop)
+        return;
+
+    mLoop = loop;
+    recreateFixture();
+    emit loopChanged();
+}
+
+void Box2DChain::setPrevVertex(const QPointF &prevVertex)
+{
+    if (mPrevVertexFlag && mPrevVertex == prevVertex)
+        return;
+
+    mPrevVertex = prevVertex;
+    mPrevVertexFlag = true;
+    recreateFixture();
+    emit prevVertexChanged();
+}
+
+void Box2DChain::setNextVertex(const QPointF &nextVertex)
+{
+    if (mNextVertexFlag && mNextVertex == nextVertex)
+        return;
+
+    mNextVertex = nextVertex;
+    mNextVertexFlag = true;
+    recreateFixture();
+    emit nextVertexChanged();
+}
 
 b2Shape *Box2DChain::createShape()
 {
@@ -335,30 +356,26 @@ b2Shape *Box2DChain::createShape()
     } else {
         shape->CreateChain(vertices.data(), count);
 
-        if (prevVertexFlag)
+        if (mPrevVertexFlag)
             shape->SetPrevVertex(toMeters(mPrevVertex));
-        if (nextVertexFlag)
+        if (mNextVertexFlag)
             shape->SetNextVertex(toMeters(mNextVertex));
     }
 
     return shape;
 }
 
-void Box2DChain::scale()
-{
-    if (mFixture) {
-        b2Vec2 *vertices = scaleVertices();
-        b2ChainShape *shape = new b2ChainShape;
-        if (mLoop)
-            shape->CreateLoop(vertices, mVertices.count());
-        else
-            shape->CreateChain(vertices, mVertices.count());
-        delete[] vertices;
-        applyShape(shape);
-    }
-}
-
 //=================== EDGE =======================
+
+void Box2DEdge::setVertices(const QVariantList &vertices)
+{
+    if (vertices == mVertices)
+        return;
+
+    mVertices = vertices;
+    recreateFixture();
+    emit verticesChanged();
+}
 
 b2Shape *Box2DEdge::createShape()
 {
@@ -377,15 +394,4 @@ b2Shape *Box2DEdge::createShape()
     shape->Set(vertex1, vertex2);
 
     return shape;
-}
-
-void Box2DEdge::scale()
-{
-    if (mFixture) {
-        b2Vec2 *vertices = scaleVertices();
-        b2EdgeShape *shape = new b2EdgeShape;
-        shape->Set(vertices[0], vertices[1]);
-        delete[] vertices;
-        applyShape(shape);
-    }
 }
