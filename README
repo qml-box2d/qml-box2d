@@ -29,7 +29,7 @@ on.
 USING QT CREATOR
 
 For running you can use a "Custom Executable" configuration set to run
-"qmlviewer" with the right parameters.
+"qmlscene" with the right parameters.
 
 When you have write permissions to Qt's import path, it can be convenient to
 add a deployment step to your run settings:
