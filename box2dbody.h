@@ -116,7 +116,7 @@ public:
     Q_INVOKABLE float GetInertia() const;
     Q_INVOKABLE QPointF GetLinearVelocityFromWorldPoint(const QPointF &point);
     Q_INVOKABLE QPointF GetLinearVelocityFromLocalPoint (const QPointF &point);
-	Q_INVOKABLE void appendFixture(Box2DFixture *fixture);
+	Q_INVOKABLE void addFixture(Box2DFixture *fixture);
 
     void componentComplete();
     b2Body *body() const;
