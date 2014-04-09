@@ -265,9 +265,9 @@ Box2DFixture * Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int i
 
 void Box2DBody::addFixture(Box2DFixture *fixture)
 {
-	fixture->createFixture(mBody);
-	fixture->setParentItem(this);
-	mFixtures.append(fixture);
+    fixture->createFixture(mBody);
+    fixture->setParentItem(this);
+    mFixtures.append(fixture);
 }
 
 void Box2DBody::initialize(b2World *world)
@@ -376,9 +376,9 @@ void Box2DBody::applyLinearImpulse(const QPointF &impulse,
 
 void Box2DBody::applyAngularImpulse(qreal impulse)
 {
-	if (mBody) {
-		mBody->ApplyAngularImpulse(impulse,true);
-	}
+    if (mBody) {
+        mBody->ApplyAngularImpulse(impulse,true);
+    }
 }
 
 void Box2DBody::applyTorque(qreal torque)

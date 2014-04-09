@@ -110,13 +110,13 @@ public:
     Q_INVOKABLE void applyForce(const QPointF &force,const QPointF &point);
     Q_INVOKABLE void applyTorque(qreal torque);
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
-	Q_INVOKABLE void applyAngularImpulse(qreal impulse);
-	Q_INVOKABLE QPointF getWorldCenter() const;
+    Q_INVOKABLE void applyAngularImpulse(qreal impulse);
+    Q_INVOKABLE QPointF getWorldCenter() const;
     Q_INVOKABLE float getMass() const;
     Q_INVOKABLE float GetInertia() const;
     Q_INVOKABLE QPointF GetLinearVelocityFromWorldPoint(const QPointF &point);
     Q_INVOKABLE QPointF GetLinearVelocityFromLocalPoint (const QPointF &point);
-	Q_INVOKABLE void addFixture(Box2DFixture *fixture);
+    Q_INVOKABLE void addFixture(Box2DFixture *fixture);
 
     void componentComplete();
     b2Body *body() const;
