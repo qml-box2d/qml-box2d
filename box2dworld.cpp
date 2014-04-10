@@ -33,8 +33,6 @@
 #include "box2djoint.h"
 #include "box2ddestructionlistener.h"
 
-#include <Box2D.h>
-
 StepDriver::StepDriver(Box2DWorld *world)
     : QAbstractAnimation(world)
     , mWorld(world)
@@ -125,17 +123,18 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
 
 Box2DWorld::Box2DWorld(QQuickItem *parent) :
     QQuickItem(parent),
-    mWorld(0),
+    mWorld(new b2World(b2Vec2(0.0f, -10.0f))),
     mContactListener(new ContactListener(this)),
     mDestructionListener(new Box2DDestructionListener),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(8),
     mPositionIterations(3),
-    mGravity(qreal(0), qreal(10)),
     mIsRunning(true),
-    mAutoClearForces(true),
     mStepDriver(new StepDriver(this))
 {
+    mWorld->SetContactListener(mContactListener);
+    mWorld->SetDestructionListener(mDestructionListener);
+
     connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
             this, SLOT(fixtureDestroyed(Box2DFixture*)));
 }
@@ -195,40 +194,39 @@ void Box2DWorld::setPositionIterations(int iterations)
     }
 }
 
+QPointF Box2DWorld::gravity() const
+{
+    const b2Vec2 invertedGravity = mWorld->GetGravity();
+    return QPointF(invertedGravity.x, -invertedGravity.y);
+}
+
 void Box2DWorld::setGravity(const QPointF &gravity)
 {
-    if (mGravity == gravity)
+    const b2Vec2 invertedGravity(gravity.x(), -gravity.y());
+    if (mWorld->GetGravity() == invertedGravity)
         return;
 
-    mGravity = gravity;
-    if (mWorld)
-        mWorld->SetGravity(b2Vec2(gravity.x(), -gravity.y()));
-
+    mWorld->SetGravity(invertedGravity);
     emit gravityChanged();
+}
+
+bool Box2DWorld::autoClearForces() const
+{
+    return mWorld->GetAutoClearForces();
 }
 
 void Box2DWorld::setAutoClearForces(bool autoClearForces)
 {
-    if (mAutoClearForces == autoClearForces)
+    if (mWorld->GetAutoClearForces() == autoClearForces)
         return;
 
-    mAutoClearForces = autoClearForces;
-    if (mWorld)
-        mWorld->SetAutoClearForces(autoClearForces);
-
+    mWorld->SetAutoClearForces(autoClearForces);
     emit autoClearForcesChanged();
 }
 
 void Box2DWorld::componentComplete()
 {
     QQuickItem::componentComplete();
-
-    const b2Vec2 gravity(mGravity.x(), -mGravity.y());
-
-    mWorld = new b2World(gravity);
-    mWorld->SetContactListener(mContactListener);
-    mWorld->SetDestructionListener(mDestructionListener);
-    mWorld->SetAutoClearForces(mAutoClearForces);
 
     initializeBodies(this);
 
@@ -286,8 +284,7 @@ void Box2DWorld::step()
 
 void Box2DWorld::clearForces()
 {
-    if (mWorld)
-        mWorld->ClearForces();
+    mWorld->ClearForces();
 }
 
 void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)

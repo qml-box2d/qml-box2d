@@ -138,9 +138,7 @@ private:
     float mTimeStep;
     int mVelocityIterations;
     int mPositionIterations;
-    QPointF mGravity;
     bool mIsRunning;
-    bool mAutoClearForces;
     StepDriver *mStepDriver;
 };
 
@@ -176,19 +174,9 @@ inline int Box2DWorld::positionIterations() const
     return mPositionIterations;
 }
 
-inline QPointF Box2DWorld::gravity() const
-{
-    return mGravity;
-}
-
 inline b2World *Box2DWorld::world() const
 {
     return mWorld;
-}
-
-inline bool Box2DWorld::autoClearForces() const
-{
-    return mAutoClearForces;
 }
 
 
