@@ -133,6 +133,7 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mPositionIterations(3),
     mGravity(qreal(0), qreal(10)),
     mIsRunning(true),
+    mAutoClearForces(true),
     mStepDriver(new StepDriver(this))
 {
     connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
@@ -206,6 +207,18 @@ void Box2DWorld::setGravity(const QPointF &gravity)
     emit gravityChanged();
 }
 
+void Box2DWorld::setAutoClearForces(bool autoClearForces)
+{
+    if (mAutoClearForces == autoClearForces)
+        return;
+
+    mAutoClearForces = autoClearForces;
+    if (mWorld)
+        mWorld->SetAutoClearForces(autoClearForces);
+
+    emit autoClearForcesChanged();
+}
+
 void Box2DWorld::componentComplete()
 {
     QQuickItem::componentComplete();
@@ -215,6 +228,7 @@ void Box2DWorld::componentComplete()
     mWorld = new b2World(gravity);
     mWorld->SetContactListener(mContactListener);
     mWorld->SetDestructionListener(mDestructionListener);
+    mWorld->SetAutoClearForces(mAutoClearForces);
 
     initializeBodies(this);
 
@@ -268,6 +282,12 @@ void Box2DWorld::step()
     }
 
     emit stepped();
+}
+
+void Box2DWorld::clearForces()
+{
+    if (mWorld)
+        mWorld->ClearForces();
 }
 
 void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)

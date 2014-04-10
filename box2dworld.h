@@ -80,6 +80,7 @@ class Box2DWorld : public QQuickItem
     Q_PROPERTY(int velocityIterations READ velocityIterations WRITE setVelocityIterations NOTIFY velocityIterationsChanged)
     Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations NOTIFY positionIterationsChanged)
     Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
+    Q_PROPERTY(bool autoClearForces READ autoClearForces WRITE setAutoClearForces NOTIFY autoClearForcesChanged)
 
 public:
     explicit Box2DWorld(QQuickItem *parent = 0);
@@ -100,11 +101,15 @@ public:
     QPointF gravity() const;
     void setGravity(const QPointF &gravity);
 
+    bool autoClearForces() const;
+    void setAutoClearForces(bool autoClearForces);
+
     void componentComplete();
 
     b2World *world() const;
 
-    void step();
+    Q_INVOKABLE void step();
+    Q_INVOKABLE void clearForces();
 
 private slots:
     void fixtureDestroyed(Box2DFixture *fixture);
@@ -118,6 +123,7 @@ signals:
     void velocityIterationsChanged();
     void positionIterationsChanged();
     void gravityChanged();
+    void autoClearForcesChanged();
     void runningChanged();
     void stepped();
 
@@ -134,6 +140,7 @@ private:
     int mPositionIterations;
     QPointF mGravity;
     bool mIsRunning;
+    bool mAutoClearForces;
     StepDriver *mStepDriver;
 };
 
@@ -177,6 +184,11 @@ inline QPointF Box2DWorld::gravity() const
 inline b2World *Box2DWorld::world() const
 {
     return mWorld;
+}
+
+inline bool Box2DWorld::autoClearForces() const
+{
+    return mAutoClearForces;
 }
 
 
