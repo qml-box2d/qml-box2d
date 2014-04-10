@@ -145,7 +145,7 @@ float Box2DPulleyJoint::getCurrentLengthB() const
 QPointF Box2DPulleyJoint::getReactionForce(float32 inv_dt) const
 {
     if (pulleyJoint())
-        return toPixels(pulleyJoint()->GetReactionForce(inv_dt));
+        return invertY(pulleyJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

@@ -127,7 +127,7 @@ QPointF Box2DPrismaticJoint::axis() const
 
 void Box2DPrismaticJoint::setAxis(const QPointF &axis)
 {
-    mPrismaticJointDef.localAxisA = toMeters(axis);
+    mPrismaticJointDef.localAxisA = invertY(axis);
     mPrismaticJointDef.localAxisA.Normalize();
     emit axisChanged();
 }

@@ -91,7 +91,7 @@ b2Joint *Box2DMouseJoint::createJoint()
 QPointF Box2DMouseJoint::getReactionForce(float32 inv_dt) const
 {
     if (mouseJoint())
-        return toPixels(mouseJoint()->GetReactionForce(inv_dt));
+        return invertY(mouseJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 
