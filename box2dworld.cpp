@@ -128,7 +128,8 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mVelocityIterations(8),
     mPositionIterations(3),
     mIsRunning(true),
-    mStepDriver(new StepDriver(this))
+    mStepDriver(new StepDriver(this)),
+    mProfile(new Box2DProfile(&mWorld, this))
 {
     mWorld.SetContactListener(mContactListener);
     mWorld.SetDestructionListener(this);

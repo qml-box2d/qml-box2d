@@ -68,6 +68,42 @@ private:
 
 
 /**
+ * A property group for getting profiling data.
+ */
+class Box2DProfile : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(float step READ step CONSTANT)
+    Q_PROPERTY(float collide READ collide CONSTANT)
+    Q_PROPERTY(float solve READ solve CONSTANT)
+    Q_PROPERTY(float solveInit READ solveInit CONSTANT)
+    Q_PROPERTY(float solveVelocity READ solveVelocity CONSTANT)
+    Q_PROPERTY(float solvePosition READ solvePosition CONSTANT)
+    Q_PROPERTY(float broadphase READ broadphase CONSTANT)
+    Q_PROPERTY(float solveTOI READ solveTOI CONSTANT)
+
+public:
+    explicit Box2DProfile(b2World *world, QObject *parent = 0)
+        : QObject(parent)
+        , mWorld(world)
+    {}
+
+    float step() const;
+    float collide() const;
+    float solve() const;
+    float solveInit() const;
+    float solveVelocity() const;
+    float solvePosition() const;
+    float broadphase() const;
+    float solveTOI() const;
+
+private:
+    b2World *mWorld;
+};
+
+
+/**
  * Wrapper class around a Box2D world.
  */
 class Box2DWorld : public QQuickItem, b2DestructionListener
@@ -80,6 +116,7 @@ class Box2DWorld : public QQuickItem, b2DestructionListener
     Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations NOTIFY positionIterationsChanged)
     Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
     Q_PROPERTY(bool autoClearForces READ autoClearForces WRITE setAutoClearForces NOTIFY autoClearForcesChanged)
+    Q_PROPERTY(Box2DProfile *profile READ profile NOTIFY stepped)
 
 public:
     explicit Box2DWorld(QQuickItem *parent = 0);
@@ -102,6 +139,8 @@ public:
 
     bool autoClearForces() const;
     void setAutoClearForces(bool autoClearForces);
+
+    Box2DProfile *profile() const;
 
     void componentComplete();
 
@@ -139,7 +178,50 @@ private:
     int mPositionIterations;
     bool mIsRunning;
     StepDriver *mStepDriver;
+    Box2DProfile *mProfile;
 };
+
+
+inline float Box2DProfile::step() const
+{
+    return mWorld->GetProfile().step;
+}
+
+inline float Box2DProfile::collide() const
+{
+    return mWorld->GetProfile().collide;
+}
+
+inline float Box2DProfile::solve() const
+{
+    return mWorld->GetProfile().solve;
+}
+
+inline float Box2DProfile::solveInit() const
+{
+    return mWorld->GetProfile().solveInit;
+}
+
+inline float Box2DProfile::solveVelocity() const
+{
+    return mWorld->GetProfile().solveVelocity;
+}
+
+inline float Box2DProfile::solvePosition() const
+{
+    return mWorld->GetProfile().solvePosition;
+}
+
+inline float Box2DProfile::broadphase() const
+{
+    return mWorld->GetProfile().broadphase;
+}
+
+inline float Box2DProfile::solveTOI() const
+{
+    return mWorld->GetProfile().solveTOI;
+}
+
 
 /**
  * The amount of time to step through each frame in seconds.
@@ -176,6 +258,11 @@ inline int Box2DWorld::positionIterations() const
 inline bool Box2DWorld::autoClearForces() const
 {
     return mWorld.GetAutoClearForces();
+}
+
+inline Box2DProfile *Box2DWorld::profile() const
+{
+    return mProfile;
 }
 
 inline b2World &Box2DWorld::world()

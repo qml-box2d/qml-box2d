@@ -55,6 +55,8 @@ void Box2DPlugin::registerTypes(const char *uri)
     Q_ASSERT(QLatin1String(uri) == QLatin1String("Box2D"));
 
     qmlRegisterType<Box2DWorld>(uri, 1, 1, "World");
+    qmlRegisterUncreatableType<Box2DProfile>(uri, 1, 1, "Profile",
+                                             QStringLiteral("Property group of World"));
     qmlRegisterType<Box2DBody>(uri, 1, 1, "Body");
     qmlRegisterUncreatableType<Box2DFixture>(uri, 1,0, "Fixture",
                                              QStringLiteral("Base type for Box, Circle etc."));
