@@ -369,9 +369,8 @@ void Box2DBody::applyLinearImpulse(const QPointF &impulse,
 
 void Box2DBody::applyAngularImpulse(qreal impulse)
 {
-	if (mBody) {
-		mBody->ApplyAngularImpulse(impulse,true);
-	}
+    if (mBody)
+        mBody->ApplyAngularImpulse(impulse, true);
 }
 
 void Box2DBody::applyTorque(qreal torque)
