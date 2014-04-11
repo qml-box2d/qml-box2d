@@ -31,7 +31,6 @@
 #include "box2dcontact.h"
 #include "box2dfixture.h"
 #include "box2djoint.h"
-#include "box2ddestructionlistener.h"
 
 StepDriver::StepDriver(Box2DWorld *world)
     : QAbstractAnimation(world)
@@ -125,7 +124,6 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     QQuickItem(parent),
     mWorld(new b2World(b2Vec2(0.0f, -10.0f))),
     mContactListener(new ContactListener(this)),
-    mDestructionListener(new Box2DDestructionListener),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(8),
     mPositionIterations(3),
@@ -133,10 +131,7 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mStepDriver(new StepDriver(this))
 {
     mWorld->SetContactListener(mContactListener);
-    mWorld->SetDestructionListener(mDestructionListener);
-
-    connect(mDestructionListener, SIGNAL(fixtureDestroyed(Box2DFixture*)),
-            this, SLOT(fixtureDestroyed(Box2DFixture*)));
+    mWorld->SetDestructionListener(this);
 }
 
 Box2DWorld::~Box2DWorld()
@@ -151,7 +146,6 @@ Box2DWorld::~Box2DWorld()
 
     delete mWorld;
     delete mContactListener;
-    delete mDestructionListener;
 }
 
 void Box2DWorld::setTimeStep(float timeStep)
@@ -235,12 +229,21 @@ void Box2DWorld::componentComplete()
         mStepDriver->start();
 }
 
-void Box2DWorld::fixtureDestroyed(Box2DFixture *fixture)
+void Box2DWorld::SayGoodbye(b2Joint *joint)
 {
+    if (Box2DJoint *temp = toBox2DJoint(joint)) {
+        temp->nullifyJoint();
+        delete temp;
+    }
+}
+
+void Box2DWorld::SayGoodbye(b2Fixture *fixture)
+{
+    Box2DFixture *f = toBox2DFixture(fixture);
+
     QList<ContactEvent> events = mContactListener->events();
     for (int i = events.count() - 1; i >= 0; i--) {
-        if (events.at(i).fixtureA == fixture
-                || events.at(i).fixtureB == fixture)
+        if (events.at(i).fixtureA == f || events.at(i).fixtureB == f)
             mContactListener->removeEvent(i);
     }
 }

@@ -38,7 +38,6 @@ class Box2DFixture;
 class Box2DJoint;
 class Box2DWorld;
 class ContactListener;
-class Box2DDestructionListener;
 class StepDriver;
 
 // TODO: Maybe turn this into a property of the world, though it can't be
@@ -71,7 +70,7 @@ private:
 /**
  * Wrapper class around a Box2D world.
  */
-class Box2DWorld : public QQuickItem
+class Box2DWorld : public QQuickItem, b2DestructionListener
 {
     Q_OBJECT
 
@@ -108,11 +107,12 @@ public:
 
     b2World *world() const;
 
+    // b2DestructionListener interface
+    void SayGoodbye(b2Joint *joint);
+    void SayGoodbye(b2Fixture *fixture);
+
     Q_INVOKABLE void step();
     Q_INVOKABLE void clearForces();
-
-private slots:
-    void fixtureDestroyed(Box2DFixture *fixture);
 
 signals:
     void initialized();
@@ -134,7 +134,6 @@ protected:
 private:
     b2World *mWorld;
     ContactListener *mContactListener;
-    Box2DDestructionListener *mDestructionListener;
     float mTimeStep;
     int mVelocityIterations;
     int mPositionIterations;
