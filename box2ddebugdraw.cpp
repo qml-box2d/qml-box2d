@@ -75,7 +75,8 @@ static QColor toQColor(const b2Color &color)
 {
     return QColor(color.r * 255,
                   color.g * 255,
-                  color.b * 255);
+                  color.b * 255,
+                  color.a * 255);
 }
 
 static QPolygonF toQPolygonF(const b2Vec2 *vertices, int32 vertexCount)
