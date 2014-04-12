@@ -138,7 +138,7 @@ signals:
     void angularVelocityChanged();
     void bodyCreated();
     void gravityScaleChanged();
-    void positionChanged(const QPointF &position);
+    void positionChanged();
 
 private slots:
     void onRotationChanged();

@@ -34,6 +34,18 @@
 #include "box2dfixture.h"
 #include "box2dworld.h"
 
+// Helper method for synchronizing while detecting value changes
+template<typename T>
+static bool sync(T &value, const T &newValue)
+{
+    if (value == newValue)
+        return false;
+
+    value = newValue;
+    return true;
+}
+
+
 Box2DBody::Box2DBody(QQuickItem *parent) :
     QQuickItem(parent),
     mBody(0),
@@ -260,30 +272,13 @@ void Box2DBody::synchronize()
     Q_ASSERT(mBody);
     mSynchronizing = true;
 
-    const b2Vec2 position = mBody->GetPosition();
-    const float32 angle = mBody->GetAngle();
-
-    const QPointF newPosition = toPixels(position);
-    const qreal newRotation = toDegrees(angle);
-
-    bool xChanged = false;
-    bool yChanged = false;
-
-    if (!qFuzzyCompare(x(), newPosition.x())) {
-        setX(newPosition.x());
-        xChanged = true;
+    if (sync(mBodyDef.position, mBody->GetPosition())) {
+        setPosition(toPixels(mBodyDef.position));
+        emit positionChanged();
     }
 
-    if (!qFuzzyCompare(y(), newPosition.y())) {
-        setY(newPosition.y());
-        yChanged = true;
-    }
-
-    if (xChanged || yChanged)
-        emit positionChanged(newPosition);
-
-    if (!qFuzzyCompare(rotation(), newRotation))
-        setRotation(newRotation);
+    if (sync(mBodyDef.angle, mBody->GetAngle()))
+        setRotation(toDegrees(mBodyDef.angle));
 
     mSynchronizing = false;
 }
