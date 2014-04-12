@@ -150,8 +150,8 @@ void Box2DBody::setAwake(bool awake)
 QPointF Box2DBody::linearVelocity() const
 {
     if (mBody)
-        return toPixels(mBody->GetLinearVelocity());
-    return toPixels(mBodyDef.linearVelocity);
+        return invertY(mBody->GetLinearVelocity());
+    return invertY(mBodyDef.linearVelocity);
 }
 
 void Box2DBody::setLinearVelocity(const QPointF &velocity)
@@ -159,7 +159,7 @@ void Box2DBody::setLinearVelocity(const QPointF &velocity)
     if (linearVelocity() == velocity)
         return;
 
-    mBodyDef.linearVelocity = toMeters(velocity);
+    mBodyDef.linearVelocity = invertY(velocity);
     if (mBody)
         mBody->SetLinearVelocity(mBodyDef.linearVelocity);
 
@@ -311,10 +311,8 @@ void Box2DBody::onRotationChanged()
 void Box2DBody::applyLinearImpulse(const QPointF &impulse,
                                    const QPointF &point)
 {
-    if (mBody) {
-        mBody->ApplyLinearImpulse(toMeters(impulse),
-                                  toMeters(point), true);
-    }
+    if (mBody)
+        mBody->ApplyLinearImpulse(invertY(impulse), toMeters(point), true);
 }
 
 void Box2DBody::applyTorque(qreal torque)
@@ -332,21 +330,19 @@ QPointF Box2DBody::getWorldCenter() const
 
 void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 {
-    if (mBody) {
-        mBody->ApplyForce(toMeters(force),
-                          toMeters(point), true);
-    }
+    if (mBody)
+        mBody->ApplyForce(invertY(force), toMeters(point), true);
 }
 
 void Box2DBody::applyForceToCenter(const QPointF &force)
 {
     if (mBody)
-        mBody->ApplyForceToCenter(toMeters(force), true);
+        mBody->ApplyForceToCenter(invertY(force), true);
 }
 
 float Box2DBody::getMass() const
 {
-    return mBody ? toPixels(toPixels(mBody->GetMass())) : 0.0;
+    return mBody ? mBody->GetMass() : 0.0;
 }
 
 void Box2DBody::resetMassData()
@@ -362,10 +358,10 @@ float Box2DBody::getInertia() const
 
 QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
 {
-    return toPixels(mBody->GetLinearVelocityFromWorldPoint(toMeters(point)));
+    return invertY(mBody->GetLinearVelocityFromWorldPoint(toMeters(point)));
 }
 
 QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 {
-    return toPixels(mBody->GetLinearVelocityFromLocalPoint(toMeters(point)));
+    return invertY(mBody->GetLinearVelocityFromLocalPoint(toMeters(point)));
 }

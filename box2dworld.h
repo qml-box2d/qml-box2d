@@ -181,6 +181,22 @@ inline b2World *Box2DWorld::world() const
 
 
 /**
+ * Inverts the y-axis as required for forces and velocities.
+ */
+inline QPointF invertY(const b2Vec2 &vec)
+{
+    return QPointF(vec.x, -vec.y);
+}
+
+/**
+ * Inverts the y-axis as required for forces and velocities.
+ */
+inline b2Vec2 invertY(const QPointF &vec)
+{
+    return b2Vec2(vec.x(), -vec.y());
+}
+
+/**
  * Converts lengths from Box2D to QML units.
  */
 inline float toPixels(float length)

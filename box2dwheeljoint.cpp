@@ -127,7 +127,7 @@ QPointF Box2DWheelJoint::localAxisA() const
 
 void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
 {
-    mWheelJointDef.localAnchorB = toMeters(localAxisA);
+    mWheelJointDef.localAxisA = toMeters(localAxisA);
     mAnchorsAuto = false;
     emit localAxisAChanged();
 }
@@ -154,14 +154,14 @@ float Box2DWheelJoint::getJointTranslation() const
 float Box2DWheelJoint::getJointSpeed() const
 {
     if (wheelJoint())
-        return toPixels(wheelJoint()->GetJointSpeed());
+        return wheelJoint()->GetJointSpeed();
     return 0;
 }
 
 QPointF Box2DWheelJoint::getReactionForce(float32 inv_dt) const
 {
     if (wheelJoint())
-        return toPixels(wheelJoint()->GetReactionForce(inv_dt));
+        return invertY(wheelJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

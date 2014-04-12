@@ -81,7 +81,7 @@ b2Joint *Box2DRopeJoint::createJoint()
 QPointF Box2DRopeJoint::getReactionForce(float32 inv_dt) const
 {
     if (ropeJoint())
-        return toPixels(ropeJoint()->GetReactionForce(inv_dt));
+        return invertY(ropeJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

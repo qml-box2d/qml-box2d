@@ -106,7 +106,7 @@ b2Joint *Box2DFrictionJoint::createJoint()
 QPointF Box2DFrictionJoint::getReactionForce(float32 inv_dt) const
 {
     if (frictionJoint())
-        return toPixels(frictionJoint()->GetReactionForce(inv_dt));
+        return invertY(frictionJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 

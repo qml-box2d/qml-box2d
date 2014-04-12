@@ -115,7 +115,7 @@ Rectangle {
                     anchors.fill: parent
                     propagateComposedEvents: true
                     onPressed: {
-                        mouseJoint.maxForce = parent.getMass();
+                        mouseJoint.maxForce = parent.getMass() * 500;
                         mouseJoint.bodyB = parent
                         mouse.accepted = false
                     }

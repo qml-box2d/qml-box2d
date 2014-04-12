@@ -111,7 +111,7 @@ b2Joint *Box2DDistanceJoint::createJoint()
 QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const
 {
     if (distanceJoint())
-        return toPixels(distanceJoint()->GetReactionForce(inv_dt));
+        return invertY(distanceJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 
