@@ -105,7 +105,7 @@ public:
 
     void componentComplete();
 
-    b2World *world() const;
+    b2World &world();
 
     // b2DestructionListener interface
     void SayGoodbye(b2Joint *joint);
@@ -132,7 +132,7 @@ protected:
     void initializeBodies(QQuickItem *parent);
 
 private:
-    b2World *mWorld;
+    b2World mWorld;
     ContactListener *mContactListener;
     float mTimeStep;
     int mVelocityIterations;
@@ -173,9 +173,19 @@ inline int Box2DWorld::positionIterations() const
     return mPositionIterations;
 }
 
-inline b2World *Box2DWorld::world() const
+inline bool Box2DWorld::autoClearForces() const
+{
+    return mWorld.GetAutoClearForces();
+}
+
+inline b2World &Box2DWorld::world()
 {
     return mWorld;
+}
+
+inline void Box2DWorld::clearForces()
+{
+    mWorld.ClearForces();
 }
 
 

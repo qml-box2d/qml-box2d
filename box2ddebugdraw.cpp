@@ -34,7 +34,7 @@
 class DebugDraw : public b2Draw
 {
 public:
-    DebugDraw(QPainter *painter, Box2DWorld *world);
+    DebugDraw(QPainter *painter, b2World &world);
 
     void draw();
 
@@ -54,21 +54,21 @@ public:
 
 private:
     QPainter *mPainter;
-    b2World *mWorld;
+    b2World &mWorld;
     qreal mAxisScale;
 };
 
-DebugDraw::DebugDraw(QPainter *painter, Box2DWorld *world)
+DebugDraw::DebugDraw(QPainter *painter, b2World &world)
     : mPainter(painter)
-    , mWorld(world->world())
+    , mWorld(world)
 {
 }
 
 void DebugDraw::draw()
 {
-    mWorld->SetDebugDraw(this);
-    mWorld->DrawDebugData();
-    mWorld->SetDebugDraw(0);
+    mWorld.SetDebugDraw(this);
+    mWorld.DrawDebugData();
+    mWorld.SetDebugDraw(0);
 }
 
 static QColor toQColor(const b2Color &color)
@@ -217,7 +217,7 @@ void Box2DDebugDraw::paint(QPainter *p)
     if (!mWorld)
         return;
 
-    DebugDraw debugDraw(p, mWorld);
+    DebugDraw debugDraw(p, mWorld->world());
     debugDraw.SetFlags(mFlags);
     debugDraw.setAxisScale(mAxisScale);
     debugDraw.draw();

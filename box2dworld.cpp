@@ -122,7 +122,7 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
 
 Box2DWorld::Box2DWorld(QQuickItem *parent) :
     QQuickItem(parent),
-    mWorld(new b2World(b2Vec2(0.0f, -10.0f))),
+    mWorld(b2Vec2(0.0f, -10.0f)),
     mContactListener(new ContactListener(this)),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(8),
@@ -130,8 +130,8 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mIsRunning(true),
     mStepDriver(new StepDriver(this))
 {
-    mWorld->SetContactListener(mContactListener);
-    mWorld->SetDestructionListener(this);
+    mWorld.SetContactListener(mContactListener);
+    mWorld.SetDestructionListener(this);
 }
 
 Box2DWorld::~Box2DWorld()
@@ -139,12 +139,12 @@ Box2DWorld::~Box2DWorld()
     // The bodies and joints will be deleted as part of the world, so it's
     // important that they are no longer referenced from the Box2DBody and
     // Box2DJoint instances.
-    for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
+    for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext())
         toBox2DBody(body)->nullifyBody();
-    for (b2Joint *joint = mWorld->GetJointList(); joint; joint = joint->GetNext())
+    for (b2Joint *joint = mWorld.GetJointList(); joint; joint = joint->GetNext())
         toBox2DJoint(joint)->nullifyJoint();
 
-    delete mWorld;
+    mWorld.SetContactListener(0);
     delete mContactListener;
 }
 
@@ -190,31 +190,26 @@ void Box2DWorld::setPositionIterations(int iterations)
 
 QPointF Box2DWorld::gravity() const
 {
-    const b2Vec2 invertedGravity = mWorld->GetGravity();
+    const b2Vec2 invertedGravity = mWorld.GetGravity();
     return QPointF(invertedGravity.x, -invertedGravity.y);
 }
 
 void Box2DWorld::setGravity(const QPointF &gravity)
 {
     const b2Vec2 invertedGravity(gravity.x(), -gravity.y());
-    if (mWorld->GetGravity() == invertedGravity)
+    if (mWorld.GetGravity() == invertedGravity)
         return;
 
-    mWorld->SetGravity(invertedGravity);
+    mWorld.SetGravity(invertedGravity);
     emit gravityChanged();
-}
-
-bool Box2DWorld::autoClearForces() const
-{
-    return mWorld->GetAutoClearForces();
 }
 
 void Box2DWorld::setAutoClearForces(bool autoClearForces)
 {
-    if (mWorld->GetAutoClearForces() == autoClearForces)
+    if (mWorld.GetAutoClearForces() == autoClearForces)
         return;
 
-    mWorld->SetAutoClearForces(autoClearForces);
+    mWorld.SetAutoClearForces(autoClearForces);
     emit autoClearForcesChanged();
 }
 
@@ -250,9 +245,9 @@ void Box2DWorld::SayGoodbye(b2Fixture *fixture)
 
 void Box2DWorld::step()
 {
-    mWorld->Step(mTimeStep, mVelocityIterations, mPositionIterations);
+    mWorld.Step(mTimeStep, mVelocityIterations, mPositionIterations);
 
-    for (b2Body *body = mWorld->GetBodyList(); body; body = body->GetNext())
+    for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext())
         toBox2DBody(body)->synchronize();
 
     // Emit contact signals
@@ -271,7 +266,7 @@ void Box2DWorld::step()
     mContactListener->clearEvents();
 
     // Emit signals for the current state of the contacts
-    b2Contact *contact = mWorld->GetContactList();
+    b2Contact *contact = mWorld.GetContactList();
     while (contact) {
         Box2DFixture *fixtureA = toBox2DFixture(contact->GetFixtureA());
         Box2DFixture *fixtureB = toBox2DFixture(contact->GetFixtureB());
@@ -285,18 +280,13 @@ void Box2DWorld::step()
     emit stepped();
 }
 
-void Box2DWorld::clearForces()
-{
-    mWorld->ClearForces();
-}
-
 void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)
 {
     if (isComponentComplete()) {
         if (change == ItemChildAddedChange) {
             QObject *child = value.item;
             if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
-                body->initialize(mWorld);
+                body->initialize(&mWorld);
         }
     }
 
@@ -307,7 +297,7 @@ void Box2DWorld::initializeBodies(QQuickItem *parent)
 {
     foreach (QQuickItem *item, parent->childItems()) {
         if (Box2DBody *body = dynamic_cast<Box2DBody *>(item))
-            body->initialize(mWorld);
+            body->initialize(&mWorld);
 
         initializeBodies(item);
     }
