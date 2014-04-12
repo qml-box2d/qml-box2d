@@ -38,7 +38,7 @@ class Box2DDebugDraw : public QQuickPaintedItem
 
     Q_PROPERTY(qreal axisScale READ axisScale WRITE setAxisScale NOTIFY axisScaleChanged)
     Q_PROPERTY(DebugFlag flags READ flags WRITE setFlags NOTIFY flagsChanged)
-    Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld)
+    Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld NOTIFY worldChanged)
 
 public:
     enum DebugFlag {
@@ -57,7 +57,7 @@ public:
     DebugFlag flags() const;
     void setFlags(DebugFlag flags);
 
-    Box2DWorld *world() const { return mWorld; }
+    Box2DWorld *world() const;
     void setWorld(Box2DWorld *world);
 
     void paint(QPainter *);
@@ -65,6 +65,7 @@ public:
 signals:
     void axisScaleChanged();
     void flagsChanged();
+    void worldChanged();
 
 private slots:
     void onWorldStepped();
@@ -74,5 +75,20 @@ private:
     qreal mAxisScale;
     DebugFlag mFlags;
 };
+
+inline qreal Box2DDebugDraw::axisScale() const
+{
+    return mAxisScale;
+}
+
+inline Box2DDebugDraw::DebugFlag Box2DDebugDraw::flags() const
+{
+    return mFlags;
+}
+
+inline Box2DWorld *Box2DDebugDraw::world() const
+{
+    return mWorld;
+}
 
 #endif // BOX2DDEBUGDRAW_H

@@ -172,22 +172,12 @@ Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
     setFlag(QQuickItem::ItemHasContents, true);
 }
 
-qreal Box2DDebugDraw::axisScale() const
-{
-    return mAxisScale;
-}
-
 void Box2DDebugDraw::setAxisScale(qreal _axisScale)
 {
     if (mAxisScale != _axisScale) {
         mAxisScale = _axisScale;
         emit axisScaleChanged();
     }
-}
-
-Box2DDebugDraw::DebugFlag Box2DDebugDraw::flags() const
-{
-    return mFlags;
 }
 
 void Box2DDebugDraw::setFlags(DebugFlag flags)
@@ -210,6 +200,8 @@ void Box2DDebugDraw::setWorld(Box2DWorld *world)
 
     if (mWorld)
         connect(mWorld, SIGNAL(stepped()), SLOT(onWorldStepped()));
+
+    emit worldChanged();
 }
 
 void Box2DDebugDraw::paint(QPainter *p)
