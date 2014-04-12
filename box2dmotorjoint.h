@@ -1,6 +1,3 @@
-#ifndef BOX2DMOTORJOINT_H
-#define BOX2DMOTORJOINT_H
-
 /*
  * box2dmotorjoint.h
  * Copyright (c) 2011 Joonas Erkinheimo <joonas.erkinheimo@nokia.com>
@@ -26,6 +23,9 @@
  *
  * 3. This notice may not be removed or altered from any source distribution.
  */
+
+#ifndef BOX2DMOTORJOINT_H
+#define BOX2DMOTORJOINT_H
 
 #include "box2djoint.h"
 #include <Box2D.h>
