@@ -191,13 +191,12 @@ void Box2DWorld::setPositionIterations(int iterations)
 
 QPointF Box2DWorld::gravity() const
 {
-    const b2Vec2 invertedGravity = mWorld.GetGravity();
-    return QPointF(invertedGravity.x, -invertedGravity.y);
+    return invertY(mWorld.GetGravity());
 }
 
 void Box2DWorld::setGravity(const QPointF &gravity)
 {
-    const b2Vec2 invertedGravity(gravity.x(), -gravity.y());
+    const b2Vec2 invertedGravity = invertY(gravity);
     if (mWorld.GetGravity() == invertedGravity)
         return;
 
