@@ -372,10 +372,14 @@ float Box2DBody::getInertia() const
 
 QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
 {
-    return invertY(mBody->GetLinearVelocityFromWorldPoint(toMeters(point)));
+    if (mBody)
+        return invertY(mBody->GetLinearVelocityFromWorldPoint(toMeters(point)));
+    return QPointF();
 }
 
 QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 {
-    return invertY(mBody->GetLinearVelocityFromLocalPoint(toMeters(point)));
+    if (mBody)
+        return invertY(mBody->GetLinearVelocityFromLocalPoint(toMeters(point)));
+    return QPointF();
 }
