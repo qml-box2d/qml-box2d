@@ -56,7 +56,6 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mBodyDef.userData = this;
 
     setTransformOrigin(TopLeft);
-    connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
 }
 
 Box2DBody::~Box2DBody()
@@ -296,19 +295,20 @@ void Box2DBody::geometryChanged(const QRectF &newGeometry,
 {
     if (!mSynchronizing && mBody) {
         if (newGeometry.topLeft() != oldGeometry.topLeft()) {
-            mBody->SetTransform(toMeters(newGeometry.topLeft()),
-                                mBody->GetAngle());
+            mBodyDef.position = toMeters(newGeometry.topLeft());
+            mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
         }
     }
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
 }
 
-void Box2DBody::onRotationChanged()
+void Box2DBody::itemChange(ItemChange change, const ItemChangeData &value)
 {
-    if (!mSynchronizing && mBody) {
-        mBody->SetTransform(mBody->GetPosition(),
-                            toRadians(rotation()));
+    if (change == ItemRotationHasChanged && !mSynchronizing && mBody) {
+        mBodyDef.angle = toRadians(value.realValue);
+        mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
     }
+    QQuickItem::itemChange(change, value);
 }
 
 void Box2DBody::applyLinearImpulse(const QPointF &impulse,

@@ -126,6 +126,7 @@ public:
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+    void itemChange(ItemChange change, const ItemChangeData &value);
 
 signals:
     void linearDampingChanged();
