@@ -34,6 +34,18 @@
 #include "box2dfixture.h"
 #include "box2dworld.h"
 
+// Helper method for synchronizing while detecting value changes
+template<typename T>
+static bool sync(T &value, const T &newValue)
+{
+    if (value == newValue)
+        return false;
+
+    value = newValue;
+    return true;
+}
+
+
 Box2DBody::Box2DBody(QQuickItem *parent) :
     QQuickItem(parent),
     mBody(0),
@@ -44,7 +56,6 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mBodyDef.userData = this;
 
     setTransformOrigin(TopLeft);
-    connect(this, SIGNAL(rotationChanged()), SLOT(onRotationChanged()));
 }
 
 Box2DBody::~Box2DBody()
@@ -260,30 +271,13 @@ void Box2DBody::synchronize()
     Q_ASSERT(mBody);
     mSynchronizing = true;
 
-    const b2Vec2 position = mBody->GetPosition();
-    const float32 angle = mBody->GetAngle();
-
-    const QPointF newPosition = toPixels(position);
-    const qreal newRotation = toDegrees(angle);
-
-    bool xChanged = false;
-    bool yChanged = false;
-
-    if (!qFuzzyCompare(x(), newPosition.x())) {
-        setX(newPosition.x());
-        xChanged = true;
+    if (sync(mBodyDef.position, mBody->GetPosition())) {
+        setPosition(toPixels(mBodyDef.position));
+        emit positionChanged();
     }
 
-    if (!qFuzzyCompare(y(), newPosition.y())) {
-        setY(newPosition.y());
-        yChanged = true;
-    }
-
-    if (xChanged || yChanged)
-        emit positionChanged(newPosition);
-
-    if (!qFuzzyCompare(rotation(), newRotation))
-        setRotation(newRotation);
+    if (sync(mBodyDef.angle, mBody->GetAngle()))
+        setRotation(toDegrees(mBodyDef.angle));
 
     mSynchronizing = false;
 }
@@ -301,19 +295,20 @@ void Box2DBody::geometryChanged(const QRectF &newGeometry,
 {
     if (!mSynchronizing && mBody) {
         if (newGeometry.topLeft() != oldGeometry.topLeft()) {
-            mBody->SetTransform(toMeters(newGeometry.topLeft()),
-                                mBody->GetAngle());
+            mBodyDef.position = toMeters(newGeometry.topLeft());
+            mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
         }
     }
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
 }
 
-void Box2DBody::onRotationChanged()
+void Box2DBody::itemChange(ItemChange change, const ItemChangeData &value)
 {
-    if (!mSynchronizing && mBody) {
-        mBody->SetTransform(mBody->GetPosition(),
-                            toRadians(rotation()));
+    if (change == ItemRotationHasChanged && !mSynchronizing && mBody) {
+        mBodyDef.angle = toRadians(value.realValue);
+        mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
     }
+    QQuickItem::itemChange(change, value);
 }
 
 void Box2DBody::applyLinearImpulse(const QPointF &impulse,
@@ -372,10 +367,14 @@ float Box2DBody::getInertia() const
 
 QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
 {
-    return invertY(mBody->GetLinearVelocityFromWorldPoint(toMeters(point)));
+    if (mBody)
+        return invertY(mBody->GetLinearVelocityFromWorldPoint(toMeters(point)));
+    return QPointF();
 }
 
 QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 {
-    return invertY(mBody->GetLinearVelocityFromLocalPoint(toMeters(point)));
+    if (mBody)
+        return invertY(mBody->GetLinearVelocityFromLocalPoint(toMeters(point)));
+    return QPointF();
 }
