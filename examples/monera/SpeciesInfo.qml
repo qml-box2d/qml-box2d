@@ -46,7 +46,7 @@ Body {
                 var dy = mouseY - image.height / 2;
                 var abs = Math.sqrt(dx * dx + dy * dy)
                 var point = Qt.point(speciesInfo.x, speciesInfo.y);
-                var force = Qt.point(-100 * dx / abs, -100 * dy / abs);
+                var force = Qt.point(-3 * dx / abs, -3 * dy / abs);
                 speciesInfo.applyLinearImpulse(force, point);
                 speciesInfo.fixedRotation = true;
                 speciesInfo.fixedRotation = false;

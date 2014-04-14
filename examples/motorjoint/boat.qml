@@ -10,7 +10,7 @@ Rectangle {
         anchors.fill: parent
         onStepped: {
             joint.step += 0.2;
-            if(joint.step > 650) joint.step = 0;
+            if(joint.step > width - 150) joint.step = 0;
             joint.linearOffset = Qt.point(joint.step + 100,Math.sin(joint.step * 6.0));
             joint.angularOffset = Math.sin(joint.step / 8.0) * 10.0;
         }
@@ -25,7 +25,7 @@ Rectangle {
             }
             Image {
                 id: waveImg
-                source: "wave.png"
+                source: "images/wave.png"
                 fillMode: Image.Tile
                 anchors.fill: parent
             }
@@ -34,7 +34,7 @@ Rectangle {
         Rectangle {
             id: water
             y: 290
-            height: 320
+            height: parent.height - 290
             anchors {
                 left: parent.left
                 right: parent.right
@@ -73,7 +73,7 @@ Rectangle {
             }
             Image {
                 id: boatImg
-                source: "boat.png"
+                source: "images/boat.png"
                 anchors.fill: parent
             }
         }

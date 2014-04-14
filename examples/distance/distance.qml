@@ -113,7 +113,7 @@ Item {
 
         Square {
             id: square
-            x: 120
+            x: 180
             y: 120
             rotation: 0
             width: 80
@@ -156,8 +156,8 @@ Item {
             anchors.fill: parent
             onClicked: {
                 ball.applyLinearImpulse(
-                            Qt.point(10 * (mouseX - ball.x),
-                                     10 * (mouseY - ball.y)),
+                            Qt.point((mouseX - ball.x),
+                                     (mouseY - ball.y)),
                             Qt.point(ball.x, ball.y))
             }
         }
