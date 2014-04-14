@@ -13,7 +13,6 @@ INCLUDEPATH += .
 include(Box2D/box2d.pri)
 
 importPath = $$[QT_INSTALL_QML]/$$replace(TARGETPATH, \\., /).$$API_VER
-isEmpty(importPath): importPath = $$[QT_INSTALL_IMPORTS]/$$replace(TARGETPATH, \\., /).$$API_VER
 target.path = $${importPath}
 
 qmldir.path = $${importPath}
