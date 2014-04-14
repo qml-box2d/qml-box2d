@@ -141,9 +141,6 @@ signals:
     void gravityScaleChanged();
     void positionChanged();
 
-private slots:
-    void onRotationChanged();
-
 private:
     b2Body *mBody;
     b2World *mWorld;
