@@ -179,6 +179,7 @@ void Box2DBody::setLinearVelocity(const QPointF &velocity)
 
 float Box2DBody::angularVelocity() const
 {
+    if (mBody)
         return toDegrees(mBody->GetAngularVelocity());
     return toDegrees(mBodyDef.angularVelocity);
 }
