@@ -34,7 +34,7 @@
 class DebugDraw : public b2Draw
 {
 public:
-    DebugDraw(QPainter *painter, b2World &world);
+    DebugDraw(QPainter *painter, Box2DWorld &world);
 
     void draw();
 
@@ -54,11 +54,11 @@ public:
 
 private:
     QPainter *mPainter;
-    b2World &mWorld;
+    Box2DWorld &mWorld;
     qreal mAxisScale;
 };
 
-DebugDraw::DebugDraw(QPainter *painter, b2World &world)
+DebugDraw::DebugDraw(QPainter *painter, Box2DWorld &world)
     : mPainter(painter)
     , mWorld(world)
 {
@@ -66,9 +66,9 @@ DebugDraw::DebugDraw(QPainter *painter, b2World &world)
 
 void DebugDraw::draw()
 {
-    mWorld.SetDebugDraw(this);
-    mWorld.DrawDebugData();
-    mWorld.SetDebugDraw(0);
+    mWorld.world().SetDebugDraw(this);
+    mWorld.world().DrawDebugData();
+    mWorld.world().SetDebugDraw(0);
 }
 
 static QColor toQColor(const b2Color &color)
@@ -79,13 +79,13 @@ static QColor toQColor(const b2Color &color)
                   color.a * 255);
 }
 
-static QPolygonF toQPolygonF(const b2Vec2 *vertices, int32 vertexCount)
+static QPolygonF toQPolygonF(const Box2DWorld &world, const b2Vec2 *vertices, int32 vertexCount)
 {
     QPolygonF polygon;
     polygon.reserve(vertexCount);
 
     for (int i = 0; i < vertexCount; ++i)
-        polygon.append(toPixels(vertices[i]));
+        polygon.append(world.toPixels(vertices[i]));
 
     return polygon;
 }
@@ -95,7 +95,7 @@ void DebugDraw::DrawPolygon(const b2Vec2 *vertices, int32 vertexCount,
 {
     mPainter->setPen(toQColor(color));
     mPainter->setBrush(Qt::NoBrush);
-    mPainter->drawPolygon(toQPolygonF(vertices, vertexCount));
+    mPainter->drawPolygon(toQPolygonF(mWorld, vertices, vertexCount));
 }
 
 void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount,
@@ -103,7 +103,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount,
 {
     mPainter->setPen(Qt::NoPen);
     mPainter->setBrush(toQColor(color));
-    mPainter->drawPolygon(toQPolygonF(vertices, vertexCount));
+    mPainter->drawPolygon(toQPolygonF(mWorld, vertices, vertexCount));
 }
 
 void DebugDraw::DrawCircle(const b2Vec2 &center, float32 radius,
@@ -111,9 +111,9 @@ void DebugDraw::DrawCircle(const b2Vec2 &center, float32 radius,
 {
     mPainter->setPen(toQColor(color));
     mPainter->setBrush(Qt::NoBrush);
-    mPainter->drawEllipse(toPixels(center),
-                          toPixels(radius),
-                          toPixels(radius));
+    mPainter->drawEllipse(mWorld.toPixels(center),
+                          mWorld.toPixels(radius),
+                          mWorld.toPixels(radius));
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
@@ -121,11 +121,11 @@ void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
 {
     mPainter->setPen(Qt::NoPen);
     mPainter->setBrush(toQColor(color));
-    QPointF p1 = toPixels(center);
-    QPointF p2 = toPixels(axis);
+    QPointF p1 = mWorld.toPixels(center);
+    QPointF p2 = mWorld.toPixels(axis);
     mPainter->drawEllipse(p1,
-                          toPixels(radius),
-                          toPixels(radius));
+                          mWorld.toPixels(radius),
+                          mWorld.toPixels(radius));
     mPainter->setPen(qRgb(200, 64, 0));
     p2.setX(p1.x() + radius * p2.x());
     p2.setY(p1.y() + radius * p2.y());
@@ -136,20 +136,20 @@ void DebugDraw::DrawSegment(const b2Vec2 &p1, const b2Vec2 &p2,
                             const b2Color &color)
 {
     mPainter->setPen(toQColor(color));
-    mPainter->drawLine(toPixels(p1), toPixels(p2));
+    mPainter->drawLine(mWorld.toPixels(p1), mWorld.toPixels(p2));
 }
 
 void DebugDraw::DrawTransform(const b2Transform &xf)
 {
-    QPointF p1 = toPixels(xf.p);
-    QPointF p2 = toPixels(xf.q.GetXAxis());
+    QPointF p1 = mWorld.toPixels(xf.p);
+    QPointF p2 = mWorld.toPixels(xf.q.GetXAxis());
     p2 = QPointF(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 
     mPainter->setPen(Qt::blue); // X axis
     mPainter->drawLine(p1,p2);
 
-    p2 = toPixels(xf.q.GetYAxis());
+    p2 = mWorld.toPixels(xf.q.GetYAxis());
     p2 = QPointF(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 
@@ -210,7 +210,7 @@ void Box2DDebugDraw::paint(QPainter *p)
     if (!mWorld)
         return;
 
-    DebugDraw debugDraw(p, mWorld->world());
+    DebugDraw debugDraw(p, *mWorld);
     debugDraw.SetFlags(mFlags);
     debugDraw.setAxisScale(mAxisScale);
     debugDraw.draw();

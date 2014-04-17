@@ -82,7 +82,7 @@ public:
     int groupIndex() const;
     void setGroupIndex(int groupIndex);
 
-    void initialize(b2Body *body);
+    void initialize(Box2DBody *body);
 
     Q_INVOKABLE Box2DBody *getBody() const;
 
@@ -105,7 +105,7 @@ protected:
 
     b2Fixture *mFixture;
     b2FixtureDef mFixtureDef;
-    b2Body *mBody;
+    Box2DBody *mBody;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)

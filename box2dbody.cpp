@@ -61,7 +61,7 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
 Box2DBody::~Box2DBody()
 {
     if (mBody)
-        mWorld->DestroyBody(mBody);
+        mWorld->world().DestroyBody(mBody);
 }
 
 void Box2DBody::setLinearDamping(float linearDamping)
@@ -242,10 +242,10 @@ void Box2DBody::addFixture(Box2DFixture *fixture)
     fixture->setParentItem(this);
     mFixtures.append(fixture);
     if (mBody)
-        fixture->initialize(mBody);
+        fixture->initialize(this);
 }
 
-void Box2DBody::initialize(b2World *world)
+void Box2DBody::initialize(Box2DWorld *world)
 {
     mWorld = world;
     if (!isComponentComplete()) {
@@ -255,12 +255,12 @@ void Box2DBody::initialize(b2World *world)
         mInitializePending = true;
         return;
     }
-    mBodyDef.position = toMeters(position());
+    mBodyDef.position = mWorld->toMeters(position());
     mBodyDef.angle = toRadians(rotation());
-    mBody = world->CreateBody(&mBodyDef);
+    mBody = mWorld->world().CreateBody(&mBodyDef);
     mInitializePending = false;
     foreach (Box2DFixture *fixture, mFixtures)
-        fixture->initialize(mBody);
+        fixture->initialize(this);
     emit bodyCreated();
 }
 
@@ -273,7 +273,7 @@ void Box2DBody::synchronize()
     mSynchronizing = true;
 
     if (sync(mBodyDef.position, mBody->GetPosition())) {
-        setPosition(toPixels(mBodyDef.position));
+        setPosition(mWorld->toPixels(mBodyDef.position));
         emit positionChanged();
     }
 
@@ -296,7 +296,7 @@ void Box2DBody::geometryChanged(const QRectF &newGeometry,
 {
     if (!mSynchronizing && mBody) {
         if (newGeometry.topLeft() != oldGeometry.topLeft()) {
-            mBodyDef.position = toMeters(newGeometry.topLeft());
+            mBodyDef.position = mWorld->toMeters(newGeometry.topLeft());
             mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
         }
     }
@@ -316,7 +316,7 @@ void Box2DBody::applyLinearImpulse(const QPointF &impulse,
                                    const QPointF &point)
 {
     if (mBody)
-        mBody->ApplyLinearImpulse(invertY(impulse), toMeters(point), true);
+        mBody->ApplyLinearImpulse(invertY(impulse), mWorld->toMeters(point), true);
 }
 
 void Box2DBody::applyAngularImpulse(qreal impulse)
@@ -334,14 +334,14 @@ void Box2DBody::applyTorque(qreal torque)
 QPointF Box2DBody::getWorldCenter() const
 {
     if (mBody)
-        return toPixels(mBody->GetWorldCenter());
+        return mWorld->toPixels(mBody->GetWorldCenter());
     return QPointF();
 }
 
 void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 {
     if (mBody)
-        mBody->ApplyForce(invertY(force), toMeters(point), true);
+        mBody->ApplyForce(invertY(force), mWorld->toMeters(point), true);
 }
 
 void Box2DBody::applyForceToCenter(const QPointF &force)
@@ -369,13 +369,13 @@ float Box2DBody::getInertia() const
 QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
 {
     if (mBody)
-        return invertY(mBody->GetLinearVelocityFromWorldPoint(toMeters(point)));
+        return invertY(mBody->GetLinearVelocityFromWorldPoint(mWorld->toMeters(point)));
     return QPointF();
 }
 
 QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 {
     if (mBody)
-        return invertY(mBody->GetLinearVelocityFromLocalPoint(toMeters(point)));
+        return invertY(mBody->GetLinearVelocityFromLocalPoint(mWorld->toMeters(point)));
     return QPointF();
 }

@@ -24,7 +24,7 @@
  */
 
 #include "box2djoint.h"
-
+#include "box2dworld.h"
 #include "box2dbody.h"
 
 Box2DJoint::Box2DJoint(b2JointDef &jointDef, QObject *parent) :
@@ -42,7 +42,7 @@ Box2DJoint::Box2DJoint(b2JointDef &jointDef, QObject *parent) :
 Box2DJoint::~Box2DJoint()
 {
     if (mJoint)
-        mWorld->DestroyJoint(mJoint);
+        mWorld->world().DestroyJoint(mJoint);
 }
 
 void Box2DJoint::setCollideConnected(bool collideConnected)
@@ -96,7 +96,7 @@ void Box2DJoint::initialize()
 
     // Destroy any previously created joint
     if (mJoint) {
-        mWorld->DestroyJoint(mJoint);
+        mWorld->world().DestroyJoint(mJoint);
         mJoint = 0;
         mWorld = 0;
     }

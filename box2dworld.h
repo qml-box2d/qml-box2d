@@ -40,13 +40,6 @@ class Box2DWorld;
 class ContactListener;
 class StepDriver;
 
-// TODO: Maybe turn this into a property of the world, though it can't be
-// changed dynamically.
-static const float pixelsPerMeter = 32.0f; // 32 pixels in one meter
-static const float metersPerPixel = 1.0f / pixelsPerMeter;
-static const float pixelsPerMeterY = -pixelsPerMeter; // Y-axis inverted
-static const float metersPerPixelY = -metersPerPixel;
-
 /**
  * Small utility class to synchronize the stepping with the framerate.
  */
@@ -117,6 +110,7 @@ class Box2DWorld : public QQuickItem, b2DestructionListener
     Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
     Q_PROPERTY(bool autoClearForces READ autoClearForces WRITE setAutoClearForces NOTIFY autoClearForcesChanged)
     Q_PROPERTY(Box2DProfile *profile READ profile NOTIFY stepped)
+    Q_PROPERTY(float pixelsPerMeter READ pixelsPerMeter WRITE setPixelsPerMeter NOTIFY pixelsPerMeterChanged)
 
 public:
     explicit Box2DWorld(QQuickItem *parent = 0);
@@ -142,6 +136,19 @@ public:
 
     Box2DProfile *profile() const;
 
+    float pixelsPerMeter() const;
+    void setPixelsPerMeter(float pixelsPerMeter);
+
+    float metersPerPixel() const;
+    float pixelsPerMeterY() const;
+    float metersPerPixelY() const;
+
+    float toPixels(float length) const;
+    float toMeters(float length) const;
+
+    QPointF toPixels(const b2Vec2 &vec) const;
+    b2Vec2 toMeters(const QPointF &point) const;
+
     void componentComplete();
 
     b2World &world();
@@ -165,6 +172,7 @@ signals:
     void autoClearForcesChanged();
     void runningChanged();
     void stepped();
+    void pixelsPerMeterChanged();
 
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
@@ -179,6 +187,7 @@ private:
     bool mIsRunning;
     StepDriver *mStepDriver;
     Box2DProfile *mProfile;
+    float mPixelsPerMeter;
 };
 
 
@@ -265,6 +274,60 @@ inline Box2DProfile *Box2DWorld::profile() const
     return mProfile;
 }
 
+inline float Box2DWorld::pixelsPerMeter() const
+{
+    return mPixelsPerMeter;
+}
+
+inline float Box2DWorld::metersPerPixel() const
+{
+    return 1.0f / pixelsPerMeter();
+}
+
+inline float Box2DWorld::pixelsPerMeterY() const
+{
+    return -pixelsPerMeter(); // Y-axis inverted
+}
+
+inline float Box2DWorld::metersPerPixelY() const
+{
+    return -metersPerPixel();
+}
+
+/**
+ * Converts lengths from Box2D to QML units.
+ */
+inline float Box2DWorld::toPixels(float length) const
+{
+    return length * pixelsPerMeter();
+}
+
+/**
+ * Converts lengths from QML to Box2D units.
+ */
+inline float Box2DWorld::toMeters(float length) const
+{
+    return length * metersPerPixel();
+}
+
+/**
+ * Converts positions and sizes from Box2D to QML coordinates.
+ */
+inline QPointF Box2DWorld::toPixels(const b2Vec2 &vec) const
+{
+    return QPointF(vec.x * pixelsPerMeter(),
+                   vec.y * pixelsPerMeterY());
+}
+
+/**
+ * Converts positions and sizes from QML to Box2D coordinates.
+ */
+inline b2Vec2 Box2DWorld::toMeters(const QPointF &point) const
+{
+    return b2Vec2(point.x() * metersPerPixel(),
+                  point.y() * metersPerPixelY());
+}
+
 inline b2World &Box2DWorld::world()
 {
     return mWorld;
@@ -290,40 +353,6 @@ inline QPointF invertY(const b2Vec2 &vec)
 inline b2Vec2 invertY(const QPointF &vec)
 {
     return b2Vec2(vec.x(), -vec.y());
-}
-
-/**
- * Converts lengths from Box2D to QML units.
- */
-inline float toPixels(float length)
-{
-    return length * pixelsPerMeter;
-}
-
-/**
- * Converts lengths from QML to Box2D units.
- */
-inline float toMeters(float length)
-{
-    return length * metersPerPixel;
-}
-
-/**
- * Converts positions and sizes from Box2D to QML coordinates.
- */
-inline QPointF toPixels(const b2Vec2 &vec)
-{
-    return QPointF(vec.x * pixelsPerMeter,
-                   vec.y * pixelsPerMeterY);
-}
-
-/**
- * Converts positions and sizes from QML to Box2D coordinates.
- */
-inline b2Vec2 toMeters(const QPointF &point)
-{
-    return b2Vec2(point.x() * metersPerPixel,
-                  point.y() * metersPerPixelY);
 }
 
 /**

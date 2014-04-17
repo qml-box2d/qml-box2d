@@ -36,12 +36,12 @@ Box2DMotorJoint::Box2DMotorJoint(QObject *parent) :
 
 QPointF Box2DMotorJoint::linearOffset() const
 {
-    return toPixels(mMotorJointDef.linearOffset);
+    return world()->toPixels(mMotorJointDef.linearOffset);
 }
 
 void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 {
-    const b2Vec2 linearOffsetMeters = toMeters(linearOffset);
+    const b2Vec2 linearOffsetMeters = world()->toMeters(linearOffset);
     if (mMotorJointDef.linearOffset == linearOffsetMeters)
         return;
 
@@ -105,5 +105,5 @@ b2Joint *Box2DMotorJoint::createJoint()
 {
     mMotorJointDef.Initialize(bodyA()->body(), bodyB()->body());
 
-    return world()->CreateJoint(&mMotorJointDef);
+    return world()->world().CreateJoint(&mMotorJointDef);
 }

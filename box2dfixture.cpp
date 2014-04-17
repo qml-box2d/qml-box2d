@@ -157,21 +157,21 @@ void Box2DFixture::setGroupIndex(int groupIndex)
     emit groupIndexChanged();
 }
 
-void Box2DFixture::initialize(b2Body *body)
+void Box2DFixture::initialize(Box2DBody *body)
 {
+    mBody = body;
     b2Shape *shape = createShape();
     if (!shape)
         return;
 
     mFixtureDef.shape = shape;
-    mFixture = body->CreateFixture(&mFixtureDef);
-    mBody = body;
+    mFixture = body->body()->CreateFixture(&mFixtureDef);
     delete shape;
 }
 
 Box2DBody *Box2DFixture::getBody() const
 {
-    return mBody ? toBox2DBody(mBody) : 0;
+    return mBody;
 }
 
 void Box2DFixture::recreateFixture()
@@ -179,7 +179,7 @@ void Box2DFixture::recreateFixture()
     if (!mBody)
         return;
     if (mFixture)
-        mBody->DestroyFixture(mFixture);
+        mBody->body()->DestroyFixture(mFixture);
     initialize(mBody);
 }
 
@@ -200,9 +200,9 @@ b2Shape *Box2DBox::createShape()
                          y() + halfHeight);
 
     b2PolygonShape *shape = new b2PolygonShape;
-    shape->SetAsBox(toMeters(halfWidth),
-                    toMeters(halfHeight),
-                    toMeters(center),
+    shape->SetAsBox(mBody->world()->toMeters(halfWidth),
+                    mBody->world()->toMeters(halfHeight),
+                    mBody->world()->toMeters(center),
                     toRadians(rotation()));
 
     return shape;
@@ -231,8 +231,8 @@ b2Shape *Box2DCircle::createShape()
 {
     b2CircleShape *shape = new b2CircleShape;
 
-    shape->m_radius = toMeters(mRadius);
-    shape->m_p = toMeters(position() + QPointF(mRadius, mRadius));
+    shape->m_radius = mBody->world()->toMeters(mRadius);
+    shape->m_p = mBody->world()->toMeters(position() + QPointF(mRadius, mRadius));
 
     return shape;
 }
@@ -260,7 +260,7 @@ b2Shape *Box2DPolygon::createShape()
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
 
     for (int i = 0; i < count; ++i) {
-        vertices[i] = toMeters(mVertices.at(i).toPointF());
+        vertices[i] = mBody->world()->toMeters(mVertices.at(i).toPointF());
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -340,7 +340,7 @@ b2Shape *Box2DChain::createShape()
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
 
     for (int i = 0; i < count; ++i) {
-        vertices[i] = toMeters(mVertices.at(i).toPointF());
+        vertices[i] = mBody->world()->toMeters(mVertices.at(i).toPointF());
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -357,9 +357,9 @@ b2Shape *Box2DChain::createShape()
         shape->CreateChain(vertices.data(), count);
 
         if (mPrevVertexFlag)
-            shape->SetPrevVertex(toMeters(mPrevVertex));
+            shape->SetPrevVertex(mBody->world()->toMeters(mPrevVertex));
         if (mNextVertexFlag)
-            shape->SetNextVertex(toMeters(mNextVertex));
+            shape->SetNextVertex(mBody->world()->toMeters(mNextVertex));
     }
 
     return shape;
@@ -384,8 +384,8 @@ b2Shape *Box2DEdge::createShape()
         qWarning() << "Edge: Invalid number of vertices:" << count;
         return 0;
     }
-    const b2Vec2 vertex1 = toMeters(mVertices.at(0).toPointF());
-    const b2Vec2 vertex2 = toMeters(mVertices.at(1).toPointF());
+    const b2Vec2 vertex1 = mBody->world()->toMeters(mVertices.at(0).toPointF());
+    const b2Vec2 vertex2 = mBody->world()->toMeters(mVertices.at(1).toPointF());
     if (b2DistanceSquared(vertex1, vertex2) <= b2_linearSlop * b2_linearSlop) {
         qWarning() << "Edge: vertices are too close together";
         return 0;
