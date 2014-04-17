@@ -379,3 +379,11 @@ QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
         return invertY(mBody->GetLinearVelocityFromLocalPoint(mWorld->toMeters(point)));
     return QPointF();
 }
+void Box2DBody::adjustToPixelsPerMeter()
+{
+    Q_ASSERT(mBody);
+
+    setPosition(mWorld->toPixels(mBodyDef.position));
+    foreach (Box2DFixture *fixture, mFixtures)
+        fixture->recreateFixture();
+}

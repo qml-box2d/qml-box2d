@@ -124,6 +124,7 @@ public:
     b2Body *body() const;
     Box2DWorld *world() const;
 
+    void adjustToPixelsPerMeter();
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
     void itemChange(ItemChange change, const ItemChangeData &value);

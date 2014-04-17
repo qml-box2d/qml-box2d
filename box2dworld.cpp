@@ -222,6 +222,10 @@ void Box2DWorld::setPixelsPerMeter(float pixelsPerMeter)
 
     if (mPixelsPerMeter != pixelsPerMeter) {
         mPixelsPerMeter = pixelsPerMeter;
+
+        for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext())
+            toBox2DBody(body)->adjustToPixelsPerMeter();
+
         pixelsPerMeterChanged();
     }
 }
