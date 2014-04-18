@@ -3,6 +3,7 @@ CONFIG += plugin
 QT += quick
 TARGET = $$qtLibraryTarget(Box2D)
 TARGETPATH = Box2D
+API_VER=1.1
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
 
@@ -11,11 +12,10 @@ contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 INCLUDEPATH += .
 include(Box2D/box2d.pri)
 
-importPath = $$[QT_INSTALL_QML]
-isEmpty(importPath): importPath = $$[QT_INSTALL_IMPORTS]
-target.path = $${importPath}/$$TARGETPATH
+importPath = $$[QT_INSTALL_QML]/$$replace(TARGETPATH, \\., /).$$API_VER
+target.path = $${importPath}
 
-qmldir.path +=  $${importPath}/$$TARGETPATH
+qmldir.path = $${importPath}
 qmldir.files += $$PWD/qmldir
 
 
