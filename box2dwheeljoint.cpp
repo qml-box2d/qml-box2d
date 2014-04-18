@@ -98,36 +98,36 @@ void Box2DWheelJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DWheelJoint::localAnchorA() const
 {
-    return toPixels(mWheelJointDef.localAnchorA);
+    return world()->toPixels(mWheelJointDef.localAnchorA);
 }
 
 void Box2DWheelJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mWheelJointDef.localAnchorA = toMeters(localAnchorA);
+    mWheelJointDef.localAnchorA = world()->toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 QPointF Box2DWheelJoint::localAnchorB() const
 {
-    return toPixels(mWheelJointDef.localAnchorB);
+    return world()->toPixels(mWheelJointDef.localAnchorB);
 }
 
 void Box2DWheelJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mWheelJointDef.localAnchorB = toMeters(localAnchorB);
+    mWheelJointDef.localAnchorB = world()->toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 QPointF Box2DWheelJoint::localAxisA() const
 {
-    return toPixels(mWheelJointDef.localAxisA);
+    return world()->toPixels(mWheelJointDef.localAxisA);
 }
 
 void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
 {
-    mWheelJointDef.localAxisA = toMeters(localAxisA);
+    mWheelJointDef.localAxisA = world()->toMeters(localAxisA);
     mAnchorsAuto = false;
     emit localAxisAChanged();
 }
@@ -141,13 +141,13 @@ b2Joint *Box2DWheelJoint::createJoint()
                                   mWheelJointDef.localAxisA);
     }
 
-    return world()->CreateJoint(&mWheelJointDef);
+    return world()->world().CreateJoint(&mWheelJointDef);
 }
 
 float Box2DWheelJoint::getJointTranslation() const
 {
     if (wheelJoint())
-        return toPixels(wheelJoint()->GetJointTranslation());
+        return world()->toPixels(wheelJoint()->GetJointTranslation());
     return 0;
 }
 

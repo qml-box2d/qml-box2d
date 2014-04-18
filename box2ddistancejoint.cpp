@@ -36,15 +36,15 @@ Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent) :
 
 float Box2DDistanceJoint::length() const
 {
-    return toPixels(mDistanceJointDef.length);
+    return world()->toPixels(mDistanceJointDef.length);
 }
 
 void Box2DDistanceJoint::setLength(float length)
 {
-    if (mDistanceJointDef.length == toMeters(length))
+    if (mDistanceJointDef.length == world()->toMeters(length))
         return;
 
-    mDistanceJointDef.length = toMeters(length);
+    mDistanceJointDef.length = world()->toMeters(length);
     if (distanceJoint())
         distanceJoint()->SetLength(mDistanceJointDef.length);
     emit lengthChanged();
@@ -74,24 +74,24 @@ void Box2DDistanceJoint::setDampingRatio(float dampingRatio)
 
 QPointF Box2DDistanceJoint::localAnchorA() const
 {
-    return toPixels(mDistanceJointDef.localAnchorA);
+    return world()->toPixels(mDistanceJointDef.localAnchorA);
 }
 
 void Box2DDistanceJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mDistanceJointDef.localAnchorA = toMeters(localAnchorA);
+    mDistanceJointDef.localAnchorA = world()->toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
 
 QPointF Box2DDistanceJoint::localAnchorB() const
 {
-    return toPixels(mDistanceJointDef.localAnchorB);
+    return world()->toPixels(mDistanceJointDef.localAnchorB);
 }
 
 void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mDistanceJointDef.localAnchorB = toMeters(localAnchorB);
+    mDistanceJointDef.localAnchorB = world()->toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -105,7 +105,7 @@ b2Joint *Box2DDistanceJoint::createJoint()
                                      mDistanceJointDef.bodyB->GetWorldCenter());
     }
 
-    return world()->CreateJoint(&mDistanceJointDef);
+    return world()->world().CreateJoint(&mDistanceJointDef);
 }
 
 QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const

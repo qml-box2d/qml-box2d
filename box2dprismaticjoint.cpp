@@ -36,12 +36,12 @@ Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
 
 float Box2DPrismaticJoint::lowerTranslation() const
 {
-    return toPixels(mPrismaticJointDef.lowerTranslation);
+    return world()->toPixels(mPrismaticJointDef.lowerTranslation);
 }
 
 void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
 {
-    const float lowerTranslationMeters = toMeters(lowerTranslation);
+    const float lowerTranslationMeters = world()->toMeters(lowerTranslation);
     if (mPrismaticJointDef.lowerTranslation == lowerTranslationMeters)
         return;
 
@@ -54,12 +54,12 @@ void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
 
 float Box2DPrismaticJoint::upperTranslation() const
 {
-    return toPixels(mPrismaticJointDef.upperTranslation);
+    return world()->toPixels(mPrismaticJointDef.upperTranslation);
 }
 
 void Box2DPrismaticJoint::setUpperTranslation(float upperTranslation)
 {
-    const float upperTranslationMeters = toMeters(upperTranslation);
+    const float upperTranslationMeters = world()->toMeters(upperTranslation);
     if (mPrismaticJointDef.upperTranslation == upperTranslationMeters)
         return;
 
@@ -122,7 +122,7 @@ void Box2DPrismaticJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DPrismaticJoint::axis() const
 {
-    return toPixels(mPrismaticJointDef.localAxisA);
+    return world()->toPixels(mPrismaticJointDef.localAxisA);
 }
 
 void Box2DPrismaticJoint::setAxis(const QPointF &axis)
@@ -134,24 +134,24 @@ void Box2DPrismaticJoint::setAxis(const QPointF &axis)
 
 QPointF Box2DPrismaticJoint::localAnchorA() const
 {
-    return toPixels(mPrismaticJointDef.localAnchorA);
+    return world()->toPixels(mPrismaticJointDef.localAnchorA);
 }
 
 QPointF Box2DPrismaticJoint::localAnchorB() const
 {
-    return toPixels(mPrismaticJointDef.localAnchorB);
+    return world()->toPixels(mPrismaticJointDef.localAnchorB);
 }
 
 void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mPrismaticJointDef.localAnchorA = toMeters(localAnchorA);
+    mPrismaticJointDef.localAnchorA = world()->toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mPrismaticJointDef.localAnchorB = toMeters(localAnchorB);
+    mPrismaticJointDef.localAnchorB = world()->toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -167,13 +167,13 @@ b2Joint *Box2DPrismaticJoint::createJoint()
         mPrismaticJointDef.referenceAngle = 0.0;
     }
 
-    return world()->CreateJoint(&mPrismaticJointDef);
+    return world()->world().CreateJoint(&mPrismaticJointDef);
 }
 
 float Box2DPrismaticJoint::getJointTranslation() const
 {
     if (prismaticJoint())
-        return toPixels(prismaticJoint()->GetJointTranslation());
+        return world()->toPixels(prismaticJoint()->GetJointTranslation());
     return 0.0;
 }
 

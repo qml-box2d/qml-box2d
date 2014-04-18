@@ -119,7 +119,6 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
     emit mWorld->postSolve(&mContact);
 }
 
-
 Box2DWorld::Box2DWorld(QQuickItem *parent) :
     QQuickItem(parent),
     mWorld(b2Vec2(0.0f, -10.0f)),
@@ -129,7 +128,8 @@ Box2DWorld::Box2DWorld(QQuickItem *parent) :
     mPositionIterations(3),
     mIsRunning(true),
     mStepDriver(new StepDriver(this)),
-    mProfile(new Box2DProfile(&mWorld, this))
+    mProfile(new Box2DProfile(&mWorld, this)),
+    mPixelsPerMeter(32.0f)
 {
     mWorld.SetContactListener(mContactListener);
     mWorld.SetDestructionListener(this);
@@ -213,6 +213,19 @@ void Box2DWorld::setAutoClearForces(bool autoClearForces)
     emit autoClearForcesChanged();
 }
 
+void Box2DWorld::setPixelsPerMeter(float pixelsPerMeter)
+{
+    if (pixelsPerMeter <= 0.0f) {
+        qWarning("World: pixelsPerMeter must be > 0.0f");
+        return;
+    }
+
+    if (mPixelsPerMeter != pixelsPerMeter) {
+        mPixelsPerMeter = pixelsPerMeter;
+        pixelsPerMeterChanged();
+    }
+}
+
 void Box2DWorld::componentComplete()
 {
     QQuickItem::componentComplete();
@@ -286,7 +299,7 @@ void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)
         if (change == ItemChildAddedChange) {
             QObject *child = value.item;
             if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
-                body->initialize(&mWorld);
+                body->initialize(this);
         }
     }
 
@@ -297,7 +310,7 @@ void Box2DWorld::initializeBodies(QQuickItem *parent)
 {
     foreach (QQuickItem *item, parent->childItems()) {
         if (Box2DBody *body = dynamic_cast<Box2DBody *>(item))
-            body->initialize(&mWorld);
+            body->initialize(this);
 
         initializeBodies(item);
     }

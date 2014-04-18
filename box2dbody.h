@@ -103,7 +103,7 @@ public:
 
     QQmlListProperty<Box2DFixture> fixtures();
 
-    void initialize(b2World *world);
+    void initialize(Box2DWorld *world);
     void synchronize();
     void nullifyBody();
 
@@ -122,7 +122,7 @@ public:
 
     void componentComplete();
     b2Body *body() const;
-    b2World *world() const;
+    Box2DWorld *world() const;
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
@@ -143,7 +143,7 @@ signals:
 
 private:
     b2Body *mBody;
-    b2World *mWorld;
+    Box2DWorld *mWorld;
     b2BodyDef mBodyDef;
     bool mSynchronizing;
     bool mInitializePending;
@@ -205,7 +205,7 @@ inline b2Body *Box2DBody::body() const
     return mBody;
 }
 
-inline b2World *Box2DBody::world() const
+inline Box2DWorld *Box2DBody::world() const
 {
     return mWorld;
 }

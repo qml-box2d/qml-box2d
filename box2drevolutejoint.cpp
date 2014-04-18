@@ -123,24 +123,24 @@ void Box2DRevoluteJoint::setEnableMotor(bool enableMotor)
 
 QPointF Box2DRevoluteJoint::localAnchorA() const
 {
-    return toPixels(mRevoluteJointDef.localAnchorA);
+    return world()->toPixels(mRevoluteJointDef.localAnchorA);
 }
 
 QPointF Box2DRevoluteJoint::localAnchorB() const
 {
-    return toPixels(mRevoluteJointDef.localAnchorB);
+    return world()->toPixels(mRevoluteJointDef.localAnchorB);
 }
 
 void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mRevoluteJointDef.localAnchorA = toMeters(localAnchorA);
+    mRevoluteJointDef.localAnchorA = world()->toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mRevoluteJointDef.localAnchorB = toMeters(localAnchorB);
+    mRevoluteJointDef.localAnchorB = world()->toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -153,7 +153,7 @@ b2Joint *Box2DRevoluteJoint::createJoint()
                                      mRevoluteJointDef.bodyA->GetWorldCenter());
     }
 
-    return world()->CreateJoint(&mRevoluteJointDef);
+    return world()->world().CreateJoint(&mRevoluteJointDef);
 }
 
 float Box2DRevoluteJoint::getJointAngle() const

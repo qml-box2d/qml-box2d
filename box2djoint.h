@@ -81,7 +81,7 @@ public:
     void initialize();
 
     void nullifyJoint();
-    b2World *world() const;
+    Box2DWorld *world() const;
     b2Joint *joint() const;
 
     // QQmlParserStatus interface
@@ -107,7 +107,7 @@ private:
     bool mInitializePending;
     Box2DBody *mBodyA;
     Box2DBody *mBodyB;
-    b2World *mWorld;
+    Box2DWorld *mWorld;
     b2Joint *mJoint;
 };
 
@@ -136,7 +136,7 @@ inline void Box2DJoint::nullifyJoint()
     mJoint = 0;
 }
 
-inline b2World *Box2DJoint::world() const
+inline Box2DWorld *Box2DJoint::world() const
 {
     return mWorld;
 }

@@ -73,24 +73,24 @@ void Box2DWeldJoint::setDampingRatio(float dampingRatio)
 
 QPointF Box2DWeldJoint::localAnchorA() const
 {
-    return toPixels(mWeldJointDef.localAnchorA);
+    return world()->toPixels(mWeldJointDef.localAnchorA);
 }
 
 void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mWeldJointDef.localAnchorA = toMeters(localAnchorA);
+    mWeldJointDef.localAnchorA = world()->toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
 
 QPointF Box2DWeldJoint::localAnchorB() const
 {
-    return toPixels(mWeldJointDef.localAnchorB);
+    return world()->toPixels(mWeldJointDef.localAnchorB);
 }
 
 void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mWeldJointDef.localAnchorB = toMeters(localAnchorB);
+    mWeldJointDef.localAnchorB = world()->toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -103,5 +103,5 @@ b2Joint *Box2DWeldJoint::createJoint()
                                  mWeldJointDef.bodyA->GetWorldCenter());
     }
 
-    return world()->CreateJoint(&mWeldJointDef);
+    return world()->world().CreateJoint(&mWeldJointDef);
 }

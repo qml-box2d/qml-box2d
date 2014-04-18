@@ -67,13 +67,13 @@ void Box2DFrictionJoint::setMaxTorque(float maxTorque)
 QPointF Box2DFrictionJoint::localAnchorA() const
 {
     if (frictionJoint())
-        return toPixels(frictionJoint()->GetAnchorA());
-    return toPixels(mFrictionJointDef.localAnchorA);
+        return world()->toPixels(frictionJoint()->GetAnchorA());
+    return world()->toPixels(mFrictionJointDef.localAnchorA);
 }
 
 void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mFrictionJointDef.localAnchorA = toMeters(localAnchorA);
+    mFrictionJointDef.localAnchorA = world()->toMeters(localAnchorA);
     mAnchorsAuto = false;
     emit localAnchorAChanged();
 }
@@ -81,13 +81,13 @@ void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
 QPointF Box2DFrictionJoint::localAnchorB() const
 {
     if (frictionJoint())
-        return toPixels(frictionJoint()->GetAnchorB());
-    return toPixels(mFrictionJointDef.localAnchorB);
+        return world()->toPixels(frictionJoint()->GetAnchorB());
+    return world()->toPixels(mFrictionJointDef.localAnchorB);
 }
 
 void Box2DFrictionJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mFrictionJointDef.localAnchorB = toMeters(localAnchorB);
+    mFrictionJointDef.localAnchorB = world()->toMeters(localAnchorB);
     mAnchorsAuto = false;
     emit localAnchorBChanged();
 }
@@ -100,7 +100,7 @@ b2Joint *Box2DFrictionJoint::createJoint()
                                      mFrictionJointDef.bodyA->GetWorldCenter());
     }
 
-    return world()->CreateJoint(&mFrictionJointDef);
+    return world()->world().CreateJoint(&mFrictionJointDef);
 }
 
 QPointF Box2DFrictionJoint::getReactionForce(float32 inv_dt) const

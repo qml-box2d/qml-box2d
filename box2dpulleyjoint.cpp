@@ -35,29 +35,29 @@ Box2DPulleyJoint::Box2DPulleyJoint(QObject *parent) :
 
 float Box2DPulleyJoint::lengthA() const
 {
-    return toPixels(mPulleyJointDef.lengthA);
+    return world()->toPixels(mPulleyJointDef.lengthA);
 }
 
 void Box2DPulleyJoint::setLengthA(float lengthA)
 {
-    if (mPulleyJointDef.lengthA == toMeters(lengthA))
+    if (mPulleyJointDef.lengthA == world()->toMeters(lengthA))
         return;
 
-    mPulleyJointDef.lengthA = toMeters(lengthA);
+    mPulleyJointDef.lengthA = world()->toMeters(lengthA);
     emit lengthAChanged();
 }
 
 float Box2DPulleyJoint::lengthB() const
 {
-    return toPixels(mPulleyJointDef.lengthB);
+    return world()->toPixels(mPulleyJointDef.lengthB);
 }
 
 void Box2DPulleyJoint::setLengthB(float lengthB)
 {
-    if (mPulleyJointDef.lengthB == toMeters(lengthB))
+    if (mPulleyJointDef.lengthB == world()->toMeters(lengthB))
         return;
 
-    mPulleyJointDef.lengthB = toMeters(lengthB);
+    mPulleyJointDef.lengthB = world()->toMeters(lengthB);
     emit lengthBChanged();
 }
 
@@ -72,49 +72,49 @@ void Box2DPulleyJoint::setRatio(float ratio)
 
 QPointF Box2DPulleyJoint::groundAnchorA() const
 {
-    return toPixels(mPulleyJointDef.groundAnchorA);
+    return world()->toPixels(mPulleyJointDef.groundAnchorA);
 }
 
 void Box2DPulleyJoint::setGroundAnchorA(const QPointF &groundAnchorA)
 {
-    mPulleyJointDef.groundAnchorA = toMeters(groundAnchorA);
+    mPulleyJointDef.groundAnchorA = world()->toMeters(groundAnchorA);
     emit groundAnchorAChanged();
 }
 
 QPointF Box2DPulleyJoint::groundAnchorB() const
 {
-    return toPixels(mPulleyJointDef.groundAnchorB);
+    return world()->toPixels(mPulleyJointDef.groundAnchorB);
 }
 
 void Box2DPulleyJoint::setGroundAnchorB(const QPointF &groundAnchorB)
 {
-    mPulleyJointDef.groundAnchorB = toMeters(groundAnchorB);
+    mPulleyJointDef.groundAnchorB = world()->toMeters(groundAnchorB);
     emit groundAnchorBChanged();
 }
 
 QPointF Box2DPulleyJoint::localAnchorA() const
 {
     if (pulleyJoint())
-        return toPixels(pulleyJoint()->GetAnchorA());
-    return toPixels(mPulleyJointDef.localAnchorA);
+        return world()->toPixels(pulleyJoint()->GetAnchorA());
+    return world()->toPixels(mPulleyJointDef.localAnchorA);
 }
 
 void Box2DPulleyJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mPulleyJointDef.localAnchorA = toMeters(localAnchorA);
+    mPulleyJointDef.localAnchorA = world()->toMeters(localAnchorA);
     emit localAnchorAChanged();
 }
 
 QPointF Box2DPulleyJoint::localAnchorB() const
 {
     if (pulleyJoint())
-        return toPixels(pulleyJoint()->GetAnchorB());
-    return toPixels(mPulleyJointDef.localAnchorB);
+        return world()->toPixels(pulleyJoint()->GetAnchorB());
+    return world()->toPixels(mPulleyJointDef.localAnchorB);
 }
 
 void Box2DPulleyJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mPulleyJointDef.localAnchorB = toMeters(localAnchorB);
+    mPulleyJointDef.localAnchorB = world()->toMeters(localAnchorB);
     emit localAnchorBChanged();
 }
 
@@ -125,20 +125,20 @@ b2Joint *Box2DPulleyJoint::createJoint()
         return 0;
     }
 
-    return world()->CreateJoint(&mPulleyJointDef);
+    return world()->world().CreateJoint(&mPulleyJointDef);
 }
 
 float Box2DPulleyJoint::getCurrentLengthA() const
 {
     if (pulleyJoint())
-        return toPixels(pulleyJoint()->GetCurrentLengthA());
+        return world()->toPixels(pulleyJoint()->GetCurrentLengthA());
     return lengthA();
 }
 
 float Box2DPulleyJoint::getCurrentLengthB() const
 {
     if (pulleyJoint())
-        return toPixels(pulleyJoint()->GetCurrentLengthB());
+        return world()->toPixels(pulleyJoint()->GetCurrentLengthB());
     return lengthB();
 }
 

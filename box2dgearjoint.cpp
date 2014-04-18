@@ -109,7 +109,7 @@ b2Joint *Box2DGearJoint::createJoint()
     mGearJointDef.joint1 = mJoint1->joint();
     mGearJointDef.joint2 = mJoint2->joint();
 
-    return world()->CreateJoint(&mGearJointDef);
+    return world()->world().CreateJoint(&mGearJointDef);
 }
 
 void Box2DGearJoint::joint1Created()
