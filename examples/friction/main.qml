@@ -139,8 +139,8 @@ Rectangle {
                 var newBox = boxComponent.createObject(world);
                 newBox.x = world.width / 2;
                 newBox.y = world.height / 2;
-                var x = ((Math.random() * 800) - 400) / 15;
-                var y = ((Math.random() * 600) - 300) / 15;
+                var x = ((Math.random() * 800) - 400) / 200;
+                var y = ((Math.random() * 600) - 300) / 200;
                 if (Math.round(Math.random() * 5) == 1) {
                     newBox.boxColor = "red";
                 } else {

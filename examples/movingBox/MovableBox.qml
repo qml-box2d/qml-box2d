@@ -5,13 +5,13 @@ Body {
     sleepingAllowed: false
     bullet: true
     fixedRotation: true
-	bodyType: Body.Dynamic
+    bodyType: Body.Dynamic
     function moveForward() {
-        linearVelocity.x = 300;
+        linearVelocity.x = 10;
     }
 
     function moveBackward() {
-        linearVelocity.x = -300;
+        linearVelocity.x = -10;
     }
 
     function stopMoving() {
@@ -19,11 +19,8 @@ Body {
     }
 
     function jump() {
-        if (linearVelocity.y <= 0 &&
-            linearVelocity.y > -50) {
-            var impulse = Qt.point(0, -600);
-            applyLinearImpulse(impulse, getWorldCenter());
-        }
+        var impulse = Qt.point(0, -10);
+        applyLinearImpulse(impulse, getWorldCenter());
     }
 
     fixtures: Box {

@@ -55,8 +55,8 @@ Item {
             anchors.fill: parent
             onClicked: {
                 ball.applyLinearImpulse(
-                            Qt.point(10 * (mouseX - ball.x),
-                                     10 * (mouseY - ball.y)),
+                            Qt.point((mouseX - ball.x),
+                                     (mouseY - ball.y)),
                             Qt.point(ball.x, ball.y))
             }
         }
