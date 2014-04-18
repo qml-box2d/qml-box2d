@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DFrictionJoint::Box2DFrictionJoint(QObject *parent) :
-    Box2DJoint(mFrictionJointDef, parent),
+    Box2DJoint(FrictionJoint, parent),
     mAnchorsAuto(true)
 {
 }
@@ -94,6 +94,8 @@ void Box2DFrictionJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DFrictionJoint::createJoint()
 {
+    initializeJointDef(mFrictionJointDef);
+
     if (mAnchorsAuto) {
         mFrictionJointDef.Initialize(mFrictionJointDef.bodyA,
                                      mFrictionJointDef.bodyB,

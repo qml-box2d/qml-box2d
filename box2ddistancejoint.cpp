@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent) :
-    Box2DJoint(mDistanceJointDef, parent),
+    Box2DJoint(DistanceJoint, parent),
     mAnchorsAuto(true)
 {
 }
@@ -98,6 +98,8 @@ void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DDistanceJoint::createJoint()
 {
+    initializeJointDef(mDistanceJointDef);
+
     if (mAnchorsAuto) {
         mDistanceJointDef.Initialize(mDistanceJointDef.bodyA,
                                      mDistanceJointDef.bodyB,

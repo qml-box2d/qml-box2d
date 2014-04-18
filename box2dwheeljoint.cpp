@@ -30,7 +30,7 @@
 #include "box2dbody.h"
 
 Box2DWheelJoint::Box2DWheelJoint(QObject *parent) :
-    Box2DJoint(mWheelJointDef, parent),
+    Box2DJoint(WheelJoint, parent),
     mAnchorsAuto(true)
 {
 }
@@ -134,6 +134,8 @@ void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
 
 b2Joint *Box2DWheelJoint::createJoint()
 {
+    initializeJointDef(mWheelJointDef);
+
     if (mAnchorsAuto) {
         mWheelJointDef.Initialize(mWheelJointDef.bodyA,
                                   mWheelJointDef.bodyB,

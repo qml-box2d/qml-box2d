@@ -30,7 +30,7 @@
 #include "box2dbody.h"
 
 Box2DRopeJoint::Box2DRopeJoint(QObject *parent) :
-    Box2DJoint(mRopeJointDef, parent)
+    Box2DJoint(RopeJoint, parent)
 {
 }
 
@@ -75,6 +75,7 @@ void Box2DRopeJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DRopeJoint::createJoint()
 {
+    initializeJointDef(mRopeJointDef);
     return world()->world().CreateJoint(&mRopeJointDef);
 }
 

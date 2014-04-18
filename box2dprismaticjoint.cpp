@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
-    Box2DJoint(mPrismaticJointDef, parent),
+    Box2DJoint(PrismaticJoint, parent),
     mAnchorsAuto(true)
 {
 }
@@ -158,6 +158,8 @@ void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DPrismaticJoint::createJoint()
 {
+    initializeJointDef(mPrismaticJointDef);
+
     if (mAnchorsAuto) {
         mPrismaticJointDef.Initialize(mPrismaticJointDef.bodyA,
                                       mPrismaticJointDef.bodyB,

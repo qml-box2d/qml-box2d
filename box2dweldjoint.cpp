@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
-    Box2DJoint(mWeldJointDef, parent),
+    Box2DJoint(WeldJoint, parent),
     mAnchorsAuto(true)
 {
 }
@@ -97,6 +97,8 @@ void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DWeldJoint::createJoint()
 {
+    initializeJointDef(mWeldJointDef);
+
     if (mAnchorsAuto) {
         mWeldJointDef.Initialize(mWeldJointDef.bodyA,
                                  mWeldJointDef.bodyB,

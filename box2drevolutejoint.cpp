@@ -30,7 +30,7 @@
 #include "box2dbody.h"
 
 Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent) :
-    Box2DJoint(mRevoluteJointDef, parent),
+    Box2DJoint(RevoluteJoint, parent),
     mAnchorsAuto(true)
 {
 }
@@ -147,6 +147,8 @@ void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
 
 b2Joint *Box2DRevoluteJoint::createJoint()
 {
+    initializeJointDef(mRevoluteJointDef);
+
     if (mAnchorsAuto) {
         mRevoluteJointDef.Initialize(mRevoluteJointDef.bodyA,
                                      mRevoluteJointDef.bodyB,

@@ -29,7 +29,7 @@
 #include "box2dbody.h"
 
 Box2DPulleyJoint::Box2DPulleyJoint(QObject *parent) :
-    Box2DJoint(mPulleyJointDef, parent)
+    Box2DJoint(PulleyJoint, parent)
 {
 }
 
@@ -124,6 +124,8 @@ b2Joint *Box2DPulleyJoint::createJoint()
         qWarning() << "PulleyJoint: the joint length cannot be zero";
         return 0;
     }
+
+    initializeJointDef(mPulleyJointDef);
 
     return world()->world().CreateJoint(&mPulleyJointDef);
 }

@@ -28,17 +28,20 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DMouseJoint::Box2DMouseJoint(QObject *parent) :
-    Box2DJoint(mMouseJointDef, parent)
+Box2DMouseJoint::Box2DMouseJoint(QObject *parent)
+    : Box2DJoint(MouseJoint, parent)
+    , m_maxForce(0.0f)
+    , m_frequencyHz(5.0f)
+    , m_dampingRatio(0.7f)
 {
 }
 
 void Box2DMouseJoint::setDampingRatio(float dampingRatio)
 {
-    if (mMouseJointDef.dampingRatio == dampingRatio)
+    if (m_dampingRatio == dampingRatio)
         return;
 
-    mMouseJointDef.dampingRatio = dampingRatio;
+    m_dampingRatio = dampingRatio;
     if (mouseJoint())
         mouseJoint()->SetDampingRatio(dampingRatio);
     emit dampingRatioChanged();
@@ -46,10 +49,10 @@ void Box2DMouseJoint::setDampingRatio(float dampingRatio)
 
 void Box2DMouseJoint::setFrequencyHz(float frequencyHz)
 {
-    if (mMouseJointDef.frequencyHz == frequencyHz)
+    if (m_frequencyHz == frequencyHz)
         return;
 
-    mMouseJointDef.frequencyHz = frequencyHz;
+    m_frequencyHz = frequencyHz;
     if (mouseJoint())
         mouseJoint()->SetFrequency(frequencyHz);
     emit frequencyHzChanged();
@@ -57,35 +60,37 @@ void Box2DMouseJoint::setFrequencyHz(float frequencyHz)
 
 void Box2DMouseJoint::setMaxForce(float maxForce)
 {
-    if (mMouseJointDef.maxForce == maxForce)
+    if (m_maxForce == maxForce)
         return;
 
-    mMouseJointDef.maxForce = maxForce;
+    m_maxForce = maxForce;
     if (mouseJoint())
         mouseJoint()->SetMaxForce(maxForce);
     emit maxForceChanged();
 }
 
-QPointF Box2DMouseJoint::target() const
-{
-    return world()->toPixels(mMouseJointDef.target);
-}
-
 void Box2DMouseJoint::setTarget(const QPointF &target)
 {
-    const b2Vec2 targetMeters = world()->toMeters(target);
-    if (mMouseJointDef.target == targetMeters)
+    if (m_target == target)
         return;
 
-    mMouseJointDef.target = targetMeters;
+    m_target = target;
     if (mouseJoint())
-        mouseJoint()->SetTarget(targetMeters);
+        mouseJoint()->SetTarget(world()->toMeters(target));
     emit targetChanged();
 }
 
 b2Joint *Box2DMouseJoint::createJoint()
 {
-    return world()->world().CreateJoint(&mMouseJointDef);
+    b2MouseJointDef jointDef;
+    initializeJointDef(jointDef);
+
+    jointDef.target = world()->toMeters(m_target);
+    jointDef.maxForce = m_maxForce;
+    jointDef.frequencyHz = m_frequencyHz;
+    jointDef.dampingRatio = m_dampingRatio;
+
+    return world()->world().CreateJoint(&jointDef);
 }
 
 QPointF Box2DMouseJoint::getReactionForce(float32 inv_dt) const
