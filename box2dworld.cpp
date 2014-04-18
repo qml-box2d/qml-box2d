@@ -290,12 +290,17 @@ void Box2DWorld::step()
 
     mWorld.Step(mTimeStep, mVelocityIterations, mPositionIterations);
 
+    b2Timer timer;
+
     // Update QML state after stepping
     for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext()) {
         Box2DBody *b = toBox2DBody(body);
         if (b->isActive() && b->bodyType() != Box2DBody::Static)
             b->synchronize();
     }
+
+    mProfile->mSynchronize = timer.GetMilliseconds();
+    timer.Reset();
 
     if (mEnableContactEvents) {
         // Emit contact signals
@@ -313,6 +318,8 @@ void Box2DWorld::step()
         }
     }
     mContactListener->clearEvents();
+
+    mProfile->mEmitSignals = timer.GetMilliseconds();
 
     emit stepped();
 }
