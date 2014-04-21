@@ -33,19 +33,13 @@ class Box2DFrictionJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(float maxForce READ maxForce WRITE setMaxForce NOTIFY maxForceChanged)
-    Q_PROPERTY(float maxTorque READ maxTorque WRITE setMaxTorque NOTIFY maxTorqueChanged)
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(float maxForce READ maxForce WRITE setMaxForce NOTIFY maxForceChanged)
+    Q_PROPERTY(float maxTorque READ maxTorque WRITE setMaxTorque NOTIFY maxTorqueChanged)
 
 public:
     explicit Box2DFrictionJoint(QObject *parent = 0);
-
-    float maxForce() const;
-    void setMaxForce(float maxForce);
-
-    float maxTorque() const;
-    void setMaxTorque(float maxTorque);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -53,33 +47,53 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
+    float maxForce() const;
+    void setMaxForce(float maxForce);
+
+    float maxTorque() const;
+    void setMaxTorque(float maxTorque);
+
     b2FrictionJoint *frictionJoint() const;
 
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
 signals:
-    void maxForceChanged();
-    void maxTorqueChanged();
     void localAnchorAChanged();
     void localAnchorBChanged();
+    void maxForceChanged();
+    void maxTorqueChanged();
 
 protected:
     b2Joint *createJoint();
 
 private:
-    b2FrictionJointDef mFrictionJointDef;
-    bool mAnchorsAuto;
+    QPointF m_localAnchorA;
+    QPointF m_localAnchorB;
+    float m_maxForce;
+    float m_maxTorque;
+    bool m_defaultLocalAnchorA;
+    bool m_defaultLocalAnchorB;
 };
+
+inline QPointF Box2DFrictionJoint::localAnchorA() const
+{
+    return m_localAnchorA;
+}
+
+inline QPointF Box2DFrictionJoint::localAnchorB() const
+{
+    return m_localAnchorB;
+}
 
 inline float Box2DFrictionJoint::maxForce() const
 {
-    return mFrictionJointDef.maxForce;
+    return m_maxForce;
 }
 
 inline float Box2DFrictionJoint::maxTorque() const
 {
-    return mFrictionJointDef.maxTorque;
+    return m_maxTorque;
 }
 
 inline b2FrictionJoint *Box2DFrictionJoint::frictionJoint() const
