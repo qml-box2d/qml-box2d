@@ -88,7 +88,7 @@ Item {
             enableMotor: true
             bodyB: square
             bodyA: middle
-            axis: Qt.point(100, 40)
+            localAxisA: Qt.point(100, 40)
         }
 
         // Debug

@@ -33,40 +33,19 @@ class Box2DPrismaticJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(float lowerTranslation READ lowerTranslation WRITE setLowerTranslation NOTIFY lowerTranslationChanged)
-    Q_PROPERTY(float upperTranslation READ upperTranslation WRITE setUpperTranslation NOTIFY upperTranslationChanged)
-    Q_PROPERTY(float maxMotorForce READ maxMotorForce WRITE setMaxMotorForce NOTIFY maxMotorForceChanged)
-    Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
-    Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
-    Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
-    Q_PROPERTY(QPointF axis READ axis WRITE setAxis NOTIFY axisChanged)
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
-
+    Q_PROPERTY(QPointF localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
+    Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
+    Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
+    Q_PROPERTY(float lowerTranslation READ lowerTranslation WRITE setLowerTranslation NOTIFY lowerTranslationChanged)
+    Q_PROPERTY(float upperTranslation READ upperTranslation WRITE setUpperTranslation NOTIFY upperTranslationChanged)
+    Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
+    Q_PROPERTY(float maxMotorForce READ maxMotorForce WRITE setMaxMotorForce NOTIFY maxMotorForceChanged)
+    Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
 
 public:
     explicit Box2DPrismaticJoint(QObject *parent = 0);
-
-    float lowerTranslation() const;
-    void setLowerTranslation(float lowerTranslation);
-
-    float upperTranslation() const;
-    void setUpperTranslation(float upperTranslation);
-
-    float maxMotorForce() const;
-    void setMaxMotorForce(float maxMotorForce);
-
-    float motorSpeed() const;
-    void setMotorSpeed(float motorSpeed);
-
-    bool enableLimit() const;
-    void setEnableLimit(bool enableLimit);
-
-    bool enableMotor() const;
-    void setEnableMotor(bool enableMotor);
-
-    QPointF axis() const;
-    void setAxis(const QPointF &axis);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -74,43 +53,115 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
+    QPointF localAxisA() const;
+    void setLocalAxisA(const QPointF &localAxisA);
+
+    float referenceAngle() const;
+    void setReferenceAngle(float referenceAngle);
+
+    bool enableLimit() const;
+    void setEnableLimit(bool enableLimit);
+
+    float lowerTranslation() const;
+    void setLowerTranslation(float lowerTranslation);
+
+    float upperTranslation() const;
+    void setUpperTranslation(float upperTranslation);
+
+    bool enableMotor() const;
+    void setEnableMotor(bool enableMotor);
+
+    float maxMotorForce() const;
+    void setMaxMotorForce(float maxMotorForce);
+
+    float motorSpeed() const;
+    void setMotorSpeed(float motorSpeed);
+
     Q_INVOKABLE float getJointTranslation() const;
     Q_INVOKABLE float getJointSpeed() const;
 
     b2PrismaticJoint *prismaticJoint() const;
 
 signals:
-    void lowerTranslationChanged();
-    void upperTranslationChanged();
-    void maxMotorForceChanged();
-    void motorSpeedChanged();
-    void enableLimitChanged();
-    void enableMotorChanged();
-    void axisChanged();
     void localAnchorAChanged();
     void localAnchorBChanged();
+    void localAxisAChanged();
+    void referenceAngleChanged();
+    void enableLimitChanged();
+    void lowerTranslationChanged();
+    void upperTranslationChanged();
+    void enableMotorChanged();
+    void maxMotorForceChanged();
+    void motorSpeedChanged();
 
 protected:
     b2Joint *createJoint();
 
 private:
-    b2PrismaticJointDef mPrismaticJointDef;
-    bool mAnchorsAuto;
+    QPointF m_localAnchorA;
+    QPointF m_localAnchorB;
+    QPointF m_localAxisA;
+    float m_referenceAngle;
+    bool m_enableLimit;
+    float m_lowerTranslation;
+    float m_upperTranslation;
+    bool m_enableMotor;
+    float m_maxMotorForce;
+    float m_motorSpeed;
+
+    bool m_defaultLocalAnchorA;
+    bool m_defaultLocalAnchorB;
+    bool m_defaultReferenceAngle;
 };
 
-inline float Box2DPrismaticJoint::maxMotorForce() const
+inline QPointF Box2DPrismaticJoint::localAnchorA() const
 {
-    return mPrismaticJointDef.maxMotorForce;
+    return m_localAnchorA;
+}
+
+inline QPointF Box2DPrismaticJoint::localAnchorB() const
+{
+    return m_localAnchorB;
+}
+
+inline QPointF Box2DPrismaticJoint::localAxisA() const
+{
+    return m_localAxisA;
+}
+
+inline float Box2DPrismaticJoint::referenceAngle() const
+{
+    return m_referenceAngle;
 }
 
 inline bool Box2DPrismaticJoint::enableLimit() const
 {
-    return mPrismaticJointDef.enableLimit;
+    return m_enableLimit;
+}
+
+inline float Box2DPrismaticJoint::lowerTranslation() const
+{
+    return m_lowerTranslation;
+}
+
+inline float Box2DPrismaticJoint::upperTranslation() const
+{
+    return m_upperTranslation;
 }
 
 inline bool Box2DPrismaticJoint::enableMotor() const
 {
-    return mPrismaticJointDef.enableMotor;
+    return m_enableMotor;
+}
+
+inline float Box2DPrismaticJoint::maxMotorForce() const
+{
+    return m_maxMotorForce;
+}
+
+inline float Box2DPrismaticJoint::motorSpeed() const
+{
+    return m_motorSpeed;
 }
 
 inline b2PrismaticJoint *Box2DPrismaticJoint::prismaticJoint() const

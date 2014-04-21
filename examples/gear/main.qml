@@ -218,7 +218,7 @@ Rectangle {
             bodyB: damper
             localAnchorA: Qt.point(610,50)
             localAnchorB: Qt.point(0,-1)
-            axis: Qt.point(100,0)
+            localAxisA: Qt.point(100,0)
             collideConnected: true
             enableLimit: true
             lowerTranslation: -110
