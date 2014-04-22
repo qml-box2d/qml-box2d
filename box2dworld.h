@@ -37,6 +37,7 @@ class Box2DContact;
 class Box2DFixture;
 class Box2DJoint;
 class Box2DWorld;
+class Box2DRayCast;
 class ContactListener;
 class StepDriver;
 
@@ -159,6 +160,9 @@ public:
 
     Q_INVOKABLE void step();
     Q_INVOKABLE void clearForces();
+    Q_INVOKABLE void rayCast(Box2DRayCast *rayCast,
+                             const QPointF &point1,
+                             const QPointF &point2);
 
 signals:
     void initialized();

@@ -31,6 +31,7 @@
 #include "box2dcontact.h"
 #include "box2dfixture.h"
 #include "box2djoint.h"
+#include "box2draycast.h"
 
 StepDriver::StepDriver(Box2DWorld *world)
     : QAbstractAnimation(world)
@@ -291,6 +292,13 @@ void Box2DWorld::step()
     }
 
     emit stepped();
+}
+
+void Box2DWorld::rayCast(Box2DRayCast *rayCast,
+                         const QPointF &point1,
+                         const QPointF &point2)
+{
+    mWorld.RayCast(rayCast, toMeters(point1), toMeters(point2));
 }
 
 void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)

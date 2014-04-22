@@ -27,82 +27,47 @@
 #define BOX2DRAYCAST_H
 
 #include <QObject>
-#include <QQmlParserStatus>
 #include <QPointF>
-#include <QVariant>
 
 #include <Box2D.h>
 
 class Box2DFixture;
-class Box2DWorld;
 
-class Box2DRayCast : public QObject, public QQmlParserStatus, public b2RayCastCallback
+class Box2DRayCast : public QObject, public b2RayCastCallback
 {
     Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
-    Q_ENUMS(CastResult Loops)
 
-    Q_PROPERTY(QPointF point1 READ point1 WRITE setPoint1 NOTIFY point1Changed)
-    Q_PROPERTY(QPointF point2 READ point2 WRITE setPoint2 NOTIFY point2Changed)
-    Q_PROPERTY(bool repeat READ repeat WRITE setRepeat NOTIFY repeatChanged)
-    Q_PROPERTY(CastResult result READ result WRITE setResult)
-    Q_PROPERTY(bool running READ running WRITE setRunning NOTIFY runningChanged)
-    Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld NOTIFY worldChanged)
+    Q_PROPERTY(float maxFraction READ maxFraction WRITE setMaxFraction)
 
 public:
-    enum CastResult {
-        Ignore = -1,
-        Terminate = 0,
-        Continue = 1,
-        Clip = 2
-    };
-
     Box2DRayCast(QObject *parent = 0);
-    float32 ReportFixture (b2Fixture *fixture, const b2Vec2 &point, const b2Vec2 &normal, float32 fraction);
 
-    void classBegin();
-    void componentComplete();
+    float32 ReportFixture(b2Fixture *fixture,
+                          const b2Vec2 &point,
+                          const b2Vec2 &normal,
+                          float32 fraction);
 
-protected:
-    QPointF point1() const;
-    void setPoint1(const QPointF &point1);
-
-    QPointF point2() const;
-    void setPoint2(const QPointF &point2);
-
-    bool repeat() const;
-    void setRepeat(bool repeat);
-
-    CastResult result() const;
-    void setResult(CastResult result);
-
-    bool running() const;
-    void setRunning(bool running);
-
-    Box2DWorld * world() const;
-    void setWorld(Box2DWorld *world);
-
-    void startLoop(bool start);
-
-private:
-    bool mComponentComplete;
-    b2Vec2 mPoint1;
-    b2Vec2 mPoint2;
-    bool mRepeat;
-    CastResult mResult;
-    bool mRunning;
-    Box2DWorld *mWorld;
-
-private slots:
-    void cast();
+    float maxFraction() const;
+    void setMaxFraction(float maxFraction);
 
 signals:
-    void casted(Box2DFixture *fixture, const QPointF &point, const QPointF &normal, qreal fraction);
-    void point1Changed();
-    void point2Changed();
-    void repeatChanged();
-    void runningChanged();
-    void worldChanged();
+    void fixtureReported(Box2DFixture *fixture,
+                         const QPointF &point,
+                         const QPointF &normal,
+                         qreal fraction);
+
+private:
+    float mMaxFraction;
 };
+
+inline float Box2DRayCast::maxFraction() const
+{
+    return mMaxFraction;
+}
+
+inline void Box2DRayCast::setMaxFraction(float maxFraction)
+{
+    mMaxFraction = maxFraction;
+}
 
 #endif // BOX2DRAYCAST_H

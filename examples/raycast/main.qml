@@ -125,14 +125,11 @@ Rectangle {
         }
 
         RayCast {
-            id: rayCastPermanent
-            world: world
-            repeat: true
-            point1: Qt.point(40,200)
-            point2: Qt.point(fractionSlider.value * 10,200)
-            running: true
-            onCasted: {
-                if(fixture.isBall === true) {
+            id: sensorRay
+            property point point1: Qt.point(40, 200)
+            property point point2: Qt.point(fractionSlider.value * 10, 200)
+            onFixtureReported: {
+                if (fixture.isBall) {
                     intersectionPoint.x = point.x - 5;
                     intersectionPoint.y = point.y - 5;
                     intersectionPoint.opacity = 1;
@@ -142,9 +139,14 @@ Rectangle {
                 }
             }
         }
+        Connections {
+            target: world
+            onStepped: world.rayCast(sensorRay,
+                                     sensorRay.point1,
+                                     sensorRay.point2)
+        }
 
         Rectangle {
-            id: rayPermanent
             x: 40
             y: 200
             width: 10 * fractionSlider.value
@@ -154,19 +156,15 @@ Rectangle {
         }
 
         RayCast {
-            id: rayCastImpulse
-            world: world
-            repeat: false
-            running: false
-            point1: Qt.point(40,300);
-            point2: Qt.point(700,300);
-            onCasted: {
-                fixture.parent.burn = true;
+            id: laserRay
+            onFixtureReported: fixture.parent.burn = true
+            function cast() {
+                world.rayCast(this, Qt.point(40, 300), Qt.point(700, 300))
             }
         }
 
         Rectangle {
-            id: rayImpulse
+            id: laser
             x: 40
             y: 300
             width: 700
@@ -175,7 +173,7 @@ Rectangle {
             opacity: 0
             PropertyAnimation {
                 id: rayImpulseFadeoutAnimation
-                target: rayImpulse
+                target: laser
                 property: "opacity"
                 to: 0
                 duration: 100
@@ -313,8 +311,8 @@ Rectangle {
         running: true
         repeat: true
         onTriggered: {
-            rayCastImpulse.running = true;
-            rayImpulse.opacity = 1;
+            laserRay.cast();
+            laser.opacity = 1;
             rayImpulseFadeoutAnimation.running = true;
         }
     }
