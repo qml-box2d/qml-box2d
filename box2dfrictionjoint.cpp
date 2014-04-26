@@ -101,10 +101,12 @@ b2Joint *Box2DFrictionJoint::createJoint()
         jointDef.localAnchorA = world()->toMeters(m_localAnchorA);
 
     // Default localAnchorB to the same world position as localAnchorA
-    if (m_defaultLocalAnchorB)
-        jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(jointDef.bodyA->GetWorldCenter());
-    else
+    if (m_defaultLocalAnchorB) {
+        b2Vec2 anchorA = jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA);
+        jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(anchorA);
+    } else {
         jointDef.localAnchorB = world()->toMeters(m_localAnchorB);
+    }
 
     jointDef.maxForce = m_maxForce;
     jointDef.maxTorque = m_maxTorque;

@@ -56,11 +56,10 @@ Item {
 
         Body {
             id: rod
-            fixedRotation: false
             sleepingAllowed: false
             bodyType: Body.Dynamic
             x: 350
-            y: 300 - circleShape.radius
+            y: 300
 
             width: 250
             height: 40
@@ -85,16 +84,12 @@ Item {
             sleepingAllowed: false
             bodyType: Body.Static
 
-            width: 40
-            height: width
-
             x: 400
             y: 300
 
             fixtures: Circle {
                 id: circleShape
-                radius: width / 2
-                anchors.fill: parent
+                radius: 20
             }
 
             Rectangle {
@@ -113,7 +108,6 @@ Item {
             bodyA: middle
             bodyB: rod
             localAnchorA: Qt.point(20,20)
-            localAnchorB: Qt.point(40,20)
         }
 
         // Debug
