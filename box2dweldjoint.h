@@ -70,18 +70,40 @@ protected:
     b2Joint *createJoint();
 
 private:
-    b2WeldJointDef mWeldJointDef;
-    bool mAnchorsAuto;
+    QPointF m_localAnchorA;
+    QPointF m_localAnchorB;
+    float m_referenceAngle;
+    float m_frequencyHz;
+    float m_dampingRatio;
+
+    bool m_defaultLocalAnchorA;
+    bool m_defaultLocalAnchorB;
+    bool m_defaultReferenceAngle;
 };
+
+inline QPointF Box2DWeldJoint::localAnchorA() const
+{
+    return m_localAnchorA;
+}
+
+inline QPointF Box2DWeldJoint::localAnchorB() const
+{
+    return m_localAnchorB;
+}
+
+inline float Box2DWeldJoint::referenceAngle() const
+{
+    return m_referenceAngle;
+}
 
 inline float Box2DWeldJoint::frequencyHz() const
 {
-    return mWeldJointDef.frequencyHz;
+    return m_frequencyHz;
 }
 
 inline float Box2DWeldJoint::dampingRatio() const
 {
-    return mWeldJointDef.dampingRatio;
+    return m_dampingRatio;
 }
 
 inline b2WeldJoint *Box2DWeldJoint::weldJoint() const

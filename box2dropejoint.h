@@ -70,6 +70,7 @@ private:
     QPointF m_localAnchorA;
     QPointF m_localAnchorB;
     float m_maxLength;
+
     bool m_defaultLocalAnchorA;
     bool m_defaultLocalAnchorB;
 };

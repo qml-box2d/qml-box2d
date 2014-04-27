@@ -92,6 +92,7 @@ private:
     float m_lengthA;
     float m_lengthB;
     float m_ratio;
+
     bool m_defaultLocalAnchorA;
     bool m_defaultLocalAnchorB;
     bool m_defaultLengthA;
