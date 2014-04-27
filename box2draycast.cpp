@@ -25,8 +25,9 @@
 
 #include "box2draycast.h"
 
+#include "box2dbody.h"
 #include "box2dfixture.h"
-
+#include "box2dworld.h"
 
 Box2DRayCast::Box2DRayCast(QObject *parent) :
     QObject(parent),
@@ -41,9 +42,12 @@ float32 Box2DRayCast::ReportFixture(b2Fixture *fixture,
 {
     mMaxFraction = -1.0f;
 
-    emit fixtureReported(toBox2DFixture(fixture),
-                         toPixels(point),
-                         toPixels(normal),
+    Box2DFixture *box2dFixture = toBox2DFixture(fixture);
+    Box2DWorld *world = box2dFixture->getBody()->world();
+
+    emit fixtureReported(box2dFixture,
+                         world->toPixels(point),
+                         world->toPixels(normal),
                          fraction);
 
     return mMaxFraction;
