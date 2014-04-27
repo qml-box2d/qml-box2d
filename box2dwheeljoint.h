@@ -34,32 +34,17 @@ class Box2DWheelJoint : public Box2DJoint
 {
     Q_OBJECT
 
+    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QPointF localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
     Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
     Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
     Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
-    Q_PROPERTY(QPointF localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
 
 public:
     explicit Box2DWheelJoint(QObject *parent = 0);
-
-    float dampingRatio() const;
-    void setDampingRatio(float dampingRatio);
-
-    float frequencyHz() const;
-    void setFrequencyHz(float frequencyHz);
-
-    float maxMotorTorque() const;
-    void setMaxMotorTorque(float maxMotorTorque);
-
-    float motorSpeed() const;
-    void setMotorSpeed(float motorSpeed);
-
-    bool enableMotor() const;
-    void setEnableMotor(bool enableMotor);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -70,6 +55,21 @@ public:
     QPointF localAxisA() const;
     void setLocalAxisA(const QPointF &localAxisA);
 
+    bool enableMotor() const;
+    void setEnableMotor(bool enableMotor);
+
+    float maxMotorTorque() const;
+    void setMaxMotorTorque(float maxMotorTorque);
+
+    float motorSpeed() const;
+    void setMotorSpeed(float motorSpeed);
+
+    float frequencyHz() const;
+    void setFrequencyHz(float frequencyHz);
+
+    float dampingRatio() const;
+    void setDampingRatio(float dampingRatio);
+
     b2WheelJoint *wheelJoint() const;
 
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
@@ -78,41 +78,71 @@ public:
     Q_INVOKABLE float getJointSpeed() const;
 
 signals:
-    void dampingRatioChanged();
-    void frequencyHzChanged();
-    void maxMotorTorqueChanged();
-    void motorSpeedChanged();
-    void enableMotorChanged();
     void localAnchorAChanged();
     void localAnchorBChanged();
     void localAxisAChanged();
+    void enableMotorChanged();
+    void maxMotorTorqueChanged();
+    void motorSpeedChanged();
+    void frequencyHzChanged();
+    void dampingRatioChanged();
 
 protected:
     b2Joint *createJoint();
 
 private:
-    b2WheelJointDef mWheelJointDef;
-    bool mAnchorsAuto;
+    QPointF m_localAnchorA;
+    QPointF m_localAnchorB;
+    QPointF m_localAxisA;
+    bool m_enableMotor;
+    float m_maxMotorTorque;
+    float m_motorSpeed;
+    float m_frequencyHz;
+    float m_dampingRatio;
+
+    bool m_defaultLocalAnchorA;
+    bool m_defaultLocalAnchorB;
+    bool m_defaultLocalAxisA;
 };
 
-inline float Box2DWheelJoint::dampingRatio() const
+inline QPointF Box2DWheelJoint::localAnchorA() const
 {
-    return mWheelJointDef.dampingRatio;
+    return m_localAnchorA;
 }
 
-inline float Box2DWheelJoint::frequencyHz() const
+inline QPointF Box2DWheelJoint::localAnchorB() const
 {
-    return mWheelJointDef.frequencyHz;
+    return m_localAnchorB;
 }
 
-inline float Box2DWheelJoint::maxMotorTorque() const
+inline QPointF Box2DWheelJoint::localAxisA() const
 {
-    return mWheelJointDef.maxMotorTorque;
+    return m_localAxisA;
 }
 
 inline bool Box2DWheelJoint::enableMotor() const
 {
-    return mWheelJointDef.enableMotor;
+    return m_enableMotor;
+}
+
+inline float Box2DWheelJoint::maxMotorTorque() const
+{
+    return m_maxMotorTorque;
+}
+
+inline float Box2DWheelJoint::motorSpeed() const
+{
+    return m_motorSpeed;
+}
+
+inline float Box2DWheelJoint::frequencyHz() const
+{
+    return m_frequencyHz;
+}
+
+inline float Box2DWheelJoint::dampingRatio() const
+{
+    return m_dampingRatio;
 }
 
 inline b2WheelJoint *Box2DWheelJoint::wheelJoint() const
