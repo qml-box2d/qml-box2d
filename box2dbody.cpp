@@ -338,6 +338,13 @@ QPointF Box2DBody::getWorldCenter() const
     return QPointF();
 }
 
+QPointF Box2DBody::getLocalCenter() const
+{
+    if (mBody)
+        return mWorld->toPixels(mBody->GetLocalCenter());
+    return QPointF();
+}
+
 void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 {
     if (mBody)
@@ -364,6 +371,34 @@ void Box2DBody::resetMassData()
 float Box2DBody::getInertia() const
 {
     return mBody ? mBody->GetInertia() : 0.0;
+}
+
+QPointF Box2DBody::toWorldPoint(const QPointF &localPoint) const
+{
+    if (mBody)
+        return mWorld->toPixels(mBody->GetWorldPoint(mWorld->toMeters(localPoint)));
+    return QPointF();
+}
+
+QPointF Box2DBody::toWorldVector(const QPointF &localVector) const
+{
+    if (mBody)
+        return mWorld->toPixels(mBody->GetWorldVector(mWorld->toMeters(localVector)));
+    return QPointF();
+}
+
+QPointF Box2DBody::toLocalPoint(const QPointF &worldPoint) const
+{
+    if (mBody)
+        return mWorld->toPixels(mBody->GetLocalPoint(mWorld->toMeters(worldPoint)));
+    return QPointF();
+}
+
+QPointF Box2DBody::toLocalVector(const QPointF &worldVector) const
+{
+    if (mBody)
+        return mWorld->toPixels(mBody->GetLocalVector(mWorld->toMeters(worldVector)));
+    return QPointF();
 }
 
 QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
