@@ -113,9 +113,14 @@ public:
     Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
     Q_INVOKABLE void applyAngularImpulse(qreal impulse);
     Q_INVOKABLE QPointF getWorldCenter() const;
+    Q_INVOKABLE QPointF getLocalCenter() const;
     Q_INVOKABLE float getMass() const;
     Q_INVOKABLE void resetMassData();
     Q_INVOKABLE float getInertia() const;
+    Q_INVOKABLE QPointF toWorldPoint(const QPointF &localPoint) const;
+    Q_INVOKABLE QPointF toWorldVector(const QPointF &localVector) const;
+    Q_INVOKABLE QPointF toLocalPoint(const QPointF &worldPoint) const;
+    Q_INVOKABLE QPointF toLocalVector(const QPointF &worldVector) const;
     Q_INVOKABLE QPointF getLinearVelocityFromWorldPoint(const QPointF &point) const;
     Q_INVOKABLE QPointF getLinearVelocityFromLocalPoint(const QPointF &point) const;
     Q_INVOKABLE void addFixture(Box2DFixture *fixture);
