@@ -19,7 +19,7 @@ Rectangle {
             fixtures: Circle {
                 radius: parent.width / 2
                 anchors.centerIn: parent
-                density: 0.1
+                density: 10
                 friction: 0.3
                 restitution: 0.5
             }
@@ -41,18 +41,16 @@ Rectangle {
             id: cords
             anchors.fill: parent
             onPaint: {
-                var x = bodyA.x + 100
-                var y = bodyA.y
+                var bodyACenter = bodyA.getWorldCenter();
+                var bodyBCenter = bodyB.getWorldCenter();
                 var context = cords.getContext("2d");
-                context.clearRect (0, 0, width, height);
+                context.clearRect(0, 0, width, height);
                 context.beginPath();
                 context.moveTo(225,100);
                 context.lineTo(575,100);
-                context.moveTo(x,y);
+                context.moveTo(bodyACenter.x, bodyACenter.y);
                 context.lineTo(225,100);
-                x = bodyB.x + 100
-                y = bodyB.y
-                context.moveTo(x,y);
+                context.moveTo(bodyBCenter.x, bodyBCenter.y);
                 context.lineTo(575,100);
                 context.strokeStyle = "grey";
                 context.stroke();
@@ -71,7 +69,6 @@ Rectangle {
             fixtures: Box {
                 anchors.fill: parent
                 friction: 1
-                density: 1
             }
             Rectangle {
                 anchors.fill: parent
@@ -158,18 +155,21 @@ Rectangle {
                 Box {
                     anchors.fill: parent
                     anchors.topMargin: 40
+                    density: 10
                 },
                 Box {
-                    x:0
+                    x: 0
                     y: 0
                     width: 10
                     height: 40
+                    density: 10
                 },
                 Box {
                     x:190
                     y: 0
                     width: 10
                     height: 40
+                    density: 10
                 }
 
             ]
@@ -210,18 +210,21 @@ Rectangle {
                 Box {
                     anchors.fill: parent
                     anchors.topMargin: 40
+                    density: 10
                 },
                 Box {
                     x:0
                     y: 0
                     width: 10
                     height: 40
+                    density: 10
                 },
                 Box {
                     x:190
                     y: 0
                     width: 10
                     height: 40
+                    density: 10
                 }
 
             ]
@@ -254,7 +257,6 @@ Rectangle {
             localAnchorB: Qt.point(100,0)
             lengthA: 150
             lengthB: 150
-            ratio: 1
         }
 
         Body {
@@ -271,7 +273,6 @@ Rectangle {
                     width: 84
                     height: parent.height
                     friction: 0.2
-                    density: 0.8
                 },
                 Box {
                     x: 286
@@ -279,7 +280,6 @@ Rectangle {
                     width: 148
                     height: parent.height
                     friction: 0.2
-                    density: 0.8
                 },
                 Box {
                     x: 636
@@ -287,9 +287,7 @@ Rectangle {
                     width: 84
                     height: parent.height
                     friction: 0.2
-                    density: 0.8
                 }
-
             ]
             Rectangle {
                 x: 0
@@ -353,7 +351,7 @@ Rectangle {
             bodyType: Body.Dynamic
             fixtures: Box {
                 anchors.fill: parent
-                density: 0.3
+                density: 10
                 friction: 0.5
             }
             Rectangle {
@@ -372,7 +370,7 @@ Rectangle {
             fixtures: Circle {
                 anchors.fill: parent
                 radius: 30
-                density: 0.8
+                density: 20
                 friction: 0.9
             }
             Rectangle {

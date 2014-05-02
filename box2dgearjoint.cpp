@@ -27,10 +27,11 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DGearJoint::Box2DGearJoint(QObject *parent) :
-    Box2DJoint(mGearJointDef, parent),
-    mJoint1(0),
-    mJoint2(0)
+Box2DGearJoint::Box2DGearJoint(QObject *parent)
+    : Box2DJoint(GearJoint, parent)
+    , m_joint1(0)
+    , m_joint2(0)
+    , m_ratio(1.0f)
 {
 }
 
@@ -40,10 +41,10 @@ void Box2DGearJoint::setRatio(float ratio)
         qWarning() << "GearJoint: Invalid ratio:" << ratio;
         return;
     }
-    if (mGearJointDef.ratio == ratio)
+    if (m_ratio == ratio)
         return;
 
-    mGearJointDef.ratio = ratio;
+    m_ratio = ratio;
     if (gearJoint())
         gearJoint()->SetRatio(ratio);
     emit ratioChanged();
@@ -61,7 +62,7 @@ static bool validJoint(Box2DJoint *joint)
 
 void Box2DGearJoint::setJoint1(Box2DJoint *joint1)
 {
-    if (mJoint1 == joint1)
+    if (m_joint1 == joint1)
         return;
 
     if (!validJoint(joint1)) {
@@ -69,7 +70,7 @@ void Box2DGearJoint::setJoint1(Box2DJoint *joint1)
         joint1 = 0;
     }
 
-    mJoint1 = joint1;
+    m_joint1 = joint1;
 
     if (!joint1 || joint1->joint())
         initialize();
@@ -81,7 +82,7 @@ void Box2DGearJoint::setJoint1(Box2DJoint *joint1)
 
 void Box2DGearJoint::setJoint2(Box2DJoint *joint2)
 {
-    if (mJoint2 == joint2)
+    if (m_joint2 == joint2)
         return;
 
     if (!validJoint(joint2)) {
@@ -89,7 +90,7 @@ void Box2DGearJoint::setJoint2(Box2DJoint *joint2)
         joint2 = 0;
     }
 
-    mJoint2 = joint2;
+    m_joint2 = joint2;
 
     if (!joint2 || joint2->joint())
         initialize();
@@ -101,25 +102,29 @@ void Box2DGearJoint::setJoint2(Box2DJoint *joint2)
 
 b2Joint *Box2DGearJoint::createJoint()
 {
-    if (!mJoint1 || !mJoint2)
+    if (!m_joint1 || !m_joint2)
         return 0;
-    if (!mJoint1->joint() || !mJoint2->joint())
+    if (!m_joint1->joint() || !m_joint2->joint())
         return 0;
 
-    mGearJointDef.joint1 = mJoint1->joint();
-    mGearJointDef.joint2 = mJoint2->joint();
+    b2GearJointDef jointDef;
+    initializeJointDef(jointDef);
 
-    return world()->world().CreateJoint(&mGearJointDef);
+    jointDef.joint1 = m_joint1->joint();
+    jointDef.joint2 = m_joint2->joint();
+    jointDef.ratio = m_ratio;
+
+    return world()->world().CreateJoint(&jointDef);
 }
 
 void Box2DGearJoint::joint1Created()
 {
-    disconnect(mJoint1, SIGNAL(created()), this, SLOT(joint1Created()));
+    disconnect(m_joint1, SIGNAL(created()), this, SLOT(joint1Created()));
     initialize();
 }
 
 void Box2DGearJoint::joint2Created()
 {
-    disconnect(mJoint2, SIGNAL(created()), this, SLOT(joint2Created()));
+    disconnect(m_joint2, SIGNAL(created()), this, SLOT(joint2Created()));
     initialize();
 }

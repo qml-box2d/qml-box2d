@@ -26,84 +26,108 @@
 #include "box2dprismaticjoint.h"
 
 #include "box2dworld.h"
-#include "box2dbody.h"
 
-Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent) :
-    Box2DJoint(mPrismaticJointDef, parent),
-    mAnchorsAuto(true)
+Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent)
+    : Box2DJoint(PrismaticJoint, parent)
+    , m_localAxisA(1.0, 0.0)
+    , m_referenceAngle(0.0f)
+    , m_enableLimit(false)
+    , m_lowerTranslation(0.0f)
+    , m_upperTranslation(0.0f)
+    , m_enableMotor(false)
+    , m_maxMotorForce(0.0f)
+    , m_motorSpeed(0.0f)
+    , m_defaultLocalAnchorA(true)
+    , m_defaultLocalAnchorB(true)
+    , m_defaultReferenceAngle(true)
 {
 }
 
-float Box2DPrismaticJoint::lowerTranslation() const
+void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    return world()->toPixels(mPrismaticJointDef.lowerTranslation);
+    m_defaultLocalAnchorA = false;
+
+    if (m_localAnchorA == localAnchorA)
+        return;
+
+    m_localAnchorA = localAnchorA;
+    emit localAnchorAChanged();
+}
+
+void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
+{
+    m_defaultLocalAnchorB = false;
+
+    if (m_localAnchorB == localAnchorB)
+        return;
+
+    m_localAnchorB = localAnchorB;
+    emit localAnchorBChanged();
+}
+
+void Box2DPrismaticJoint::setLocalAxisA(const QPointF &localAxisA)
+{
+    if (m_localAxisA == localAxisA)
+        return;
+
+    m_localAxisA = localAxisA;
+    emit localAxisAChanged();
 }
 
 void Box2DPrismaticJoint::setLowerTranslation(float lowerTranslation)
 {
-    const float lowerTranslationMeters = world()->toMeters(lowerTranslation);
-    if (mPrismaticJointDef.lowerTranslation == lowerTranslationMeters)
+    if (m_lowerTranslation == lowerTranslation)
         return;
 
-    mPrismaticJointDef.lowerTranslation = lowerTranslationMeters;
-    if (prismaticJoint())
-        prismaticJoint()->SetLimits(mPrismaticJointDef.lowerTranslation,
-                                    mPrismaticJointDef.upperTranslation);
+    m_lowerTranslation = lowerTranslation;
+    if (prismaticJoint()) {
+        prismaticJoint()->SetLimits(world()->toMeters(lowerTranslation),
+                                    prismaticJoint()->GetUpperLimit());
+    }
     emit lowerTranslationChanged();
-}
-
-float Box2DPrismaticJoint::upperTranslation() const
-{
-    return world()->toPixels(mPrismaticJointDef.upperTranslation);
 }
 
 void Box2DPrismaticJoint::setUpperTranslation(float upperTranslation)
 {
-    const float upperTranslationMeters = world()->toMeters(upperTranslation);
-    if (mPrismaticJointDef.upperTranslation == upperTranslationMeters)
+    if (m_upperTranslation == upperTranslation)
         return;
 
-    mPrismaticJointDef.upperTranslation = upperTranslationMeters;
-    if (prismaticJoint())
-        prismaticJoint()->SetLimits(mPrismaticJointDef.lowerTranslation,
-                                    mPrismaticJointDef.upperTranslation);
+    m_upperTranslation = upperTranslation;
+    if (prismaticJoint()) {
+        prismaticJoint()->SetLimits(prismaticJoint()->GetLowerLimit(),
+                                    world()->toMeters(upperTranslation));
+    }
     emit upperTranslationChanged();
 }
 
 void Box2DPrismaticJoint::setMaxMotorForce(float maxMotorForce)
 {
-    if (mPrismaticJointDef.maxMotorForce == maxMotorForce)
+    if (m_maxMotorForce == maxMotorForce)
         return;
 
-    mPrismaticJointDef.maxMotorForce = maxMotorForce;
+    m_maxMotorForce = maxMotorForce;
     if (prismaticJoint())
         prismaticJoint()->SetMaxMotorForce(maxMotorForce);
     emit maxMotorForceChanged();
 }
 
-float Box2DPrismaticJoint::motorSpeed() const
-{
-    return toDegrees(mPrismaticJointDef.motorSpeed);
-}
-
 void Box2DPrismaticJoint::setMotorSpeed(float motorSpeed)
 {
-    const float motorSpeedRad = toRadians(motorSpeed);
-    if (mPrismaticJointDef.motorSpeed == motorSpeedRad)
+    if (m_motorSpeed == motorSpeed)
         return;
 
-    mPrismaticJointDef.motorSpeed = motorSpeedRad;
+    m_motorSpeed = motorSpeed;
     if (prismaticJoint())
-        prismaticJoint()->SetMotorSpeed(motorSpeedRad);
+        prismaticJoint()->SetMotorSpeed(toRadians(motorSpeed));
     emit motorSpeedChanged();
 }
 
 void Box2DPrismaticJoint::setEnableLimit(bool enableLimit)
 {
-    if (mPrismaticJointDef.enableLimit == enableLimit)
+    if (m_enableLimit == enableLimit)
         return;
 
-    mPrismaticJointDef.enableLimit = enableLimit;
+    m_enableLimit = enableLimit;
     if (prismaticJoint())
         prismaticJoint()->EnableLimit(enableLimit);
     emit enableLimitChanged();
@@ -111,75 +135,75 @@ void Box2DPrismaticJoint::setEnableLimit(bool enableLimit)
 
 void Box2DPrismaticJoint::setEnableMotor(bool enableMotor)
 {
-    if (mPrismaticJointDef.enableMotor == enableMotor)
+    if (m_enableMotor == enableMotor)
         return;
 
-    mPrismaticJointDef.enableMotor = enableMotor;
+    m_enableMotor = enableMotor;
     if (prismaticJoint())
         prismaticJoint()->EnableMotor(enableMotor);
     emit enableMotorChanged();
 }
 
-QPointF Box2DPrismaticJoint::axis() const
+void Box2DPrismaticJoint::setReferenceAngle(float referenceAngle)
 {
-    return world()->toPixels(mPrismaticJointDef.localAxisA);
-}
+    m_defaultReferenceAngle = false;
 
-void Box2DPrismaticJoint::setAxis(const QPointF &axis)
-{
-    mPrismaticJointDef.localAxisA = invertY(axis);
-    mPrismaticJointDef.localAxisA.Normalize();
-    emit axisChanged();
-}
+    if (m_referenceAngle == referenceAngle)
+        return;
 
-QPointF Box2DPrismaticJoint::localAnchorA() const
-{
-    return world()->toPixels(mPrismaticJointDef.localAnchorA);
-}
-
-QPointF Box2DPrismaticJoint::localAnchorB() const
-{
-    return world()->toPixels(mPrismaticJointDef.localAnchorB);
-}
-
-void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
-{
-    mPrismaticJointDef.localAnchorA = world()->toMeters(localAnchorA);
-    mAnchorsAuto = false;
-    emit localAnchorAChanged();
-}
-
-void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
-{
-    mPrismaticJointDef.localAnchorB = world()->toMeters(localAnchorB);
-    mAnchorsAuto = false;
-    emit localAnchorBChanged();
+    m_referenceAngle = referenceAngle;
+    emit referenceAngleChanged();
 }
 
 b2Joint *Box2DPrismaticJoint::createJoint()
 {
-    if (mAnchorsAuto) {
-        mPrismaticJointDef.Initialize(mPrismaticJointDef.bodyA,
-                                      mPrismaticJointDef.bodyB,
-                                      mPrismaticJointDef.bodyA->GetWorldCenter(),
-                                      mPrismaticJointDef.localAxisA);
+    b2PrismaticJointDef jointDef;
+    initializeJointDef(jointDef);
+
+    // Default localAnchorA to bodyA center
+    if (m_defaultLocalAnchorA)
+        jointDef.localAnchorA = jointDef.bodyA->GetLocalCenter();
+    else
+        jointDef.localAnchorA = world()->toMeters(m_localAnchorA);
+
+    // Default localAnchorB to the same world position as localAnchorA
+    if (m_defaultLocalAnchorB) {
+        b2Vec2 anchorA = jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA);
+        jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(anchorA);
     } else {
-        mPrismaticJointDef.referenceAngle = 0.0;
+        jointDef.localAnchorB = world()->toMeters(m_localAnchorB);
     }
 
-    return world()->world().CreateJoint(&mPrismaticJointDef);
+    jointDef.localAxisA = invertY(m_localAxisA);
+
+    if (m_defaultReferenceAngle) {
+        float32 angleA = jointDef.bodyA->GetAngle();
+        float32 angleB = jointDef.bodyB->GetAngle();
+        jointDef.referenceAngle = angleB - angleA;
+    } else {
+        jointDef.referenceAngle = toRadians(m_referenceAngle);
+    }
+
+    jointDef.enableLimit = m_enableLimit;
+    jointDef.lowerTranslation = world()->toMeters(m_lowerTranslation);
+    jointDef.upperTranslation = world()->toMeters(m_upperTranslation);
+    jointDef.enableMotor = m_enableMotor;
+    jointDef.maxMotorForce = m_maxMotorForce;
+    jointDef.motorSpeed = toRadians(m_motorSpeed);
+
+    return world()->world().CreateJoint(&jointDef);
 }
 
 float Box2DPrismaticJoint::getJointTranslation() const
 {
     if (prismaticJoint())
         return world()->toPixels(prismaticJoint()->GetJointTranslation());
-    return 0.0;
+    return 0.0f;
 }
 
 float Box2DPrismaticJoint::getJointSpeed() const
 {
     if (prismaticJoint())
         return prismaticJoint()->GetJointSpeed();
-    return 0.0;
+    return 0.0f;
 }

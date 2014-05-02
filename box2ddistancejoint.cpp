@@ -28,34 +28,57 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent) :
-    Box2DJoint(mDistanceJointDef, parent),
-    mAnchorsAuto(true)
+Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent)
+    : Box2DJoint(DistanceJoint, parent)
+    , m_length(1.0f)
+    , m_frequencyHz(0.0f)
+    , m_dampingRatio(0.0f)
+    , m_defaultLocalAnchorA(true)
+    , m_defaultLocalAnchorB(true)
+    , m_defaultLength(true)
 {
 }
 
-float Box2DDistanceJoint::length() const
+void Box2DDistanceJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    return world()->toPixels(mDistanceJointDef.length);
+    m_defaultLocalAnchorA = false;
+
+    if (m_localAnchorA == localAnchorA)
+        return;
+
+    m_localAnchorA = localAnchorA;
+    emit localAnchorAChanged();
+}
+
+void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
+{
+    m_defaultLocalAnchorB = false;
+
+    if (m_localAnchorB == localAnchorB)
+        return;
+
+    m_localAnchorB = localAnchorB;
+    emit localAnchorBChanged();
 }
 
 void Box2DDistanceJoint::setLength(float length)
 {
-    if (mDistanceJointDef.length == world()->toMeters(length))
+    if (m_length == length)
         return;
 
-    mDistanceJointDef.length = world()->toMeters(length);
+    m_length = length;
+    m_defaultLength = false;
     if (distanceJoint())
-        distanceJoint()->SetLength(mDistanceJointDef.length);
+        distanceJoint()->SetLength(world()->toMeters(length));
     emit lengthChanged();
 }
 
 void Box2DDistanceJoint::setFrequencyHz(float frequencyHz)
 {
-    if (mDistanceJointDef.frequencyHz == frequencyHz)
+    if (m_frequencyHz == frequencyHz)
         return;
 
-    mDistanceJointDef.frequencyHz = frequencyHz;
+    m_frequencyHz = frequencyHz;
     if (distanceJoint())
         distanceJoint()->SetFrequency(frequencyHz);
     emit frequencyHzChanged();
@@ -63,49 +86,45 @@ void Box2DDistanceJoint::setFrequencyHz(float frequencyHz)
 
 void Box2DDistanceJoint::setDampingRatio(float dampingRatio)
 {
-    if (mDistanceJointDef.dampingRatio == dampingRatio)
+    if (m_dampingRatio == dampingRatio)
         return;
 
-    mDistanceJointDef.dampingRatio = dampingRatio;
+    m_dampingRatio = dampingRatio;
     if (distanceJoint())
         distanceJoint()->SetDampingRatio(dampingRatio);
     emit dampingRatioChanged();
 }
 
-QPointF Box2DDistanceJoint::localAnchorA() const
-{
-    return world()->toPixels(mDistanceJointDef.localAnchorA);
-}
-
-void Box2DDistanceJoint::setLocalAnchorA(const QPointF &localAnchorA)
-{
-    mDistanceJointDef.localAnchorA = world()->toMeters(localAnchorA);
-    mAnchorsAuto = false;
-    emit localAnchorBChanged();
-}
-
-QPointF Box2DDistanceJoint::localAnchorB() const
-{
-    return world()->toPixels(mDistanceJointDef.localAnchorB);
-}
-
-void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
-{
-    mDistanceJointDef.localAnchorB = world()->toMeters(localAnchorB);
-    mAnchorsAuto = false;
-    emit localAnchorBChanged();
-}
-
 b2Joint *Box2DDistanceJoint::createJoint()
 {
-    if (mAnchorsAuto) {
-        mDistanceJointDef.Initialize(mDistanceJointDef.bodyA,
-                                     mDistanceJointDef.bodyB,
-                                     mDistanceJointDef.bodyA->GetWorldCenter(),
-                                     mDistanceJointDef.bodyB->GetWorldCenter());
+    b2DistanceJointDef jointDef;
+    initializeJointDef(jointDef);
+
+    // Default to bodyA center
+    if (m_defaultLocalAnchorA)
+        jointDef.localAnchorA = jointDef.bodyA->GetLocalCenter();
+    else
+        jointDef.localAnchorA = world()->toMeters(m_localAnchorA);
+
+    // Default to bodyB center
+    if (m_defaultLocalAnchorB)
+        jointDef.localAnchorB = jointDef.bodyB->GetLocalCenter();
+    else
+        jointDef.localAnchorB = world()->toMeters(m_localAnchorB);
+
+    // Default to length between anchors
+    if (m_defaultLength) {
+        b2Vec2 a = jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA);
+        b2Vec2 b = jointDef.bodyB->GetWorldPoint(jointDef.localAnchorB);
+        jointDef.length = (b - a).Length();
+    } else {
+        jointDef.length = world()->toMeters(m_length);
     }
 
-    return world()->world().CreateJoint(&mDistanceJointDef);
+    jointDef.frequencyHz = m_frequencyHz;
+    jointDef.dampingRatio = m_dampingRatio;
+
+    return world()->world().CreateJoint(&jointDef);
 }
 
 QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const

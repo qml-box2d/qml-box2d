@@ -64,7 +64,7 @@ public:
         MotorJoint
     };
 
-    Box2DJoint(b2JointDef &jointDef, QObject *parent = 0);
+    Box2DJoint(JointType jointType, QObject *parent = 0);
     ~Box2DJoint();
 
     JointType jointType() const;
@@ -90,6 +90,7 @@ public:
 
 protected:
     virtual b2Joint *createJoint() = 0;
+    void initializeJointDef(b2JointDef &def);
 
 private slots:
     void bodyACreated();
@@ -102,7 +103,8 @@ signals:
     void created();
 
 private:
-    b2JointDef &mJointDef;
+    JointType mJointType;
+    bool mCollideConnected;
     bool mComponentComplete;
     bool mInitializePending;
     Box2DBody *mBodyA;
@@ -113,12 +115,12 @@ private:
 
 inline Box2DJoint::JointType Box2DJoint::jointType() const
 {
-    return static_cast<JointType>(mJointDef.type);
+    return mJointType;
 }
 
 inline bool Box2DJoint::collideConnected() const
 {
-    return mJointDef.collideConnected;
+    return mCollideConnected;
 }
 
 inline Box2DBody *Box2DJoint::bodyA() const

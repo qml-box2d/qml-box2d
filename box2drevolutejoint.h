@@ -34,35 +34,18 @@ class Box2DRevoluteJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(float lowerAngle READ lowerAngle WRITE setLowerAngle NOTIFY lowerAngleChanged)
-    Q_PROPERTY(float upperAngle READ upperAngle WRITE setUpperAngle NOTIFY upperAngleChanged)
-    Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
-    Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
-    Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
-    Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
+    Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
+    Q_PROPERTY(float lowerAngle READ lowerAngle WRITE setLowerAngle NOTIFY lowerAngleChanged)
+    Q_PROPERTY(float upperAngle READ upperAngle WRITE setUpperAngle NOTIFY upperAngleChanged)
+    Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
+    Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
+    Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
 
 public:
     explicit Box2DRevoluteJoint(QObject *parent = 0);
-
-    float lowerAngle() const;
-    void setLowerAngle(float lowerAngle);
-
-    float upperAngle() const;
-    void setUpperAngle(float upperAngle);
-
-    float maxMotorTorque() const;
-    void setMaxMotorTorque(float maxMotorTorque);
-
-    float motorSpeed() const;
-    void setMotorSpeed(float motorSpeed);
-
-    bool enableLimit() const;
-    void setEnableLimit(bool enableLimit);
-
-    bool enableMotor() const;
-    void setEnableMotor(bool enableMotor);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -70,42 +53,104 @@ public:
     QPointF localAnchorB() const;
     void setLocalAnchorB(const QPointF &localAnchorB);
 
+    float referenceAngle() const;
+    void setReferenceAngle(float referenceAngle);
+
+    bool enableLimit() const;
+    void setEnableLimit(bool enableLimit);
+
+    float lowerAngle() const;
+    void setLowerAngle(float lowerAngle);
+
+    float upperAngle() const;
+    void setUpperAngle(float upperAngle);
+
+    bool enableMotor() const;
+    void setEnableMotor(bool enableMotor);
+
+    float motorSpeed() const;
+    void setMotorSpeed(float motorSpeed);
+
+    float maxMotorTorque() const;
+    void setMaxMotorTorque(float maxMotorTorque);
+
     b2RevoluteJoint *revoluteJoint() const;
 
     Q_INVOKABLE float getJointAngle() const;
     Q_INVOKABLE float getJointSpeed() const;
 
 signals:
-    void lowerAngleChanged();
-    void upperAngleChanged();
-    void maxMotorTorqueChanged();
-    void motorSpeedChanged();
-    void enableLimitChanged();
-    void enableMotorChanged();
     void localAnchorAChanged();
     void localAnchorBChanged();
+    void referenceAngleChanged();
+    void enableLimitChanged();
+    void lowerAngleChanged();
+    void upperAngleChanged();
+    void enableMotorChanged();
+    void motorSpeedChanged();
+    void maxMotorTorqueChanged();
 
 protected:
     b2Joint *createJoint();
 
 private:
-    b2RevoluteJointDef mRevoluteJointDef;
-    bool mAnchorsAuto;
+    QPointF m_localAnchorA;
+    QPointF m_localAnchorB;
+    float m_referenceAngle;
+    bool m_enableLimit;
+    float m_lowerAngle;
+    float m_upperAngle;
+    bool m_enableMotor;
+    float m_motorSpeed;
+    float m_maxMotorTorque;
+    bool m_defaultLocalAnchorA;
+    bool m_defaultLocalAnchorB;
+    bool m_defaultReferenceAngle;
 };
+
+inline QPointF Box2DRevoluteJoint::localAnchorA() const
+{
+    return m_localAnchorA;
+}
+
+inline QPointF Box2DRevoluteJoint::localAnchorB() const
+{
+    return m_localAnchorB;
+}
+
+inline float Box2DRevoluteJoint::referenceAngle() const
+{
+    return m_referenceAngle;
+}
+
+inline float Box2DRevoluteJoint::lowerAngle() const
+{
+    return m_lowerAngle;
+}
+
+inline float Box2DRevoluteJoint::upperAngle() const
+{
+    return m_upperAngle;
+}
 
 inline float Box2DRevoluteJoint::maxMotorTorque() const
 {
-    return mRevoluteJointDef.maxMotorTorque;
+    return m_maxMotorTorque;
+}
+
+inline float Box2DRevoluteJoint::motorSpeed() const
+{
+    return m_motorSpeed;
 }
 
 inline bool Box2DRevoluteJoint::enableLimit() const
 {
-    return mRevoluteJointDef.enableLimit;
+    return m_enableLimit;
 }
 
 inline bool Box2DRevoluteJoint::enableMotor() const
 {
-    return mRevoluteJointDef.enableMotor;
+    return m_enableMotor;
 }
 
 inline b2RevoluteJoint *Box2DRevoluteJoint::revoluteJoint() const

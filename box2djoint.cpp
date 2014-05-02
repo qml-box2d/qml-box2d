@@ -27,9 +27,10 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DJoint::Box2DJoint(b2JointDef &jointDef, QObject *parent) :
+Box2DJoint::Box2DJoint(JointType jointType, QObject *parent) :
     QObject(parent),
-    mJointDef(jointDef),
+    mJointType(jointType),
+    mCollideConnected(false),
     mComponentComplete(false),
     mInitializePending(false),
     mBodyA(0),
@@ -47,10 +48,10 @@ Box2DJoint::~Box2DJoint()
 
 void Box2DJoint::setCollideConnected(bool collideConnected)
 {
-    if (mJointDef.collideConnected == collideConnected)
+    if (mCollideConnected == collideConnected)
         return;
 
-    mJointDef.collideConnected = collideConnected;
+    mCollideConnected = collideConnected;
 
     emit collideConnectedChanged();
 }
@@ -116,9 +117,6 @@ void Box2DJoint::initialize()
         return;
     }
 
-    mJointDef.userData = this;
-    mJointDef.bodyA = bodyA()->body();
-    mJointDef.bodyB = bodyB()->body();
     mWorld = mBodyA->world();
     mJoint = createJoint();
     if (mJoint)
@@ -130,6 +128,14 @@ void Box2DJoint::componentComplete()
     mComponentComplete = true;
     if (mInitializePending)
         initialize();
+}
+
+void Box2DJoint::initializeJointDef(b2JointDef &def)
+{
+    def.userData = this;
+    def.bodyA = bodyA()->body();
+    def.bodyB = bodyB()->body();
+    def.collideConnected = mCollideConnected;
 }
 
 void Box2DJoint::bodyACreated()

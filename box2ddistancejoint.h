@@ -33,14 +33,20 @@ class Box2DDistanceJoint : public Box2DJoint
 {
     Q_OBJECT
 
+    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
     Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
 
 public:
     explicit Box2DDistanceJoint(QObject *parent = 0);
+
+    QPointF localAnchorA() const;
+    void setLocalAnchorA(const QPointF &localAnchorA);
+
+    QPointF localAnchorB() const;
+    void setLocalAnchorB(const QPointF &localAnchorB);
 
     float length() const;
     void setLength(float length);
@@ -51,40 +57,55 @@ public:
     float dampingRatio() const;
     void setDampingRatio(float dampingRatio);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
-
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
-
     b2DistanceJoint *distanceJoint() const;
 
     Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
 signals:
+    void localAnchorAChanged();
+    void localAnchorBChanged();
     void lengthChanged();
     void frequencyHzChanged();
     void dampingRatioChanged();
-    void localAnchorAChanged();
-    void localAnchorBChanged();
 
 protected:
     b2Joint *createJoint();
 
 private:
-    b2DistanceJointDef mDistanceJointDef;
-    bool mAnchorsAuto;
+    QPointF m_localAnchorA;
+    QPointF m_localAnchorB;
+    float m_length;
+    float m_frequencyHz;
+    float m_dampingRatio;
+    bool m_defaultLocalAnchorA;
+    bool m_defaultLocalAnchorB;
+    bool m_defaultLength;
 };
+
+inline QPointF Box2DDistanceJoint::localAnchorA() const
+{
+    return m_localAnchorA;
+}
+
+inline QPointF Box2DDistanceJoint::localAnchorB() const
+{
+    return m_localAnchorB;
+}
+
+inline float Box2DDistanceJoint::length() const
+{
+    return m_length;
+}
 
 inline float Box2DDistanceJoint::frequencyHz() const
 {
-    return mDistanceJointDef.frequencyHz;
+    return m_frequencyHz;
 }
 
 inline float Box2DDistanceJoint::dampingRatio() const
 {
-    return mDistanceJointDef.dampingRatio;
+    return m_dampingRatio;
 }
 
 inline b2DistanceJoint *Box2DDistanceJoint::distanceJoint() const

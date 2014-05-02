@@ -29,51 +29,49 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DMotorJoint::Box2DMotorJoint(QObject *parent) :
-    Box2DJoint(mMotorJointDef, parent)
+Box2DMotorJoint::Box2DMotorJoint(QObject *parent)
+    : Box2DJoint(MotorJoint, parent)
+    , m_angularOffset(0.0f)
+    , m_maxForce(1.0f)
+    , m_maxTorque(1.0f)
+    , m_correctionFactor(0.3f)
+    , m_defaultLinearOffset(true)
+    , m_defaultAngularOffset(true)
 {
-}
-
-QPointF Box2DMotorJoint::linearOffset() const
-{
-    return world()->toPixels(mMotorJointDef.linearOffset);
 }
 
 void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
 {
-    const b2Vec2 linearOffsetMeters = world()->toMeters(linearOffset);
-    if (mMotorJointDef.linearOffset == linearOffsetMeters)
+    m_defaultLinearOffset = false;
+
+    if (m_linearOffset == linearOffset)
         return;
 
-    mMotorJointDef.linearOffset = linearOffsetMeters;
+    m_linearOffset = linearOffset;
     if (motorJoint())
-        motorJoint()->SetLinearOffset(linearOffsetMeters);
+        motorJoint()->SetLinearOffset(world()->toMeters(linearOffset));
     emit linearOffsetChanged();
-}
-
-float Box2DMotorJoint::angularOffset() const
-{
-    return toDegrees(mMotorJointDef.angularOffset);
 }
 
 void Box2DMotorJoint::setAngularOffset(float angularOffset)
 {
-    const float angularOffsetRad = toRadians(angularOffset);
-    if (mMotorJointDef.angularOffset == angularOffsetRad)
+    m_defaultAngularOffset = false;
+
+    if (m_angularOffset == angularOffset)
         return;
 
-    mMotorJointDef.angularOffset = angularOffsetRad;
+    m_angularOffset = angularOffset;
     if (motorJoint())
-        motorJoint()->SetAngularOffset(angularOffsetRad);
+        motorJoint()->SetAngularOffset(toRadians(angularOffset));
     emit angularOffsetChanged();
 }
 
 void Box2DMotorJoint::setMaxForce(float maxForce)
 {
-    if (mMotorJointDef.maxForce == maxForce)
+    if (m_maxForce == maxForce)
         return;
 
-    mMotorJointDef.maxForce = maxForce;
+    m_maxForce = maxForce;
     if (motorJoint())
         motorJoint()->SetMaxForce(maxForce);
     emit maxForceChanged();
@@ -81,10 +79,10 @@ void Box2DMotorJoint::setMaxForce(float maxForce)
 
 void Box2DMotorJoint::setMaxTorque(float maxTorque)
 {
-    if (mMotorJointDef.maxTorque == maxTorque)
+    if (m_maxTorque == maxTorque)
         return;
 
-    mMotorJointDef.maxTorque = maxTorque;
+    m_maxTorque = maxTorque;
     if (motorJoint())
         motorJoint()->SetMaxTorque(maxTorque);
     emit maxTorqueChanged();
@@ -92,10 +90,10 @@ void Box2DMotorJoint::setMaxTorque(float maxTorque)
 
 void Box2DMotorJoint::setCorrectionFactor(float correctionFactor)
 {
-    if (mMotorJointDef.correctionFactor == correctionFactor)
+    if (m_correctionFactor == correctionFactor)
         return;
 
-    mMotorJointDef.correctionFactor = correctionFactor;
+    m_correctionFactor = correctionFactor;
     if (motorJoint())
         motorJoint()->SetCorrectionFactor(correctionFactor);
     emit correctionFactorChanged();
@@ -103,7 +101,27 @@ void Box2DMotorJoint::setCorrectionFactor(float correctionFactor)
 
 b2Joint *Box2DMotorJoint::createJoint()
 {
-    mMotorJointDef.Initialize(bodyA()->body(), bodyB()->body());
+    b2MotorJointDef jointDef;
+    initializeJointDef(jointDef);
 
-    return world()->world().CreateJoint(&mMotorJointDef);
+    if (m_defaultLinearOffset) {
+        const b2Vec2 &positionB = jointDef.bodyB->GetPosition();
+        jointDef.linearOffset = jointDef.bodyA->GetLocalPoint(positionB);
+    } else {
+        jointDef.linearOffset = world()->toMeters(m_linearOffset);
+    }
+
+    if (m_defaultAngularOffset) {
+        float32 angleA = jointDef.bodyA->GetAngle();
+        float32 angleB = jointDef.bodyB->GetAngle();
+        jointDef.angularOffset = angleB - angleA;
+    } else {
+        jointDef.angularOffset = toRadians(m_angularOffset);
+    }
+
+    jointDef.maxForce = m_maxForce;
+    jointDef.maxTorque = m_maxTorque;
+    jointDef.correctionFactor = m_correctionFactor;
+
+    return world()->world().CreateJoint(&jointDef);
 }

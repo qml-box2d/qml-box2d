@@ -27,55 +27,76 @@
 #include "box2dropejoint.h"
 
 #include "box2dworld.h"
-#include "box2dbody.h"
 
-Box2DRopeJoint::Box2DRopeJoint(QObject *parent) :
-    Box2DJoint(mRopeJointDef, parent)
+Box2DRopeJoint::Box2DRopeJoint(QObject *parent)
+    : Box2DJoint(RopeJoint, parent)
+    , m_maxLength(0.0f)
+    , m_defaultLocalAnchorA(true)
+    , m_defaultLocalAnchorB(true)
 {
-}
-
-float Box2DRopeJoint::maxLength() const
-{
-    return world()->toPixels(mRopeJointDef.maxLength);
-}
-
-void Box2DRopeJoint::setMaxLength(float maxLength)
-{
-    const float maxLengthMeters = world()->toMeters(maxLength);
-    if (mRopeJointDef.maxLength == maxLengthMeters)
-        return;
-
-    mRopeJointDef.maxLength = maxLengthMeters;
-    if (ropeJoint())
-        ropeJoint()->SetMaxLength(maxLengthMeters);
-    emit maxLengthChanged();
-}
-
-QPointF Box2DRopeJoint::localAnchorA() const
-{
-    return world()->toPixels(mRopeJointDef.localAnchorA);
 }
 
 void Box2DRopeJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    mRopeJointDef.localAnchorA = world()->toMeters(localAnchorA);
-    emit localAnchorAChanged();
-}
+    m_defaultLocalAnchorA = false;
 
-QPointF Box2DRopeJoint::localAnchorB() const
-{
-    return world()->toPixels(mRopeJointDef.localAnchorB);
+    if (m_localAnchorA == localAnchorA)
+        return;
+
+    m_localAnchorA = localAnchorA;
+    emit localAnchorAChanged();
 }
 
 void Box2DRopeJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    mRopeJointDef.localAnchorB = world()->toMeters(localAnchorB);
+    m_defaultLocalAnchorB = false;
+
+    if (m_localAnchorB == localAnchorB)
+        return;
+
+    m_localAnchorB = localAnchorB;
     emit localAnchorBChanged();
+}
+
+void Box2DRopeJoint::setMaxLength(float maxLength)
+{
+    if (m_maxLength == maxLength)
+        return;
+
+    m_maxLength = maxLength;
+    if (ropeJoint()) {
+        const float maxLengthMeters = world()->toMeters(maxLength);
+        if (maxLengthMeters < b2_linearSlop)
+            qWarning() << "RopeJoint: maxLength too small";
+
+        ropeJoint()->SetMaxLength(maxLengthMeters);
+    }
+    emit maxLengthChanged();
 }
 
 b2Joint *Box2DRopeJoint::createJoint()
 {
-    return world()->world().CreateJoint(&mRopeJointDef);
+    b2RopeJointDef jointDef;
+    initializeJointDef(jointDef);
+
+    // Default localAnchorA to bodyA center
+    if (m_defaultLocalAnchorA)
+        jointDef.localAnchorA = jointDef.bodyA->GetLocalCenter();
+    else
+        jointDef.localAnchorA = world()->toMeters(m_localAnchorA);
+
+    // Default localAnchorB to bodyB center
+    if (m_defaultLocalAnchorB)
+        jointDef.localAnchorB = jointDef.bodyB->GetLocalCenter();
+    else
+        jointDef.localAnchorB = world()->toMeters(m_localAnchorB);
+
+    jointDef.maxLength = world()->toMeters(m_maxLength);
+
+    if (jointDef.maxLength < b2_linearSlop)
+        qWarning() << "RopeJoint: maxLength too small";
+
+    return world()->world().CreateJoint(&jointDef);
 }
 
 QPointF Box2DRopeJoint::getReactionForce(float32 inv_dt) const

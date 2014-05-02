@@ -40,21 +40,21 @@ class Box2DGearJoint : public Box2DJoint
 public:
     explicit Box2DGearJoint(QObject *parent = 0);
 
-    float ratio() const;
-    void setRatio(float ratio);
-
     Box2DJoint *joint1() const;
     void setJoint1(Box2DJoint *joint1);
 
     Box2DJoint *joint2() const;
     void setJoint2(Box2DJoint *joint2);
 
+    float ratio() const;
+    void setRatio(float ratio);
+
     b2GearJoint *gearJoint() const;
 
 signals:
-    void ratioChanged();
     void joint1Changed();
     void joint2Changed();
+    void ratioChanged();
 
 protected:
     b2Joint *createJoint();
@@ -64,24 +64,24 @@ private slots:
     void joint2Created();
 
 private:
-    b2GearJointDef mGearJointDef;
-    Box2DJoint *mJoint1;
-    Box2DJoint *mJoint2;
+    Box2DJoint *m_joint1;
+    Box2DJoint *m_joint2;
+    float m_ratio;
 };
-
-inline float Box2DGearJoint::ratio() const
-{
-    return mGearJointDef.ratio;
-}
 
 inline Box2DJoint *Box2DGearJoint::joint1() const
 {
-    return mJoint1;
+    return m_joint1;
 }
 
 inline Box2DJoint *Box2DGearJoint::joint2() const
 {
-    return mJoint2;
+    return m_joint2;
+}
+
+inline float Box2DGearJoint::ratio() const
+{
+    return m_ratio;
 }
 
 inline b2GearJoint *Box2DGearJoint::gearJoint() const

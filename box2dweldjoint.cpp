@@ -28,33 +28,56 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DWeldJoint::Box2DWeldJoint(QObject *parent) :
-    Box2DJoint(mWeldJointDef, parent),
-    mAnchorsAuto(true)
+Box2DWeldJoint::Box2DWeldJoint(QObject *parent)
+    : Box2DJoint(WeldJoint, parent)
+    , m_referenceAngle(0.0f)
+    , m_frequencyHz(0.0f)
+    , m_dampingRatio(0.0f)
+    , m_defaultLocalAnchorA(true)
+    , m_defaultLocalAnchorB(true)
+    , m_defaultReferenceAngle(true)
 {
 }
 
-float Box2DWeldJoint::referenceAngle() const
+void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    return toDegrees(mWeldJointDef.referenceAngle);
+    m_defaultLocalAnchorA = false;
+
+    if (m_localAnchorA == localAnchorA)
+        return;
+
+    m_localAnchorA = localAnchorA;
+    emit localAnchorAChanged();
+}
+
+void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
+{
+    m_defaultLocalAnchorB = false;
+
+    if (m_localAnchorB == localAnchorB)
+        return;
+
+    m_localAnchorB = localAnchorB;
+    emit localAnchorBChanged();
 }
 
 void Box2DWeldJoint::setReferenceAngle(float referenceAngle)
 {
-    float referenceAngleRad = toRadians(referenceAngle);
-    if (mWeldJointDef.referenceAngle == referenceAngleRad)
+    m_defaultReferenceAngle = false;
+
+    if (m_referenceAngle == referenceAngle)
         return;
 
-    mWeldJointDef.referenceAngle = referenceAngleRad;
+    m_referenceAngle = referenceAngle;
     emit referenceAngleChanged();
 }
 
 void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
 {
-    if (mWeldJointDef.frequencyHz == frequencyHz)
+    if (m_frequencyHz == frequencyHz)
         return;
 
-    mWeldJointDef.frequencyHz = frequencyHz;
+    m_frequencyHz = frequencyHz;
     if (weldJoint())
         weldJoint()->SetFrequency(frequencyHz);
     emit frequencyHzChanged();
@@ -62,46 +85,44 @@ void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
 
 void Box2DWeldJoint::setDampingRatio(float dampingRatio)
 {
-    if (mWeldJointDef.dampingRatio == dampingRatio)
+    if (m_dampingRatio == dampingRatio)
         return;
 
-    mWeldJointDef.dampingRatio = dampingRatio;
+    m_dampingRatio = dampingRatio;
     if (weldJoint())
         weldJoint()->SetDampingRatio(dampingRatio);
     emit dampingRatioChanged();
 }
 
-QPointF Box2DWeldJoint::localAnchorA() const
-{
-    return world()->toPixels(mWeldJointDef.localAnchorA);
-}
-
-void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
-{
-    mWeldJointDef.localAnchorA = world()->toMeters(localAnchorA);
-    mAnchorsAuto = false;
-    emit localAnchorAChanged();
-}
-
-QPointF Box2DWeldJoint::localAnchorB() const
-{
-    return world()->toPixels(mWeldJointDef.localAnchorB);
-}
-
-void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
-{
-    mWeldJointDef.localAnchorB = world()->toMeters(localAnchorB);
-    mAnchorsAuto = false;
-    emit localAnchorBChanged();
-}
-
 b2Joint *Box2DWeldJoint::createJoint()
 {
-    if (mAnchorsAuto) {
-        mWeldJointDef.Initialize(mWeldJointDef.bodyA,
-                                 mWeldJointDef.bodyB,
-                                 mWeldJointDef.bodyA->GetWorldCenter());
+    b2WeldJointDef jointDef;
+    initializeJointDef(jointDef);
+
+    // Default localAnchorA to bodyA center
+    if (m_defaultLocalAnchorA)
+        jointDef.localAnchorA = jointDef.bodyA->GetLocalCenter();
+    else
+        jointDef.localAnchorA = world()->toMeters(m_localAnchorA);
+
+    // Default localAnchorB to the same world position as localAnchorA
+    if (m_defaultLocalAnchorB) {
+        b2Vec2 anchorA = jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA);
+        jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(anchorA);
+    } else {
+        jointDef.localAnchorB = world()->toMeters(m_localAnchorB);
     }
 
-    return world()->world().CreateJoint(&mWeldJointDef);
+    if (m_defaultReferenceAngle) {
+        float32 angleA = jointDef.bodyA->GetAngle();
+        float32 angleB = jointDef.bodyB->GetAngle();
+        jointDef.referenceAngle = angleB - angleA;
+    } else {
+        jointDef.referenceAngle = toRadians(m_referenceAngle);
+    }
+
+    jointDef.frequencyHz = m_frequencyHz;
+    jointDef.dampingRatio = m_dampingRatio;
+
+    return world()->world().CreateJoint(&jointDef);
 }

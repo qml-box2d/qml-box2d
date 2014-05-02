@@ -71,22 +71,38 @@ protected:
     b2Joint *createJoint();
 
 private:
-    b2MotorJointDef mMotorJointDef;
+    QPointF m_linearOffset;
+    float m_angularOffset;
+    float m_maxForce;
+    float m_maxTorque;
+    float m_correctionFactor;
+    bool m_defaultLinearOffset;
+    bool m_defaultAngularOffset;
 };
+
+inline QPointF Box2DMotorJoint::linearOffset() const
+{
+    return m_linearOffset;
+}
+
+inline float Box2DMotorJoint::angularOffset() const
+{
+    return m_angularOffset;
+}
 
 inline float Box2DMotorJoint::maxForce() const
 {
-    return mMotorJointDef.maxForce;
+    return m_maxForce;
 }
 
 inline float Box2DMotorJoint::maxTorque() const
 {
-    return mMotorJointDef.maxTorque;
+    return m_maxTorque;
 }
 
 inline float Box2DMotorJoint::correctionFactor() const
 {
-    return mMotorJointDef.correctionFactor;
+    return m_correctionFactor;
 }
 
 inline b2MotorJoint *Box2DMotorJoint::motorJoint() const

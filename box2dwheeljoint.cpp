@@ -29,119 +29,138 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
-Box2DWheelJoint::Box2DWheelJoint(QObject *parent) :
-    Box2DJoint(mWheelJointDef, parent),
-    mAnchorsAuto(true)
+Box2DWheelJoint::Box2DWheelJoint(QObject *parent)
+    : Box2DJoint(WheelJoint, parent)
+    , m_enableMotor(false)
+    , m_maxMotorTorque(0.0f)
+    , m_motorSpeed(0.0f)
+    , m_frequencyHz(2.0f)
+    , m_dampingRatio(0.7f)
+    , m_defaultLocalAnchorA(true)
+    , m_defaultLocalAnchorB(true)
+    , m_defaultLocalAxisA(true)
 {
 }
 
-void Box2DWheelJoint::setDampingRatio(float dampingRatio)
+void Box2DWheelJoint::setLocalAnchorA(const QPointF &localAnchorA)
 {
-    if (mWheelJointDef.dampingRatio == dampingRatio)
+    m_defaultLocalAnchorA = false;
+
+    if (m_localAnchorA == localAnchorA)
         return;
 
-    mWheelJointDef.dampingRatio = dampingRatio;
-    if (wheelJoint())
-        wheelJoint()->SetSpringDampingRatio(dampingRatio);
-    emit dampingRatioChanged();
+    m_localAnchorA = localAnchorA;
+    emit localAnchorAChanged();
 }
 
-void Box2DWheelJoint::setFrequencyHz(float frequencyHz)
+void Box2DWheelJoint::setLocalAnchorB(const QPointF &localAnchorB)
 {
-    if (mWheelJointDef.frequencyHz == frequencyHz)
+    m_defaultLocalAnchorB = false;
+
+    if (m_localAnchorB == localAnchorB)
         return;
 
-    mWheelJointDef.frequencyHz = frequencyHz;
-    if (wheelJoint())
-        wheelJoint()->SetSpringFrequencyHz(frequencyHz);
-    emit frequencyHzChanged();
+    m_localAnchorB = localAnchorB;
+    emit localAnchorBChanged();
 }
 
-void Box2DWheelJoint::setMaxMotorTorque(float maxMotorTorque)
+void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
 {
-    if (mWheelJointDef.maxMotorTorque == maxMotorTorque)
+    m_defaultLocalAxisA = false;
+
+    if (m_localAxisA == localAxisA)
         return;
 
-    mWheelJointDef.maxMotorTorque = maxMotorTorque;
-    if (wheelJoint())
-        wheelJoint()->SetMaxMotorTorque(maxMotorTorque);
-    emit maxMotorTorqueChanged();
-}
-
-float Box2DWheelJoint::motorSpeed() const
-{
-    return toDegrees(mWheelJointDef.motorSpeed);
-}
-
-void Box2DWheelJoint::setMotorSpeed(float motorSpeed)
-{
-    float motorSpeedRad = toRadians(motorSpeed);
-    if (mWheelJointDef.motorSpeed == motorSpeedRad)
-        return;
-
-    mWheelJointDef.motorSpeed = motorSpeedRad;
-    if (wheelJoint())
-        wheelJoint()->SetMotorSpeed(motorSpeedRad);
-    emit motorSpeedChanged();
+    m_localAxisA = localAxisA;
+    emit localAxisAChanged();
 }
 
 void Box2DWheelJoint::setEnableMotor(bool enableMotor)
 {
-    if (mWheelJointDef.enableMotor == enableMotor)
+    if (m_enableMotor == enableMotor)
         return;
 
-    mWheelJointDef.enableMotor = enableMotor;
+    m_enableMotor = enableMotor;
     if (wheelJoint())
         wheelJoint()->EnableMotor(enableMotor);
     emit enableMotorChanged();
 }
 
-QPointF Box2DWheelJoint::localAnchorA() const
+void Box2DWheelJoint::setMaxMotorTorque(float maxMotorTorque)
 {
-    return world()->toPixels(mWheelJointDef.localAnchorA);
+    if (m_maxMotorTorque == maxMotorTorque)
+        return;
+
+    m_maxMotorTorque = maxMotorTorque;
+    if (wheelJoint())
+        wheelJoint()->SetMaxMotorTorque(maxMotorTorque);
+    emit maxMotorTorqueChanged();
 }
 
-void Box2DWheelJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DWheelJoint::setMotorSpeed(float motorSpeed)
 {
-    mWheelJointDef.localAnchorA = world()->toMeters(localAnchorA);
-    mAnchorsAuto = false;
-    emit localAnchorAChanged();
+    if (m_motorSpeed == motorSpeed)
+        return;
+
+    m_motorSpeed = motorSpeed;
+    if (wheelJoint())
+        wheelJoint()->SetMotorSpeed(toRadians(motorSpeed));
+    emit motorSpeedChanged();
 }
 
-QPointF Box2DWheelJoint::localAnchorB() const
+void Box2DWheelJoint::setFrequencyHz(float frequencyHz)
 {
-    return world()->toPixels(mWheelJointDef.localAnchorB);
+    if (m_frequencyHz == frequencyHz)
+        return;
+
+    m_frequencyHz = frequencyHz;
+    if (wheelJoint())
+        wheelJoint()->SetSpringFrequencyHz(frequencyHz);
+    emit frequencyHzChanged();
 }
 
-void Box2DWheelJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DWheelJoint::setDampingRatio(float dampingRatio)
 {
-    mWheelJointDef.localAnchorB = world()->toMeters(localAnchorB);
-    mAnchorsAuto = false;
-    emit localAnchorBChanged();
-}
+    if (m_dampingRatio == dampingRatio)
+        return;
 
-QPointF Box2DWheelJoint::localAxisA() const
-{
-    return world()->toPixels(mWheelJointDef.localAxisA);
-}
-
-void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
-{
-    mWheelJointDef.localAxisA = world()->toMeters(localAxisA);
-    mAnchorsAuto = false;
-    emit localAxisAChanged();
+    m_dampingRatio = dampingRatio;
+    if (wheelJoint())
+        wheelJoint()->SetSpringDampingRatio(dampingRatio);
+    emit dampingRatioChanged();
 }
 
 b2Joint *Box2DWheelJoint::createJoint()
 {
-    if (mAnchorsAuto) {
-        mWheelJointDef.Initialize(mWheelJointDef.bodyA,
-                                  mWheelJointDef.bodyB,
-                                  mWheelJointDef.bodyA->GetWorldCenter(),
-                                  mWheelJointDef.localAxisA);
+    b2WheelJointDef jointDef;
+    initializeJointDef(jointDef);
+
+    // Default localAnchorA to bodyA center
+    if (m_defaultLocalAnchorA)
+        jointDef.localAnchorA = jointDef.bodyA->GetLocalCenter();
+    else
+        jointDef.localAnchorA = world()->toMeters(m_localAnchorA);
+
+    // Default localAnchorB to the same world position as localAnchorA
+    if (m_defaultLocalAnchorB) {
+        b2Vec2 anchorA = jointDef.bodyA->GetWorldPoint(jointDef.localAnchorA);
+        jointDef.localAnchorB = jointDef.bodyB->GetLocalPoint(anchorA);
+    } else {
+        jointDef.localAnchorB = world()->toMeters(m_localAnchorB);
     }
 
-    return world()->world().CreateJoint(&mWheelJointDef);
+    if (!m_defaultLocalAxisA) {
+        jointDef.localAxisA = invertY(m_localAxisA);
+        jointDef.localAxisA.Normalize();
+    }
+
+    jointDef.enableMotor = m_enableMotor;
+    jointDef.maxMotorTorque = m_maxMotorTorque;
+    jointDef.motorSpeed = toRadians(m_motorSpeed);
+    jointDef.frequencyHz = m_frequencyHz;
+    jointDef.dampingRatio = m_dampingRatio;
+
+    return world()->world().CreateJoint(&jointDef);
 }
 
 float Box2DWheelJoint::getJointTranslation() const

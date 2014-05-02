@@ -68,22 +68,30 @@ protected:
     b2Joint *createJoint();
 
 private:
-    b2MouseJointDef mMouseJointDef;
+    QPointF m_target;
+    float m_maxForce;
+    float m_frequencyHz;
+    float m_dampingRatio;
 };
 
 inline float Box2DMouseJoint::dampingRatio() const
 {
-    return mMouseJointDef.dampingRatio;
+    return m_dampingRatio;
 }
 
 inline float Box2DMouseJoint::frequencyHz() const
 {
-    return mMouseJointDef.frequencyHz;
+    return m_frequencyHz;
 }
 
 inline float Box2DMouseJoint::maxForce() const
 {
-    return mMouseJointDef.maxForce;
+    return m_maxForce;
+}
+
+inline QPointF Box2DMouseJoint::target() const
+{
+    return m_target;
 }
 
 inline b2MouseJoint *Box2DMouseJoint::mouseJoint() const
