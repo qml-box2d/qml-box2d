@@ -27,6 +27,8 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+#include <QDebug>
+
 Box2DJoint::Box2DJoint(JointType jointType, QObject *parent) :
     QObject(parent),
     mJointType(jointType),
