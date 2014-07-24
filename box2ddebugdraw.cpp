@@ -1,6 +1,7 @@
 /*
  * box2ddebugdraw.cpp
  * Copyright (c) 2010 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (c) 2014 Moukhlynin Ruslan <ruslan@khvmntk.ru>
  *
  * This file is part of the Box2D QML plugin.
  *
@@ -23,6 +24,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+#define CIRCLE_SEGMENTS_COUNT 32
+#define LINE_WIDTH 1
+
 #include "box2ddebugdraw.h"
 
 #include "box2dworld.h"
@@ -30,11 +34,14 @@
 #include <Box2D.h>
 
 #include <QPainter>
+#include <QSGNode>
+#include <QSGFlatColorMaterial>
+#include <QtCore/qmath.h>
 
 class DebugDraw : public b2Draw
 {
 public:
-    DebugDraw(QPainter *painter, Box2DWorld &world);
+    DebugDraw(QSGNode *root, Box2DWorld &world);
 
     void draw();
 
@@ -53,14 +60,16 @@ public:
     void setAxisScale(qreal axisScale);
 
 private:
-    QPainter *mPainter;
+    QSGNode *mRoot;
     Box2DWorld &mWorld;
     qreal mAxisScale;
+
+    QSGNode *createNode(QSGGeometry *geometry, const QColor &color, QSGNode *parent = 0);
 };
 
-DebugDraw::DebugDraw(QPainter *painter, Box2DWorld &world)
-    : mPainter(painter)
-    , mWorld(world)
+DebugDraw::DebugDraw(QSGNode *root, Box2DWorld &world) :
+    mRoot(root),
+    mWorld(world)
 {
 }
 
@@ -79,82 +88,158 @@ static QColor toQColor(const b2Color &color)
                   color.a * 255);
 }
 
-static QPolygonF toQPolygonF(const Box2DWorld &world, const b2Vec2 *vertices, int32 vertexCount)
+QSGNode *DebugDraw::createNode(QSGGeometry *geometry, const QColor &color, QSGNode *parent)
 {
-    QPolygonF polygon;
-    polygon.reserve(vertexCount);
+    QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
+    material->setColor(color);
 
-    for (int i = 0; i < vertexCount; ++i)
-        polygon.append(world.toPixels(vertices[i]));
+    QSGGeometryNode *node = new QSGGeometryNode;
+    node->setGeometry(geometry);
+    node->setFlag(QSGNode::OwnsGeometry);
+    node->setMaterial(material);
+    node->setFlag(QSGNode::OwnsMaterial);
 
-    return polygon;
+    if (parent)
+        parent->appendChildNode(node);
+    else
+        mRoot->appendChildNode(node);
+    return node;
 }
 
-void DebugDraw::DrawPolygon(const b2Vec2 *vertices, int32 vertexCount,
+void DebugDraw::DrawPolygon(const b2Vec2 *vertices,
+                            int32 vertexCount,
                             const b2Color &color)
 {
-    mPainter->setPen(toQColor(color));
-    mPainter->setBrush(Qt::NoBrush);
-    mPainter->drawPolygon(toQPolygonF(mWorld, vertices, vertexCount));
+    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
+                                            vertexCount);
+    geometry->setDrawingMode(GL_LINE_LOOP);
+    geometry->setLineWidth(LINE_WIDTH);
+
+    QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
+    for (int i = 0; i < vertexCount; ++i) {
+        QPointF point = mWorld.toPixels(vertices[i]);
+        points[i].set(point.x(), point.y());
+    }
+
+    createNode(geometry, toQColor(color));
 }
 
-void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount,
+void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices,
+                                 int32 vertexCount,
                                  const b2Color &color)
 {
-    mPainter->setPen(Qt::NoPen);
-    mPainter->setBrush(toQColor(color));
-    mPainter->drawPolygon(toQPolygonF(mWorld, vertices, vertexCount));
+    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
+                                            vertexCount);
+    geometry->setDrawingMode(GL_POLYGON);
+    geometry->setLineWidth(LINE_WIDTH);
+
+    QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
+    for (int i = 0; i < vertexCount; ++i) {
+        QPointF point = mWorld.toPixels(vertices[i]);
+        points[i].set(point.x(), point.y());
+    }
+
+    createNode(geometry, toQColor(color));
 }
 
-void DebugDraw::DrawCircle(const b2Vec2 &center, float32 radius,
+void DebugDraw::DrawCircle(const b2Vec2 &center,
+                           float32 radius,
                            const b2Color &color)
 {
-    mPainter->setPen(toQColor(color));
-    mPainter->setBrush(Qt::NoBrush);
-    mPainter->drawEllipse(mWorld.toPixels(center),
-                          mWorld.toPixels(radius),
-                          mWorld.toPixels(radius));
+    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
+                                            CIRCLE_SEGMENTS_COUNT);
+    geometry->setDrawingMode(GL_LINE_LOOP);
+    geometry->setLineWidth(LINE_WIDTH);
+
+    QPointF centerInPixels = mWorld.toPixels(center);
+    qreal radiusInPixels = mWorld.toPixels(radius);
+
+    QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
+    for (int i = 0; i < CIRCLE_SEGMENTS_COUNT; ++i) {
+        float theta = i * 2 * M_PI / (CIRCLE_SEGMENTS_COUNT - 2);
+        points[i].set(centerInPixels.x() + radiusInPixels * qCos(theta),
+                      centerInPixels.y() + radiusInPixels * qSin(theta));
+    }
+
+    createNode(geometry, toQColor(color));
 }
 
 void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
                                 const b2Vec2 &axis, const b2Color &color)
 {
-    mPainter->setPen(Qt::NoPen);
-    mPainter->setBrush(toQColor(color));
-    QPointF p1 = mWorld.toPixels(center);
-    QPointF p2 = mWorld.toPixels(axis);
-    mPainter->drawEllipse(p1,
-                          mWorld.toPixels(radius),
-                          mWorld.toPixels(radius));
-    mPainter->setPen(qRgb(200, 64, 0));
-    p2.setX(p1.x() + radius * p2.x());
-    p2.setY(p1.y() + radius * p2.y());
-    mPainter->drawLine(p1,p2);
+
+    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
+                                            CIRCLE_SEGMENTS_COUNT);
+    geometry->setDrawingMode(GL_TRIANGLE_FAN);
+    geometry->setLineWidth(LINE_WIDTH);
+
+    QPointF centerInPixels = mWorld.toPixels(center);
+    QPointF axisInPixels = mWorld.toPixels(axis);
+    qreal radiusInPixels = mWorld.toPixels(radius);
+    axisInPixels.setX(centerInPixels.x() + radius * axisInPixels.x());
+    axisInPixels.setY(centerInPixels.y() + radius * axisInPixels.y());
+
+    QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
+    points[0].set(centerInPixels.x(), centerInPixels.y());
+    for (int i = 1; i < CIRCLE_SEGMENTS_COUNT; ++i) {
+        float theta = i * 2 * M_PI / (CIRCLE_SEGMENTS_COUNT - 2);
+        points[i].set(centerInPixels.x() + radiusInPixels * qCos(theta),
+                      centerInPixels.y() + radiusInPixels * qSin(theta));
+    }
+    QSGNode * node = createNode(geometry,toQColor(color));
+
+    QSGGeometry *axisGeometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
+    axisGeometry->setDrawingMode(GL_LINES);
+    axisGeometry->setLineWidth(LINE_WIDTH);
+
+    axisGeometry->vertexDataAsPoint2D()[0].set(centerInPixels.x(), centerInPixels.y());
+    axisGeometry->vertexDataAsPoint2D()[1].set(axisInPixels.x(), axisInPixels.y());
+    createNode(axisGeometry, qRgb(200, 64, 0), node);
 }
 
-void DebugDraw::DrawSegment(const b2Vec2 &p1, const b2Vec2 &p2,
+void DebugDraw::DrawSegment(const b2Vec2 &p1,
+                            const b2Vec2 &p2,
                             const b2Color &color)
 {
-    mPainter->setPen(toQColor(color));
-    mPainter->drawLine(mWorld.toPixels(p1), mWorld.toPixels(p2));
+    QPointF p1InPixels = mWorld.toPixels(p1);
+    QPointF p2InPixels = mWorld.toPixels(p2);
+
+    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
+    geometry->setDrawingMode(GL_LINES);
+    geometry->setLineWidth(LINE_WIDTH);
+
+    geometry->vertexDataAsPoint2D()[0].set(p1InPixels.x(), p1InPixels.y());
+    geometry->vertexDataAsPoint2D()[1].set(p2InPixels.x(), p2InPixels.y());
+
+    createNode(geometry, toQColor(color));
 }
 
 void DebugDraw::DrawTransform(const b2Transform &xf)
 {
+
     QPointF p1 = mWorld.toPixels(xf.p);
     QPointF p2 = mWorld.toPixels(xf.q.GetXAxis());
     p2 = QPointF(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 
-    mPainter->setPen(Qt::blue); // X axis
-    mPainter->drawLine(p1,p2);
+    QSGGeometry *geometryX = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
+    geometryX->setDrawingMode(GL_LINES);
+    geometryX->setLineWidth(LINE_WIDTH);
+    geometryX->vertexDataAsPoint2D()[0].set(p1.x(), p1.y());
+    geometryX->vertexDataAsPoint2D()[1].set(p2.x(), p2.y());
+    createNode(geometryX,Qt::blue);
 
     p2 = mWorld.toPixels(xf.q.GetYAxis());
     p2 = QPointF(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 
-    mPainter->setPen(Qt::yellow); // Y axis
-    mPainter->drawLine(p1,p2);
+    QSGGeometry *geometryY = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
+    geometryY->setDrawingMode(GL_LINES);
+    geometryY->setLineWidth(LINE_WIDTH);
+    geometryY->vertexDataAsPoint2D()[0].set(p1.x(), p1.y());
+    geometryY->vertexDataAsPoint2D()[1].set(p2.x(), p2.y());
+
+    createNode(geometryY, Qt::yellow);
 }
 
 void DebugDraw::setAxisScale(qreal axisScale)
@@ -162,21 +247,19 @@ void DebugDraw::setAxisScale(qreal axisScale)
     mAxisScale = axisScale;
 }
 
-
 Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
-    QQuickPaintedItem (parent),
+    QQuickItem (parent),
     mWorld(0),
     mAxisScale(0.5),
     mFlags(Everything)
-
 {
     setFlag(QQuickItem::ItemHasContents, true);
 }
 
-void Box2DDebugDraw::setAxisScale(qreal _axisScale)
+void Box2DDebugDraw::setAxisScale(qreal axisScale)
 {
-    if (mAxisScale != _axisScale) {
-        mAxisScale = _axisScale;
+    if (mAxisScale != axisScale) {
+        mAxisScale = axisScale;
         emit axisScaleChanged();
     }
 }
@@ -205,15 +288,16 @@ void Box2DDebugDraw::setWorld(Box2DWorld *world)
     emit worldChanged();
 }
 
-void Box2DDebugDraw::paint(QPainter *p)
+QSGNode *Box2DDebugDraw::updatePaintNode(QSGNode *oldNode, QQuickItem::UpdatePaintNodeData *)
 {
-    if (!mWorld)
-        return;
-
-    DebugDraw debugDraw(p, *mWorld);
+    if (oldNode)
+        delete oldNode;
+    QSGTransformNode *root = new QSGTransformNode;
+    DebugDraw debugDraw(root, *mWorld);
     debugDraw.SetFlags(mFlags);
     debugDraw.setAxisScale(mAxisScale);
     debugDraw.draw();
+    return root;
 }
 
 void Box2DDebugDraw::onWorldStepped()

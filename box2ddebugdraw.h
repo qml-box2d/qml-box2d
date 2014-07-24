@@ -1,6 +1,7 @@
 /*
  * box2ddebugdraw.h
  * Copyright (c) 2010 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (c) 2014 Moukhlynin Ruslan <ruslan@khvmntk.ru>
  *
  * This file is part of the Box2D QML plugin.
  *
@@ -26,12 +27,11 @@
 #ifndef BOX2DDEBUGDRAW_H
 #define BOX2DDEBUGDRAW_H
 
-#include <QQuickPaintedItem>
 #include <QQuickItem>
 
 class Box2DWorld;
 
-class Box2DDebugDraw : public QQuickPaintedItem
+class Box2DDebugDraw : public QQuickItem
 {
     Q_ENUMS(DebugFlag)
     Q_OBJECT
@@ -60,7 +60,8 @@ public:
     Box2DWorld *world() const;
     void setWorld(Box2DWorld *world);
 
-    void paint(QPainter *);
+protected:
+    QSGNode *updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *);
 
 signals:
     void axisScaleChanged();
