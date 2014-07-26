@@ -130,7 +130,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices,
 {
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
                                             vertexCount);
-    geometry->setDrawingMode(GL_POLYGON);
+    geometry->setDrawingMode(GL_TRIANGLE_FAN);
     geometry->setLineWidth(LINE_WIDTH);
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
