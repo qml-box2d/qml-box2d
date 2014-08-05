@@ -112,6 +112,7 @@ class Box2DWorld : public QQuickItem, b2DestructionListener
     Q_PROPERTY(bool autoClearForces READ autoClearForces WRITE setAutoClearForces NOTIFY autoClearForcesChanged)
     Q_PROPERTY(Box2DProfile *profile READ profile NOTIFY stepped)
     Q_PROPERTY(float pixelsPerMeter READ pixelsPerMeter WRITE setPixelsPerMeter NOTIFY pixelsPerMeterChanged)
+    Q_PROPERTY(bool enableContactEvents READ enableContactEvents WRITE setEnableContactEvents NOTIFY enableContactEventsChanged)
 
 public:
     explicit Box2DWorld(QQuickItem *parent = 0);
@@ -136,6 +137,9 @@ public:
     void setAutoClearForces(bool autoClearForces);
 
     Box2DProfile *profile() const;
+
+    bool enableContactEvents() const;
+    void setEnableContactEvents(bool enableContactEvents);
 
     float pixelsPerMeter() const;
     void setPixelsPerMeter(float pixelsPerMeter);
@@ -176,11 +180,13 @@ signals:
     void autoClearForcesChanged();
     void runningChanged();
     void stepped();
+    void enableContactEventsChanged();
     void pixelsPerMeterChanged();
 
 protected:
     void itemChange(ItemChange, const ItemChangeData &);
     void initializeBodies(QQuickItem *parent);
+    void enableContactListener(bool enable);
 
 private:
     b2World mWorld;
@@ -191,6 +197,7 @@ private:
     bool mIsRunning;
     StepDriver *mStepDriver;
     Box2DProfile *mProfile;
+    bool mEnableContactEvents;
     float mPixelsPerMeter;
 };
 
@@ -276,6 +283,11 @@ inline bool Box2DWorld::autoClearForces() const
 inline Box2DProfile *Box2DWorld::profile() const
 {
     return mProfile;
+}
+
+inline bool Box2DWorld::enableContactEvents() const
+{
+    return mEnableContactEvents;
 }
 
 inline float Box2DWorld::pixelsPerMeter() const

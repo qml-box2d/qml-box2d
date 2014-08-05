@@ -96,7 +96,6 @@ signals:
     void groupIndexChanged();
 
     void beginContact(Box2DFixture *other);
-    void contactChanged(Box2DFixture *other);
     void endContact(Box2DFixture *other);
 
 protected:

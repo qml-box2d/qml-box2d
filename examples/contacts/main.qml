@@ -279,9 +279,9 @@ Rectangle {
             fixtures: Box {
                 anchors.fill: parent
                 sensor: true
-                onContactChanged: {
+                onBeginContact: {
                     other.parent.gravityScale = 0.5;
-                    other.parent.applyForce(Qt.point(-5,0),Qt.point(24,24));
+                    other.parent.applyLinearImpulse(Qt.point(-5,0),Qt.point(24,24));
                 }
                 onEndContact: {
                     var body = other.parent;
