@@ -183,6 +183,13 @@ void Box2DFixture::recreateFixture()
     initialize(mBody);
 }
 
+QPointF Box2DFixture::originPoint()
+{
+    if (mBody)
+        return mBody->originPoint();
+    return QPointF(0.0,0.0);
+}
+
 //=================== BOX =======================
 
 void Box2DBox::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
@@ -196,8 +203,10 @@ b2Shape *Box2DBox::createShape()
 {
     const qreal halfWidth = width() * 0.5;
     const qreal halfHeight = height() * 0.5;
-    const QPointF center(x() + halfWidth,
-                         y() + halfHeight);
+
+    const QPointF origin = originPoint();
+    const QPointF center(halfWidth - origin.x(),
+                         halfHeight - origin.y());
 
     b2PolygonShape *shape = new b2PolygonShape;
     shape->SetAsBox(mBody->world()->toMeters(halfWidth),
@@ -232,8 +241,9 @@ b2Shape *Box2DCircle::createShape()
     b2CircleShape *shape = new b2CircleShape;
 
     shape->m_radius = mBody->world()->toMeters(mRadius);
-    shape->m_p = mBody->world()->toMeters(position() + QPointF(mRadius, mRadius));
-
+    const QPointF origin = originPoint();
+    shape->m_p = mBody->world()->toMeters(position() + QPointF(mRadius - origin.x(),
+                                                               mRadius - origin.y()));
     return shape;
 }
 
@@ -258,9 +268,13 @@ b2Shape *Box2DPolygon::createShape()
     }
 
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
+    const QPointF origin = originPoint();
 
     for (int i = 0; i < count; ++i) {
-        vertices[i] = mBody->world()->toMeters(mVertices.at(i).toPointF());
+        QPointF point = mVertices.at(i).toPointF();
+        point.setX(point.x() - origin.x());
+        point.setY(point.y() - origin.y());
+        vertices[i] = mBody->world()->toMeters(point);
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -338,9 +352,13 @@ b2Shape *Box2DChain::createShape()
     }
 
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
+    const QPointF origin = originPoint();
 
     for (int i = 0; i < count; ++i) {
-        vertices[i] = mBody->world()->toMeters(mVertices.at(i).toPointF());
+        QPointF point = mVertices.at(i).toPointF();
+        point.setX(point.x() - origin.x());
+        point.setY(point.y() - origin.y());
+        vertices[i] = mBody->world()->toMeters(point);
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -384,8 +402,14 @@ b2Shape *Box2DEdge::createShape()
         qWarning() << "Edge: Invalid number of vertices:" << count;
         return 0;
     }
-    const b2Vec2 vertex1 = mBody->world()->toMeters(mVertices.at(0).toPointF());
-    const b2Vec2 vertex2 = mBody->world()->toMeters(mVertices.at(1).toPointF());
+    const QPointF origin = originPoint();
+    const b2Vec2 vertex1 = mBody->world()->toMeters(QPointF(
+                                                        mVertices.at(0).toPointF().x() - origin.x(),
+                                                        mVertices.at(0).toPointF().y() - origin.y()));
+    const b2Vec2 vertex2 = mBody->world()->toMeters(QPointF(
+                                                        mVertices.at(1).toPointF().x() - origin.x(),
+                                                        mVertices.at(1).toPointF().y() - origin.y()));
+
     if (b2DistanceSquared(vertex1, vertex2) <= b2_linearSlop * b2_linearSlop) {
         qWarning() << "Edge: vertices are too close together";
         return 0;

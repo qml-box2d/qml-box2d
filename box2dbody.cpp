@@ -51,11 +51,14 @@ Box2DBody::Box2DBody(QQuickItem *parent) :
     mBody(0),
     mWorld(0),
     mSynchronizing(false),
-    mInitializePending(false)
+    mInitializePending(false),
+    mOriginPoint(0.0,0.0)
 {
     mBodyDef.userData = this;
 
     setTransformOrigin(TopLeft);
+    connect(this, SIGNAL(transformOriginChanged(TransformOrigin)),
+            SLOT(onTransformOriginChanged(TransformOrigin)));
 }
 
 Box2DBody::~Box2DBody()
@@ -208,6 +211,23 @@ void Box2DBody::setGravityScale(float gravityScale)
     emit gravityScaleChanged();
 }
 
+void Box2DBody::setOriginPoint(const QPointF & originPoint)
+{
+    if(mOriginPoint != originPoint) {
+        mOriginPoint = originPoint;
+        if (mBody) {
+            mBody->SetTransform(mWorld->toMeters(QPointF(position().x() + mOriginPoint.x(),
+                                                 position().y() + mOriginPoint.y())),
+                                mBody->GetAngle());
+
+            foreach(Box2DFixture * fixture,mFixtures)
+                fixture->recreateFixture();
+            setTransformOriginPoint(mOriginPoint);
+        }
+        emit originPointChanged();
+    }
+}
+
 QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
 {
     return QQmlListProperty<Box2DFixture>(this, 0,
@@ -255,7 +275,14 @@ void Box2DBody::initialize(Box2DWorld *world)
         mInitializePending = true;
         return;
     }
-    mBodyDef.position = mWorld->toMeters(position());
+
+    if(transformOrigin() != QQuickItem::TopLeft)
+        mOriginPoint = transformOrigin2Point(transformOrigin());
+    setTransformOriginPoint(mOriginPoint);
+
+    mBodyDef.position = mWorld->toMeters(QPointF(position().x() + mOriginPoint.x(),
+                                                 position().y() + mOriginPoint.y()));
+
     mBodyDef.angle = toRadians(rotation());
     mBody = mWorld->world().CreateBody(&mBodyDef);
     mInitializePending = false;
@@ -273,7 +300,10 @@ void Box2DBody::synchronize()
     mSynchronizing = true;
 
     if (sync(mBodyDef.position, mBody->GetPosition())) {
-        setPosition(mWorld->toPixels(mBodyDef.position));
+        QPointF pos = mWorld->toPixels(mBodyDef.position);
+        pos.setX(pos.x() - mOriginPoint.x());
+        pos.setY(pos.y() - mOriginPoint.y());
+        setPosition(pos);
         emit positionChanged();
     }
 
@@ -412,5 +442,36 @@ QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 {
     if (mBody)
         return invertY(mBody->GetLinearVelocityFromLocalPoint(mWorld->toMeters(point)));
+    return QPointF();
+}
+
+void Box2DBody::onTransformOriginChanged(QQuickItem::TransformOrigin transformOrigin)
+{
+    setOriginPoint(transformOrigin2Point(transformOrigin));
+}
+
+QPointF Box2DBody::transformOrigin2Point(QQuickItem::TransformOrigin transformOrigin)
+{
+    switch(transformOrigin)
+    {
+    case QQuickItem::TopLeft:
+        return QPointF(0.0, 0.0);
+    case QQuickItem::Top:
+        return QPointF(width() / 2.0, 0.0);
+    case QQuickItem::TopRight:
+        return QPointF(width(), 0.0);
+    case QQuickItem::Left:
+        return QPointF(0.0, height() / 2.0);
+    case QQuickItem::Center:
+        return QPointF(width() / 2.0, height() / 2.0);
+    case QQuickItem::Right:
+        return QPointF(width(), height() / 2.0);
+    case QQuickItem::BottomLeft:
+        return QPointF(0.0, height());
+    case QQuickItem::Bottom:
+        return QPointF(width() / 2.0, height());
+    case QQuickItem::BottomRight:
+        return QPointF(width(), height());
+    }
     return QPointF();
 }

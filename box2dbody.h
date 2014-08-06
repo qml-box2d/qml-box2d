@@ -57,6 +57,7 @@ class Box2DBody : public QQuickItem
     Q_PROPERTY(float angularVelocity READ angularVelocity WRITE setAngularVelocity NOTIFY angularVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
     Q_PROPERTY(float gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
+    Q_PROPERTY(QPointF originPoint READ originPoint WRITE setOriginPoint NOTIFY originPointChanged)
 
 public:
     enum BodyType {
@@ -100,6 +101,9 @@ public:
 
     float gravityScale() const;
     void setGravityScale(float gravityScale);
+
+    QPointF originPoint() const;
+    void setOriginPoint(const QPointF &originPoint);
 
     QQmlListProperty<Box2DFixture> fixtures();
 
@@ -145,6 +149,7 @@ signals:
     void bodyCreated();
     void gravityScaleChanged();
     void positionChanged();
+    void originPointChanged();
 
 private:
     b2Body *mBody;
@@ -152,12 +157,17 @@ private:
     b2BodyDef mBodyDef;
     bool mSynchronizing;
     bool mInitializePending;
+    QPointF mOriginPoint;
     QList<Box2DFixture*> mFixtures;
 
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
+    QPointF transformOrigin2Point(TransformOrigin transformOrigin);
+
+private slots:
+    void onTransformOriginChanged(TransformOrigin transformOrigin);
 };
 
 inline float Box2DBody::linearDamping() const
@@ -198,6 +208,11 @@ inline bool Box2DBody::isActive() const
 inline float Box2DBody::gravityScale() const
 {
     return mBodyDef.gravityScale;
+}
+
+inline QPointF Box2DBody::originPoint() const
+{
+    return mOriginPoint;
 }
 
 inline void Box2DBody::nullifyBody()

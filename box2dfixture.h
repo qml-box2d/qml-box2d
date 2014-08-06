@@ -86,6 +86,9 @@ public:
 
     Q_INVOKABLE Box2DBody *getBody() const;
 
+public slots:
+    void recreateFixture();
+
 signals:
     void densityChanged();
     void frictionChanged();
@@ -101,8 +104,7 @@ signals:
 
 protected:
     virtual b2Shape *createShape() = 0;
-    void recreateFixture();
-
+    QPointF originPoint();
     b2Fixture *mFixture;
     b2FixtureDef mFixtureDef;
     Box2DBody *mBody;
