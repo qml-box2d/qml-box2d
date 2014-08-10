@@ -48,10 +48,12 @@ static bool sync(T &value, const T &newValue)
 
 Box2DBody::Box2DBody(QQuickItem *parent) :
     QQuickItem(parent),
+    mTarget(0),
     mBody(0),
     mWorld(0),
     mSynchronizing(false),
-    mInitializePending(false)
+    mTransformDirty(false),
+    mCreatePending(false)
 {
     mBodyDef.userData = this;
 
@@ -245,20 +247,24 @@ void Box2DBody::addFixture(Box2DFixture *fixture)
         fixture->initialize(this);
 }
 
-void Box2DBody::initialize(Box2DWorld *world)
+void Box2DBody::createBody()
 {
-    mWorld = world;
+    if (!mWorld)
+        return;
+
     if (!isComponentComplete()) {
         // When components are created dynamically, they get their parent
         // assigned before they have been completely initialized. In that case
         // we need to delay initialization.
-        mInitializePending = true;
+        mCreatePending = true;
         return;
     }
-    mBodyDef.position = mWorld->toMeters(position());
-    mBodyDef.angle = toRadians(rotation());
+
+    mBodyDef.position = mWorld->toMeters(mTarget->position());
+    mBodyDef.angle = toRadians(mTarget->rotation());
     mBody = mWorld->world().CreateBody(&mBodyDef);
-    mInitializePending = false;
+    mCreatePending = false;
+    mTransformDirty = false;
     foreach (Box2DFixture *fixture, mFixtures)
         fixture->initialize(this);
     emit bodyCreated();
@@ -270,46 +276,103 @@ void Box2DBody::initialize(Box2DWorld *world)
 void Box2DBody::synchronize()
 {
     Q_ASSERT(mBody);
+    Q_ASSERT(mTarget);
+
     mSynchronizing = true;
 
     if (sync(mBodyDef.position, mBody->GetPosition())) {
-        setPosition(mWorld->toPixels(mBodyDef.position));
+        mTarget->setPosition(mWorld->toPixels(mBodyDef.position));
         emit positionChanged();
     }
 
     if (sync(mBodyDef.angle, mBody->GetAngle()))
-        setRotation(toDegrees(mBodyDef.angle));
+        mTarget->setRotation(toDegrees(mBodyDef.angle));
 
     mSynchronizing = false;
 }
 
 void Box2DBody::componentComplete()
 {
+    if (!mTarget)
+        setTarget(this);
+
     QQuickItem::componentComplete();
 
-    if (mInitializePending)
-        initialize(mWorld);
+    if (mCreatePending)
+        createBody();
 }
 
-void Box2DBody::geometryChanged(const QRectF &newGeometry,
-                                const QRectF &oldGeometry)
+void Box2DBody::setWorld(Box2DWorld *world)
 {
-    if (!mSynchronizing && mBody) {
-        if (newGeometry.topLeft() != oldGeometry.topLeft()) {
-            mBodyDef.position = mWorld->toMeters(newGeometry.topLeft());
-            mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
-        }
+    if (mWorld == world)
+        return;
+
+    // Destroy body when leaving our previous world
+    if (mWorld && mBody) {
+        mWorld->world().DestroyBody(mBody);
+        mBody = 0;
     }
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+
+    mWorld = world;
+    createBody();
 }
 
-void Box2DBody::itemChange(ItemChange change, const ItemChangeData &value)
+void Box2DBody::setTarget(QQuickItem *target)
 {
-    if (change == ItemRotationHasChanged && !mSynchronizing && mBody) {
-        mBodyDef.angle = toRadians(value.realValue);
-        mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
+    if (mTarget == target)
+        return;
+
+    if (mTarget) {
+        mTarget->setProperty("_Box2DBody", QVariant());
+        mTarget->disconnect(this);
     }
-    QQuickItem::itemChange(change, value);
+
+    mTarget = target;
+
+    if (target) {
+        mTransformDirty = true;
+
+        target->setProperty("_Box2DBody", QVariant::fromValue(this));
+
+        connect(target, SIGNAL(xChanged()), this, SLOT(markTransformDirty()));
+        connect(target, SIGNAL(yChanged()), this, SLOT(markTransformDirty()));
+        connect(target, SIGNAL(rotationChanged()), this, SLOT(markTransformDirty()));
+        connect(target, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(resetWorld(QQuickItem*)));
+
+        resetWorld(target->parentItem());
+    } else {
+        setWorld(0);
+    }
+
+    emit targetChanged();
+}
+
+void Box2DBody::updateTransform()
+{
+    Q_ASSERT(mTarget);
+    Q_ASSERT(mBody);
+    Q_ASSERT(mTransformDirty);
+
+    mBodyDef.position = mWorld->toMeters(mTarget->position());
+    mBodyDef.angle = toRadians(mTarget->rotation());
+    mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
+    mTransformDirty = false;
+}
+
+static Box2DWorld *findWorld(QQuickItem *item)
+{
+    if (!item)
+        return 0;
+    if (Box2DWorld *world = qobject_cast<Box2DWorld*>(item))
+        return world;
+    if (QQuickItem *parent = item->parentItem())
+        return findWorld(parent);
+    return 0;
+}
+
+void Box2DBody::resetWorld(QQuickItem *parentItem)
+{
+    setWorld(findWorld(parentItem));
 }
 
 void Box2DBody::applyLinearImpulse(const QPointF &impulse,
