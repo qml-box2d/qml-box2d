@@ -45,6 +45,7 @@ class Box2DBody : public QQuickItem
     Q_OBJECT
 
     Q_ENUMS(BodyType)
+    Q_PROPERTY(QQuickItem *target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(float linearDamping READ linearDamping WRITE setLinearDamping NOTIFY linearDampingChanged)
     Q_PROPERTY(float angularDamping READ angularDamping WRITE setAngularDamping NOTIFY angularDampingChanged)
     Q_PROPERTY(BodyType bodyType READ bodyType WRITE setBodyType NOTIFY bodyTypeChanged)
@@ -67,6 +68,9 @@ public:
 
     explicit Box2DBody(QQuickItem *parent = 0);
     ~Box2DBody();
+
+    QQuickItem *target() const;
+    void setTarget(QQuickItem *target);
 
     float linearDamping() const;
     void setLinearDamping(float linearDamping);
@@ -103,7 +107,6 @@ public:
 
     QQmlListProperty<Box2DFixture> fixtures();
 
-    void initialize(Box2DWorld *world);
     void synchronize();
     void nullifyBody();
 
@@ -127,13 +130,15 @@ public:
 
     void componentComplete();
     b2Body *body() const;
+
+    void setWorld(Box2DWorld *world);
     Box2DWorld *world() const;
 
-protected:
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
-    void itemChange(ItemChange change, const ItemChangeData &value);
+    bool transformDirty() const;
+    void updateTransform();
 
 signals:
+    void targetChanged();
     void linearDampingChanged();
     void angularDampingChanged();
     void bodyTypeChanged();
@@ -146,12 +151,20 @@ signals:
     void gravityScaleChanged();
     void positionChanged();
 
+private slots:
+    void markTransformDirty();
+    void resetWorld(QQuickItem *parentItem);
+
 private:
+    void createBody();
+
+    QQuickItem *mTarget;
     b2Body *mBody;
     Box2DWorld *mWorld;
     b2BodyDef mBodyDef;
     bool mSynchronizing;
-    bool mInitializePending;
+    bool mTransformDirty;
+    bool mCreatePending;
     QList<Box2DFixture*> mFixtures;
 
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
@@ -159,6 +172,11 @@ private:
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
 };
+
+inline QQuickItem *Box2DBody::target() const
+{
+    return mTarget;
+}
 
 inline float Box2DBody::linearDamping() const
 {
@@ -214,6 +232,17 @@ inline Box2DWorld *Box2DBody::world() const
 {
     return mWorld;
 }
+
+inline bool Box2DBody::transformDirty() const
+{
+    return mTransformDirty;
+}
+
+inline void Box2DBody::markTransformDirty()
+{
+    mTransformDirty = mTransformDirty || !mSynchronizing;
+}
+
 
 /**
  * Convenience function to get the Box2DBody wrapping a b2Body.

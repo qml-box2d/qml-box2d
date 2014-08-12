@@ -281,10 +281,21 @@ void Box2DWorld::SayGoodbye(b2Fixture *fixture)
 
 void Box2DWorld::step()
 {
+    // Update Box2D state before stepping
+    for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext()) {
+        Box2DBody *b = toBox2DBody(body);
+        if (b->transformDirty() && b->isActive())
+            b->updateTransform();
+    }
+
     mWorld.Step(mTimeStep, mVelocityIterations, mPositionIterations);
 
-    for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext())
-        toBox2DBody(body)->synchronize();
+    // Update QML state after stepping
+    for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext()) {
+        Box2DBody *b = toBox2DBody(body);
+        if (b->isActive() && b->bodyType() != Box2DBody::Static)
+            b->synchronize();
+    }
 
     if (mEnableContactEvents) {
         // Emit contact signals
@@ -317,9 +328,12 @@ void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)
 {
     if (isComponentComplete()) {
         if (change == ItemChildAddedChange) {
-            QObject *child = value.item;
-            if (Box2DBody *body = dynamic_cast<Box2DBody*>(child))
-                body->initialize(this);
+            /*
+             * Here it is necessary to initialize any child bodies of the added
+             * child, because they have no other way to get notified about
+             * being added to this world.
+             */
+            initializeBodies(value.item);
         }
     }
 
@@ -329,8 +343,8 @@ void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)
 void Box2DWorld::initializeBodies(QQuickItem *parent)
 {
     foreach (QQuickItem *item, parent->childItems()) {
-        if (Box2DBody *body = dynamic_cast<Box2DBody *>(item))
-            body->initialize(this);
+        if (Box2DBody *body = item->property("_Box2DBody").value<Box2DBody *>())
+            body->setWorld(this);
 
         initializeBodies(item);
     }

@@ -19,50 +19,52 @@ Image {
     // A wheel that will be created dynamically
     Component {
         id: wheelComponent
-        Body {
-            id: wheelBody
-            sleepingAllowed: true
-			bodyType: Body.Dynamic
-			width:80
-			height:80
-            fixtures: Circle {
-                id: circle
-                radius: 40
-                density: 6
-                friction: 1.0
-                restitution: 0.6
-            }
-            Image {
-                id: circleRect
-                anchors.centerIn: parent
-                smooth: true
-                source: "images/wheel.png"
-                MouseArea {
-                    anchors.fill: parent
-                    onReleased: timer.running = false
-                    onPressed: {
-                        if(wheelBody.x < (world.width / 2)) {
-                            timer.clockwise = true
-                        }
-                        else {
-                            timer.clockwise = false
-                        }
+        Image {
+            id: wheel
+            transformOrigin: Item.TopLeft
 
-                        timer.running = true
+            smooth: true
+            source: "images/wheel.png"
+
+            Body {
+                id: wheelBody
+                sleepingAllowed: true
+                bodyType: Body.Dynamic
+                target: wheel
+                fixtures: Circle {
+                    id: circle
+                    radius: wheel.width / 2
+                    density: 6
+                    friction: 1.0
+                    restitution: 0.6
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onReleased: timer.running = false
+                onPressed: {
+                    if(wheel.x < (world.width / 2)) {
+                        timer.clockwise = true
+                    }
+                    else {
+                        timer.clockwise = false
                     }
 
-                    Timer {
-                        id: timer
-                        property bool clockwise
-                        interval: 100
-                        repeat: true
-                        onTriggered: {
-                            if(clockwise) {
-                                wheelBody.applyTorque(-3000)
-                            }
-                            else {
-                                wheelBody.applyTorque(3000)
-                            }
+                    timer.running = true
+                }
+
+                Timer {
+                    id: timer
+                    property bool clockwise
+                    interval: 100
+                    repeat: true
+                    onTriggered: {
+                        if(clockwise) {
+                            wheelBody.applyTorque(-3000)
+                        }
+                        else {
+                            wheelBody.applyTorque(3000)
                         }
                     }
                 }
@@ -98,8 +100,8 @@ Image {
                 anchors.fill: parent
                 onPressAndHold: {
                     var wheel = wheelComponent.createObject(world)
-                    wheel.x = mouse.x
-                    wheel.y = mouse.y
+                    wheel.x = mouse.x - wheel.width / 2
+                    wheel.y = mouse.y - wheel.height / 2
                 }
             }
 
@@ -196,10 +198,10 @@ Image {
         }
     }
 	DebugDraw {
-            id: debugDraw
-            anchors.fill: parent
-            world: world
-            opacity: 0.75
-            visible: false
-        }
+        id: debugDraw
+        anchors.fill: parent
+        world: world
+        opacity: 0.75
+        visible: false
+    }
 }
