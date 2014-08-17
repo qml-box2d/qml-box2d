@@ -53,18 +53,16 @@ static bool sync(b2Vec2 &value, const b2Vec2 &newValue)
 }
 
 
-Box2DBody::Box2DBody(QQuickItem *parent) :
-    QQuickItem(parent),
+Box2DBody::Box2DBody(QObject *parent) :
+    QObject(parent),
+    mWorld(0),
     mTarget(0),
     mBody(0),
-    mWorld(0),
     mSynchronizing(false),
     mTransformDirty(false),
     mCreatePending(false)
 {
     mBodyDef.userData = this;
-
-    setTransformOrigin(TopLeft);
 }
 
 Box2DBody::~Box2DBody()
@@ -230,7 +228,6 @@ void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
-    fixture->setParentItem(body);
     body->mFixtures.append(fixture);
 }
 
@@ -248,7 +245,6 @@ Box2DFixture *Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int in
 
 void Box2DBody::addFixture(Box2DFixture *fixture)
 {
-    fixture->setParentItem(this);
     mFixtures.append(fixture);
     if (mBody)
         fixture->initialize(this);
@@ -256,10 +252,10 @@ void Box2DBody::addFixture(Box2DFixture *fixture)
 
 void Box2DBody::createBody()
 {
-    if (!mWorld)
+    if (!mWorld || !mTarget)
         return;
 
-    if (!isComponentComplete()) {
+    if (!mComponentComplete) {
         // When components are created dynamically, they get their parent
         // assigned before they have been completely initialized. In that case
         // we need to delay initialization.
@@ -298,12 +294,13 @@ void Box2DBody::synchronize()
     mSynchronizing = false;
 }
 
+void Box2DBody::classBegin()
+{
+}
+
 void Box2DBody::componentComplete()
 {
-    if (!mTarget)
-        setTarget(this);
-
-    QQuickItem::componentComplete();
+    mComponentComplete = true;
 
     if (mCreatePending)
         createBody();
@@ -329,26 +326,20 @@ void Box2DBody::setTarget(QQuickItem *target)
     if (mTarget == target)
         return;
 
-    if (mTarget) {
-        mTarget->setProperty("_Box2DBody", QVariant());
+    if (mTarget)
         mTarget->disconnect(this);
-    }
 
     mTarget = target;
 
     if (target) {
         mTransformDirty = true;
 
-        target->setProperty("_Box2DBody", QVariant::fromValue(this));
-
         connect(target, SIGNAL(xChanged()), this, SLOT(markTransformDirty()));
         connect(target, SIGNAL(yChanged()), this, SLOT(markTransformDirty()));
         connect(target, SIGNAL(rotationChanged()), this, SLOT(markTransformDirty()));
-        connect(target, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(resetWorld(QQuickItem*)));
 
-        resetWorld(target->parentItem());
-    } else {
-        setWorld(0);
+        if (!mBody)
+            createBody();
     }
 
     emit targetChanged();
@@ -364,22 +355,6 @@ void Box2DBody::updateTransform()
     mBodyDef.angle = toRadians(mTarget->rotation());
     mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
     mTransformDirty = false;
-}
-
-static Box2DWorld *findWorld(QQuickItem *item)
-{
-    if (!item)
-        return 0;
-    if (Box2DWorld *world = qobject_cast<Box2DWorld*>(item))
-        return world;
-    if (QQuickItem *parent = item->parentItem())
-        return findWorld(parent);
-    return 0;
-}
-
-void Box2DBody::resetWorld(QQuickItem *parentItem)
-{
-    setWorld(findWorld(parentItem));
 }
 
 void Box2DBody::applyLinearImpulse(const QPointF &impulse,

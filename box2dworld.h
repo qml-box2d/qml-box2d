@@ -108,7 +108,7 @@ private:
 /**
  * Wrapper class around a Box2D world.
  */
-class Box2DWorld : public QQuickItem, b2DestructionListener
+class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListener
 {
     Q_OBJECT
 
@@ -122,8 +122,10 @@ class Box2DWorld : public QQuickItem, b2DestructionListener
     Q_PROPERTY(float pixelsPerMeter READ pixelsPerMeter WRITE setPixelsPerMeter NOTIFY pixelsPerMeterChanged)
     Q_PROPERTY(bool enableContactEvents READ enableContactEvents WRITE setEnableContactEvents NOTIFY enableContactEventsChanged)
 
+    Q_INTERFACES(QQmlParserStatus)
+
 public:
-    explicit Box2DWorld(QQuickItem *parent = 0);
+    explicit Box2DWorld(QObject *parent = 0);
     ~Box2DWorld();
 
     float timeStep() const;
@@ -162,6 +164,7 @@ public:
     QPointF toPixels(const b2Vec2 &vec) const;
     b2Vec2 toMeters(const QPointF &point) const;
 
+    void classBegin();
     void componentComplete();
 
     b2World &world();
@@ -177,7 +180,6 @@ public:
                              const QPointF &point2);
 
 signals:
-    void initialized();
     void preSolve(Box2DContact * contact);
     void postSolve(Box2DContact * contact);
 
@@ -192,8 +194,6 @@ signals:
     void pixelsPerMeterChanged();
 
 protected:
-    void itemChange(ItemChange, const ItemChangeData &);
-    void initializeBodies(QQuickItem *parent);
     void enableContactListener(bool enable);
 
 private:
@@ -202,6 +202,7 @@ private:
     float mTimeStep;
     int mVelocityIterations;
     int mPositionIterations;
+    bool mComponentComplete;
     bool mIsRunning;
     StepDriver *mStepDriver;
     Box2DProfile *mProfile;

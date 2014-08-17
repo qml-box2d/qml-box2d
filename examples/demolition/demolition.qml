@@ -30,6 +30,7 @@ Image {
                 id: wheelBody
                 sleepingAllowed: true
                 bodyType: Body.Dynamic
+                world: physicsWorld
                 target: wheel
                 fixtures: Circle {
                     id: circle
@@ -44,7 +45,7 @@ Image {
                 anchors.fill: parent
                 onReleased: timer.running = false
                 onPressed: {
-                    if(wheel.x < (world.width / 2)) {
+                    if(wheel.x < (physicsRoot.width / 2)) {
                         timer.clockwise = true
                     }
                     else {
@@ -87,19 +88,20 @@ Image {
         anchors.fill: parent
 
         // Try to double the contentWidth..
-        contentWidth: world.width // * 2
-        contentHeight: world.height
+        contentWidth: physicsRoot.width // * 2
+        contentHeight: physicsRoot.height
 
+        World { id: physicsWorld }
 
-        World {
-            id: world
+        Item {
+            id: physicsRoot
             width: screen.width
             height: screen.height
 
             MouseArea {
                 anchors.fill: parent
                 onPressAndHold: {
-                    var wheel = wheelComponent.createObject(world)
+                    var wheel = wheelComponent.createObject(physicsRoot)
                     wheel.x = mouse.x - wheel.width / 2
                     wheel.y = mouse.y - wheel.height / 2
                 }
@@ -174,6 +176,14 @@ Image {
                 }
             }
         }
+
+        DebugDraw {
+            id: debugDraw
+            anchors.fill: physicsRoot
+            world: world
+            opacity: 0.75
+            visible: false
+        }
     }
 
 
@@ -196,12 +206,5 @@ Image {
             onPressed: parent.scale = 0.9
             onReleased: parent.scale = 1.0
         }
-    }
-	DebugDraw {
-        id: debugDraw
-        anchors.fill: parent
-        world: world
-        opacity: 0.75
-        visible: false
     }
 }
