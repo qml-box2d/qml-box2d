@@ -1,34 +1,33 @@
 import QtQuick 2.0
 import Box2D 1.1
+import "../shared"
 
-Image {
-    id: box
+Item {
+    id: woodenBox
 
     width: 100
     height: 100
     transformOrigin: Item.TopLeft
 
-    Body {
+    BoxBody {
         id: body
 
         world: physicsWorld
-        target: box
+        target: woodenBox
         bodyType: Body.Dynamic
 
-        fixtures: Box {
-            width: box.width
-            height: box.height
+        density: 1
+        friction: 0.4
+        restitution: 0.5
 
-            density: 1
-            friction: 0.4
-            restitution: 0.5
-        }
+        width: woodenBox.width
+        height: woodenBox.height
     }
 
     Image {
         anchors.fill: parent
-        source: "images/woodenbox.png"
         anchors.margins: -1
+        source: "images/woodenbox.png"
     }
 
     MouseArea {

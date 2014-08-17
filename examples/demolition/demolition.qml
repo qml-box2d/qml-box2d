@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Box2D 1.1
+import "../shared"
 
 Image {
     id: screen;
@@ -26,19 +27,18 @@ Image {
             smooth: true
             source: "images/wheel.png"
 
-            Body {
+            CircleBody {
                 id: wheelBody
-                sleepingAllowed: true
-                bodyType: Body.Dynamic
+
                 world: physicsWorld
                 target: wheel
-                fixtures: Circle {
-                    id: circle
-                    radius: wheel.width / 2
-                    density: 6
-                    friction: 1.0
-                    restitution: 0.6
-                }
+                bodyType: Body.Dynamic
+
+                density: 6
+                friction: 1.0
+                restitution: 0.6
+
+                radius: wheel.width / 2
             }
 
             MouseArea {
@@ -196,12 +196,12 @@ Image {
         fillMode: Image.PreserveAspectFit
         source: "images/plate.png"
         smooth: true
+        Behavior on scale {
+            PropertyAnimation { easing.type: Easing.OutCubic; duration: 100; }
+        }
         MouseArea {
             anchors.fill: parent
             scale: 1.4
-            Behavior on scale {
-                PropertyAnimation { duration: 100 }
-            }
             onClicked: Qt.quit()
             onPressed: parent.scale = 0.9
             onReleased: parent.scale = 1.0
