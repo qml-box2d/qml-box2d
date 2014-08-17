@@ -13,7 +13,5 @@ Body {
 
     property alias vertices: edge.vertices
 
-    fixtures: Edge {
-        id: edge
-    }
+    Edge { id: edge }
 }

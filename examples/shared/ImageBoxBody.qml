@@ -38,7 +38,7 @@ Image {
 
         target: image
 
-        fixtures: Box {
+        Box {
             id: box
 
             width: image.width

@@ -15,7 +15,5 @@ Body {
     property alias y: circle.y
     property alias radius: circle.radius
 
-    fixtures: Circle {
-        id: circle
-    }
+    Circle { id: circle }
 }

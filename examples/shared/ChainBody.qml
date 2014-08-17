@@ -16,7 +16,5 @@ Body {
     property alias prevVertex: chain.prevVertex
     property alias nextVertex: chain.nextVertex
 
-    fixtures: Chain {
-        id: chain
-    }
+    Chain { id: chain }
 }

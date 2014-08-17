@@ -61,6 +61,7 @@ class Box2DBody : public QObject, public QQmlParserStatus
     Q_PROPERTY(float gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
 
     Q_INTERFACES(QQmlParserStatus)
+    Q_CLASSINFO("DefaultProperty", "fixtures")
 
 public:
     enum BodyType {

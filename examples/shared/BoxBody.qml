@@ -16,7 +16,5 @@ Body {
     property alias width: box.width
     property alias height: box.height
 
-    fixtures: Box {
-        id: box
-    }
+    Box { id: box }
 }

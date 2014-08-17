@@ -13,7 +13,5 @@ Body {
 
     property alias vertices: polygon.vertices
 
-    fixtures: Polygon {
-        id: polygon
-    }
+    Polygon { id: polygon }
 }
