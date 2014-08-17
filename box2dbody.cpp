@@ -58,7 +58,6 @@ Box2DBody::Box2DBody(QObject *parent) :
     mWorld(0),
     mTarget(0),
     mBody(0),
-    mSynchronizing(false),
     mTransformDirty(false),
     mCreatePending(false)
 {
@@ -281,8 +280,6 @@ void Box2DBody::synchronize()
     Q_ASSERT(mBody);
     Q_ASSERT(mTarget);
 
-    mSynchronizing = true;
-
     if (sync(mBodyDef.position, mBody->GetPosition())) {
         mTarget->setPosition(mWorld->toPixels(mBodyDef.position));
         emit positionChanged();
@@ -290,8 +287,6 @@ void Box2DBody::synchronize()
 
     if (sync(mBodyDef.angle, mBody->GetAngle()))
         mTarget->setRotation(toDegrees(mBodyDef.angle));
-
-    mSynchronizing = false;
 }
 
 void Box2DBody::classBegin()
@@ -458,4 +453,9 @@ QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
     if (mBody)
         return invertY(mBody->GetLinearVelocityFromLocalPoint(mWorld->toMeters(point)));
     return QPointF();
+}
+
+void Box2DBody::markTransformDirty()
+{
+    mTransformDirty = mTransformDirty || (mWorld && !mWorld->isSynchronizing());
 }

@@ -169,7 +169,6 @@ private:
     b2Body *mBody;
     b2BodyDef mBodyDef;
     bool mComponentComplete;
-    bool mSynchronizing;
     bool mTransformDirty;
     bool mCreatePending;
     QList<Box2DFixture*> mFixtures;
@@ -243,11 +242,6 @@ inline Box2DWorld *Box2DBody::world() const
 inline bool Box2DBody::transformDirty() const
 {
     return mTransformDirty;
-}
-
-inline void Box2DBody::markTransformDirty()
-{
-    mTransformDirty = mTransformDirty || !mSynchronizing;
 }
 
 

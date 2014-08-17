@@ -129,6 +129,7 @@ Box2DWorld::Box2DWorld(QObject *parent) :
     mPositionIterations(3),
     mComponentComplete(false),
     mIsRunning(true),
+    mSynchronizing(false),
     mStepDriver(new StepDriver(this)),
     mProfile(new Box2DProfile(&mWorld, this)),
     mEnableContactEvents(true),
@@ -296,11 +297,13 @@ void Box2DWorld::step()
     b2Timer timer;
 
     // Update QML state after stepping
+    mSynchronizing = true;
     for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext()) {
         Box2DBody *b = toBox2DBody(body);
         if (b->isActive() && b->bodyType() != Box2DBody::Static)
             b->synchronize();
     }
+    mSynchronizing = false;
 
     mProfile->mSynchronize = timer.GetMilliseconds();
     timer.Reset();

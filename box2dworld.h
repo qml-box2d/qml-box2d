@@ -164,6 +164,8 @@ public:
     QPointF toPixels(const b2Vec2 &vec) const;
     b2Vec2 toMeters(const QPointF &point) const;
 
+    bool isSynchronizing() const;
+
     void classBegin();
     void componentComplete();
 
@@ -204,6 +206,7 @@ private:
     int mPositionIterations;
     bool mComponentComplete;
     bool mIsRunning;
+    bool mSynchronizing;
     StepDriver *mStepDriver;
     Box2DProfile *mProfile;
     bool mEnableContactEvents;
@@ -361,6 +364,11 @@ inline b2Vec2 Box2DWorld::toMeters(const QPointF &point) const
 {
     return b2Vec2(point.x() * metersPerPixel(),
                   point.y() * metersPerPixelY());
+}
+
+inline bool Box2DWorld::isSynchronizing() const
+{
+    return mSynchronizing;
 }
 
 inline b2World &Box2DWorld::world()
