@@ -34,11 +34,18 @@
 #include "box2dfixture.h"
 #include "box2dworld.h"
 
-// Helper method for synchronizing while detecting value changes
-template<typename T>
-static bool sync(T &value, const T &newValue)
+static bool sync(float &value, float newValue)
 {
-    if (value == newValue)
+    if (qFuzzyCompare(value, newValue))
+        return false;
+
+    value = newValue;
+    return true;
+}
+
+static bool sync(b2Vec2 &value, const b2Vec2 &newValue)
+{
+    if (qFuzzyCompare(value.x, newValue.x) && qFuzzyCompare(value.y, newValue.y))
         return false;
 
     value = newValue;

@@ -76,6 +76,8 @@ class Box2DProfile : public QObject
     Q_PROPERTY(float solvePosition READ solvePosition CONSTANT)
     Q_PROPERTY(float broadphase READ broadphase CONSTANT)
     Q_PROPERTY(float solveTOI READ solveTOI CONSTANT)
+    Q_PROPERTY(float synchronize READ synchronize CONSTANT)
+    Q_PROPERTY(float emitSignals READ emitSignals CONSTANT)
 
 public:
     explicit Box2DProfile(b2World *world, QObject *parent = 0)
@@ -91,9 +93,15 @@ public:
     float solvePosition() const;
     float broadphase() const;
     float solveTOI() const;
+    float synchronize() const;
+    float emitSignals() const;
 
 private:
+    friend class Box2DWorld;
+
     b2World *mWorld;
+    float mSynchronize;
+    float mEmitSignals;
 };
 
 
@@ -240,6 +248,16 @@ inline float Box2DProfile::broadphase() const
 inline float Box2DProfile::solveTOI() const
 {
     return mWorld->GetProfile().solveTOI;
+}
+
+inline float Box2DProfile::synchronize() const
+{
+    return mSynchronize;
+}
+
+inline float Box2DProfile::emitSignals() const
+{
+    return mEmitSignals;
 }
 
 
