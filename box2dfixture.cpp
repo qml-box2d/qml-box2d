@@ -200,8 +200,8 @@ b2Shape *Box2DBox::createShape()
                          y() + halfHeight);
 
     b2PolygonShape *shape = new b2PolygonShape;
-    shape->SetAsBox(mBody->world()->toMeters(halfWidth),
-                    mBody->world()->toMeters(halfHeight),
+    shape->SetAsBox(b2Max(mBody->world()->toMeters(halfWidth), b2_linearSlop),
+                    b2Max(mBody->world()->toMeters(halfHeight), b2_linearSlop),
                     mBody->world()->toMeters(center),
                     toRadians(rotation()));
 
