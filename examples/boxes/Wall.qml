@@ -1,7 +1,14 @@
 import QtQuick 2.0
-import Box2D 1.1
+import "../shared"
 
-Body {
-    bodyType: Body.Static
-    fixtures: Box { anchors.fill: parent }
+Item {
+    id: wall
+
+    BoxBody {
+        target: wall
+        world: physicsWorld
+
+        width: wall.width
+        height: wall.height
+    }
 }

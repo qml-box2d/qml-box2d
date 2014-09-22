@@ -1,5 +1,6 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
 Item {
     id: screen
@@ -10,8 +11,10 @@ Item {
     // A heavy ball that will be created dynamically with the timer below
     Component {
         id: heavyBall
-        Body {
+        PhysicsItem {
             bodyType: Body.Dynamic
+            world: physicsWorld
+
 			fixtures: Circle {
                 id: circle
                 radius: 40
@@ -19,8 +22,9 @@ Item {
                 friction: 0.3
                 restitution: 0.2
             }
+
             Rectangle {
-                anchors.fill: circle
+                width: 80; height: 80
                 radius: 40
                 smooth: true
                 color: "black"
@@ -30,8 +34,10 @@ Item {
 
     Component {
         id: lightBall
-        Body {
+        PhysicsItem {
 			bodyType: Body.Dynamic
+            world: physicsWorld
+
             fixtures: Circle {
                 id: circle
                 radius: 40
@@ -41,7 +47,7 @@ Item {
             }
 
             Rectangle {
-                anchors.fill: circle
+                width: 80; height: 80
                 radius: 40
                 smooth: true
                 color: "black"
@@ -64,102 +70,83 @@ Item {
         repeat: false
         interval: 4000
         onTriggered: {
-            var ball = heavyBall.createObject(world)
+            var ball = heavyBall.createObject(screen)
             ball.x =  400
             ball.y = 50
-            var ball2 = lightBall.createObject(world)
+            var ball2 = lightBall.createObject(screen)
             ball2.x =  150
             ball2.y = 50
-            var joint = extraJoint.createObject(world)
-            joint.bodyA = ball
-            joint.bodyB = ball2
+            var joint = extraJoint.createObject(screen)
+            joint.bodyA = ball.body
+            joint.bodyB = ball2.body
         }
     }
 
     // BOX2D WORLD
-    World {
-        id: world;
-        anchors.fill: parent
+    World { id: physicsWorld }
 
-        Wall {
-            id: ground
-            height: 20
-            anchors { left: parent.left; right: parent.right; top: parent.bottom }
-        }
-        Wall {
-            id: ceiling
-            height: 20
-            anchors { left: parent.left; right: parent.right; bottom: parent.top }
-        }
-        Wall {
-            id: leftWall
-            width: 20
-            anchors { right: parent.left; bottom: ground.top; top: ceiling.bottom }
-        }
-        Wall {
-            id: rightWall
-            width: 20
-            anchors { left: parent.right; bottom: ground.top; top: ceiling.bottom }
-        }
+    ScreenBoundaries {}
 
-        Ball {
-            id: ball
-            x: 100
-            y: 100
-            rotation: 0
-            width: 80
-            height: 80
-        }
+    Ball {
+        id: ball
+        x: 100
+        y: 100
+        rotation: 0
+        width: 80
+        height: 80
+    }
 
-        Square {
-            id: square
-            x: 180
-            y: 120
-            rotation: 0
-            width: 80
-            height: 80
-        }
+    Square {
+        id: square
+        x: 180
+        y: 120
+        rotation: 0
+        width: 80
+        height: 80
+    }
 
-        DistanceJoint {
-            id: joint
-            frequencyHz: 15
-            dampingRatio: 0.5
-            collideConnected: true
-            bodyA: ball
-            bodyB: square
+    DistanceJoint {
+        id: joint
+        frequencyHz: 15
+        dampingRatio: 0.5
+        collideConnected: true
+        bodyA: ball.body
+        bodyB: square.body
+    }
+
+    PhysicsItem {
+        id: bar
+        width: 300
+        height: 50
+        anchors.centerIn: parent
+
+        fixtures: Box {
+            width: bar.width
+            height: bar.height
         }
 
-        Body {
-            bodyType: Body.Static
-            width: 300
-            height: 50
-            anchors.centerIn: parent
-            fixtures: Box { anchors.fill: parent }
-
-            Rectangle {
-                anchors.fill: parent
-                radius: 6
-                color: "black"
-            }
-        }
-
-        // Debug
-        DebugDraw {
-            id: debugDraw
-            world: world
-            anchors.fill: world
-            opacity: 0.75
-            visible: false
-        }
-
-        MouseArea {
+        Rectangle {
             anchors.fill: parent
-            onClicked: {
-                ball.applyLinearImpulse(
-                            Qt.point((mouseX - ball.x),
-                                     (mouseY - ball.y)),
-                            Qt.point(ball.x, ball.y))
-            }
+            radius: 6
+            color: "black"
+        }
+    }
+
+    // Debug
+    DebugDraw {
+        id: debugDraw
+        world: physicsWorld
+        opacity: 0.75
+        visible: false
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            ball.body.applyLinearImpulse(
+                        Qt.point((mouseX - ball.x),
+                                 (mouseY - ball.y)),
+                        Qt.point(ball.x, ball.y))
         }
     }
 }

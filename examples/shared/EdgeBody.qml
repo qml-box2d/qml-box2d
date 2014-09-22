@@ -1,6 +1,8 @@
 import Box2D 2.0
 
 Body {
+    id: body
+
     property alias fixture: edge
 
     property alias density: edge.density
@@ -13,5 +15,13 @@ Body {
 
     property alias vertices: edge.vertices
 
-    Edge { id: edge }
+    signal beginContact(Fixture other)
+    signal endContact(Fixture other)
+
+    Edge {
+        id: edge
+
+        onBeginContact: body.beginContact(other)
+        onEndContact: body.endContact(other)
+    }
 }

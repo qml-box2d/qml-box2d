@@ -1,8 +1,8 @@
 import QtQuick 2.0
 import Box2D 2.0
 
-Image {
-    id: image
+Rectangle {
+    id: rectangle
 
     transformOrigin: Item.TopLeft
 
@@ -33,22 +33,16 @@ Image {
     property alias collidesWith: box.collidesWith
     property alias groupIndex: box.groupIndex
 
-    signal beginContact(Fixture other)
-    signal endContact(Fixture other)
-
     Body {
         id: boxBody
 
-        target: image
+        target: rectangle
 
         Box {
             id: box
 
-            width: image.width
-            height: image.height
-
-            onBeginContact: image.beginContact(other)
-            onEndContact: image.endContact(other)
+            width: rectangle.width
+            height: rectangle.height
         }
     }
 }

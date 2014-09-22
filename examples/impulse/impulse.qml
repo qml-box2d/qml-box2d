@@ -1,5 +1,6 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
 Item {
     id: screen
@@ -8,58 +9,31 @@ Item {
     focus: true
 
     // BOX2D WORLD
-    World {
-	id: world;
-	anchors.fill: parent
+    World { id: physicsWorld }
 
-        Wall {
-            id: ground
-            height: 20
-            anchors { left: parent.left; right: parent.right; top: parent.bottom }
-        }
-        Wall {
-            id: ceiling
-            height: 20
-            anchors { left: parent.left; right: parent.right; bottom: parent.top }
-        }
-        Wall {
-            id: leftWall
-            width: 20
-            anchors { right: parent.left; bottom: ground.top; top: ceiling.bottom }
-        }
-        Wall {
-            id: rightWall
-            width: 20
-            anchors { left: parent.right; bottom: ground.top; top: ceiling.bottom }
-        }
+    ScreenBoundaries {}
 
-        Ball {
-	    id: ball
-	    x: parent.width /2
-	    y: parent.height /2
-	    rotation: 0
-	    width: 100
-	    height: 100
-	}
+    Ball {
+        id: ball
+        x: parent.width / 2
+        y: parent.height / 2
+    }
 
-	// Debug
-	DebugDraw {
-	    id: debugDraw
-	    world: world
-	    anchors.fill: world
-	    opacity: 0.75
-	    visible: false
-	}
+    // Debug
+    DebugDraw {
+        id: debugDraw
+        world: physicsWorld
+        opacity: 0.75
+        visible: false
+    }
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                ball.applyLinearImpulse(
-                            Qt.point((mouseX - ball.x),
-                                     (mouseY - ball.y)),
-                            Qt.point(ball.x, ball.y))
-            }
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            ball.body.applyLinearImpulse(
+                        Qt.point((mouseX - ball.x),
+                                 (mouseY - ball.y)),
+                        Qt.point(ball.x, ball.y))
         }
     }
 }
-

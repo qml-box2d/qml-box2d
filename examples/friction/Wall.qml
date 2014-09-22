@@ -1,16 +1,13 @@
 import QtQuick 2.2
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
-Body {
-    bodyType: Body.Static
-    fixtures: Box {
-        anchors.fill: parent
-        friction: 1
-        density: 1
-    }
-    Image {
-        source: "images/wall.jpg"
-        fillMode: Image.Tile
-        anchors.fill: parent
-    }
+ImageBoxBody {
+    world: physicsWorld
+
+    source: "images/wall.jpg"
+    fillMode: Image.Tile
+
+    friction: 1
+    density: 1
 }

@@ -1,6 +1,8 @@
 import Box2D 2.0
 
 Body {
+    id: body
+
     property alias fixture: chain
 
     property alias density: chain.density
@@ -16,5 +18,13 @@ Body {
     property alias prevVertex: chain.prevVertex
     property alias nextVertex: chain.nextVertex
 
-    Chain { id: chain }
+    signal beginContact(Fixture other)
+    signal endContact(Fixture other)
+
+    Chain {
+        id: chain
+
+        onBeginContact: body.beginContact(other)
+        onEndContact: body.endContact(other)
+    }
 }

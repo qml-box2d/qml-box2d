@@ -1,8 +1,9 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
 Rectangle {
-    id: root
+    id: screen
 
     property int selected: -1
 
@@ -15,57 +16,30 @@ Rectangle {
         id: speciesModel
     }
 
-
     World {
-        id: world
-        anchors.fill: parent
-
+        id: physicsWorld
         gravity: Qt.point(0, 0)
+    }
 
-        Repeater {
-            anchors.fill: parent
-            model: speciesModel
-            delegate: Component {
-                SpeciesInfo {
-                    id: speciesInfo
-                    x: Math.random() * (root.width - radius)
-                    y: Math.random() * (root.height - radius)
-                    expanded: index == root.selected
-                    speciesName: species
-                    descriptionText: description
-                    photoUrl: photo
-                    onSelected: {
-                        root.selected = index
-                    }
-                }
-            }
+    Repeater {
+        anchors.fill: parent
+        model: speciesModel
+        delegate: SpeciesInfo {
+            id: speciesInfo
+            x: Math.random() * (screen.width - radius)
+            y: Math.random() * (screen.height - radius)
+            expanded: index == screen.selected
+            speciesName: species
+            descriptionText: description
+            photoUrl: photo
+            onSelected: screen.selected = index
         }
+    }
 
-        Wall {
-            id: ground
-            height: 20
-            anchors { left: parent.left; right: parent.right; top: parent.bottom }
-        }
-        Wall {
-            id: ceiling
-            height: 20
-            anchors { left: parent.left; right: parent.right; bottom: parent.top }
-        }
-        Wall {
-            id: leftWall
-            width: 20
-            anchors { right: parent.left; bottom: ground.top; top: ceiling.bottom }
-        }
-        Wall {
-            id: rightWall
-            width: 20
-            anchors { left: parent.right; bottom: ground.top; top: ceiling.bottom }
-        }
+    ScreenBoundaries {}
 
-        DebugDraw {
-            anchors.fill: parent
-            world: parent
-            visible: false
-        }
+    DebugDraw {
+        world: physicsWorld
+        visible: false
     }
 }

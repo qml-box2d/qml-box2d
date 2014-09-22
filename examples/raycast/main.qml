@@ -1,6 +1,7 @@
 import QtQuick 2.2
-import Box2D 1.1
+import Box2D 2.0
 import QtQuick.Controls 1.1
+import "../shared"
 
 Rectangle {
     width: 800
@@ -8,24 +9,21 @@ Rectangle {
 
     Component {
         id: ballComponent
-        Body {
+        PhysicsItem {
             id: ball
             width: 20
             height: 20
-            sleepingAllowed: true
             bodyType: Body.Dynamic
             property bool burn: false
-            function doDestroy() {
-                destroy();
-            }
+
             fixtures: Circle {
                 property bool isBall: true
-                anchors.fill: parent
                 radius: 10
                 density: 0.5
                 friction: 1
                 restitution: 0.2
             }
+
             Rectangle {
                 id: ballShape
                 border.color: "#999"
@@ -54,8 +52,8 @@ Rectangle {
                         duration: 50
                     }
                     onRunningChanged: {
-                        if(!running)
-                            ball.doDestroy();
+                        if (!running)
+                            ball.destroy();
                     }
                 }
             }
@@ -63,7 +61,15 @@ Rectangle {
     }
 
     World {
-        id: world
+        id: physicsWorld
+
+        onStepped: physicsWorld.rayCast(sensorRay,
+                                        sensorRay.point1,
+                                        sensorRay.point2)
+    }
+
+    Item {
+        id: physicsRoot
         anchors.fill: parent
 
         Wall {
@@ -88,10 +94,9 @@ Rectangle {
             }
         }
 
-        Body {
+        PhysicsItem {
             id: ground
             height: 40
-            bodyType: Body.Static
             anchors {
                 left: parent.left
                 right: parent.right
@@ -100,11 +105,10 @@ Rectangle {
             fixtures: Polygon {
                 vertices: [
                     Qt.point(0,0),
-                    Qt.point(parent.width,parent.height),
-                    Qt.point(0,parent.height)
+                    Qt.point(ground.width,ground.height),
+                    Qt.point(0,ground.height)
 
                 ]
-                anchors.fill: parent
                 friction: 0.2
                 density: 0.5
             }
@@ -139,12 +143,6 @@ Rectangle {
                 }
             }
         }
-        Connections {
-            target: world
-            onStepped: world.rayCast(sensorRay,
-                                     sensorRay.point1,
-                                     sensorRay.point2)
-        }
 
         Rectangle {
             x: 40
@@ -157,9 +155,9 @@ Rectangle {
 
         RayCast {
             id: laserRay
-            onFixtureReported: fixture.parent.burn = true
+            onFixtureReported: fixture.getBody().target.burn = true
             function cast() {
-                world.rayCast(this, Qt.point(40, 300), Qt.point(700, 300))
+                physicsWorld.rayCast(this, Qt.point(40, 300), Qt.point(700, 300))
             }
         }
 
@@ -180,14 +178,15 @@ Rectangle {
             }
         }
 
-        Body {
+        PhysicsItem {
             id: bucket
             x: 60
             y: 480
             height: 50
             width: 40
             bodyType: Body.Kinematic
-            fixtures: [Polygon {
+            fixtures: [
+                Polygon {
                     vertices: [
                         Qt.point(0,0),
                         Qt.point(40,0),
@@ -202,10 +201,8 @@ Rectangle {
                     ]
                     sensor: true
                     onBeginContact: {
-                        if(other.isBall)
-                        {
-                            other.parent.destroy();
-                        }
+                        if (other.isBall)
+                            other.getBody().target.destroy();
                     }
                 }
             ]
@@ -240,8 +237,7 @@ Rectangle {
             width: 120
             height: 30
             Text {
-                id: debugButtonText
-                text: "Debug view: off"
+                text: debugDraw.visible ? "Debug view: on" : "Debug view: off";
                 anchors.centerIn: parent
             }
             color: "#DEDEDE"
@@ -249,17 +245,13 @@ Rectangle {
             radius: 5
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    debugDraw.visible = !debugDraw.visible;
-                    debugButtonText.text = debugDraw.visible ? "Debug view: on" : "Debug view: off";
-                }
+                onClicked: debugDraw.visible = !debugDraw.visible;
             }
         }
 
         DebugDraw {
             id: debugDraw
-            anchors.fill: parent
-            world: world
+            world: physicsWorld
             opacity: 0.7
             visible: false
         }
@@ -299,7 +291,7 @@ Rectangle {
         running: true
         repeat: true
         onTriggered: {
-            var newBall = ballComponent.createObject(world);
+            var newBall = ballComponent.createObject(physicsRoot);
             newBall.x = 100 + (Math.random() * 600);
             newBall.y = 50;
         }
