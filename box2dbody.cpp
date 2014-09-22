@@ -251,7 +251,7 @@ void Box2DBody::addFixture(Box2DFixture *fixture)
 
 void Box2DBody::createBody()
 {
-    if (!mWorld || !mTarget)
+    if (!mWorld)
         return;
 
     if (!mComponentComplete) {
@@ -262,8 +262,10 @@ void Box2DBody::createBody()
         return;
     }
 
-    mBodyDef.position = mWorld->toMeters(mTarget->position());
-    mBodyDef.angle = toRadians(mTarget->rotation());
+    if (mTarget) {
+        mBodyDef.position = mWorld->toMeters(mTarget->position());
+        mBodyDef.angle = toRadians(mTarget->rotation());
+    }
     mBody = mWorld->world().CreateBody(&mBodyDef);
     mCreatePending = false;
     mTransformDirty = false;
@@ -278,15 +280,16 @@ void Box2DBody::createBody()
 void Box2DBody::synchronize()
 {
     Q_ASSERT(mBody);
-    Q_ASSERT(mTarget);
 
     if (sync(mBodyDef.position, mBody->GetPosition())) {
-        mTarget->setPosition(mWorld->toPixels(mBodyDef.position));
+        if (mTarget)
+            mTarget->setPosition(mWorld->toPixels(mBodyDef.position));
         emit positionChanged();
     }
 
     if (sync(mBodyDef.angle, mBody->GetAngle()))
-        mTarget->setRotation(toDegrees(mBodyDef.angle));
+        if (mTarget)
+            mTarget->setRotation(toDegrees(mBodyDef.angle));
 }
 
 void Box2DBody::classBegin()
@@ -325,16 +328,12 @@ void Box2DBody::setTarget(QQuickItem *target)
         mTarget->disconnect(this);
 
     mTarget = target;
+    mTransformDirty = target != 0;
 
     if (target) {
-        mTransformDirty = true;
-
         connect(target, SIGNAL(xChanged()), this, SLOT(markTransformDirty()));
         connect(target, SIGNAL(yChanged()), this, SLOT(markTransformDirty()));
         connect(target, SIGNAL(rotationChanged()), this, SLOT(markTransformDirty()));
-
-        if (!mBody)
-            createBody();
     }
 
     emit targetChanged();
