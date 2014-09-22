@@ -32,7 +32,26 @@ Rectangle {
         }
     }
 
-    World { id: physicsWorld }
+    World {
+        id: physicsWorld
+
+        contactListener: ContactListener {
+            onBeginContact: {
+                checkPaint(contact.fixtureA, contact.fixtureB);
+                checkPaint(contact.fixtureB, contact.fixtureA);
+            }
+
+            function checkPaint(fixtureA, fixtureB) {
+                if (fixtureA.paint) {
+                    var target = fixtureB.getBody().target;
+                    if (target.color === "#EFEFEF") {
+                        target.color = fixtureA.paint
+                        fixtureA.counter++;
+                    }
+                }
+            }
+        }
+    }
 
     PhysicsItem {
         id: ground
@@ -134,12 +153,11 @@ Rectangle {
                 var context = propCanvas.getContext("2d");
                 context.beginPath();
                 var fixtures = prop.fixtures;
-                var count = fixtures.count;
-                for(var i = 0;i < fixtures.length;i ++) {
+                for (var i = 0; i < fixtures.length; i++) {
                     var fixture = fixtures[i];
                     var vertices = fixture.vertices;
                     context.moveTo(vertices[0].x,vertices[0].y);
-                    for(var j = 1;j < vertices.length;j ++) {
+                    for (var j = 1; j < vertices.length; j++) {
                         context.lineTo(vertices[j].x,vertices[j].y);
                     }
                     context.lineTo(vertices[0].x,vertices[0].y);
@@ -315,66 +333,56 @@ Rectangle {
 
     PhysicsItem {
         id: leftSensor
-        x:40
+        x: 40
         y: 360
         width: 360
-        height:20
+        height: 20
         fixtures: Box {
+            id: leftSensorFixture
             width: leftSensor.width
             height: leftSensor.height
             sensor: true
-            onBeginContact: {
-                var target = other.getBody().target
-                if (target.color === "#EFEFEF") {
-                    target.color = "lightgreen"
-                    leftCounter.count++;
-                }
-            }
+            property color paint: "lightgreen"
+            property int counter: 0
         }
     }
 
     PhysicsItem {
         id: rightSensor
-        x:400
+        x: 400
         y: 360
         width: 360
-        height:20
+        height: 20
         fixtures: Box {
+            id: rightSensorFixture
             width: rightSensor.width
             height: rightSensor.height
             sensor: true
-            onBeginContact: {
-                var target = other.getBody().target
-                if (target.color === "#EFEFEF") {
-                    target.color = "orange"
-                    rightCounter.count++;
-                }
-            }
+            property color paint: "orange"
+            property int counter: 0
         }
     }
 
     Text {
         id: leftCounter
-        property int count: 0
-        x:300
+        x: 300
         y: 220
         width: 75
         height: 20
         color: "white"
         horizontalAlignment: Text.AlignHCenter
-        text: leftCounter.count
+        text: leftSensorFixture.counter
     }
 
     Text {
         id: rightCounter
-        property int count: 0
-        x:410
+        x: 410
         y: 220
         width: 75
         height: 20
         color: "white"
         horizontalAlignment: Text.AlignHCenter
-        text: rightCounter.count
+        text: rightSensorFixture.counter
     }
 
     DebugDraw {

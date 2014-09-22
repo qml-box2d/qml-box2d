@@ -21,6 +21,7 @@ include(Box2D/box2d.pri)
 SOURCES += $$PWD/box2dplugin.cpp \
     $$PWD/box2dworld.cpp \
     $$PWD/box2dcontact.cpp \
+    $$PWD/box2dcontactlistener.cpp \
     $$PWD/box2dbody.cpp \
     $$PWD/box2dfixture.cpp \
     $$PWD/box2ddebugdraw.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     $$PWD/box2dplugin.h \
     $$PWD/box2dworld.h \
     $$PWD/box2dcontact.h \
+    $$PWD/box2dcontactlistener.h \
     $$PWD/box2dbody.h \
     $$PWD/box2dfixture.h \
     $$PWD/box2ddebugdraw.h \

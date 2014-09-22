@@ -18,13 +18,5 @@ Body {
     property alias width: box.width
     property alias height: box.height
 
-    signal beginContact(Fixture other)
-    signal endContact(Fixture other)
-
-    Box {
-        id: box
-
-        onBeginContact: body.beginContact(other)
-        onEndContact: body.endContact(other)
-    }
+    Box { id: box }
 }

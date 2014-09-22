@@ -15,13 +15,5 @@ Body {
 
     property alias vertices: edge.vertices
 
-    signal beginContact(Fixture other)
-    signal endContact(Fixture other)
-
-    Edge {
-        id: edge
-
-        onBeginContact: body.beginContact(other)
-        onEndContact: body.endContact(other)
-    }
+    Edge { id: edge }
 }

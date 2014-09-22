@@ -34,12 +34,7 @@ Box2DContact::Box2DContact(b2Contact *contact) :
 {
 }
 
-void Box2DContact::setContact(b2Contact *contact)
-{
-    mContact = contact;
-}
-
-bool Box2DContact::isTouching()
+bool Box2DContact::isTouching() const
 {
     return mContact->IsTouching();
 }
@@ -56,18 +51,16 @@ void Box2DContact::setEnabled(bool enabled)
 
 Box2DFixture *Box2DContact::fixtureA() const
 {
-    b2Fixture *fixture = mContact->GetFixtureA();
-    if(fixture)
+    if (b2Fixture *fixture = mContact->GetFixtureA())
         return toBox2DFixture(fixture);
-    return NULL;
+    return 0;
 }
 
 Box2DFixture *Box2DContact::fixtureB() const
 {
-    b2Fixture *fixture = mContact->GetFixtureB();
-    if(fixture)
+    if (b2Fixture *fixture = mContact->GetFixtureB())
         return toBox2DFixture(fixture);
-    return NULL;
+    return 0;
 }
 
 int Box2DContact::childIndexA() const
@@ -80,7 +73,7 @@ int Box2DContact::childIndexB() const
     return mContact->GetChildIndexB();
 }
 
-qreal Box2DContact::getFriction() const
+qreal Box2DContact::friction() const
 {
     return mContact->GetFriction();
 }
@@ -95,7 +88,7 @@ void Box2DContact::resetFriction()
     mContact->ResetFriction();
 }
 
-qreal Box2DContact::getRestitution() const
+qreal Box2DContact::restitution() const
 {
     return mContact->GetRestitution();
 }
@@ -110,7 +103,7 @@ void Box2DContact::resetRestitution()
     mContact->ResetRestitution();
 }
 
-qreal Box2DContact::getTangentSpeed() const
+qreal Box2DContact::tangentSpeed() const
 {
     return mContact->GetTangentSpeed();
 }

@@ -24,6 +24,7 @@ INSTALLS += target qmldir
 SOURCES += box2dplugin.cpp \
     box2dworld.cpp \
     box2dcontact.cpp \
+    box2dcontactlistener.cpp \
     box2dbody.cpp \
     box2dfixture.cpp \
     box2ddebugdraw.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     box2dplugin.h \
     box2dworld.h \
     box2dcontact.h \
+    box2dcontactlistener.h \
     box2dbody.h \
     box2dfixture.h \
     box2ddebugdraw.h \

@@ -17,13 +17,5 @@ Body {
     property alias y: circle.y
     property alias radius: circle.radius
 
-    signal beginContact(Fixture other)
-    signal endContact(Fixture other)
-
-    Circle {
-        id: circle
-
-        onBeginContact: body.beginContact(other)
-        onEndContact: body.endContact(other)
-    }
+    Circle { id: circle }
 }
