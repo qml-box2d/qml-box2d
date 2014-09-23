@@ -1,24 +1,31 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
-Body {
-    fixedRotation: false
-    sleepingAllowed: false
-    bodyType: Body.Dynamic
-    fixtures: Circle {
-        id: circleShape
-        radius: parent.width / 2
-        anchors.fill: parent
-        density: 1;
-        friction: 1;
-        restitution: 0.5;
-    }
-    
+PhysicsItem {
+    id: ball
+
     Rectangle {
-        id: itemShape
+        id: circle
+
         color: "green"
-        radius: parent.width / 2
-        width: parent.width
-        height: parent.height
+        radius: width / 2
+        width: 100
+        height: 100
+        anchors.centerIn: parent
+    }
+
+    property Body body: CircleBody {
+        target: ball
+        world: physicsWorld
+        sleepingAllowed: false
+        bodyType: Body.Dynamic
+
+        radius: circle.radius
+        x: -radius
+        y: -radius
+        density: 1
+        friction: 1
+        restitution: 0.5
     }
 }

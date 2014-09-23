@@ -35,7 +35,7 @@
 
 class Box2DBody;
 
-class Box2DFixture : public QQuickItem
+class Box2DFixture : public QObject
 {
     Q_OBJECT
 
@@ -51,7 +51,7 @@ class Box2DFixture : public QQuickItem
     Q_FLAGS(CategoryFlags)
 
 public:
-    explicit Box2DFixture(QQuickItem *parent = 0);
+    explicit Box2DFixture(QObject *parent = 0);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
                        Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
@@ -113,34 +113,41 @@ class Box2DBox : public Box2DFixture
 {
     Q_OBJECT
 
+    Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged)
+    Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged)
+    Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(qreal height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
+
 public:
-    explicit Box2DBox(QQuickItem *parent = 0) :
-        Box2DFixture(parent)
+    explicit Box2DBox(QQuickItem *parent = 0)
+        : Box2DFixture(parent)
+        , mPosition(0, 0)
+        , mSize(0, 0)
+        , mRotation(0)
     {}
 
-protected:
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+    qreal x() const { return mPosition.x(); }
+    void setX(qreal x);
 
-    b2Shape *createShape();
-};
+    qreal y() const { return mPosition.y(); }
+    void setY(qreal y);
 
+    qreal width() const { return mSize.width(); }
+    void setWidth(qreal width);
 
-class Box2DCircle : public Box2DFixture
-{
-    Q_OBJECT
+    qreal height() const { return mSize.height(); }
+    void setHeight(qreal height);
 
-    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
-
-public:
-    explicit Box2DCircle(QQuickItem *parent = 0) :
-        Box2DFixture(parent)
-    { }
-
-    float radius() const { return mRadius; }
-    void setRadius(float radius);
+    qreal rotation() const { return mRotation; }
+    void setRotation(qreal rotation);
 
 signals:
-    void radiusChanged();
+    void xChanged();
+    void yChanged();
+    void widthChanged();
+    void heightChanged();
+    void rotationChanged();
 
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
@@ -148,6 +155,48 @@ protected:
     b2Shape *createShape();
 
 private:
+    QPointF mPosition;
+    QSizeF mSize;
+    qreal mRotation;
+};
+
+
+class Box2DCircle : public Box2DFixture
+{
+    Q_OBJECT
+
+    Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged)
+    Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+
+public:
+    explicit Box2DCircle(QQuickItem *parent = 0)
+        : Box2DFixture(parent)
+        , mPosition(0, 0)
+        , mRadius(32)
+    { }
+
+    qreal x() const { return mPosition.x(); }
+    void setX(qreal x);
+
+    qreal y() const { return mPosition.y(); }
+    void setY(qreal y);
+
+    QPointF position() const { return mPosition; }
+
+    float radius() const { return mRadius; }
+    void setRadius(float radius);
+
+signals:
+    void xChanged();
+    void yChanged();
+    void radiusChanged();
+
+protected:
+    b2Shape *createShape();
+
+private:
+    QPointF mPosition;
     float mRadius;
 };
 

@@ -120,14 +120,16 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
     emit mWorld->postSolve(&mContact);
 }
 
-Box2DWorld::Box2DWorld(QQuickItem *parent) :
-    QQuickItem(parent),
+Box2DWorld::Box2DWorld(QObject *parent) :
+    QObject(parent),
     mWorld(b2Vec2(0.0f, -10.0f)),
     mContactListener(0),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(8),
     mPositionIterations(3),
+    mComponentComplete(false),
     mIsRunning(true),
+    mSynchronizing(false),
     mStepDriver(new StepDriver(this)),
     mProfile(new Box2DProfile(&mWorld, this)),
     mEnableContactEvents(true),
@@ -164,7 +166,7 @@ void Box2DWorld::setRunning(bool running)
     mIsRunning = running;
     emit runningChanged();
 
-    if (isComponentComplete()) {
+    if (mComponentComplete) {
         if (running)
             mStepDriver->start();
         else
@@ -246,14 +248,16 @@ void Box2DWorld::setPixelsPerMeter(float pixelsPerMeter)
     }
 }
 
+void Box2DWorld::classBegin()
+{
+}
+
 void Box2DWorld::componentComplete()
 {
-    QQuickItem::componentComplete();
+    mComponentComplete = true;
 
-    initializeBodies(this);
     enableContactListener(mEnableContactEvents);
 
-    emit initialized();
     if (mIsRunning)
         mStepDriver->start();
 }
@@ -293,11 +297,13 @@ void Box2DWorld::step()
     b2Timer timer;
 
     // Update QML state after stepping
+    mSynchronizing = true;
     for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext()) {
         Box2DBody *b = toBox2DBody(body);
-        if (b->isActive() && b->bodyType() != Box2DBody::Static)
+        if (b->isActive() && b->bodyType() != Box2DBody::Static && b->target())
             b->synchronize();
     }
+    mSynchronizing = false;
 
     mProfile->mSynchronize = timer.GetMilliseconds();
     timer.Reset();
@@ -330,30 +336,3 @@ void Box2DWorld::rayCast(Box2DRayCast *rayCast,
 {
     mWorld.RayCast(rayCast, toMeters(point1), toMeters(point2));
 }
-
-void Box2DWorld::itemChange(ItemChange change, const ItemChangeData &value)
-{
-    if (isComponentComplete()) {
-        if (change == ItemChildAddedChange) {
-            /*
-             * Here it is necessary to initialize any child bodies of the added
-             * child, because they have no other way to get notified about
-             * being added to this world.
-             */
-            initializeBodies(value.item);
-        }
-    }
-
-    QQuickItem::itemChange(change, value);
-}
-
-void Box2DWorld::initializeBodies(QQuickItem *parent)
-{
-    foreach (QQuickItem *item, parent->childItems()) {
-        if (Box2DBody *body = item->property("_Box2DBody").value<Box2DBody *>())
-            body->setWorld(this);
-
-        initializeBodies(item);
-    }
-}
-

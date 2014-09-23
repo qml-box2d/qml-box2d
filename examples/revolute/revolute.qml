@@ -1,18 +1,18 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
 Item {
     id: screen
     width: 800
     height: 600
     focus: true
-    Keys.onPressed: onKeysPressed(event)
 
-    function onKeysPressed(event) {
-        if (event.key == Qt.Key_Left) {
+    Keys.onPressed: {
+        if (event.key === Qt.Key_Left) {
             revolute.motorSpeed -= 10;
         }
-        else if (event.key == Qt.Key_Right) {
+        else if (event.key === Qt.Key_Right) {
             revolute.motorSpeed += 10
         }
     }
@@ -29,95 +29,65 @@ Item {
     }
 
     // BOX2D WORLD
-    World {
-        id: world;
-        anchors.fill: parent
+    World { id: physicsWorld }
 
-        Wall {
-            id: ground
-            height: 20
-            anchors { left: parent.left; right: parent.right; top: parent.bottom }
-        }
-        Wall {
-            id: ceiling
-            height: 20
-            anchors { left: parent.left; right: parent.right; bottom: parent.top }
-        }
-        Wall {
-            id: leftWall
-            width: 20
-            anchors { right: parent.left; bottom: ground.top; top: ceiling.bottom }
-        }
-        Wall {
-            id: rightWall
-            width: 20
-            anchors { left: parent.right; bottom: ground.top; top: ceiling.bottom }
+    PhysicsItem {
+        id: rod
+        sleepingAllowed: false
+        bodyType: Body.Dynamic
+        x: 350
+        y: 300
+
+        width: 250
+        height: 40
+
+        fixtures: Box {
+            width: rod.width
+            height: rod.height
+            density: 1;
+            friction: 1;
+            restitution: 0.3;
         }
 
-        Body {
-            id: rod
-            sleepingAllowed: false
-            bodyType: Body.Dynamic
-            x: 350
-            y: 300
-
-            width: 250
-            height: 40
-
-            fixtures: Box {
-                anchors.fill: parent
-                density: 1;
-                friction: 1;
-                restitution: 0.3;
-            }
-
-            Rectangle {
-                color: "green"
-                radius: 6
-                anchors.fill: parent
-            }
+        Rectangle {
+            color: "green"
+            radius: 6
+            anchors.fill: parent
         }
+    }
 
-        Body {
-            id: middle
-            fixedRotation: true
-            sleepingAllowed: false
-            bodyType: Body.Static
+    PhysicsItem {
+        id: middle
 
-            x: 400
-            y: 300
+        x: 400
+        y: 300
 
-            fixtures: Circle {
-                id: circleShape
-                radius: 20
-            }
+        fixtures: Circle { radius: itemShape.radius }
 
-            Rectangle {
-                id: itemShape
-                radius: 180
-                anchors.fill: circleShape
-                color: "black"
-            }
+        Rectangle {
+            id: itemShape
+            radius: width / 2
+            width: 40; height: 40
+            color: "black"
         }
+    }
 
-        RevoluteJoint {
-            id: revolute
-            maxMotorTorque: 1000
-            motorSpeed: 0
-            enableMotor: false
-            bodyA: middle
-            bodyB: rod
-            localAnchorA: Qt.point(20,20)
-        }
+    RevoluteJoint {
+        id: revolute
+        maxMotorTorque: 1000
+        motorSpeed: 0
+        enableMotor: false
+        bodyA: middle.body
+        bodyB: rod.body
+        localAnchorA: Qt.point(20,20)
+    }
 
-        // Debug
-        DebugDraw {
-            id: debugDraw
-            world: world
-            anchors.fill: world
-            opacity: 0.75
-            visible: false
-        }
+    // Debug
+    DebugDraw {
+        id: debugDraw
+        world: physicsWorld
+        opacity: 0.5
+        visible: false
     }
 
     MouseArea {
