@@ -40,6 +40,7 @@ class Box2DWorld;
 class Box2DRayCast;
 class ContactListener;
 class StepDriver;
+class Box2DDebugDraw;
 
 /**
  * Small utility class to synchronize the stepping with the framerate.
@@ -121,7 +122,7 @@ class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListene
     Q_PROPERTY(Box2DProfile *profile READ profile NOTIFY stepped)
     Q_PROPERTY(float pixelsPerMeter READ pixelsPerMeter WRITE setPixelsPerMeter NOTIFY pixelsPerMeterChanged)
     Q_PROPERTY(bool enableContactEvents READ enableContactEvents WRITE setEnableContactEvents NOTIFY enableContactEventsChanged)
-
+    Q_PROPERTY(QQuickItem *debugDrawTarget READ debugDrawTarget WRITE setDebugDrawTarget NOTIFY debugDrawTargetChanged)
     Q_INTERFACES(QQmlParserStatus)
 
 public:
@@ -150,6 +151,9 @@ public:
 
     bool enableContactEvents() const;
     void setEnableContactEvents(bool enableContactEvents);
+
+    QQuickItem *debugDrawTarget();
+    void setDebugDrawTarget(QQuickItem *debugDrawTarget);
 
     float pixelsPerMeter() const;
     void setPixelsPerMeter(float pixelsPerMeter);
@@ -194,6 +198,7 @@ signals:
     void stepped();
     void enableContactEventsChanged();
     void pixelsPerMeterChanged();
+    void debugDrawTargetChanged();
 
 protected:
     void enableContactListener(bool enable);
@@ -211,6 +216,7 @@ private:
     Box2DProfile *mProfile;
     bool mEnableContactEvents;
     float mPixelsPerMeter;
+    Box2DDebugDraw *mDebugDraw;
 };
 
 

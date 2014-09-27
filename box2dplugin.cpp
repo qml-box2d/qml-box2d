@@ -29,7 +29,6 @@
 
 #include "box2dworld.h"
 #include "box2dbody.h"
-#include "box2ddebugdraw.h"
 #include "box2dfixture.h"
 #include "box2djoint.h"
 #include "box2ddistancejoint.h"
@@ -69,7 +68,6 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DPolygon>(uri, versionMajor, versionMinor, "Polygon");
     qmlRegisterType<Box2DChain>(uri, versionMajor, versionMinor, "Chain");
     qmlRegisterType<Box2DEdge>(uri, versionMajor, versionMinor, "Edge");
-    qmlRegisterType<Box2DDebugDraw>(uri, versionMajor, versionMinor, "DebugDraw");
     qmlRegisterUncreatableType<Box2DJoint>(uri, versionMajor, versionMinor, "Joint",
                                            QStringLiteral("Base type for DistanceJoint, RevoluteJoint etc."));
     qmlRegisterType<Box2DDistanceJoint>(uri, versionMajor, versionMinor, "DistanceJoint");

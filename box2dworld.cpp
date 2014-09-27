@@ -32,6 +32,7 @@
 #include "box2dfixture.h"
 #include "box2djoint.h"
 #include "box2draycast.h"
+#include "box2ddebugdraw.h"
 
 StepDriver::StepDriver(Box2DWorld *world)
     : QAbstractAnimation(world)
@@ -133,7 +134,8 @@ Box2DWorld::Box2DWorld(QObject *parent) :
     mStepDriver(new StepDriver(this)),
     mProfile(new Box2DProfile(&mWorld, this)),
     mEnableContactEvents(true),
-    mPixelsPerMeter(32.0f)
+    mPixelsPerMeter(32.0f),
+    mDebugDraw(0)
 
 {
     mWorld.SetDestructionListener(this);
@@ -222,6 +224,28 @@ void Box2DWorld::setEnableContactEvents(bool enableContactEvents)
     enableContactListener(mEnableContactEvents);
 
     emit enableContactEventsChanged();
+}
+
+QQuickItem *Box2DWorld::debugDrawTarget()
+{
+    return (mDebugDraw == 0) ? 0 : mDebugDraw->parentItem();
+}
+
+void Box2DWorld::setDebugDrawTarget(QQuickItem *enable)
+{
+    if(enable) {
+        if(mDebugDraw == 0) {
+            mDebugDraw = new Box2DDebugDraw(enable);
+            mDebugDraw->setWorld(this);
+            emit debugDrawTargetChanged();
+        }
+    } else {
+        if(mDebugDraw != 0) {
+            delete mDebugDraw;
+            mDebugDraw = 0;
+            emit debugDrawTargetChanged();
+        }
+    }
 }
 
 void Box2DWorld::enableContactListener(bool enable)
