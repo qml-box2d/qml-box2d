@@ -6,6 +6,8 @@ Rectangle {
     width: 800
     height: 600
 
+    property Body pressedBody: null
+
     function randomColor() {
         return Qt.rgba(Math.random(), Math.random(), Math.random(), Math.random());
     }
@@ -14,16 +16,29 @@ Rectangle {
         id: mouseJoint
         bodyA: anchor
         dampingRatio: 0.8
-        target: Qt.point(mouseArea.mouseX,
-                         mouseArea.mouseY);
         maxForce: 100
     }
 
     MouseArea {
         id: mouseArea
-        onReleased: mouseJoint.bodyB = null
         anchors.fill: parent
-        hoverEnabled: true
+
+        onPressed: {
+            if (pressedBody != null) {
+                mouseJoint.maxForce = pressedBody.getMass() * 500;
+                mouseJoint.target = Qt.point(mouseX, mouseY);
+                mouseJoint.bodyB = pressedBody;
+            }
+        }
+
+        onPositionChanged: {
+            mouseJoint.target = Qt.point(mouseX, mouseY);
+        }
+
+        onReleased: {
+            mouseJoint.bodyB = null;
+            pressedBody = null;
+        }
     }
 
     World { id: physicsWorld }
@@ -83,6 +98,7 @@ Rectangle {
         model: 20
         Rectangle {
             id: rectangle
+
             x: 40 + Math.random() * 720
             y: 40 + Math.random() * 520
             width: 20 + Math.random() * 100
@@ -113,9 +129,8 @@ Rectangle {
                 anchors.fill: parent
                 propagateComposedEvents: true
                 onPressed: {
-                    mouseJoint.maxForce = rectangleBody.getMass() * 500;
-                    mouseJoint.bodyB = rectangleBody
-                    mouse.accepted = false
+                    mouse.accepted = false;
+                    pressedBody = rectangleBody;
                 }
             }
         }
