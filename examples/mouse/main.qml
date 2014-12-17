@@ -6,8 +6,7 @@ Rectangle {
     width: 800
     height: 600
 
-    property int rectangleIndex: -1
-    property var rectanglesArray: []
+    property Body pressedBody: null
 
     function randomColor() {
         return Qt.rgba(Math.random(), Math.random(), Math.random(), Math.random());
@@ -25,23 +24,24 @@ Rectangle {
         anchors.fill: parent
 
         onPressed: {
-            if (rectangleIndex >= 0) {
-                mouseJoint.maxForce = rectanglesArray[rectangleIndex].rectBody.getMass() * 500;
+            if (pressedBody != null) {
+                mouseJoint.maxForce = pressedBody.getMass() * 500;
                 mouseJoint.target = Qt.point(mouseX, mouseY);
-                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody;
+                mouseJoint.bodyB = pressedBody;
             }
         }
 
         onPositionChanged: {
-            if (rectangleIndex >= 0) {
+            if (pressedBody != null) {
                 mouseJoint.target = Qt.point(mouseX, mouseY);
-                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody;
             }
         }
 
         onReleased: {
-            rectangleIndex = -1;
-            mouseJoint.bodyB = null;
+            if (pressedBody != null) {
+                mouseJoint.bodyB = null;
+                pressedBody = null;
+            }
         }
     }
 
@@ -135,12 +135,8 @@ Rectangle {
                 propagateComposedEvents: true
                 onPressed: {
                     mouse.accepted = false;
-                    rectangleIndex = index;
+                    pressedBody = rectangleBody;
                 }
-            }
-
-            Component.onCompleted: {
-                rectanglesArray.push(rectangle);
             }
         }
     }
