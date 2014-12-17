@@ -6,6 +6,8 @@ Rectangle {
     width: 800
     height: 600
 
+    property int rectangleIndex: -1
+    property var rectanglesArray: new Array(0)
     function randomColor() {
         return Qt.rgba(Math.random(), Math.random(), Math.random(), Math.random());
     }
@@ -14,16 +16,32 @@ Rectangle {
         id: mouseJoint
         bodyA: anchor
         dampingRatio: 0.8
-        target: Qt.point(mouseArea.mouseX,
-                         mouseArea.mouseY);
         maxForce: 100
     }
 
     MouseArea {
         id: mouseArea
-        onReleased: mouseJoint.bodyB = null
         anchors.fill: parent
-        hoverEnabled: true
+	
+        onPressed: {
+            if (rectangleIndex >= 0) {
+                mouseJoint.maxForce = rectanglesArray[rectangleIndex].rectBody.getMass() * 500
+                mouseJoint.target = Qt.point(mouseX, mouseY)
+                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody
+            }
+        }
+	
+        onPositionChanged: {
+            if (rectangleIndex >= 0) {
+                mouseJoint.target = Qt.point(mouseX, mouseY)
+                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody
+            }
+        }
+	
+        onReleased: {
+            rectangleIndex = -1
+            mouseJoint.bodyB = null
+        }
     }
 
     World { id: physicsWorld }
@@ -83,6 +101,8 @@ Rectangle {
         model: 20
         Rectangle {
             id: rectangle
+            property alias rectBody: rectangleBody
+	    
             x: 40 + Math.random() * 720
             y: 40 + Math.random() * 520
             width: 20 + Math.random() * 100
@@ -113,10 +133,13 @@ Rectangle {
                 anchors.fill: parent
                 propagateComposedEvents: true
                 onPressed: {
-                    mouseJoint.maxForce = rectangleBody.getMass() * 500;
-                    mouseJoint.bodyB = rectangleBody
                     mouse.accepted = false
+                    rectangleIndex = index
                 }
+            }
+	    
+            Component.onCompleted: {
+                rectanglesArray.push(rectangle)
             }
         }
     }
