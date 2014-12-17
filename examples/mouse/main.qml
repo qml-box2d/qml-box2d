@@ -7,7 +7,8 @@ Rectangle {
     height: 600
 
     property int rectangleIndex: -1
-    property var rectanglesArray: new Array(0)
+    property var rectanglesArray: []
+
     function randomColor() {
         return Qt.rgba(Math.random(), Math.random(), Math.random(), Math.random());
     }
