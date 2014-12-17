@@ -1,10 +1,12 @@
 import QtQuick 2.2
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
-Body {
-    bodyType: Body.Static
+PhysicsItem {
+    id: wall
     fixtures: Box {
-        anchors.fill: parent
+        width: wall.width
+        height: wall.height
         friction: 1
         density: 1
     }

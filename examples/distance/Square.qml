@@ -1,20 +1,27 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
-Body {
-    fixedRotation: false
-    sleepingAllowed: false
-	bodyType: Body.Dynamic
-    fixtures: Box {
-        anchors.fill: parent
-        density: 1;
-        friction: 1;
-        restitution: 0.3;
-    }
+Rectangle {
+    id: square
 
-    Rectangle {
-        id: itemShape
-        color: "green"
-        anchors.fill: parent
+    color: "green"
+
+    transformOrigin: Item.TopLeft
+
+    property Body body: BoxBody {
+        width: square.width
+        height: square.height
+
+        target: square
+        world: physicsWorld
+
+        fixedRotation: false
+        sleepingAllowed: false
+        bodyType: Body.Dynamic
+
+        density: 1
+        friction: 1
+        restitution: 0.3
     }
 }

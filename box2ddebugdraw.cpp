@@ -292,6 +292,10 @@ QSGNode *Box2DDebugDraw::updatePaintNode(QSGNode *oldNode, QQuickItem::UpdatePai
 {
     if (oldNode)
         delete oldNode;
+
+    if (!mWorld)
+        return 0;
+
     QSGTransformNode *root = new QSGTransformNode;
     DebugDraw debugDraw(root, *mWorld);
     debugDraw.SetFlags(mFlags);

@@ -1,21 +1,28 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
-Body {
+PhysicsItem {
     id: speciesInfo
+
     property string speciesName: ""
     property alias descriptionText: descriptionText.text
     property alias photoUrl: image.source
     property bool expanded: false
     property real radius: 50
+
     signal selected()
-    linearDamping: 0.3
-    angularDamping: 0.2
+
 	width: 100
 	height: 100
+
+    world: physicsWorld
+    linearDamping: 0.3
+    angularDamping: 0.2
 	bodyType: Body.Dynamic
+
     fixtures: Circle {
-        radius: parent.radius
+        radius: speciesInfo.radius
         density: 0.2
         friction: 0.3
         restitution: 0.2
@@ -47,9 +54,8 @@ Body {
                 var abs = Math.sqrt(dx * dx + dy * dy)
                 var point = Qt.point(speciesInfo.x, speciesInfo.y);
                 var force = Qt.point(-3 * dx / abs, -3 * dy / abs);
-                speciesInfo.applyLinearImpulse(force, point);
-                speciesInfo.fixedRotation = true;
-                speciesInfo.fixedRotation = false;
+                speciesInfo.body.applyLinearImpulse(force, point);
+                speciesInfo.angularVelocity = 0;
                 speciesInfo.selected();
             }
         }
@@ -70,6 +76,7 @@ Body {
             }
             height: speciesInfo.radius * 3
             width: height * 3
+            transformOrigin: Item.Left
 
             Behavior on opacity { NumberAnimation { duration: 200 } }
             Behavior on scale { NumberAnimation { duration: 200 } }

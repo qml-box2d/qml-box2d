@@ -1,5 +1,6 @@
 import QtQuick 2.0
-import Box2D 1.1
+import Box2D 2.0
+import "../shared"
 
 Image {
     id: screen;
@@ -26,25 +27,25 @@ Image {
             smooth: true
             source: "images/wheel.png"
 
-            Body {
+            CircleBody {
                 id: wheelBody
-                sleepingAllowed: true
-                bodyType: Body.Dynamic
+
+                world: physicsWorld
                 target: wheel
-                fixtures: Circle {
-                    id: circle
-                    radius: wheel.width / 2
-                    density: 6
-                    friction: 1.0
-                    restitution: 0.6
-                }
+                bodyType: Body.Dynamic
+
+                density: 6
+                friction: 1.0
+                restitution: 0.6
+
+                radius: wheel.width / 2
             }
 
             MouseArea {
                 anchors.fill: parent
                 onReleased: timer.running = false
                 onPressed: {
-                    if(wheel.x < (world.width / 2)) {
+                    if(wheel.x < (physicsRoot.width / 2)) {
                         timer.clockwise = true
                     }
                     else {
@@ -87,19 +88,20 @@ Image {
         anchors.fill: parent
 
         // Try to double the contentWidth..
-        contentWidth: world.width // * 2
-        contentHeight: world.height
+        contentWidth: physicsRoot.width // * 2
+        contentHeight: physicsRoot.height
 
+        World { id: physicsWorld }
 
-        World {
-            id: world
+        Item {
+            id: physicsRoot
             width: screen.width
             height: screen.height
 
             MouseArea {
                 anchors.fill: parent
                 onPressAndHold: {
-                    var wheel = wheelComponent.createObject(world)
+                    var wheel = wheelComponent.createObject(physicsRoot)
                     wheel.x = mouse.x - wheel.width / 2
                     wheel.y = mouse.y - wheel.height / 2
                 }
@@ -174,6 +176,14 @@ Image {
                 }
             }
         }
+
+        DebugDraw {
+            id: debugDraw
+            anchors.fill: physicsRoot
+            world: world
+            opacity: 0.75
+            visible: false
+        }
     }
 
 
@@ -186,22 +196,15 @@ Image {
         fillMode: Image.PreserveAspectFit
         source: "images/plate.png"
         smooth: true
+        Behavior on scale {
+            PropertyAnimation { easing.type: Easing.OutCubic; duration: 100; }
+        }
         MouseArea {
             anchors.fill: parent
             scale: 1.4
-            Behavior on scale {
-                PropertyAnimation { duration: 100 }
-            }
             onClicked: Qt.quit()
             onPressed: parent.scale = 0.9
             onReleased: parent.scale = 1.0
         }
-    }
-	DebugDraw {
-        id: debugDraw
-        anchors.fill: parent
-        world: world
-        opacity: 0.75
-        visible: false
     }
 }

@@ -34,8 +34,8 @@
 
 #include "Common/b2Math.h"
 
-Box2DFixture::Box2DFixture(QQuickItem *parent) :
-    QQuickItem(parent),
+Box2DFixture::Box2DFixture(QObject *parent) :
+    QObject(parent),
     mFixture(0),
     mBody(0)
 {
@@ -185,11 +185,49 @@ void Box2DFixture::recreateFixture()
 
 //=================== BOX =======================
 
-void Box2DBox::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void Box2DBox::setX(qreal x)
 {
-    Box2DFixture::geometryChanged(newGeometry, oldGeometry);
-    if (newGeometry != oldGeometry)
-        recreateFixture();
+    if (mPosition.x() == x)
+        return;
+    mPosition.setX(x);
+    recreateFixture();
+    emit xChanged();
+}
+
+void Box2DBox::setY(qreal y)
+{
+    if (mPosition.y() == y)
+        return;
+    mPosition.setY(y);
+    recreateFixture();
+    emit yChanged();
+}
+
+void Box2DBox::setWidth(qreal width)
+{
+    if (mSize.width() == width)
+        return;
+    mSize.setWidth(width);
+    recreateFixture();
+    emit widthChanged();
+}
+
+void Box2DBox::setHeight(qreal height)
+{
+    if (mSize.height() == height)
+        return;
+    mSize.setHeight(height);
+    recreateFixture();
+    emit heightChanged();
+}
+
+void Box2DBox::setRotation(qreal rotation)
+{
+    if (mRotation == rotation)
+        return;
+    mRotation = rotation;
+    recreateFixture();
+    emit rotationChanged();
 }
 
 b2Shape *Box2DBox::createShape()
@@ -210,29 +248,39 @@ b2Shape *Box2DBox::createShape()
 
 //=================== CIRCLE =======================
 
+void Box2DCircle::setX(qreal x)
+{
+    if (mPosition.x() == x)
+        return;
+    mPosition.setX(x);
+    recreateFixture();
+    emit xChanged();
+}
+
+void Box2DCircle::setY(qreal y)
+{
+    if (mPosition.y() == y)
+        return;
+    mPosition.setY(y);
+    recreateFixture();
+    emit yChanged();
+}
+
 void Box2DCircle::setRadius(float radius)
 {
     if (mRadius == radius)
         return;
     mRadius = radius;
-    setImplicitSize(mRadius * 2, mRadius * 2);
     recreateFixture();
     emit radiusChanged();
-}
-
-void Box2DCircle::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
-{
-    Box2DFixture::geometryChanged(newGeometry, oldGeometry);
-    if (newGeometry.topLeft() != oldGeometry.topLeft())
-        recreateFixture();
 }
 
 b2Shape *Box2DCircle::createShape()
 {
     b2CircleShape *shape = new b2CircleShape;
 
-    shape->m_radius = mBody->world()->toMeters(mRadius);
-    shape->m_p = mBody->world()->toMeters(position() + QPointF(mRadius, mRadius));
+    shape->m_radius = mBody->world()->toMeters(radius());
+    shape->m_p = mBody->world()->toMeters(position() + QPointF(radius(), radius()));
 
     return shape;
 }
