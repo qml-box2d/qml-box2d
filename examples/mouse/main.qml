@@ -102,7 +102,6 @@ Rectangle {
         model: 20
         Rectangle {
             id: rectangle
-            property alias rectBody: rectangleBody
 
             x: 40 + Math.random() * 720
             y: 40 + Math.random() * 520
