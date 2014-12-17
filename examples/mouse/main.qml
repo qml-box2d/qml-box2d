@@ -22,25 +22,25 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-	
+
         onPressed: {
             if (rectangleIndex >= 0) {
-                mouseJoint.maxForce = rectanglesArray[rectangleIndex].rectBody.getMass() * 500
-                mouseJoint.target = Qt.point(mouseX, mouseY)
-                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody
+                mouseJoint.maxForce = rectanglesArray[rectangleIndex].rectBody.getMass() * 500;
+                mouseJoint.target = Qt.point(mouseX, mouseY);
+                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody;
             }
         }
-	
+
         onPositionChanged: {
             if (rectangleIndex >= 0) {
-                mouseJoint.target = Qt.point(mouseX, mouseY)
-                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody
+                mouseJoint.target = Qt.point(mouseX, mouseY);
+                mouseJoint.bodyB = rectanglesArray[rectangleIndex].rectBody;
             }
         }
-	
+
         onReleased: {
-            rectangleIndex = -1
-            mouseJoint.bodyB = null
+            rectangleIndex = -1;
+            mouseJoint.bodyB = null;
         }
     }
 
@@ -102,7 +102,7 @@ Rectangle {
         Rectangle {
             id: rectangle
             property alias rectBody: rectangleBody
-	    
+
             x: 40 + Math.random() * 720
             y: 40 + Math.random() * 520
             width: 20 + Math.random() * 100
@@ -133,13 +133,13 @@ Rectangle {
                 anchors.fill: parent
                 propagateComposedEvents: true
                 onPressed: {
-                    mouse.accepted = false
-                    rectangleIndex = index
+                    mouse.accepted = false;
+                    rectangleIndex = index;
                 }
             }
-	    
+
             Component.onCompleted: {
-                rectanglesArray.push(rectangle)
+                rectanglesArray.push(rectangle);
             }
         }
     }
