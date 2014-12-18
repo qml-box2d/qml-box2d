@@ -32,16 +32,12 @@ Rectangle {
         }
 
         onPositionChanged: {
-            if (pressedBody != null) {
-                mouseJoint.target = Qt.point(mouseX, mouseY);
-            }
+            mouseJoint.target = Qt.point(mouseX, mouseY);
         }
 
         onReleased: {
-            if (pressedBody != null) {
-                mouseJoint.bodyB = null;
-                pressedBody = null;
-            }
+            mouseJoint.bodyB = null;
+            pressedBody = null;
         }
     }
 
