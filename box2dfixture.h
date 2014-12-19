@@ -83,6 +83,7 @@ public:
     void setGroupIndex(int groupIndex);
 
     void initialize(Box2DBody *body);
+    void recreateFixture();
 
     Q_INVOKABLE Box2DBody *getBody() const;
 
@@ -100,7 +101,6 @@ signals:
 
 protected:
     virtual b2Shape *createShape() = 0;
-    void recreateFixture();
 
     b2Fixture *mFixture;
     b2FixtureDef mFixtureDef;
