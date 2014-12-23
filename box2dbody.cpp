@@ -309,6 +309,11 @@ void Box2DBody::setWorld(Box2DWorld *world)
     if (mWorld == world)
         return;
 
+    if (mWorld)
+        disconnect(mWorld, SIGNAL(pixelsPerMeterChanged()), this, SLOT(onWorldPixelsPerMeterChanged()));
+    if (world)
+        connect(world, SIGNAL(pixelsPerMeterChanged()), this, SLOT(onWorldPixelsPerMeterChanged()));
+
     // Destroy body when leaving our previous world
     if (mWorld && mBody) {
         mWorld->world().DestroyBody(mBody);
@@ -457,4 +462,14 @@ QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 void Box2DBody::markTransformDirty()
 {
     mTransformDirty = mTransformDirty || (mWorld && !mWorld->isSynchronizing());
+}
+
+void Box2DBody::onWorldPixelsPerMeterChanged()
+{
+    if (mBody) {
+        foreach (Box2DFixture *fixture, mFixtures)
+            fixture->recreateFixture();
+        markTransformDirty();
+        updateTransform();
+    }
 }

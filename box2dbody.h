@@ -160,6 +160,7 @@ signals:
 
 private slots:
     void markTransformDirty();
+    void onWorldPixelsPerMeterChanged();
 
 private:
     void createBody();

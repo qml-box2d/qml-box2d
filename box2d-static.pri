@@ -18,6 +18,8 @@
 INCLUDEPATH += $$PWD
 include(Box2D/box2d.pri)
 
+DEFINES += STATIC_PLUGIN_BOX2D
+
 SOURCES += $$PWD/box2dplugin.cpp \
     $$PWD/box2dworld.cpp \
     $$PWD/box2dcontact.cpp \

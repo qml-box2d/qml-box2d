@@ -169,11 +169,6 @@ void Box2DFixture::initialize(Box2DBody *body)
     delete shape;
 }
 
-Box2DBody *Box2DFixture::getBody() const
-{
-    return mBody;
-}
-
 void Box2DFixture::recreateFixture()
 {
     if (!mBody)
@@ -181,6 +176,11 @@ void Box2DFixture::recreateFixture()
     if (mFixture)
         mBody->body()->DestroyFixture(mFixture);
     initialize(mBody);
+}
+
+Box2DBody *Box2DFixture::getBody() const
+{
+    return mBody;
 }
 
 //=================== BOX =======================
