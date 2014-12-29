@@ -58,6 +58,7 @@ Box2DBody::Box2DBody(QObject *parent) :
     mWorld(0),
     mTarget(0),
     mBody(0),
+    mComponentComplete(false),
     mTransformDirty(false),
     mCreatePending(false)
 {

@@ -148,6 +148,7 @@ Box2DWorld::~Box2DWorld()
         toBox2DBody(body)->nullifyBody();
     for (b2Joint *joint = mWorld.GetJointList(); joint; joint = joint->GetNext())
         toBox2DJoint(joint)->nullifyJoint();
+    enableContactListener(false);
 }
 
 void Box2DWorld::setTimeStep(float timeStep)
