@@ -42,7 +42,7 @@ Box2DWheelJoint::Box2DWheelJoint(QObject *parent)
 {
 }
 
-void Box2DWheelJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DWheelJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -53,7 +53,7 @@ void Box2DWheelJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DWheelJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DWheelJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 
@@ -64,7 +64,7 @@ void Box2DWheelJoint::setLocalAnchorB(const QPointF &localAnchorB)
     emit localAnchorBChanged();
 }
 
-void Box2DWheelJoint::setLocalAxisA(const QPointF &localAxisA)
+void Box2DWheelJoint::setLocalAxisA(const QVector2D &localAxisA)
 {
     m_defaultLocalAxisA = false;
 
@@ -177,11 +177,11 @@ float Box2DWheelJoint::getJointSpeed() const
     return 0;
 }
 
-QPointF Box2DWheelJoint::getReactionForce(float32 inv_dt) const
+QVector2D Box2DWheelJoint::getReactionForce(float32 inv_dt) const
 {
     if (wheelJoint())
         return invertY(wheelJoint()->GetReactionForce(inv_dt));
-    return QPointF();
+    return QVector2D();
 }
 
 float Box2DWheelJoint::getReactionTorque(float32 inv_dt) const

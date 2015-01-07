@@ -43,7 +43,7 @@ Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent)
 {
 }
 
-void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DPrismaticJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -54,7 +54,7 @@ void Box2DPrismaticJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DPrismaticJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 
@@ -65,7 +65,7 @@ void Box2DPrismaticJoint::setLocalAnchorB(const QPointF &localAnchorB)
     emit localAnchorBChanged();
 }
 
-void Box2DPrismaticJoint::setLocalAxisA(const QPointF &localAxisA)
+void Box2DPrismaticJoint::setLocalAxisA(const QVector2D &localAxisA)
 {
     if (m_localAxisA == localAxisA)
         return;

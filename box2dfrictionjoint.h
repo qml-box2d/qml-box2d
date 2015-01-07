@@ -33,19 +33,19 @@ class Box2DFrictionJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QVector2D localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QVector2D localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(float maxForce READ maxForce WRITE setMaxForce NOTIFY maxForceChanged)
     Q_PROPERTY(float maxTorque READ maxTorque WRITE setMaxTorque NOTIFY maxTorqueChanged)
 
 public:
     explicit Box2DFrictionJoint(QObject *parent = 0);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
+    QVector2D localAnchorA() const;
+    void setLocalAnchorA(const QVector2D &localAnchorA);
 
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
+    QVector2D localAnchorB() const;
+    void setLocalAnchorB(const QVector2D &localAnchorB);
 
     float maxForce() const;
     void setMaxForce(float maxForce);
@@ -55,7 +55,7 @@ public:
 
     b2FrictionJoint *frictionJoint() const;
 
-    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE QVector2D getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
 signals:
@@ -68,20 +68,20 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_localAnchorA;
-    QPointF m_localAnchorB;
+    QVector2D m_localAnchorA;
+    QVector2D m_localAnchorB;
     float m_maxForce;
     float m_maxTorque;
     bool m_defaultLocalAnchorA;
     bool m_defaultLocalAnchorB;
 };
 
-inline QPointF Box2DFrictionJoint::localAnchorA() const
+inline QVector2D Box2DFrictionJoint::localAnchorA() const
 {
     return m_localAnchorA;
 }
 
-inline QPointF Box2DFrictionJoint::localAnchorB() const
+inline QVector2D Box2DFrictionJoint::localAnchorB() const
 {
     return m_localAnchorB;
 }

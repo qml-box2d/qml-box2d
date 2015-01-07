@@ -36,8 +36,8 @@ class Box2DWeldJoint : public Box2DJoint
     Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
     Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QVector2D localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QVector2D localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
 
 public:
     explicit Box2DWeldJoint(QObject *parent = 0);
@@ -51,11 +51,11 @@ public:
     float dampingRatio() const;
     void setDampingRatio(float dampingRatio);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
+    QVector2D localAnchorA() const;
+    void setLocalAnchorA(const QVector2D &localAnchorA);
 
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
+    QVector2D localAnchorB() const;
+    void setLocalAnchorB(const QVector2D &localAnchorB);
 
     b2WeldJoint *weldJoint() const;
 
@@ -70,8 +70,8 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_localAnchorA;
-    QPointF m_localAnchorB;
+    QVector2D m_localAnchorA;
+    QVector2D m_localAnchorB;
     float m_referenceAngle;
     float m_frequencyHz;
     float m_dampingRatio;
@@ -81,12 +81,12 @@ private:
     bool m_defaultReferenceAngle;
 };
 
-inline QPointF Box2DWeldJoint::localAnchorA() const
+inline QVector2D Box2DWeldJoint::localAnchorA() const
 {
     return m_localAnchorA;
 }
 
-inline QPointF Box2DWeldJoint::localAnchorB() const
+inline QVector2D Box2DWeldJoint::localAnchorB() const
 {
     return m_localAnchorB;
 }

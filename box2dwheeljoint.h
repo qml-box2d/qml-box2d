@@ -34,9 +34,9 @@ class Box2DWheelJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
-    Q_PROPERTY(QPointF localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
+    Q_PROPERTY(QVector2D localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QVector2D localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QVector2D localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
     Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
@@ -46,14 +46,14 @@ class Box2DWheelJoint : public Box2DJoint
 public:
     explicit Box2DWheelJoint(QObject *parent = 0);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
+    QVector2D localAnchorA() const;
+    void setLocalAnchorA(const QVector2D &localAnchorA);
 
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
+    QVector2D localAnchorB() const;
+    void setLocalAnchorB(const QVector2D &localAnchorB);
 
-    QPointF localAxisA() const;
-    void setLocalAxisA(const QPointF &localAxisA);
+    QVector2D localAxisA() const;
+    void setLocalAxisA(const QVector2D &localAxisA);
 
     bool enableMotor() const;
     void setEnableMotor(bool enableMotor);
@@ -72,7 +72,7 @@ public:
 
     b2WheelJoint *wheelJoint() const;
 
-    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE QVector2D getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
     Q_INVOKABLE float getJointTranslation() const;
     Q_INVOKABLE float getJointSpeed() const;
@@ -91,9 +91,9 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_localAnchorA;
-    QPointF m_localAnchorB;
-    QPointF m_localAxisA;
+    QVector2D m_localAnchorA;
+    QVector2D m_localAnchorB;
+    QVector2D m_localAxisA;
     bool m_enableMotor;
     float m_maxMotorTorque;
     float m_motorSpeed;
@@ -105,17 +105,17 @@ private:
     bool m_defaultLocalAxisA;
 };
 
-inline QPointF Box2DWheelJoint::localAnchorA() const
+inline QVector2D Box2DWheelJoint::localAnchorA() const
 {
     return m_localAnchorA;
 }
 
-inline QPointF Box2DWheelJoint::localAnchorB() const
+inline QVector2D Box2DWheelJoint::localAnchorB() const
 {
     return m_localAnchorB;
 }
 
-inline QPointF Box2DWheelJoint::localAxisA() const
+inline QVector2D Box2DWheelJoint::localAxisA() const
 {
     return m_localAxisA;
 }

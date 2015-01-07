@@ -155,7 +155,7 @@ protected:
     b2Shape *createShape();
 
 private:
-    QPointF mPosition;
+    QVector2D mPosition;
     QSizeF mSize;
     qreal mRotation;
 };
@@ -182,7 +182,7 @@ public:
     qreal y() const { return mPosition.y(); }
     void setY(qreal y);
 
-    QPointF position() const { return mPosition; }
+    QVector2D position() const { return mPosition; }
 
     float radius() const { return mRadius; }
     void setRadius(float radius);
@@ -196,7 +196,7 @@ protected:
     b2Shape *createShape();
 
 private:
-    QPointF mPosition;
+    QVector2D mPosition;
     float mRadius;
 };
 
@@ -232,8 +232,8 @@ class Box2DChain : public Box2DFixture
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
     Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
-    Q_PROPERTY(QPointF prevVertex READ prevVertex WRITE setPrevVertex NOTIFY prevVertexChanged)
-    Q_PROPERTY(QPointF nextVertex READ nextVertex WRITE setNextVertex NOTIFY nextVertexChanged)
+    Q_PROPERTY(QVector2D prevVertex READ prevVertex WRITE setPrevVertex NOTIFY prevVertexChanged)
+    Q_PROPERTY(QVector2D nextVertex READ nextVertex WRITE setNextVertex NOTIFY nextVertexChanged)
 
 public:
     explicit Box2DChain(QQuickItem *parent = 0);
@@ -244,11 +244,11 @@ public:
     bool loop() const { return mLoop; }
     void setLoop(bool loop);
 
-    QPointF prevVertex() const { return mPrevVertex; }
-    void setPrevVertex(const QPointF &prevVertex);
+    QVector2D prevVertex() const { return mPrevVertex; }
+    void setPrevVertex(const QVector2D &prevVertex);
 
-    QPointF nextVertex() const { return mNextVertex; }
-    void setNextVertex(const QPointF &nextVertex);
+    QVector2D nextVertex() const { return mNextVertex; }
+    void setNextVertex(const QVector2D &nextVertex);
 
 signals:
     void verticesChanged();
@@ -261,8 +261,8 @@ protected:
 
 private:
     QVariantList mVertices;
-    QPointF mPrevVertex;
-    QPointF mNextVertex;
+    QVector2D mPrevVertex;
+    QVector2D mNextVertex;
     bool mLoop;
     bool mPrevVertexFlag;
     bool mNextVertexFlag;

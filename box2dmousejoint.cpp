@@ -69,7 +69,7 @@ void Box2DMouseJoint::setMaxForce(float maxForce)
     emit maxForceChanged();
 }
 
-void Box2DMouseJoint::setTarget(const QPointF &target)
+void Box2DMouseJoint::setTarget(const QVector2D &target)
 {
     if (m_target == target)
         return;
@@ -93,11 +93,11 @@ b2Joint *Box2DMouseJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
-QPointF Box2DMouseJoint::getReactionForce(float32 inv_dt) const
+QVector2D Box2DMouseJoint::getReactionForce(float32 inv_dt) const
 {
     if (mouseJoint())
         return invertY(mouseJoint()->GetReactionForce(inv_dt));
-    return QPointF();
+    return QVector2D();
 }
 
 float Box2DMouseJoint::getReactionTorque(float32 inv_dt) const

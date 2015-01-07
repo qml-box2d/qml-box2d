@@ -33,10 +33,10 @@ class Box2DPulleyJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF groundAnchorA READ groundAnchorA WRITE setGroundAnchorA NOTIFY groundAnchorAChanged)
-    Q_PROPERTY(QPointF groundAnchorB READ groundAnchorB WRITE setGroundAnchorB NOTIFY groundAnchorBChanged)
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QVector2D groundAnchorA READ groundAnchorA WRITE setGroundAnchorA NOTIFY groundAnchorAChanged)
+    Q_PROPERTY(QVector2D groundAnchorB READ groundAnchorB WRITE setGroundAnchorB NOTIFY groundAnchorBChanged)
+    Q_PROPERTY(QVector2D localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QVector2D localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(float lengthA READ lengthA WRITE setLengthA NOTIFY lengthAChanged)
     Q_PROPERTY(float lengthB READ lengthB WRITE setLengthB NOTIFY lengthBChanged)
     Q_PROPERTY(float ratio READ ratio WRITE setRatio NOTIFY ratioChanged)
@@ -44,17 +44,17 @@ class Box2DPulleyJoint : public Box2DJoint
 public:
     explicit Box2DPulleyJoint(QObject *parent = 0);
 
-    QPointF groundAnchorA() const;
-    void setGroundAnchorA(const QPointF &groundAnchorA);
+    QVector2D groundAnchorA() const;
+    void setGroundAnchorA(const QVector2D &groundAnchorA);
 
-    QPointF groundAnchorB() const;
-    void setGroundAnchorB(const QPointF &groundAnchorB);
+    QVector2D groundAnchorB() const;
+    void setGroundAnchorB(const QVector2D &groundAnchorB);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
+    QVector2D localAnchorA() const;
+    void setLocalAnchorA(const QVector2D &localAnchorA);
 
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
+    QVector2D localAnchorB() const;
+    void setLocalAnchorB(const QVector2D &localAnchorB);
 
     float lengthA() const;
     void setLengthA(float lengthA);
@@ -69,7 +69,7 @@ public:
 
     Q_INVOKABLE float getCurrentLengthA() const;
     Q_INVOKABLE float getCurrentLengthB() const;
-    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE QVector2D getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
 signals:
@@ -85,10 +85,10 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_groundAnchorA;
-    QPointF m_groundAnchorB;
-    QPointF m_localAnchorA;
-    QPointF m_localAnchorB;
+    QVector2D m_groundAnchorA;
+    QVector2D m_groundAnchorB;
+    QVector2D m_localAnchorA;
+    QVector2D m_localAnchorB;
     float m_lengthA;
     float m_lengthB;
     float m_ratio;
@@ -99,22 +99,22 @@ private:
     bool m_defaultLengthB;
 };
 
-inline QPointF Box2DPulleyJoint::groundAnchorA() const
+inline QVector2D Box2DPulleyJoint::groundAnchorA() const
 {
     return m_groundAnchorA;
 }
 
-inline QPointF Box2DPulleyJoint::groundAnchorB() const
+inline QVector2D Box2DPulleyJoint::groundAnchorB() const
 {
     return m_groundAnchorB;
 }
 
-inline QPointF Box2DPulleyJoint::localAnchorA() const
+inline QVector2D Box2DPulleyJoint::localAnchorA() const
 {
     return m_localAnchorA;
 }
 
-inline QPointF Box2DPulleyJoint::localAnchorB() const
+inline QVector2D Box2DPulleyJoint::localAnchorB() const
 {
     return m_localAnchorB;
 }

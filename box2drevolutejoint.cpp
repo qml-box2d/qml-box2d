@@ -44,7 +44,7 @@ Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent)
 {
 }
 
-void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DRevoluteJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -55,7 +55,7 @@ void Box2DRevoluteJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DRevoluteJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DRevoluteJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 

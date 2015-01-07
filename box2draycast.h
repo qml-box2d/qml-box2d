@@ -27,7 +27,7 @@
 #define BOX2DRAYCAST_H
 
 #include <QObject>
-#include <QPointF>
+#include <QVector2D>
 
 #include <Box2D.h>
 
@@ -52,8 +52,8 @@ public:
 
 signals:
     void fixtureReported(Box2DFixture *fixture,
-                         const QPointF &point,
-                         const QPointF &normal,
+                         const QVector2D &point,
+                         const QVector2D &normal,
                          qreal fraction);
 
 private:

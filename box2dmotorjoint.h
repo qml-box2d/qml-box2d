@@ -34,7 +34,7 @@ class Box2DMotorJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF linearOffset READ linearOffset WRITE setLinearOffset NOTIFY linearOffsetChanged)
+    Q_PROPERTY(QVector2D linearOffset READ linearOffset WRITE setLinearOffset NOTIFY linearOffsetChanged)
     Q_PROPERTY(float angularOffset READ angularOffset WRITE setAngularOffset NOTIFY angularOffsetChanged)
     Q_PROPERTY(float maxForce READ maxForce WRITE setMaxForce NOTIFY maxForceChanged)
     Q_PROPERTY(float maxTorque READ maxTorque WRITE setMaxTorque NOTIFY maxTorqueChanged)
@@ -43,8 +43,8 @@ class Box2DMotorJoint : public Box2DJoint
 public:
     explicit Box2DMotorJoint(QObject *parent = 0);
 
-    QPointF linearOffset() const;
-    void setLinearOffset(const QPointF & linearOffset);
+    QVector2D linearOffset() const;
+    void setLinearOffset(const QVector2D & linearOffset);
 
     float angularOffset() const;
     void setAngularOffset(float angularOffset);
@@ -71,7 +71,7 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_linearOffset;
+    QVector2D m_linearOffset;
     float m_angularOffset;
     float m_maxForce;
     float m_maxTorque;
@@ -80,7 +80,7 @@ private:
     bool m_defaultAngularOffset;
 };
 
-inline QPointF Box2DMotorJoint::linearOffset() const
+inline QVector2D Box2DMotorJoint::linearOffset() const
 {
     return m_linearOffset;
 }

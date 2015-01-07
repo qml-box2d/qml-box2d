@@ -34,8 +34,8 @@ class Box2DRevoluteJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QVector2D localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QVector2D localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
     Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
     Q_PROPERTY(float lowerAngle READ lowerAngle WRITE setLowerAngle NOTIFY lowerAngleChanged)
@@ -47,11 +47,11 @@ class Box2DRevoluteJoint : public Box2DJoint
 public:
     explicit Box2DRevoluteJoint(QObject *parent = 0);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
+    QVector2D localAnchorA() const;
+    void setLocalAnchorA(const QVector2D &localAnchorA);
 
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
+    QVector2D localAnchorB() const;
+    void setLocalAnchorB(const QVector2D &localAnchorB);
 
     float referenceAngle() const;
     void setReferenceAngle(float referenceAngle);
@@ -94,8 +94,8 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_localAnchorA;
-    QPointF m_localAnchorB;
+    QVector2D m_localAnchorA;
+    QVector2D m_localAnchorB;
     float m_referenceAngle;
     bool m_enableLimit;
     float m_lowerAngle;
@@ -108,12 +108,12 @@ private:
     bool m_defaultReferenceAngle;
 };
 
-inline QPointF Box2DRevoluteJoint::localAnchorA() const
+inline QVector2D Box2DRevoluteJoint::localAnchorA() const
 {
     return m_localAnchorA;
 }
 
-inline QPointF Box2DRevoluteJoint::localAnchorB() const
+inline QVector2D Box2DRevoluteJoint::localAnchorB() const
 {
     return m_localAnchorB;
 }

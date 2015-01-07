@@ -41,7 +41,7 @@ Box2DPulleyJoint::Box2DPulleyJoint(QObject *parent)
     setCollideConnected(true);
 }
 
-void Box2DPulleyJoint::setGroundAnchorA(const QPointF &groundAnchorA)
+void Box2DPulleyJoint::setGroundAnchorA(const QVector2D &groundAnchorA)
 {
     if (m_groundAnchorA == groundAnchorA)
         return;
@@ -50,7 +50,7 @@ void Box2DPulleyJoint::setGroundAnchorA(const QPointF &groundAnchorA)
     emit groundAnchorAChanged();
 }
 
-void Box2DPulleyJoint::setGroundAnchorB(const QPointF &groundAnchorB)
+void Box2DPulleyJoint::setGroundAnchorB(const QVector2D &groundAnchorB)
 {
     if (m_groundAnchorB == groundAnchorB)
         return;
@@ -59,7 +59,7 @@ void Box2DPulleyJoint::setGroundAnchorB(const QPointF &groundAnchorB)
     emit groundAnchorBChanged();
 }
 
-void Box2DPulleyJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DPulleyJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -70,7 +70,7 @@ void Box2DPulleyJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DPulleyJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DPulleyJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 
@@ -170,11 +170,11 @@ float Box2DPulleyJoint::getCurrentLengthB() const
     return lengthB();
 }
 
-QPointF Box2DPulleyJoint::getReactionForce(float32 inv_dt) const
+QVector2D Box2DPulleyJoint::getReactionForce(float32 inv_dt) const
 {
     if (pulleyJoint())
         return invertY(pulleyJoint()->GetReactionForce(inv_dt));
-    return QPointF();
+    return QVector2D();
 }
 
 float Box2DPulleyJoint::getReactionTorque(float32 inv_dt) const

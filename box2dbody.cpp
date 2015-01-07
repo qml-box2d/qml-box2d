@@ -165,14 +165,14 @@ void Box2DBody::setAwake(bool awake)
         mBody->SetAwake(awake);
 }
 
-QPointF Box2DBody::linearVelocity() const
+QVector2D Box2DBody::linearVelocity() const
 {
     if (mBody)
         return invertY(mBody->GetLinearVelocity());
     return invertY(mBodyDef.linearVelocity);
 }
 
-void Box2DBody::setLinearVelocity(const QPointF &velocity)
+void Box2DBody::setLinearVelocity(const QVector2D &velocity)
 {
     if (linearVelocity() == velocity)
         return;
@@ -264,7 +264,7 @@ void Box2DBody::createBody()
     }
 
     if (mTarget) {
-        mBodyDef.position = mWorld->toMeters(mTarget->position());
+        mBodyDef.position = mWorld->toMeters(QVector2D(mTarget->position()));
         mBodyDef.angle = toRadians(mTarget->rotation());
     }
     mBody = mWorld->world().CreateBody(&mBodyDef);
@@ -284,7 +284,7 @@ void Box2DBody::synchronize()
 
     if (sync(mBodyDef.position, mBody->GetPosition())) {
         if (mTarget)
-            mTarget->setPosition(mWorld->toPixels(mBodyDef.position));
+            mTarget->setPosition(mWorld->toPixels(mBodyDef.position).toPointF());
         emit positionChanged();
     }
 
@@ -351,14 +351,14 @@ void Box2DBody::updateTransform()
     Q_ASSERT(mBody);
     Q_ASSERT(mTransformDirty);
 
-    mBodyDef.position = mWorld->toMeters(mTarget->position());
+    mBodyDef.position = mWorld->toMeters(QVector2D(mTarget->position()));
     mBodyDef.angle = toRadians(mTarget->rotation());
     mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
     mTransformDirty = false;
 }
 
-void Box2DBody::applyLinearImpulse(const QPointF &impulse,
-                                   const QPointF &point)
+void Box2DBody::applyLinearImpulse(const QVector2D &impulse,
+                                   const QVector2D &point)
 {
     if (mBody)
         mBody->ApplyLinearImpulse(invertY(impulse), mWorld->toMeters(point), true);
@@ -376,27 +376,27 @@ void Box2DBody::applyTorque(qreal torque)
         mBody->ApplyTorque(torque, true);
 }
 
-QPointF Box2DBody::getWorldCenter() const
+QVector2D Box2DBody::getWorldCenter() const
 {
     if (mBody)
         return mWorld->toPixels(mBody->GetWorldCenter());
-    return QPointF();
+    return QVector2D();
 }
 
-QPointF Box2DBody::getLocalCenter() const
+QVector2D Box2DBody::getLocalCenter() const
 {
     if (mBody)
         return mWorld->toPixels(mBody->GetLocalCenter());
-    return QPointF();
+    return QVector2D();
 }
 
-void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
+void Box2DBody::applyForce(const QVector2D &force, const QVector2D &point)
 {
     if (mBody)
         mBody->ApplyForce(invertY(force), mWorld->toMeters(point), true);
 }
 
-void Box2DBody::applyForceToCenter(const QPointF &force)
+void Box2DBody::applyForceToCenter(const QVector2D &force)
 {
     if (mBody)
         mBody->ApplyForceToCenter(invertY(force), true);
@@ -418,46 +418,46 @@ float Box2DBody::getInertia() const
     return mBody ? mBody->GetInertia() : 0.0;
 }
 
-QPointF Box2DBody::toWorldPoint(const QPointF &localPoint) const
+QVector2D Box2DBody::toWorldPoint(const QVector2D &localPoint) const
 {
     if (mBody)
         return mWorld->toPixels(mBody->GetWorldPoint(mWorld->toMeters(localPoint)));
-    return QPointF();
+    return QVector2D();
 }
 
-QPointF Box2DBody::toWorldVector(const QPointF &localVector) const
+QVector2D Box2DBody::toWorldVector(const QVector2D &localVector) const
 {
     if (mBody)
         return mWorld->toPixels(mBody->GetWorldVector(mWorld->toMeters(localVector)));
-    return QPointF();
+    return QVector2D();
 }
 
-QPointF Box2DBody::toLocalPoint(const QPointF &worldPoint) const
+QVector2D Box2DBody::toLocalPoint(const QVector2D &worldPoint) const
 {
     if (mBody)
         return mWorld->toPixels(mBody->GetLocalPoint(mWorld->toMeters(worldPoint)));
-    return QPointF();
+    return QVector2D();
 }
 
-QPointF Box2DBody::toLocalVector(const QPointF &worldVector) const
+QVector2D Box2DBody::toLocalVector(const QVector2D &worldVector) const
 {
     if (mBody)
         return mWorld->toPixels(mBody->GetLocalVector(mWorld->toMeters(worldVector)));
-    return QPointF();
+    return QVector2D();
 }
 
-QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
+QVector2D Box2DBody::getLinearVelocityFromWorldPoint(const QVector2D &point) const
 {
     if (mBody)
         return invertY(mBody->GetLinearVelocityFromWorldPoint(mWorld->toMeters(point)));
-    return QPointF();
+    return QVector2D();
 }
 
-QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
+QVector2D Box2DBody::getLinearVelocityFromLocalPoint(const QVector2D &point) const
 {
     if (mBody)
         return invertY(mBody->GetLinearVelocityFromLocalPoint(mWorld->toMeters(point)));
-    return QPointF();
+    return QVector2D();
 }
 
 void Box2DBody::markTransformDirty()

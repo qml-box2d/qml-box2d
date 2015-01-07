@@ -33,9 +33,9 @@ class Box2DPrismaticJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
-    Q_PROPERTY(QPointF localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
+    Q_PROPERTY(QVector2D localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QVector2D localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QVector2D localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
     Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
     Q_PROPERTY(bool enableLimit READ enableLimit WRITE setEnableLimit NOTIFY enableLimitChanged)
     Q_PROPERTY(float lowerTranslation READ lowerTranslation WRITE setLowerTranslation NOTIFY lowerTranslationChanged)
@@ -47,14 +47,14 @@ class Box2DPrismaticJoint : public Box2DJoint
 public:
     explicit Box2DPrismaticJoint(QObject *parent = 0);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
+    QVector2D localAnchorA() const;
+    void setLocalAnchorA(const QVector2D &localAnchorA);
 
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
+    QVector2D localAnchorB() const;
+    void setLocalAnchorB(const QVector2D &localAnchorB);
 
-    QPointF localAxisA() const;
-    void setLocalAxisA(const QPointF &localAxisA);
+    QVector2D localAxisA() const;
+    void setLocalAxisA(const QVector2D &localAxisA);
 
     float referenceAngle() const;
     void setReferenceAngle(float referenceAngle);
@@ -98,9 +98,9 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_localAnchorA;
-    QPointF m_localAnchorB;
-    QPointF m_localAxisA;
+    QVector2D m_localAnchorA;
+    QVector2D m_localAnchorB;
+    QVector2D m_localAxisA;
     float m_referenceAngle;
     bool m_enableLimit;
     float m_lowerTranslation;
@@ -114,17 +114,17 @@ private:
     bool m_defaultReferenceAngle;
 };
 
-inline QPointF Box2DPrismaticJoint::localAnchorA() const
+inline QVector2D Box2DPrismaticJoint::localAnchorA() const
 {
     return m_localAnchorA;
 }
 
-inline QPointF Box2DPrismaticJoint::localAnchorB() const
+inline QVector2D Box2DPrismaticJoint::localAnchorB() const
 {
     return m_localAnchorB;
 }
 
-inline QPointF Box2DPrismaticJoint::localAxisA() const
+inline QVector2D Box2DPrismaticJoint::localAxisA() const
 {
     return m_localAxisA;
 }
