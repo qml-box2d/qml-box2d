@@ -15,13 +15,5 @@ Body {
 
     property alias vertices: polygon.vertices
 
-    signal beginContact(Fixture other)
-    signal endContact(Fixture other)
-
-    Polygon {
-        id: polygon
-
-        onBeginContact: body.beginContact(other)
-        onEndContact: body.endContact(other)
-    }
+    Polygon { id: polygon }
 }

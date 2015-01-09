@@ -18,13 +18,5 @@ Body {
     property alias prevVertex: chain.prevVertex
     property alias nextVertex: chain.nextVertex
 
-    signal beginContact(Fixture other)
-    signal endContact(Fixture other)
-
-    Chain {
-        id: chain
-
-        onBeginContact: body.beginContact(other)
-        onEndContact: body.endContact(other)
-    }
+    Chain { id: chain }
 }

@@ -33,12 +33,11 @@
 
 #include <Box2D.h>
 
-class Box2DContact;
+class Box2DContactListener;
 class Box2DFixture;
 class Box2DJoint;
 class Box2DWorld;
 class Box2DRayCast;
-class ContactListener;
 class StepDriver;
 
 /**
@@ -77,7 +76,6 @@ class Box2DProfile : public QObject
     Q_PROPERTY(float broadphase READ broadphase CONSTANT)
     Q_PROPERTY(float solveTOI READ solveTOI CONSTANT)
     Q_PROPERTY(float synchronize READ synchronize CONSTANT)
-    Q_PROPERTY(float emitSignals READ emitSignals CONSTANT)
 
 public:
     explicit Box2DProfile(b2World *world, QObject *parent = 0)
@@ -94,14 +92,12 @@ public:
     float broadphase() const;
     float solveTOI() const;
     float synchronize() const;
-    float emitSignals() const;
 
 private:
     friend class Box2DWorld;
 
     b2World *mWorld;
     float mSynchronize;
-    float mEmitSignals;
 };
 
 
@@ -119,8 +115,8 @@ class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListene
     Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
     Q_PROPERTY(bool autoClearForces READ autoClearForces WRITE setAutoClearForces NOTIFY autoClearForcesChanged)
     Q_PROPERTY(Box2DProfile *profile READ profile NOTIFY stepped)
+    Q_PROPERTY(Box2DContactListener *contactListener READ contactListener WRITE setContactListener NOTIFY contactListenerChanged)
     Q_PROPERTY(float pixelsPerMeter READ pixelsPerMeter WRITE setPixelsPerMeter NOTIFY pixelsPerMeterChanged)
-    Q_PROPERTY(bool enableContactEvents READ enableContactEvents WRITE setEnableContactEvents NOTIFY enableContactEventsChanged)
 
     Q_INTERFACES(QQmlParserStatus)
 
@@ -148,8 +144,8 @@ public:
 
     Box2DProfile *profile() const;
 
-    bool enableContactEvents() const;
-    void setEnableContactEvents(bool enableContactEvents);
+    Box2DContactListener *contactListener() const;
+    void setContactListener(Box2DContactListener *contactListener);
 
     float pixelsPerMeter() const;
     void setPixelsPerMeter(float pixelsPerMeter);
@@ -182,9 +178,6 @@ public:
                              const QPointF &point2);
 
 signals:
-    void preSolve(Box2DContact * contact);
-    void postSolve(Box2DContact * contact);
-
     void timeStepChanged();
     void velocityIterationsChanged();
     void positionIterationsChanged();
@@ -192,15 +185,12 @@ signals:
     void autoClearForcesChanged();
     void runningChanged();
     void stepped();
-    void enableContactEventsChanged();
+    void contactListenerChanged();
     void pixelsPerMeterChanged();
-
-protected:
-    void enableContactListener(bool enable);
 
 private:
     b2World mWorld;
-    ContactListener *mContactListener;
+    Box2DContactListener *mContactListener;
     float mTimeStep;
     int mVelocityIterations;
     int mPositionIterations;
@@ -209,7 +199,6 @@ private:
     bool mSynchronizing;
     StepDriver *mStepDriver;
     Box2DProfile *mProfile;
-    bool mEnableContactEvents;
     float mPixelsPerMeter;
 };
 
@@ -259,11 +248,6 @@ inline float Box2DProfile::synchronize() const
     return mSynchronize;
 }
 
-inline float Box2DProfile::emitSignals() const
-{
-    return mEmitSignals;
-}
-
 
 /**
  * The amount of time to step through each frame in seconds.
@@ -307,9 +291,9 @@ inline Box2DProfile *Box2DWorld::profile() const
     return mProfile;
 }
 
-inline bool Box2DWorld::enableContactEvents() const
+inline Box2DContactListener *Box2DWorld::contactListener() const
 {
-    return mEnableContactEvents;
+    return mContactListener;
 }
 
 inline float Box2DWorld::pixelsPerMeter() const

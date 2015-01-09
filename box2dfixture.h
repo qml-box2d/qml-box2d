@@ -96,9 +96,6 @@ signals:
     void collidesWithChanged();
     void groupIndexChanged();
 
-    void beginContact(Box2DFixture *other);
-    void endContact(Box2DFixture *other);
-
 protected:
     virtual b2Shape *createShape() = 0;
 

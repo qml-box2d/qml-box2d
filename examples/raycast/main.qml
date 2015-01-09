@@ -66,6 +66,18 @@ Rectangle {
         onStepped: physicsWorld.rayCast(sensorRay,
                                         sensorRay.point1,
                                         sensorRay.point2)
+
+        contactListener: ContactListener {
+            onBeginContact: {
+                checkBallInBucket(contact.fixtureA, contact.fixtureB);
+                checkBallInBucket(contact.fixtureB, contact.fixtureA);
+            }
+
+            function checkBallInBucket(fixtureA, fixtureB) {
+                if (fixtureA == bucketEdge && fixtureB.isBall)
+                    fixtureB.getBody().target.destroy()
+            }
+        }
     }
 
     Item {
@@ -195,19 +207,16 @@ Rectangle {
                     ]
                 },
                 Edge {
+                    id: bucketEdge
                     vertices: [
                         Qt.point(0,-1),
                         Qt.point(40,-1)
                     ]
                     sensor: true
-                    onBeginContact: {
-                        if (other.isBall)
-                            other.getBody().target.destroy();
-                    }
                 }
             ]
             Canvas {
-                id:bucketCanvas
+                id: bucketCanvas
                 anchors.fill: parent
                 onPaint: {
                     var context = bucketCanvas.getContext("2d");

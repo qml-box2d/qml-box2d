@@ -33,9 +33,6 @@ Image {
     property alias collidesWith: box.collidesWith
     property alias groupIndex: box.groupIndex
 
-    signal beginContact(Fixture other)
-    signal endContact(Fixture other)
-
     Body {
         id: boxBody
 
@@ -46,9 +43,6 @@ Image {
 
             width: image.width
             height: image.height
-
-            onBeginContact: image.beginContact(other)
-            onEndContact: image.endContact(other)
         }
     }
 }

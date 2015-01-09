@@ -50,13 +50,29 @@ Rectangle {
     World {
         id: physicsWorld
 
-        onPreSolve: {
-            var targetA = contact.fixtureA.getBody().target;
-            var targetB = contact.fixtureB.getBody().target;
-            if (targetA.isBall && contact.fixtureB === topBeltFixture)
-                contact.tangentSpeed = -3.0;
-            else if (targetB.isBall && contact.fixtureA === topBeltFixture)
-                contact.tangentSpeed = 3.0;
+        contactListener: ContactListener {
+            onBeginContact: {
+                if (contact.fixtureA.onBeginContact)
+                    contact.fixtureA.onBeginContact(contact.fixtureB);
+                if (contact.fixtureB.onBeginContact)
+                    contact.fixtureB.onBeginContact(contact.fixtureA);
+            }
+
+            onEndContact: {
+                if (contact.fixtureA.onEndContact)
+                    contact.fixtureA.onEndContact(contact.fixtureB);
+                if (contact.fixtureB.onEndContact)
+                    contact.fixtureB.onEndContact(contact.fixtureA);
+            }
+
+            onPreSolve: {
+                var targetA = contact.fixtureA.getBody().target;
+                var targetB = contact.fixtureB.getBody().target;
+                if (targetA.isBall && contact.fixtureB === topBeltFixture)
+                    contact.tangentSpeed = -3.0;
+                else if (targetB.isBall && contact.fixtureA === topBeltFixture)
+                    contact.tangentSpeed = 3.0;
+            }
         }
     }
 
@@ -264,41 +280,51 @@ Rectangle {
             }
         }
 
-        BoxBody {
+        Body {
             id: flowVertical
-            x: 680
-            y: 60
-            width: 60
-            height: 500
             world: physicsWorld
-            sensor: true
-            onBeginContact: {
-                other.getBody().gravityScale = -2;
+
+            Box {
+                x: 680
+                y: 60
+                width: 60
+                height: 500
+                sensor: true
+
+                function onBeginContact(other) {
+                    other.getBody().gravityScale = -2;
+                }
             }
         }
-        BoxBody {
+
+        Body {
             id: flowHorizontal
-            x: 500
-            y: 10
-            width: 240
-            height: 60
             world: physicsWorld
-            sensor: true
-            onBeginContact: {
-                var body = other.getBody();
-                body.gravityScale = 0.5;
-                body.applyLinearImpulse(Qt.point(-5,0), Qt.point(24,24));
-            }
-            onEndContact: {
-                var body = other.getBody();
-                body.gravityScale = 1;
-                body.applyForce(Qt.point(5,0), Qt.point(24,24));
-                var rect = body.target
-                var index = rect.colorIndex;
-                index ++;
-                rect.colorIndex = index;
-                if ((index + 1) === rect.colors.length)
-                    rect.animateDeletion = true;
+
+            Box {
+                x: 500
+                y: 10
+                width: 240
+                height: 60
+                sensor: true
+
+                function onBeginContact(other) {
+                    var body = other.getBody();
+                    console.log("flowHorizontal.onBeginContact", other, body)
+                    body.gravityScale = 0.5;
+                    body.applyLinearImpulse(Qt.point(-5,0), Qt.point(24,24));
+                }
+
+                function onEndContact(other) {
+                    var body = other.getBody();
+                    body.gravityScale = 1;
+                    body.applyForce(Qt.point(5,0), Qt.point(24,24));
+                    var rect = body.target
+                    var index = rect.colorIndex + 1;
+                    rect.colorIndex = index;
+                    if ((index + 1) === rect.colors.length)
+                        rect.animateDeletion = true;
+                }
             }
         }
 

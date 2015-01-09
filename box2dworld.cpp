@@ -29,6 +29,7 @@
 
 #include "box2dbody.h"
 #include "box2dcontact.h"
+#include "box2dcontactlistener.h"
 #include "box2dfixture.h"
 #include "box2djoint.h"
 #include "box2draycast.h"
@@ -51,75 +52,6 @@ void StepDriver::updateCurrentTime(int)
 }
 
 
-class ContactEvent
-{
-public:
-    enum Type {
-        BeginContact,
-        EndContact
-    };
-
-    Type type;
-    Box2DFixture *fixtureA;
-    Box2DFixture *fixtureB;
-};
-
-class ContactListener : public b2ContactListener
-{
-public:
-    explicit ContactListener(Box2DWorld *world);
-    void BeginContact(b2Contact *contact);
-    void EndContact(b2Contact *contact);
-    void PreSolve(b2Contact *contact, const b2Manifold *oldManifold);
-    void PostSolve(b2Contact *contact, const b2ContactImpulse *impulse);
-
-    void removeEvent(int index) { mEvents.removeAt(index); }
-    void clearEvents() { mEvents.clear(); }
-    const QList<ContactEvent> &events() { return mEvents; }
-
-private:
-    QList<ContactEvent> mEvents;
-    Box2DWorld *mWorld;
-    Box2DContact mContact;
-};
-
-ContactListener::ContactListener(Box2DWorld *world) :
-    mWorld(world)
-{
-}
-
-void ContactListener::BeginContact(b2Contact *contact)
-{
-    ContactEvent event;
-    event.type = ContactEvent::BeginContact;
-    event.fixtureA = toBox2DFixture(contact->GetFixtureA());
-    event.fixtureB = toBox2DFixture(contact->GetFixtureB());
-    mEvents.append(event);
-}
-
-void ContactListener::EndContact(b2Contact *contact)
-{
-    ContactEvent event;
-    event.type = ContactEvent::EndContact;
-    event.fixtureA = toBox2DFixture(contact->GetFixtureA());
-    event.fixtureB = toBox2DFixture(contact->GetFixtureB());
-    mEvents.append(event);
-}
-
-void ContactListener::PreSolve(b2Contact *contact, const b2Manifold *oldManifold)
-{
-    Q_UNUSED(oldManifold)
-    mContact.setContact(contact);
-    emit mWorld->preSolve(&mContact);
-}
-
-void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impulse)
-{
-    Q_UNUSED(impulse)
-    mContact.setContact(contact);
-    emit mWorld->postSolve(&mContact);
-}
-
 Box2DWorld::Box2DWorld(QObject *parent) :
     QObject(parent),
     mWorld(b2Vec2(0.0f, -10.0f)),
@@ -132,7 +64,6 @@ Box2DWorld::Box2DWorld(QObject *parent) :
     mSynchronizing(false),
     mStepDriver(new StepDriver(this)),
     mProfile(new Box2DProfile(&mWorld, this)),
-    mEnableContactEvents(true),
     mPixelsPerMeter(32.0f)
 
 {
@@ -215,25 +146,15 @@ void Box2DWorld::setAutoClearForces(bool autoClearForces)
     emit autoClearForcesChanged();
 }
 
-void Box2DWorld::setEnableContactEvents(bool enableContactEvents)
+void Box2DWorld::setContactListener(Box2DContactListener *contactListener)
 {
-    if(enableContactEvents == mEnableContactEvents)
+    if (mContactListener == contactListener)
         return;
-    mEnableContactEvents = enableContactEvents;
-    enableContactListener(mEnableContactEvents);
 
-    emit enableContactEventsChanged();
-}
+    mContactListener = contactListener;
+    mWorld.SetContactListener(contactListener);
 
-void Box2DWorld::enableContactListener(bool enable)
-{
-    if (enable) {
-        mContactListener = new ContactListener(this);
-        mWorld.SetContactListener(mContactListener);
-    } else {
-        mWorld.SetContactListener(0);
-        delete mContactListener;
-    }
+    emit contactListenerChanged();
 }
 
 void Box2DWorld::setPixelsPerMeter(float pixelsPerMeter)
@@ -257,8 +178,6 @@ void Box2DWorld::componentComplete()
 {
     mComponentComplete = true;
 
-    enableContactListener(mEnableContactEvents);
-
     if (mIsRunning)
         mStepDriver->start();
 }
@@ -273,15 +192,7 @@ void Box2DWorld::SayGoodbye(b2Joint *joint)
 
 void Box2DWorld::SayGoodbye(b2Fixture *fixture)
 {
-    if (mEnableContactEvents) {
-        Box2DFixture *f = toBox2DFixture(fixture);
-
-        QList<ContactEvent> events = mContactListener->events();
-        for (int i = events.count() - 1; i >= 0; i--) {
-            if(events.at(i).fixtureA == f || events.at(i).fixtureB == f)
-                mContactListener->removeEvent(i);
-        }
-    }
+    Q_UNUSED(fixture)
 }
 
 void Box2DWorld::step()
@@ -307,26 +218,6 @@ void Box2DWorld::step()
     mSynchronizing = false;
 
     mProfile->mSynchronize = timer.GetMilliseconds();
-    timer.Reset();
-
-    if (mEnableContactEvents) {
-        // Emit contact signals
-        foreach (const ContactEvent &event, mContactListener->events()) {
-            switch (event.type) {
-            case ContactEvent::BeginContact:
-                emit event.fixtureA->beginContact(event.fixtureB);
-                emit event.fixtureB->beginContact(event.fixtureA);
-                break;
-            case ContactEvent::EndContact:
-                emit event.fixtureA->endContact(event.fixtureB);
-                emit event.fixtureB->endContact(event.fixtureA);
-                break;
-            }
-        }
-    }
-    mContactListener->clearEvents();
-
-    mProfile->mEmitSignals = timer.GetMilliseconds();
 
     emit stepped();
 }
