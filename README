@@ -8,7 +8,7 @@ The goal is to expose the functionality of Box2D as QML components, in order
 to make it easy to write physics based games in QML.
 
 
-INSTALLING
+INSTALLING - LINUX
 
  qmake
  make
@@ -40,3 +40,28 @@ add a deployment step to your run settings:
 
 This will make sure that before running, the version of the plugin is updated
 in Qt's import path.
+
+
+INSTALLING - OSX
+
+1.  Open box2d.pro in Qt Creator
+2.  Select the "Desktop Qt 5.4.0 clang 64bit" kit
+3.  Click "Configure Project"
+4.  Choose "Projects" from the sidebar
+5.  Select menu item "Build" -> "Rebuild All"
+6.  Wait for building of the debug library to complete
+7.  Change the build type from "Debug" to "Release"
+8.  Select menu item "Build" -> "Rebuild All"
+9.  Wait for building of the release library to complete
+10. Create this folder "/Applications/Qt5.4.0/5.4/clang_64/qml/Box2D". You will need adjust this path if your Qt installation is in a different location.
+11. Copy the file qmldir from the "qml-box2d" folder into your new "Box2D" folder
+12. Copy the file libBox2D_debug.dylib from your "Debug Build directory" into your new "Box2D" folder
+13. Copy the file libBox2D.dylib from your "Release Build directory" into your new "Box2D" folder
+14. Done, you can now use Box2D in your desktop based QML projects
+
+
+EXAMPLES
+
+To run the examples.
+1. Load the project file (.qmlproject) in Qt Creator. e.g. examples/boxes/boxes.qmlproject
+2. Click the "run" button on the sidebar
