@@ -12,7 +12,7 @@ PhysicsItem {
         height: wall.height
         friction: 1
         density: 1
-        onBeginContact: parent.beginContact(other)
+        onBeginContact: wall.beginContact(other)
     }
 
     Image {
