@@ -39,7 +39,7 @@ Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent)
 {
 }
 
-void Box2DDistanceJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DDistanceJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -50,7 +50,7 @@ void Box2DDistanceJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DDistanceJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DDistanceJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 
@@ -127,11 +127,11 @@ b2Joint *Box2DDistanceJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
-QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const
+QVector2D Box2DDistanceJoint::getReactionForce(float32 inv_dt) const
 {
     if (distanceJoint())
         return invertY(distanceJoint()->GetReactionForce(inv_dt));
-    return QPointF();
+    return QVector2D();
 }
 
 float Box2DDistanceJoint::getReactionTorque(float32 inv_dt) const

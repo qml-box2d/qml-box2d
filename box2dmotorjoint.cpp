@@ -40,7 +40,7 @@ Box2DMotorJoint::Box2DMotorJoint(QObject *parent)
 {
 }
 
-void Box2DMotorJoint::setLinearOffset(const QPointF &linearOffset)
+void Box2DMotorJoint::setLinearOffset(const QVector2D &linearOffset)
 {
     m_defaultLinearOffset = false;
 

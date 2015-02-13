@@ -117,7 +117,7 @@ void DebugDraw::DrawPolygon(const b2Vec2 *vertices,
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
     for (int i = 0; i < vertexCount; ++i) {
-        QPointF point = mWorld.toPixels(vertices[i]);
+        QVector2D point = mWorld.toPixels(vertices[i]);
         points[i].set(point.x(), point.y());
     }
 
@@ -135,7 +135,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices,
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
     for (int i = 0; i < vertexCount; ++i) {
-        QPointF point = mWorld.toPixels(vertices[i]);
+        QVector2D point = mWorld.toPixels(vertices[i]);
         points[i].set(point.x(), point.y());
     }
 
@@ -151,7 +151,7 @@ void DebugDraw::DrawCircle(const b2Vec2 &center,
     geometry->setDrawingMode(GL_LINE_LOOP);
     geometry->setLineWidth(LINE_WIDTH);
 
-    QPointF centerInPixels = mWorld.toPixels(center);
+    QVector2D centerInPixels = mWorld.toPixels(center);
     qreal radiusInPixels = mWorld.toPixels(radius);
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
@@ -173,8 +173,8 @@ void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
     geometry->setDrawingMode(GL_TRIANGLE_FAN);
     geometry->setLineWidth(LINE_WIDTH);
 
-    QPointF centerInPixels = mWorld.toPixels(center);
-    QPointF axisInPixels = mWorld.toPixels(axis);
+    QVector2D centerInPixels = mWorld.toPixels(center);
+    QVector2D axisInPixels = mWorld.toPixels(axis);
     qreal radiusInPixels = mWorld.toPixels(radius);
     axisInPixels.setX(centerInPixels.x() + radius * axisInPixels.x());
     axisInPixels.setY(centerInPixels.y() + radius * axisInPixels.y());
@@ -201,8 +201,8 @@ void DebugDraw::DrawSegment(const b2Vec2 &p1,
                             const b2Vec2 &p2,
                             const b2Color &color)
 {
-    QPointF p1InPixels = mWorld.toPixels(p1);
-    QPointF p2InPixels = mWorld.toPixels(p2);
+    QVector2D p1InPixels = mWorld.toPixels(p1);
+    QVector2D p2InPixels = mWorld.toPixels(p2);
 
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
     geometry->setDrawingMode(GL_LINES);
@@ -217,9 +217,9 @@ void DebugDraw::DrawSegment(const b2Vec2 &p1,
 void DebugDraw::DrawTransform(const b2Transform &xf)
 {
 
-    QPointF p1 = mWorld.toPixels(xf.p);
-    QPointF p2 = mWorld.toPixels(xf.q.GetXAxis());
-    p2 = QPointF(p1.x() + mAxisScale * p2.x(),
+    QVector2D p1 = mWorld.toPixels(xf.p);
+    QVector2D p2 = mWorld.toPixels(xf.q.GetXAxis());
+    p2 = QVector2D(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 
     QSGGeometry *geometryX = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
@@ -230,7 +230,7 @@ void DebugDraw::DrawTransform(const b2Transform &xf)
     createNode(geometryX,Qt::blue);
 
     p2 = mWorld.toPixels(xf.q.GetYAxis());
-    p2 = QPointF(p1.x() + mAxisScale * p2.x(),
+    p2 = QVector2D(p1.x() + mAxisScale * p2.x(),
                  p1.y() + mAxisScale * p2.y());
 
     QSGGeometry *geometryY = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);

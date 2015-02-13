@@ -116,7 +116,7 @@ class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListene
     Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep NOTIFY timeStepChanged)
     Q_PROPERTY(int velocityIterations READ velocityIterations WRITE setVelocityIterations NOTIFY velocityIterationsChanged)
     Q_PROPERTY(int positionIterations READ positionIterations WRITE setPositionIterations NOTIFY positionIterationsChanged)
-    Q_PROPERTY(QPointF gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
+    Q_PROPERTY(QVector2D gravity READ gravity WRITE setGravity NOTIFY gravityChanged)
     Q_PROPERTY(bool autoClearForces READ autoClearForces WRITE setAutoClearForces NOTIFY autoClearForcesChanged)
     Q_PROPERTY(Box2DProfile *profile READ profile NOTIFY stepped)
     Q_PROPERTY(float pixelsPerMeter READ pixelsPerMeter WRITE setPixelsPerMeter NOTIFY pixelsPerMeterChanged)
@@ -140,8 +140,8 @@ public:
     int positionIterations() const;
     void setPositionIterations(int iterations);
 
-    QPointF gravity() const;
-    void setGravity(const QPointF &gravity);
+    QVector2D gravity() const;
+    void setGravity(const QVector2D &gravity);
 
     bool autoClearForces() const;
     void setAutoClearForces(bool autoClearForces);
@@ -161,8 +161,8 @@ public:
     float toPixels(float length) const;
     float toMeters(float length) const;
 
-    QPointF toPixels(const b2Vec2 &vec) const;
-    b2Vec2 toMeters(const QPointF &point) const;
+    QVector2D toPixels(const b2Vec2 &vec) const;
+    b2Vec2 toMeters(const QVector2D &point) const;
 
     bool isSynchronizing() const;
 
@@ -178,8 +178,8 @@ public:
     Q_INVOKABLE void step();
     Q_INVOKABLE void clearForces();
     Q_INVOKABLE void rayCast(Box2DRayCast *rayCast,
-                             const QPointF &point1,
-                             const QPointF &point2);
+                             const QVector2D &point1,
+                             const QVector2D &point2);
 
 signals:
     void preSolve(Box2DContact * contact);
@@ -351,16 +351,16 @@ inline float Box2DWorld::toMeters(float length) const
 /**
  * Converts positions and sizes from Box2D to QML coordinates.
  */
-inline QPointF Box2DWorld::toPixels(const b2Vec2 &vec) const
+inline QVector2D Box2DWorld::toPixels(const b2Vec2 &vec) const
 {
-    return QPointF(vec.x * pixelsPerMeter(),
+    return QVector2D(vec.x * pixelsPerMeter(),
                    vec.y * pixelsPerMeterY());
 }
 
 /**
  * Converts positions and sizes from QML to Box2D coordinates.
  */
-inline b2Vec2 Box2DWorld::toMeters(const QPointF &point) const
+inline b2Vec2 Box2DWorld::toMeters(const QVector2D &point) const
 {
     return b2Vec2(point.x() * metersPerPixel(),
                   point.y() * metersPerPixelY());
@@ -385,15 +385,15 @@ inline void Box2DWorld::clearForces()
 /**
  * Inverts the y-axis as required for forces and velocities.
  */
-inline QPointF invertY(const b2Vec2 &vec)
+inline QVector2D invertY(const b2Vec2 &vec)
 {
-    return QPointF(vec.x, -vec.y);
+    return QVector2D(vec.x, -vec.y);
 }
 
 /**
  * Inverts the y-axis as required for forces and velocities.
  */
-inline b2Vec2 invertY(const QPointF &vec)
+inline b2Vec2 invertY(const QVector2D &vec)
 {
     return b2Vec2(vec.x(), -vec.y());
 }

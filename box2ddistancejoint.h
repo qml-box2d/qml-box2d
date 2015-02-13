@@ -33,8 +33,8 @@ class Box2DDistanceJoint : public Box2DJoint
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
-    Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
+    Q_PROPERTY(QVector2D localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
+    Q_PROPERTY(QVector2D localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
     Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
@@ -42,11 +42,11 @@ class Box2DDistanceJoint : public Box2DJoint
 public:
     explicit Box2DDistanceJoint(QObject *parent = 0);
 
-    QPointF localAnchorA() const;
-    void setLocalAnchorA(const QPointF &localAnchorA);
+    QVector2D localAnchorA() const;
+    void setLocalAnchorA(const QVector2D &localAnchorA);
 
-    QPointF localAnchorB() const;
-    void setLocalAnchorB(const QPointF &localAnchorB);
+    QVector2D localAnchorB() const;
+    void setLocalAnchorB(const QVector2D &localAnchorB);
 
     float length() const;
     void setLength(float length);
@@ -59,7 +59,7 @@ public:
 
     b2DistanceJoint *distanceJoint() const;
 
-    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
+    Q_INVOKABLE QVector2D getReactionForce(float32 inv_dt) const;
     Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
 
 signals:
@@ -73,8 +73,8 @@ protected:
     b2Joint *createJoint();
 
 private:
-    QPointF m_localAnchorA;
-    QPointF m_localAnchorB;
+    QVector2D m_localAnchorA;
+    QVector2D m_localAnchorB;
     float m_length;
     float m_frequencyHz;
     float m_dampingRatio;
@@ -83,12 +83,12 @@ private:
     bool m_defaultLength;
 };
 
-inline QPointF Box2DDistanceJoint::localAnchorA() const
+inline QVector2D Box2DDistanceJoint::localAnchorA() const
 {
     return m_localAnchorA;
 }
 
-inline QPointF Box2DDistanceJoint::localAnchorB() const
+inline QVector2D Box2DDistanceJoint::localAnchorB() const
 {
     return m_localAnchorB;
 }

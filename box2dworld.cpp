@@ -191,12 +191,12 @@ void Box2DWorld::setPositionIterations(int iterations)
     }
 }
 
-QPointF Box2DWorld::gravity() const
+QVector2D Box2DWorld::gravity() const
 {
     return invertY(mWorld.GetGravity());
 }
 
-void Box2DWorld::setGravity(const QPointF &gravity)
+void Box2DWorld::setGravity(const QVector2D &gravity)
 {
     const b2Vec2 invertedGravity = invertY(gravity);
     if (mWorld.GetGravity() == invertedGravity)
@@ -332,8 +332,8 @@ void Box2DWorld::step()
 }
 
 void Box2DWorld::rayCast(Box2DRayCast *rayCast,
-                         const QPointF &point1,
-                         const QPointF &point2)
+                         const QVector2D &point1,
+                         const QVector2D &point2)
 {
     mWorld.RayCast(rayCast, toMeters(point1), toMeters(point2));
 }

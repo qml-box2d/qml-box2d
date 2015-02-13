@@ -234,7 +234,7 @@ b2Shape *Box2DBox::createShape()
 {
     const qreal halfWidth = width() * 0.5;
     const qreal halfHeight = height() * 0.5;
-    const QPointF center(x() + halfWidth,
+    const QVector2D center(x() + halfWidth,
                          y() + halfHeight);
 
     b2PolygonShape *shape = new b2PolygonShape;
@@ -280,7 +280,7 @@ b2Shape *Box2DCircle::createShape()
     b2CircleShape *shape = new b2CircleShape;
 
     shape->m_radius = mBody->world()->toMeters(radius());
-    shape->m_p = mBody->world()->toMeters(position() + QPointF(radius(), radius()));
+    shape->m_p = mBody->world()->toMeters(position() + QVector2D(radius(), radius()));
 
     return shape;
 }
@@ -308,7 +308,7 @@ b2Shape *Box2DPolygon::createShape()
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
 
     for (int i = 0; i < count; ++i) {
-        vertices[i] = mBody->world()->toMeters(mVertices.at(i).toPointF());
+        vertices[i] = mBody->world()->toMeters(mVertices.at(i).value<QVector2D>());
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -354,7 +354,7 @@ void Box2DChain::setLoop(bool loop)
     emit loopChanged();
 }
 
-void Box2DChain::setPrevVertex(const QPointF &prevVertex)
+void Box2DChain::setPrevVertex(const QVector2D &prevVertex)
 {
     if (mPrevVertexFlag && mPrevVertex == prevVertex)
         return;
@@ -365,7 +365,7 @@ void Box2DChain::setPrevVertex(const QPointF &prevVertex)
     emit prevVertexChanged();
 }
 
-void Box2DChain::setNextVertex(const QPointF &nextVertex)
+void Box2DChain::setNextVertex(const QVector2D &nextVertex)
 {
     if (mNextVertexFlag && mNextVertex == nextVertex)
         return;
@@ -388,7 +388,7 @@ b2Shape *Box2DChain::createShape()
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
 
     for (int i = 0; i < count; ++i) {
-        vertices[i] = mBody->world()->toMeters(mVertices.at(i).toPointF());
+        vertices[i] = mBody->world()->toMeters(mVertices.at(i).value<QVector2D>());
 
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
@@ -432,8 +432,8 @@ b2Shape *Box2DEdge::createShape()
         qWarning() << "Edge: Invalid number of vertices:" << count;
         return 0;
     }
-    const b2Vec2 vertex1 = mBody->world()->toMeters(mVertices.at(0).toPointF());
-    const b2Vec2 vertex2 = mBody->world()->toMeters(mVertices.at(1).toPointF());
+    const b2Vec2 vertex1 = mBody->world()->toMeters(mVertices.at(0).value<QVector2D>());
+    const b2Vec2 vertex2 = mBody->world()->toMeters(mVertices.at(1).value<QVector2D>());
     if (b2DistanceSquared(vertex1, vertex2) <= b2_linearSlop * b2_linearSlop) {
         qWarning() << "Edge: vertices are too close together";
         return 0;

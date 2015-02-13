@@ -55,7 +55,7 @@ class Box2DBody : public QObject, public QQmlParserStatus
     Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
     Q_PROPERTY(bool active READ isActive WRITE setActive)
     Q_PROPERTY(bool awake READ isAwake WRITE setAwake)
-    Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
+    Q_PROPERTY(QVector2D linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(float angularVelocity READ angularVelocity WRITE setAngularVelocity NOTIFY angularVelocityChanged)
     Q_PROPERTY(QQmlListProperty<Box2DFixture> fixtures READ fixtures)
     Q_PROPERTY(float gravityScale READ gravityScale WRITE setGravityScale NOTIFY gravityScaleChanged)
@@ -103,8 +103,8 @@ public:
     bool isAwake() const;
     void setAwake(bool awake);
 
-    QPointF linearVelocity() const;
-    void setLinearVelocity(const QPointF &velocity);
+    QVector2D linearVelocity() const;
+    void setLinearVelocity(const QVector2D &velocity);
 
     float angularVelocity() const;
     void setAngularVelocity(float velocity);
@@ -117,22 +117,22 @@ public:
     void synchronize();
     void nullifyBody();
 
-    Q_INVOKABLE void applyForce(const QPointF &force, const QPointF &point);
-    Q_INVOKABLE void applyForceToCenter(const QPointF &force);
+    Q_INVOKABLE void applyForce(const QVector2D &force, const QVector2D &point);
+    Q_INVOKABLE void applyForceToCenter(const QVector2D &force);
     Q_INVOKABLE void applyTorque(qreal torque);
-    Q_INVOKABLE void applyLinearImpulse(const QPointF &impulse, const QPointF &point);
+    Q_INVOKABLE void applyLinearImpulse(const QVector2D &impulse, const QVector2D &point);
     Q_INVOKABLE void applyAngularImpulse(qreal impulse);
-    Q_INVOKABLE QPointF getWorldCenter() const;
-    Q_INVOKABLE QPointF getLocalCenter() const;
+    Q_INVOKABLE QVector2D getWorldCenter() const;
+    Q_INVOKABLE QVector2D getLocalCenter() const;
     Q_INVOKABLE float getMass() const;
     Q_INVOKABLE void resetMassData();
     Q_INVOKABLE float getInertia() const;
-    Q_INVOKABLE QPointF toWorldPoint(const QPointF &localPoint) const;
-    Q_INVOKABLE QPointF toWorldVector(const QPointF &localVector) const;
-    Q_INVOKABLE QPointF toLocalPoint(const QPointF &worldPoint) const;
-    Q_INVOKABLE QPointF toLocalVector(const QPointF &worldVector) const;
-    Q_INVOKABLE QPointF getLinearVelocityFromWorldPoint(const QPointF &point) const;
-    Q_INVOKABLE QPointF getLinearVelocityFromLocalPoint(const QPointF &point) const;
+    Q_INVOKABLE QVector2D toWorldPoint(const QVector2D &localPoint) const;
+    Q_INVOKABLE QVector2D toWorldVector(const QVector2D &localVector) const;
+    Q_INVOKABLE QVector2D toLocalPoint(const QVector2D &worldPoint) const;
+    Q_INVOKABLE QVector2D toLocalVector(const QVector2D &worldVector) const;
+    Q_INVOKABLE QVector2D getLinearVelocityFromWorldPoint(const QVector2D &point) const;
+    Q_INVOKABLE QVector2D getLinearVelocityFromLocalPoint(const QVector2D &point) const;
     Q_INVOKABLE void addFixture(Box2DFixture *fixture);
 
     void classBegin();

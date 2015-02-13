@@ -37,7 +37,7 @@ Box2DFrictionJoint::Box2DFrictionJoint(QObject *parent)
 {
 }
 
-void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DFrictionJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -48,7 +48,7 @@ void Box2DFrictionJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DFrictionJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DFrictionJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 
@@ -114,11 +114,11 @@ b2Joint *Box2DFrictionJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
-QPointF Box2DFrictionJoint::getReactionForce(float32 inv_dt) const
+QVector2D Box2DFrictionJoint::getReactionForce(float32 inv_dt) const
 {
     if (frictionJoint())
         return invertY(frictionJoint()->GetReactionForce(inv_dt));
-    return QPointF();
+    return QVector2D();
 }
 
 float Box2DFrictionJoint::getReactionTorque(float32 inv_dt) const

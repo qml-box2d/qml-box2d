@@ -39,7 +39,7 @@ Box2DWeldJoint::Box2DWeldJoint(QObject *parent)
 {
 }
 
-void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DWeldJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -50,7 +50,7 @@ void Box2DWeldJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DWeldJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DWeldJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 

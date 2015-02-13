@@ -28,7 +28,7 @@
 #define BOX2DJOINT_H
 
 #include <QObject>
-#include <QPointF>
+#include <QVector2D>
 #include <QQmlParserStatus>
 
 #include <Box2D.h>

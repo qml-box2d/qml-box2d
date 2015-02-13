@@ -36,7 +36,7 @@ Box2DRopeJoint::Box2DRopeJoint(QObject *parent)
 {
 }
 
-void Box2DRopeJoint::setLocalAnchorA(const QPointF &localAnchorA)
+void Box2DRopeJoint::setLocalAnchorA(const QVector2D &localAnchorA)
 {
     m_defaultLocalAnchorA = false;
 
@@ -47,7 +47,7 @@ void Box2DRopeJoint::setLocalAnchorA(const QPointF &localAnchorA)
     emit localAnchorAChanged();
 }
 
-void Box2DRopeJoint::setLocalAnchorB(const QPointF &localAnchorB)
+void Box2DRopeJoint::setLocalAnchorB(const QVector2D &localAnchorB)
 {
     m_defaultLocalAnchorB = false;
 
@@ -99,11 +99,11 @@ b2Joint *Box2DRopeJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
-QPointF Box2DRopeJoint::getReactionForce(float32 inv_dt) const
+QVector2D Box2DRopeJoint::getReactionForce(float32 inv_dt) const
 {
     if (ropeJoint())
         return invertY(ropeJoint()->GetReactionForce(inv_dt));
-    return QPointF();
+    return QVector2D();
 }
 
 float Box2DRopeJoint::getReactionTorque(float32 inv_dt) const
