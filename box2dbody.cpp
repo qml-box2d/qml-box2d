@@ -63,6 +63,7 @@ Box2DBody::Box2DBody(QObject *parent) :
     mCreatePending(false)
 {
     mBodyDef.userData = this;
+    setWorld(Box2DWorld::defaultWorld());
 }
 
 Box2DBody::~Box2DBody()

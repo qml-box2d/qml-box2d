@@ -180,6 +180,7 @@ public:
     Q_INVOKABLE void rayCast(Box2DRayCast *rayCast,
                              const QPointF &point1,
                              const QPointF &point2);
+    static Box2DWorld * defaultWorld();
 
 signals:
     void preSolve(Box2DContact * contact);
