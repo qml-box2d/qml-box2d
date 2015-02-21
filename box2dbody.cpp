@@ -263,6 +263,9 @@ void Box2DBody::createBody()
         return;
     }
 
+    if (!mTarget)
+        mTarget = qobject_cast<QQuickItem *>(parent());
+
     if (mTarget) {
         mBodyDef.position = mWorld->toMeters(mTarget->position());
         mBodyDef.angle = toRadians(mTarget->rotation());
