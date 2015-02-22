@@ -254,6 +254,7 @@ Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
     mFlags(Everything)
 {
     setFlag(QQuickItem::ItemHasContents, true);
+    setWorld(Box2DWorld::defaultWorld());
 }
 
 void Box2DDebugDraw::setAxisScale(qreal axisScale)
