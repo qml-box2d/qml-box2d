@@ -178,6 +178,7 @@ private:
                                Box2DFixture *fixture);
     static int count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
+    QPointF originOffset() const;
 };
 
 inline QQuickItem *Box2DBody::target() const
