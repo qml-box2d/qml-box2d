@@ -107,7 +107,6 @@ Rectangle {
             color: randomColor()
             border.color: randomColor()
             smooth: true
-            transformOrigin: Item.TopLeft
 
             Body {
                 id: rectangleBody

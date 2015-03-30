@@ -20,7 +20,6 @@ Rectangle {
             x: 400
             color: "orange"
             radius: 10
-            transformOrigin: Item.TopLeft
 
             property Body body: circleBody
 
@@ -56,7 +55,6 @@ Rectangle {
             radius: 5
             color: "black"
             smooth: true
-            transformOrigin: Item.TopLeft
 
             property Body body: circleBody
 
@@ -107,8 +105,8 @@ Rectangle {
         }
         for (i = 0; i < 4; i ++) {
             newDomino = dominoComponent.createObject(root);
-            newDomino.x = 555 + 50 * i;
-            newDomino.y = 500;
+            newDomino.x = 525 + 50 * i;
+            newDomino.y = 480;
             newDomino.rotation = 90;
         }
         for (i = 0; i < 4; i ++) {
@@ -118,8 +116,8 @@ Rectangle {
         }
         for (i = 0; i < 3; i ++) {
             newDomino = dominoComponent.createObject(root);
-            newDomino.x = 580 + 50 * i;
-            newDomino.y = 440;
+            newDomino.x = 550 + 50 * i;
+            newDomino.y = 420;
             newDomino.rotation = 90;
         }
     }

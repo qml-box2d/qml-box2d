@@ -154,7 +154,7 @@ Rectangle {
         id: debugDraw
         world: physicsWorld
         opacity: 1
-//        visible: false
+        visible: false
     }
 
     Timer {

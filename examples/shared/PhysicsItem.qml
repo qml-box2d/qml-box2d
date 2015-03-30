@@ -4,8 +4,6 @@ import Box2D 2.0
 Item {
     id: item
 
-    transformOrigin: Item.TopLeft
-
     property alias body: itemBody
 
     // Body properties

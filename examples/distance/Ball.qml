@@ -4,7 +4,6 @@ import Box2D 2.0
 Rectangle {
     id: ball
 
-    transformOrigin: Item.TopLeft
     radius: 180
 
     gradient: Gradient {

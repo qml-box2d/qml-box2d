@@ -7,7 +7,6 @@ Item {
 
     width: 100
     height: 100
-    transformOrigin: Item.TopLeft
 
     BoxBody {
         id: body
