@@ -13,7 +13,6 @@ Rectangle {
         Rectangle {
             id: ball
 
-            transformOrigin: Item.TopLeft
             width: 20
             height: 20
             radius: 10

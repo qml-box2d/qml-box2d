@@ -22,7 +22,6 @@ Image {
         id: wheelComponent
         Image {
             id: wheel
-            transformOrigin: Item.TopLeft
 
             smooth: true
             source: "images/wheel.png"

@@ -18,7 +18,7 @@ Item {
             height: 80
             smooth: true
             color: "black"
-            transformOrigin: Item.TopLeft
+
             CircleBody {
                 target: rectangle
                 world: physicsWorld

@@ -14,7 +14,6 @@ Rectangle {
             width: 20
             height: 20
             bodyType: Body.Dynamic
-            property bool burn: false
 
             fixtures: Circle {
                 property bool isBall: true
@@ -31,31 +30,6 @@ Rectangle {
                 width: parent.width
                 height: parent.height
                 radius: 10
-                SequentialAnimation {
-                    running: ball.burn
-                    PropertyAnimation {
-                        target: ballShape
-                        property: "color"
-                        to: "red"
-                        duration: 50
-                    }
-                    PropertyAnimation {
-                        target: ballShape
-                        property: "color"
-                        to: "yellow"
-                        duration: 50
-                    }
-                    PropertyAnimation {
-                        target: ballShape
-                        property: "opacity"
-                        to: 0
-                        duration: 50
-                    }
-                    onRunningChanged: {
-                        if (!running)
-                            ball.destroy();
-                    }
-                }
             }
         }
     }
@@ -63,9 +37,10 @@ Rectangle {
     World {
         id: physicsWorld
 
-        onStepped: physicsWorld.rayCast(sensorRay,
-                                        sensorRay.point1,
-                                        sensorRay.point2)
+        onStepped:
+            physicsWorld.rayCast(sensorRay,
+                                 sensorRay.point1,
+                                 sensorRay.point2)
     }
 
     Item {
@@ -151,31 +126,6 @@ Rectangle {
             height: 1
             color: "aqua"
             opacity: 1
-        }
-
-        RayCast {
-            id: laserRay
-            onFixtureReported: fixture.getBody().target.burn = true
-            function cast() {
-                physicsWorld.rayCast(this, Qt.point(40, 300), Qt.point(700, 300))
-            }
-        }
-
-        Rectangle {
-            id: laser
-            x: 40
-            y: 300
-            width: 700
-            height: 1
-            color: "red"
-            opacity: 0
-            PropertyAnimation {
-                id: rayImpulseFadeoutAnimation
-                target: laser
-                property: "opacity"
-                to: 0
-                duration: 100
-            }
         }
 
         PhysicsItem {
@@ -294,18 +244,6 @@ Rectangle {
             var newBall = ballComponent.createObject(physicsRoot);
             newBall.x = 100 + (Math.random() * 600);
             newBall.y = 50;
-        }
-    }
-
-    Timer {
-        id: impulseTimer
-        interval: 600
-        running: true
-        repeat: true
-        onTriggered: {
-            laserRay.cast();
-            laser.opacity = 1;
-            rayImpulseFadeoutAnimation.running = true;
         }
     }
 }

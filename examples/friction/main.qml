@@ -30,6 +30,7 @@ Rectangle {
             border.color: "blue"
             color: "#EFEFEF"
             smooth: true
+            antialiasing: true
 
             world: physicsWorld
             bodyType: Body.Dynamic

@@ -7,8 +7,6 @@ Rectangle {
 
     color: "green"
 
-    transformOrigin: Item.TopLeft
-
     property Body body: BoxBody {
         width: square.width
         height: square.height

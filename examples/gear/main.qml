@@ -246,6 +246,7 @@ Rectangle {
         Rectangle {
             anchors.fill: parent
             color: "brown"
+            antialiasing: true
         }
     }
 
@@ -272,6 +273,7 @@ Rectangle {
         Rectangle {
             anchors.fill: parent
             color: "brown"
+            antialiasing: true
         }
     }
 

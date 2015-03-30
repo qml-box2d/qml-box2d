@@ -7,7 +7,6 @@ Rectangle {
 
     color: "green"
     radius: 6
-    transformOrigin: Item.TopLeft
 
     property Body body: BoxBody {
         target: item

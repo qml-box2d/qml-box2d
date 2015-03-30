@@ -4,8 +4,6 @@ import Box2D 2.0
 Image {
     id: image
 
-    transformOrigin: Item.TopLeft
-
     property alias body: boxBody
     property alias fixture: box
 
