@@ -1,0 +1,15 @@
+Source: qml-box2d
+Section: libs
+Priority: extra
+Maintainer: Ville Ranki <ville.ranki@iki.fi>
+Build-Depends: cdbs, debhelper (>= 7.0.50~), qtbase5-dev, qtdeclarative5-dev
+Standards-Version: 3.9.6
+
+Package: qml-box2d
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt5core5a, libqt5quick5
+Description: Box2d physics for QML applications
+ The goal is to expose the functionality of Box2D as QML components, 
+ in order to make it easy to write physics based games in QML.
+
+

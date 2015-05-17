@@ -1,0 +1,6 @@
+qml-box2d (2.0.0) unstable; urgency=low
+
+  * Debian packaging added
+
+ -- Ville Ranki <ville.ranki@iki.fi>  Sun, 17 May 2015 23:19:59 -0400
+
