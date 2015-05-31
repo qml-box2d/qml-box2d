@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 
-contains(DEFINES, BOX2D_SYSTEM) {
-
+contains(CONFIG, BOX2D_SYSTEM) {
+    message(Building with system Box2d)
     packagesExist(box2d) {
         CONFIG += link_pkgconfig
         PKGCONFIG += box2d

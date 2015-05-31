@@ -2,7 +2,7 @@ Source: qml-box2d
 Section: libs
 Priority: extra
 Maintainer: Ville Ranki <ville.ranki@iki.fi>
-Build-Depends: cdbs, debhelper (>= 7.0.50~), qtbase5-dev, qtdeclarative5-dev
+Build-Depends: cdbs, debhelper (>= 7.0.50~), libbox2d-dev, qtbase5-dev, qtdeclarative5-dev
 Standards-Version: 3.9.6
 
 Package: qml-box2d
