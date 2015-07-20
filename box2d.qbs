@@ -5,10 +5,8 @@ Project {
 
     DynamicLibrary {
         name: "box2d"
-        files: []
+        files: ["Box2D/*.h", "Box2D/*/*.h", "Box2D/*/*/*.h", "Box2D/*.cpp", "Box2D/*/*.cpp", "Box2D/*/*/*.cpp"]
         Depends { name: "cpp" }
-        Group   { name: "Headers";    files: ["Box2D/*.h", "Box2D/*/*.h", "Box2D/*/*/*.h"]; }
-        Group   { name: "Sources";    files: ["Box2D/*.cpp", "Box2D/*/*.cpp", "Box2D/*/*/*.cpp"]; }
         cpp.includePaths: ["Box2D", "."]
 
         Group { qbs.install: true; fileTagsFilter: product.type;}
@@ -16,12 +14,10 @@ Project {
 
     DynamicLibrary {
         name: "box2d_lib"
-        files: []
+        files: ["*.h", "*.cpp"]
         Depends { name: "cpp" }
         Depends { name: "box2d" }
         Depends { name: "Qt"; submodules: ["core", "qml", "quick"]; }
-        Group   { name: "Headers";    files: ["*.h"]; }
-        Group   { name: "Sources";    files: ["*.cpp"]; }
         cpp.includePaths: ["Box2D", "."]
 
         Group { qbs.install: true; fileTagsFilter: product.type;}

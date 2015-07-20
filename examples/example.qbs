@@ -7,16 +7,13 @@ Project {
     Box2D { }
 
     Product {
-        files: ["main.cpp"];
+        files: ["main.cpp", "*.qml", "*/*.qml", "*.qrc", "*.js", "*/*.js"];
         name: "Example";
         type: "application";
 
         Depends { name: "cpp"; }
         Depends { name: "Qt"; submodules: ["core", "qml", "quick"]; }
         Depends { name: "box2d_lib"; }
-        Group   { name: "QML Files";    files: ["*.qml", "*/*.qml"]; }
-        Group   { name: "QRC Files";    files: ["*.qrc"] }
-        Group   { name: "Script Files"; files: ["*.js", "*/*.js"] }
 
         cpp.includePaths: [".."]
 
