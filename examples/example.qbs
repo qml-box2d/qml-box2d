@@ -6,10 +6,9 @@ Project {
 
     Box2D { }
 
-    Product {
+    Application {
         files: ["main.cpp", "*.qml", "*/*.qml", "*.qrc", "*.js", "*/*.js"];
         name: "Example";
-        type: "application";
 
         Depends { name: "cpp"; }
         Depends { name: "Qt"; submodules: ["core", "qml", "quick"]; }
