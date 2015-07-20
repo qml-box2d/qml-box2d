@@ -3,7 +3,7 @@ import qbs
 Project {
     name: "box2d";
 
-    DynamicLibrary {
+    StaticLibrary {
         name: "box2d"
         files: ["Box2D/*.h", "Box2D/*/*.h", "Box2D/*/*/*.h", "Box2D/*.cpp", "Box2D/*/*.cpp", "Box2D/*/*/*.cpp"]
         Depends { name: "cpp" }
