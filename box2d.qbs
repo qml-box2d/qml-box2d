@@ -21,6 +21,11 @@ Project {
         cpp.includePaths: ["Box2D", "."]
 
         Group { qbs.install: true; fileTagsFilter: product.type;}
+
+        Export {
+            Depends { name: "cpp" }
+            cpp.includePaths: "."
+        }
     }
 }
 

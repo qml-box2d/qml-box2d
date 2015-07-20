@@ -15,8 +15,6 @@ Project {
         Depends { name: "Qt"; submodules: ["core", "qml", "quick"]; }
         Depends { name: "box2d_lib"; }
 
-        cpp.includePaths: [".."]
-
         Group { qbs.install: true; fileTagsFilter: product.type;}
 
     }
