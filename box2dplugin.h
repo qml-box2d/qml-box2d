@@ -31,7 +31,7 @@
 /**
  * A plugin that exposes Box2D to QML in the form of declarative items.
  */
-class Box2DPlugin : public QQmlExtensionPlugin
+class Q_DECL_EXPORT Box2DPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
 #if !defined(STATIC_PLUGIN_BOX2D)
