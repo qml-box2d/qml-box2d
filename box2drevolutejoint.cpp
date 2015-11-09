@@ -96,7 +96,7 @@ void Box2DRevoluteJoint::setLowerAngle(float lowerAngle)
     m_lowerAngle = lowerAngle;
     if (revoluteJoint())
         revoluteJoint()->SetLimits(toRadians(lowerAngle),
-                                   m_upperAngle);
+                                   toRadians(m_upperAngle));
     emit lowerAngleChanged();
 }
 
@@ -107,7 +107,7 @@ void Box2DRevoluteJoint::setUpperAngle(float upperAngle)
 
     m_upperAngle = upperAngle;
     if (revoluteJoint())
-        revoluteJoint()->SetLimits(m_lowerAngle,
+        revoluteJoint()->SetLimits(toRadians(m_lowerAngle),
                                    toRadians(upperAngle));
     emit upperAngleChanged();
 }
