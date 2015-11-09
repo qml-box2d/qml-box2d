@@ -329,8 +329,8 @@ void Box2DWorld::step()
                 break;
             }
         }
+        mContactListener->clearEvents();
     }
-    mContactListener->clearEvents();
 
     mProfile->mEmitSignals = timer.GetMilliseconds();
 
