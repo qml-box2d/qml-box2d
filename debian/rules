@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+DEB_QMAKE_CONFIG_VAL=BOX2D_SYSTEM
+
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/qmake.mk
 
