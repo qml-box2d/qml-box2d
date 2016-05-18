@@ -18,6 +18,7 @@ Item {
         else if (event.key === Qt.Key_Up) {
             movableBox.jump();
         }
+        event.accepted = true;
     }
 
     Keys.onReleased: {

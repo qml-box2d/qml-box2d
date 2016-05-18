@@ -15,6 +15,7 @@ Item {
         else if (event.key === Qt.Key_Right) {
             revolute.motorSpeed += 10
         }
+        event.accepted = true;
     }
 
     Text {

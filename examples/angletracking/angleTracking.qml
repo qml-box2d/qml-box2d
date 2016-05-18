@@ -2,7 +2,7 @@
 * @Author: thomasvogelpohl
 * @Date:   2015-12-14 16:39:40
 * @Last Modified by:   Thomas Vogelpohl
-* @Last Modified time: 2016-05-16 18:22:54
+* @Last Modified time: 2016-05-18 10:29:50
 */
 
 import QtQuick 2.6
@@ -38,6 +38,7 @@ Item {
 		    revolute.enableMotor = false
 		    enableTracking = false
 		}
+        event.accepted = true;
     }
 
     Text {
