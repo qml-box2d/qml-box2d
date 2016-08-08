@@ -400,6 +400,12 @@ void Box2DBody::applyAngularImpulse(qreal impulse)
         mBody->ApplyAngularImpulse(impulse, true);
 }
 
+void Box2DBody::applyAngularImpulse(qreal impulse)
+{
+    if (mBody)
+        mBody->ApplyAngularImpulse(impulse, true);
+}
+
 void Box2DBody::applyTorque(qreal torque)
 {
     if (mBody)
