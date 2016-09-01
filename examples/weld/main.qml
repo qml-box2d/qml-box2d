@@ -250,7 +250,10 @@ Rectangle {
         repeat: true
         onTriggered: {
             var newBox = ballComponent.createObject(screen);
-            newBox.x = 40 + (Math.random() * screen.width - 80);
+            var x = 40 + (Math.random() * screen.width - 80);
+            if(x < 40)
+                x = 40
+            newBox.x = x
             newBox.y = 50;
         }
     }
