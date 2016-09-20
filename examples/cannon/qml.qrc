@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Wall.qml</file>
+        <file>main.qml</file>
+        <file>sounds/cannon.wav</file>
+        <file>sounds/gear.wav</file>
+        <file>images/cannon_base.png</file>
+        <file>images/cannon.png</file>
+    </qresource>
+</RCC>

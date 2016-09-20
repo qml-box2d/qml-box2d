@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Box2D 2.0
-import "../shared"
+import Box2D.Components 1.0
 
 PhysicsItem {
     id: speciesInfo

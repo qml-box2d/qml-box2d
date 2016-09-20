@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>SpeciesModel.qml</file>
+        <file>SpeciesInfo.qml</file>
+        <file>monera.qml</file>
+        <file>images/spikes.png</file>
+        <file>images/shell2.png</file>
+        <file>images/shell.png</file>
+        <file>images/monera.png</file>
+        <file>images/hexa.png</file>
+        <file>images/fungus.png</file>
+        <file>images/coral2.png</file>
+        <file>images/coral.png</file>
+    </qresource>
+</RCC>

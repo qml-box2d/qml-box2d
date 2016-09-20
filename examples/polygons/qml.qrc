@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>polygons.qml</file>
+        <file>Trapezoid.qml</file>
+    </qresource>
+</RCC>

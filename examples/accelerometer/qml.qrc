@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>WoodenBox.qml</file>
+        <file>accelerometer.qml</file>
+    </qresource>
+</RCC>

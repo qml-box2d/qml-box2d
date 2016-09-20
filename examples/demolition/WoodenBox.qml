@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Box2D 2.0
-import "../shared"
+import Box2D.Components 1.0
 
 Item {
     id: woodenBox
@@ -26,7 +26,7 @@ Item {
     Image {
         anchors.fill: parent
         anchors.margins: -1
-        source: "images/woodenbox.png"
+        source: "qrc:/images/demo-woodenbox.png"
     }
 
     MouseArea {

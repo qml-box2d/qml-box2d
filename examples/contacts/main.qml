@@ -1,8 +1,11 @@
 import QtQuick 2.2
+import QtQuick.Window 2.0
 import Box2D 2.0
-import "../shared"
+import Box2D.Components 1.0
 
-Rectangle {
+Window {
+    visible: true
+    title: qsTr("Contacts Example")
     width: 800
     height: 600
 
@@ -134,7 +137,7 @@ Rectangle {
             }
             Image {
                 anchors.fill: parent
-                source: "images/wheel.png"
+                source: "qrc:/images/wheel.png"
             }
         }
 
@@ -150,7 +153,7 @@ Rectangle {
             }
             Image {
                 anchors.fill: parent
-                source: "images/wheel.png"
+                source: "qrc:/images/wheel.png"
             }
         }
 

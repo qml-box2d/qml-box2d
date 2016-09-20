@@ -1,28 +1,34 @@
 import QtQuick 2.0
+import QtQuick.Window 2.0
 import Box2D 2.0
-import "../shared"
+import Box2D.Components 1.0
 
-Item {
-    id: screen
-
+Window{
+    visible: true
+    title: qsTr("Polygons Example")
     width: 800
     height: 600
+    Item {
+        id: screen
 
-    World { id: physicsWorld; }
+        anchors.fill: parent
 
-    Repeater {
-        model: 10
-        delegate: Trapezoid {
-            x: index * 150 + 10;
-            y: Math.random() * (screen.height / 3);
-            rotation: Math.random() * 90;
+        World { id: physicsWorld; }
+
+        Repeater {
+            model: 10
+            delegate: Trapezoid {
+                x: index * 150 + 10;
+                y: Math.random() * (screen.height / 3);
+                rotation: Math.random() * 90;
+            }
         }
-    }
 
-    ScreenBoundaries {}
+        ScreenBoundaries {}
 
-    DebugDraw {
-        world: physicsWorld
-        opacity: 0.75
+        DebugDraw {
+            world: physicsWorld
+            opacity: 0.75
+        }
     }
 }

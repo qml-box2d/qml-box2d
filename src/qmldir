@@ -1,0 +1,3 @@
+odule Box2D
+plugin Box2D
+classname Box2DPlugin

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Ball.qml</file>
+        <file>distance.qml</file>
+        <file>Square.qml</file>
+    </qresource>
+</RCC>

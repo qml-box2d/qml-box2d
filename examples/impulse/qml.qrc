@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Ball.qml</file>
+        <file>impulse.qml</file>
+    </qresource>
+</RCC>

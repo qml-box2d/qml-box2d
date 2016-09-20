@@ -1,0 +1,11 @@
+module Box2D.Components
+
+BoxBody 1.0 BoxBody.qml
+ChainBody 1.0 ChainBody.qml
+CircleBody 1.0 CircleBody.qml
+EdgeBody 1.0 EdgeBody.qml
+ImageBoxBody 1.0 ImageBoxBody.qml
+PhysicsItem 1.0 PhysicsItem.qml
+PolygonBody 1.0 PolygonBody.qml
+RectangleBoxBody 1.0 RectangleBoxBody.qml
+ScreenBoundaries 1.0 ScreenBoundaries.qml

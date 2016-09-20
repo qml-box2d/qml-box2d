@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Square.qml</file>
+        <file>prismatic.qml</file>
+    </qresource>
+</RCC>

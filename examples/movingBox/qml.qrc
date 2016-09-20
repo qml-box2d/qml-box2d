@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>WoodenBox.qml</file>
+        <file>Wall.qml</file>
+        <file>movingBox.qml</file>
+        <file>MovableBox.qml</file>
+    </qresource>
+</RCC>

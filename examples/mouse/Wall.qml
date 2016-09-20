@@ -1,8 +1,8 @@
 import QtQuick 2.2
-import "../shared"
+import Box2D.Components 1.0
 
 ImageBoxBody {
-    source: "images/wall.jpg"
+    source: "qrc:/images/wall.jpg"
     fillMode: Image.Tile
 
     world: physicsWorld
