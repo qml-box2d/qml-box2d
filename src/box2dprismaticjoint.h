@@ -159,6 +159,7 @@ inline float Box2DPrismaticJoint::maxMotorForce() const
     return m_maxMotorForce;
 }
 
+
 inline float Box2DPrismaticJoint::motorSpeed() const
 {
     return m_motorSpeed;

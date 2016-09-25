@@ -28,6 +28,41 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+
+/*!
+   \qmltype FrictionJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief The friction joint is used for top-down friction. The joint provides 2D translational friction and angular friction.
+
+\b{Example}
+\l {friction}{The Offical Friction Example}
+
+*/
+
+////////////////////////
+
+/*!
+\qmlproperty float FrictionJoint::maxForce
+    The maxium force that is allowed to the joint
+*/
+
+/*!
+\qmlproperty float FrictionJoint::maxTorque
+    The maxium ammount of torque that is allowed to the joint
+*/
+
+/*!
+\qmlproperty Qt.point() FrictionJoint::localAnchorA
+    The local anchor point associated with \l{Joint::bodyA}{bodyA}
+*/
+
+/*!
+\qmlproperty Qt.point() FrictionJoint::localAnchorB
+    The local anchor point associated with \b Joint::bodyb
+*/
+
 Box2DFrictionJoint::Box2DFrictionJoint(QObject *parent)
     : Box2DJoint(FrictionJoint, parent)
     , m_maxForce(0.0f)
@@ -114,6 +149,10 @@ b2Joint *Box2DFrictionJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
+/*!
+\qmlmethod FrictionJoint::getReactionForce(inv_dt)
+    Returns the current force used on the joint.
+*/
 QPointF Box2DFrictionJoint::getReactionForce(float32 inv_dt) const
 {
     if (frictionJoint())
@@ -121,6 +160,10 @@ QPointF Box2DFrictionJoint::getReactionForce(float32 inv_dt) const
     return QPointF();
 }
 
+/*!
+\qmlmethod FrictionJoint::getReactionTorque(inv_dt)
+    Returns the current torque on the joint
+*/
 float Box2DFrictionJoint::getReactionTorque(float32 inv_dt) const
 {
     if (frictionJoint())

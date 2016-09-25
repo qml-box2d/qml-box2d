@@ -81,6 +81,7 @@ private:
     bool m_defaultReferenceAngle;
 };
 
+
 inline QPointF Box2DWeldJoint::localAnchorA() const
 {
     return m_localAnchorA;

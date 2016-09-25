@@ -29,6 +29,59 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+
+/*!
+   \qmltype WheelJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief The wheel joint restricts a point on bodyB to a line on bodyA. The WheelJoint also provides a suspension spring.
+
+   \b{Example}
+   \l {wheel}{Wheel Joint Example }
+
+
+*/
+/*!
+ \qmlproperty QPointF WheelJoint::localAnchorA
+ The local anchor points that are associated with bodyB,
+
+ \sa JointsOverview , BodyOverview
+ */
+/*!
+ \qmlproperty QPointF WheelJoint::localAnchorB
+ The local anchor points that are associated with bodyB.
+
+ \sa JointsOverview , BodyOverview
+*/
+/*!
+ \qmlproperty QPointF WheelJoint::localAxisA
+  The axis point associated with bodyA.
+
+ \sa JointsOverview , BodyOverview
+*/
+/*!
+ \qmlproperty bool WheelJoint::enableMotor
+  Set this to true is you wish to use the Motor.
+ */
+/*!
+ \qmlproperty float WheelJoint::maxMotorTorque
+  The maxium ammount of motor torque that can be set to the WheelJoint.
+ */
+/*!
+ \qmlproperty float WheelJoint::motorSpeed
+ The speed in which the motor is running.
+ */
+/*!
+ \qmlproperty float WheelJoint::frequencyHz
+ The frequencyHz of the WheelJoint.
+
+ */
+/*!
+ \qmlproperty float WheelJoint::dampingRatio
+  The dampingRatio of the WheelJoint.
+ */
+
 Box2DWheelJoint::Box2DWheelJoint(QObject *parent)
     : Box2DJoint(WheelJoint, parent)
     , m_enableMotor(false)
@@ -163,6 +216,10 @@ b2Joint *Box2DWheelJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
+/*!
+ \qmlmethod WheelJoint::getJointTranslation()
+    DOCME
+ */
 float Box2DWheelJoint::getJointTranslation() const
 {
     if (wheelJoint())
@@ -170,6 +227,11 @@ float Box2DWheelJoint::getJointTranslation() const
     return 0;
 }
 
+/*!
+ \qmlmethod WheelJoint::getJointSpeed()
+    Returns the current speed of the wheel joint
+
+ */
 float Box2DWheelJoint::getJointSpeed() const
 {
     if (wheelJoint())
@@ -177,6 +239,10 @@ float Box2DWheelJoint::getJointSpeed() const
     return 0;
 }
 
+/*!
+ \qmlmethod WheelJoint::getReactionForce(float inv_dt)
+   DOCME
+ */
 QPointF Box2DWheelJoint::getReactionForce(float32 inv_dt) const
 {
     if (wheelJoint())
@@ -184,6 +250,10 @@ QPointF Box2DWheelJoint::getReactionForce(float32 inv_dt) const
     return QPointF();
 }
 
+/*!
+  \qmlmethod WheelJoint::getReactionTorque(inv_dt)
+   Returns the DOCME
+*/
 float Box2DWheelJoint::getReactionTorque(float32 inv_dt) const
 {
     if (wheelJoint())

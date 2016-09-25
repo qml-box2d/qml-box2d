@@ -29,6 +29,125 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+/*!
+   \qmltype RevoluteJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief A RevoluteJoint forces two \l {Body} {bodies} to share a common anchor point, often
+ called a hinge point.
+The revolute joint has a single degree of freedom: the relative rotation of the two bodies.
+This is called the jointAngle.
+
+To specify a RevoluteJoint you need to provide two \l {Body} {bodies} and two anchor points
+    \list
+        \li  \l {RevoluteJoint::localAnchorA}{localAnchorA }
+        \li \l {RevoluteJoint::localAnchorB}{localAnchorB }
+    \endlist
+
+One also has to provide the \l {World}{ world space}. The initialization function assumes that
+the bodies are already in the correct position.
+
+In this \l {revolute}{example}, two bodies are connected via a RevoluteJoint
+
+A RevoluteJoint can have a
+    \{RevoluteJoint::motorEnabled} {motor}
+    which can  allow you to specify the
+    \list
+        \li \l {RevoluteJoint::motorSpeed}{motorSpeed}
+        \li \l {RevoluteJoint::maxMotorTorque}{maxMotorTorque}
+    \endlist
+
+The speed can be negative or positive. A motor can have infinite force, but this is usually
+not desirable.
+
+\code
+        RevoluteJoint {
+            id: revolute
+            maxMotorTorque: 1000
+            motorSpeed: 40
+            enableMotor: false
+            bodyA: middle
+            bodyB: rod
+            world: world
+            localAnchorA: Qt.point(20,20)
+            localAnchorB: Qt.point(40,20)
+        }
+\endcode
+
+*/
+
+/*!
+ \qmlproperty QPointF RevoluteJoint::localAnchorA
+  The first body that is connected to Revolute system.
+     \code
+    World{
+        id: world
+        anchor.fill:parent
+        Body{
+            id: bodyA
+            ...
+            ......
+        RevoluteJoint {
+            world: world
+            bodyA: bodyA
+            ....
+            ........
+            }
+    \endcode
+ */
+/*!
+ \qmlproperty QPointF RevoluteJoint::localAnchorB
+   The second body that is connected to Revolute system.
+    \code
+    World{
+        id: world
+        anchor.fill:parent
+        Body{
+            id: bodyB
+            ...
+            ......
+        RevoluteJoint {
+            world: world
+            bodyB: bodyB
+            ....
+            ........
+            }
+    \endcode
+
+ */
+/*!
+ \qmlproperty float  RevoluteJoint::referenceAngle
+DOCME
+ */
+
+/*!
+ \qmlproperty float  RevoluteJoint::lowerAngle
+DOCME
+ */
+/*!
+ \qmlproperty float  RevoluteJoint::upperAngle
+DOCME
+ */
+
+/*!
+ \qmlproperty float  RevoluteJoint::maxMotorTorque
+The maxium ammount of motor torque that can be applied to motor
+ */
+/*!
+ \qmlproperty float RevoluteJoint::motorSpeed
+If the motor is enabled . One can use this for the speed in which the motor runs at.
+ */
+/*!
+ \qmlproperty bool RevoluteJoint::enableLimit
+If set to true it will enable limits on the RevoluteJoint
+ */
+/*!
+ \qmlproperty bool RevoluteJoint::enableMotor
+ By making this true one can enable a motor on there RevoluteJoint
+ */
+
+
 Box2DRevoluteJoint::Box2DRevoluteJoint(QObject *parent)
     : Box2DJoint(RevoluteJoint, parent)
     , m_referenceAngle(0.0f)
@@ -182,6 +301,10 @@ b2Joint *Box2DRevoluteJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
+/*!
+ \qmlmethod RevoluteJoint::getJointAngle()
+Returns the current RevoluteJoint angle.
+*/
 float Box2DRevoluteJoint::getJointAngle() const
 {
     if (revoluteJoint())
@@ -189,6 +312,10 @@ float Box2DRevoluteJoint::getJointAngle() const
     return 0.0;
 }
 
+/*!
+ \qmlmethod Box2DRevoluteJoint::getJointSpeed()
+Returns the joints speed
+ */
 float Box2DRevoluteJoint::getJointSpeed() const
 {
     if (revoluteJoint())

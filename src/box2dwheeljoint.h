@@ -105,6 +105,7 @@ private:
     bool m_defaultLocalAxisA;
 };
 
+
 inline QPointF Box2DWheelJoint::localAnchorA() const
 {
     return m_localAnchorA;
@@ -144,6 +145,7 @@ inline float Box2DWheelJoint::dampingRatio() const
 {
     return m_dampingRatio;
 }
+
 
 inline b2WheelJoint *Box2DWheelJoint::wheelJoint() const
 {

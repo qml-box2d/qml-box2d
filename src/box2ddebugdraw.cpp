@@ -38,6 +38,87 @@
 #include <QSGFlatColorMaterial>
 #include <QtCore/qmath.h>
 
+
+
+/*!
+   \qmltype DebugDraw
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QQuickItem
+    \brief You can implement the DebugDraw to get detailed drawing of the physics World.
+
+Here are the  available entities:
+        \list
+                \li shape outlines
+                \li joint connectivity
+                \li broad-phase axis-aligned bounding boxes (AABBs)
+                \li  center of mass
+        \endlist
+
+This is the preferred method of drawing these physics entities, rather than accessing
+the data directly.
+The reason is that much of the necessary data is internal and subject to change.
+The testbed draws physics entities using the DebugDraw facility and the contact listener, so it serves as
+the primary example of how to implement DebugDrawing as well as how to draw contact points.
+
+\code
+        World{
+        id: myWorld
+        anchors.fill: parent
+        ..........
+        ......................
+        ...............................
+        DebugDraw {
+            id: debugDraw
+            world: myWorld
+            anchors.fill: myWorld
+            opacity: 0.75
+            visible: false
+        }
+        Button {
+            id: debugMouseArea
+            ........
+            .............
+            ..................
+            onClicked: debugDraw.visible = !debugDraw.visible
+        }
+    }
+\endcode
+
+\b{Note:} Keep in mind that DebugDraw is inherit of QQuickItem so you also have all the things that QQuiclkItme has.
+opacity is one of thouse things that is very useful in DebugDraw
+
+*/
+
+
+/////////////////////
+
+
+/*!
+\qmlproperty real floatDebugDraw::axisScale
+    DOCME
+*/
+
+/*!
+\qmlproperty enumeration DebugDraw::flags
+One can set flags on things that they would like the DebugDraw to Draw. This is a enum that is set
+
+Here is a list of each of them
+    \list
+        \li  Shape
+        \li  Joint
+        \li  AABB
+        \li  Pair
+        \li  CenterOfMass
+        \li  Everything
+    \endlist
+Everything is what is set by default. But this is useful if you say only want to debug the Joints
+*/
+
+/*!
+\qmlproperty World DebugDraw::world
+    The World in which you would like to show all your objects in debuggin view
+*/
 class DebugDraw : public b2Draw
 {
 public:

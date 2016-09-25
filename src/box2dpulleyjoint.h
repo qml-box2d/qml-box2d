@@ -99,6 +99,7 @@ private:
     bool m_defaultLengthB;
 };
 
+
 inline QPointF Box2DPulleyJoint::groundAnchorA() const
 {
     return m_groundAnchorA;

@@ -1,3 +1,5 @@
+include(docs/docs.pri)
+
 TEMPLATE = subdirs
 CONFIG += ordered
 SUBDIRS += \

@@ -122,6 +122,23 @@ void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impu
 
 static Box2DWorld * mDefaultWorld;
 
+
+
+
+
+
+
+/*!
+   \qmltype World
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief
+*/
+
+
+
+
 Box2DWorld::Box2DWorld(QObject *parent) :
     QObject(parent),
     mWorld(b2Vec2(0.0f, -10.0f)),

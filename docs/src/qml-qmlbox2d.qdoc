@@ -1,0 +1,19 @@
+/*!
+    \qmlmodule Box2d 1.0
+    \title Box2d Objects
+    \brief This implements Box2d but for QtQuick.
+
+\b{Getting Started}
+
+To enable Qml Box2d in a project, import it to the qml file you whish to use it in:
+
+\code
+    import Box2d 1.0
+\endcode
+
+
+Below are the following objects that are available at this time for Qml Box2d.
+
+
+
+*/

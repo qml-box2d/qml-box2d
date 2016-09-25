@@ -1,0 +1,12 @@
+/*!
+    \page ShapesOverview
+    \title Shapes Overview
+    \indexpage Overview
+    \startpage Overview
+    \nextpage FixturesOverview
+    \previouspage BodyOverview
+     Every fixture has a shape which is used to check for collisions with other fixtures as it moves around the scene.
+A shape can be a circle or a polygon.
+
+Actor’s initBody() method internally will create fixture and shape for the body. So if you use Stage-Actor pattern, you wont need to deal with Fixture directly. For simple shape like Rectangle, Circle you don’t even need to touch Shape either.
+*/

@@ -35,6 +35,10 @@
 #include "box2dworld.h"
 #include <qmath.h>
 
+
+
+
+
 static bool sync(float &value, float newValue)
 {
     if (qFuzzyCompare(value, newValue))
@@ -53,6 +57,208 @@ static bool sync(b2Vec2 &value, const b2Vec2 &newValue)
     return true;
 }
 
+
+
+/*!
+   \qmltype Body
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject QQmlParserStatus
+   \brief  Bodies have position and velocity. You can apply forces, torques,
+and impulses to bodies. Bodies can be static, kinematic, or dynamic.
+
+
+*/
+
+
+
+
+
+
+/*!
+\qmlproperty real Body::angularDamping
+
+Damping is used to reduce the world velocity of bodies. Damping is different than friction because
+friction only occurs with contact. Damping is not a replacement for friction and the two effects should
+be used together.
+Damping parameters should be between
+
+0.0 and infinity, with 0 meaning no damping, and infinity
+meaning full damping.
+
+Normally you will use a damping value between 0.1 and 1. I generally do not use
+linear damping because it makes bodies look like they are floating.
+\code
+    Body{
+        angularDamping = 0.1
+    }
+\endcode
+
+Damping is approximated for stability and performance. At small damping values the damping effect is
+mostly independent of the time step. At larger damping values, the damping effect will vary with the
+time step. This is not an issue if you use a fixed time step (recommended).
+ */
+
+
+
+
+
+
+
+
+
+
+
+/*!
+ * \qmlproperty enum Body::bodyType
+There are 3 Differrnt bodytypes. each of them do sperate things.
+    \table
+        \row
+            \li Body.Static
+    \endtable
+A static body does not move under simulation and behaves as if it has infinite mass. Internally, Box2D
+stores zero for the mass and the inverse mass. Static bodies can be moved manually by the user. A static
+body has zero velocity. Static bodies do not collide with other static or kinematic bodies.
+    \table
+        \row
+            \li Body.Kinematic
+    \endtable
+A kinematic body moves under simulation according to its velocity. Kinematic bodies do not respond to
+forces. They can be moved manually by the user, but normally a kinematic body is moved by setting its
+velocity. A kinematic body behaves as if it has infinite mass, however, Box2D stores zero for the mass
+and the inverse mass. Kinematic bodies do not collide with other kinematic or static bodies.
+    \table
+        \row
+            \li Body.Dynamic
+    \endtable
+A dynamic body is fully simulated. They can be moved manually by the user, but normally they move
+according to forces. A dynamic body can collide with all body types. A dynamic body always has finite,
+non-zero mass. If you try to set the mass of a dynamic body to zero, it will automatically acquire a mass
+of one kilogram and it won’t rotate.
+Bodies are the backbone for Fixture (shapes). {Body} {Bodies} carry Fixture and move them around in the World.
+Bodies are always rigid bodies in Box2D. That means that two {Ficture}{fixtures} attached to the same rigid body
+never move relative to each other and fixtures attached to the same body don’t collide.
+ */
+
+
+
+
+
+
+
+
+
+/*!
+\qmlproperty bool Body::bullet
+Game simulation usually generates a sequence of images that are played at some frame rate. This is
+called discrete simulation. In discrete simulation, rigid bodies can move by a large amount in one time step.
+If a physics engine doesn't account for the large motion, you may see some objects incorrectly pass
+through each other. This effect is called tunneling.
+By default, Box2D uses continuous collision detection (CCD) to prevent dynamic bodies from tunneling
+through static bodies. This is done by sweeping shapes from their old position to their new positions.
+The engine looks for new collisions during the sweep and computes the time of impact (TOI) for these
+collisions. Bodies are moved to their first TOI and then the solver performs a sub-step to complete the
+full time step. There may be additional TOI events within a sub-step.
+Normally CCD is not used between dynamic bodies. This is done to keep performance reasonable. In
+some game scenarios you need dynamic bodies to use CCD. For example, you may want to shoot a high
+speed bullet at a stack of dynamic bricks. Without CCD, the bullet might tunnel through the bricks.
+Fast moving objects in Box2D can be labeled as bullets. Bullets will perform CCD with both static and
+dynamic bodies. You should decide what bodies should be bullets based on your game design. If you
+decide a body should be treated as a bullet, use the following setting.
+    \code
+        bullet = true;
+    \endcode
+
+The bullet flag only affects dynamic bodies.
+*/
+
+
+
+
+
+
+
+
+/*!
+\qmlproperty bool Body::sleepingAllowed
+Boolean property that allows one to put the body to sleep.
+What does sleep mean?
+Well it is expensive to simulate bodies, so the less we have to simulate the
+better. When a body comes to rest we would like to stop simulating it.
+When Box2D determines that a Body (or group of bodies see Fixture) has come to rest,
+the body enters a sleep state which has very little CPU overhead. If a Body is awake and
+collides with a sleeping Body, then the sleeping body wakes up. Bodies will also wake up
+if a Joint or contact attached to them is destroyed.
+You can also wake a body manually. The Body definition lets you specify whether a Body
+can sleep and whether a Body is created sleeping.
+    \code
+        Body{
+            id: sleepyBody
+            sleepingTrue = true
+    }
+    \endcode
+*/
+
+
+
+
+/*!
+  \qmlproperty bool Body::fixedRotation
+You may want a rigid Body, such as a character, to have a fixed rotation.
+
+Such a Body should not rotate, even under load.
+You can use the fixedRotation setting to achieve this:
+\code
+        Body{
+                id:fixedBody
+                fixedRotation = true
+         }
+\endcode
+ */
+
+
+
+/*!
+  \qmlproperty  bool  Body::active
+You may wish a body to be created but not participate in collision or dynamics.
+This state is similar to {sleepingAllowed} {sleeping} except the body will not be woken
+by other bodies and the body's {Fixture}{fixtures} will not be placed in the broad-phase.
+This means the body will not participate in collisions,  etc. You can create a Body in an
+inactive state and later re-activate it.
+    \code
+            Body{
+                id: naBody
+                active = true
+                fixture:
+                ...
+                ........
+                .............
+                }
+                Button{
+                        anchor.fill: parent
+                        onClicked{ na.active = false}
+            }
+    \endcode
+
+{Joint} {Joints} may be connected to inactive bodies. These {Joint} {joints} will not be simulated.
+You should be careful when you activate a Body that its {Joint} {joints} are not distorted.
+Note that activating a body is almost as expensive as creating the body from scratch.
+*/
+
+
+
+
+/*!
+  \qmlproperty bool Body::awake
+  see sleepAllowed
+ */
+
+
+/*!
+ \qmlproperty QQmlListProperty Body::fixtures
+ a list of elements that will be attached to the Body. This can be a single element or many.
+
+ */
 
 Box2DBody::Box2DBody(QObject *parent) :
     QObject(parent),
@@ -257,6 +463,9 @@ QPointF Box2DBody::originOffset() const
                    origin.x() * s + origin.y() * c - origin.y());
 }
 
+/*!
+\qmlmethod void Body::addFixture(Item fixture)
+ */
 void Box2DBody::addFixture(Box2DFixture *fixture)
 {
     mFixtures.append(fixture);
@@ -387,6 +596,10 @@ void Box2DBody::updateTransform()
     mTransformDirty = false;
 }
 
+/*!
+ \qmlmethod Body::applyLinearImpulse(point impulse, point point)
+
+*/
 void Box2DBody::applyLinearImpulse(const QPointF &impulse,
                                    const QPointF &point)
 {
@@ -394,18 +607,30 @@ void Box2DBody::applyLinearImpulse(const QPointF &impulse,
         mBody->ApplyLinearImpulse(invertY(impulse), mWorld->toMeters(point), true);
 }
 
+/*!
+ \qmlmethod Body::applyAngularImpulse(real impulse)
+ */
 void Box2DBody::applyAngularImpulse(qreal impulse)
 {
     if (mBody)
         mBody->ApplyAngularImpulse(impulse, true);
 }
 
+/*!
+ \qmlmethod Body::applyTorque(real torque)
+ */
 void Box2DBody::applyTorque(qreal torque)
 {
     if (mBody)
         mBody->ApplyTorque(torque, true);
 }
 
+/*!
+ \qmlmethod Body::getWorldCenter()
+    returns a Qt.point of the center of the Box2d World
+
+    \sa World
+*/
 QPointF Box2DBody::getWorldCenter() const
 {
     if (mBody)
@@ -413,6 +638,9 @@ QPointF Box2DBody::getWorldCenter() const
     return QPointF();
 }
 
+/*!
+ \qmlmethod Body::getLocalCenter()
+ */
 QPointF Box2DBody::getLocalCenter() const
 {
     if (mBody)
@@ -420,34 +648,53 @@ QPointF Box2DBody::getLocalCenter() const
     return QPointF();
 }
 
+/*!
+  \qmlmethod Body::applyForce(QPointF force, QPointF point)
+
+*/
 void Box2DBody::applyForce(const QPointF &force, const QPointF &point)
 {
     if (mBody)
         mBody->ApplyForce(invertY(force), mWorld->toMeters(point), true);
 }
 
+/*!
+ \qmlmethod Body::applyForceToCenter(point force)
+ */
 void Box2DBody::applyForceToCenter(const QPointF &force)
 {
     if (mBody)
         mBody->ApplyForceToCenter(invertY(force), true);
 }
 
+/*!
+\qmlmethod float Body::getMass()
+ */
 float Box2DBody::getMass() const
 {
     return mBody ? mBody->GetMass() : 0.0;
 }
 
+/*!
+ \qmlmethod void Body::resetMassData()
+ */
 void Box2DBody::resetMassData()
 {
     if (mBody)
         mBody->ResetMassData();
 }
 
+/*!
+ \qmlmethod float Body::getInertia()
+ */
 float Box2DBody::getInertia() const
 {
     return mBody ? mBody->GetInertia() : 0.0;
 }
 
+/*!
+ \qmlmethod Body::toWorldPoint(QPointF localPoint)
+ */
 QPointF Box2DBody::toWorldPoint(const QPointF &localPoint) const
 {
     if (mBody)
@@ -455,6 +702,9 @@ QPointF Box2DBody::toWorldPoint(const QPointF &localPoint) const
     return QPointF();
 }
 
+/*!
+ \qmlmethod  Body::toWorldVector(QPointF localVector)
+ */
 QPointF Box2DBody::toWorldVector(const QPointF &localVector) const
 {
     if (mBody)
@@ -462,6 +712,9 @@ QPointF Box2DBody::toWorldVector(const QPointF &localVector) const
     return QPointF();
 }
 
+/*!
+ \qmlmethod Body::toLocalPoint(QPointF worldPoint)
+ */
 QPointF Box2DBody::toLocalPoint(const QPointF &worldPoint) const
 {
     if (mBody)
@@ -469,6 +722,9 @@ QPointF Box2DBody::toLocalPoint(const QPointF &worldPoint) const
     return QPointF();
 }
 
+/*!
+\qmlmethod Qt.point Body::toLocalVector(QPointF worldVector)
+ */
 QPointF Box2DBody::toLocalVector(const QPointF &worldVector) const
 {
     if (mBody)
@@ -476,6 +732,9 @@ QPointF Box2DBody::toLocalVector(const QPointF &worldVector) const
     return QPointF();
 }
 
+/*!
+\qmlmethod Qt.point Body::getLinearVelocityFromWorldPoint(QPointF point)
+ */
 QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
 {
     if (mBody)
@@ -483,6 +742,9 @@ QPointF Box2DBody::getLinearVelocityFromWorldPoint(const QPointF &point) const
     return QPointF();
 }
 
+/*!
+ \qmlmethod Qt.point Body::getLinearVelocityFromLocalPoint(QPointF point)
+ */
 QPointF Box2DBody::getLinearVelocityFromLocalPoint(const QPointF &point) const
 {
     if (mBody)

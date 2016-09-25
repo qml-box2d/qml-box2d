@@ -14,3 +14,4 @@ target.path = $$[QT_INSTALL_EXAMPLES]/Box2D/$${TARGET}/
 export(target.path)
 INSTALLS += target
 export(INSTALLS)
+OTHER_FILES += doc/revolute-examples.qdoc

@@ -1,0 +1,23 @@
+/*!
+    \page BodyOverview
+    \title Body Overview
+    \startpage Overview
+    \indexpage Overview
+    \nextpage ShapesOverview
+    \previouspage WorldOverview
+     Bodies are the fundamental objects in the physics scene, but they are not what you actually see bouncing around and colliding with each other.
+
+You can think of a body as the properties of an object that you cannot see (draw) or touch (collide with). These invisible properties are:
+\list
+    \li mass – how heavy it is
+    \li velocity – how fast and which direction it’s moving
+    \li rotational inertia – how much effort it takes to start or stop spinning
+    \li angular velocity – how fast and which way it’s rotating
+    \li location – where it is
+    \li angle – which way it is facing
+\endlist
+
+Even if you know all of these characteristics of an object, you still don’t know what it looks like or how it will react when it collides with another object. To define the size and shape of an object we need to use fixtures.
+
+There are three types of body available: static, dynamic and kinematic. We will cover each in more details in later tutorial.
+*/

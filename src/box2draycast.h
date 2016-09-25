@@ -60,11 +60,16 @@ private:
     float mMaxFraction;
 };
 
+
 inline float Box2DRayCast::maxFraction() const
 {
     return mMaxFraction;
 }
 
+
+//FIXME this should have a signal to notify and also check on change.
+// Because Qml has its own signal slot system if this changes and hits
+// it will be a mem loss
 inline void Box2DRayCast::setMaxFraction(float maxFraction)
 {
     mMaxFraction = maxFraction;

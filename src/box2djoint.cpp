@@ -28,6 +28,78 @@
 #include "box2dbody.h"
 
 #include <QDebug>
+/*!
+   \qmltype Joint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+    \brief A Joint is a uncreatalbe elemnt that is used in Other Joints such as a PulleyJoint
+
+
+   Here is a table of all the Joints that inhert Joint
+    \table
+        \header
+        \li Element \li description
+            \row
+                \li \l {Joint}{Joints}
+                \li The overall picture of what Joints are. This is a uncreatable element
+            \row
+                \li \l {DistanceJoint}{DistanceJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {PrismaticJoint}{PrismaticJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {RevoluteJoint}{RevoluteJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {MotorJoint}{MotorJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {WeldJoint}{WeldJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {PulleyJoint}{PulleyJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {FrictionJoint}{FrictionJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {WheelJoint}{WheelJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {MouseJoint}{MouseJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {GearJoint}{GearJoint}
+                \li like a box but a polygon
+            \row
+                \li \l {RopeJoint}{RopeJoint}
+                \li like a box but a polygon
+    \endtable
+*/
+
+////////////////////////////
+
+/*!
+\qmlproperty bool Joint::collideConnected
+    Allows one to set the Joints of the respected bodys to allow colliding on connection.
+*/
+
+/*!
+\qmlproperty string Joint::world
+    The World that the Joints will be placed in.
+*/
+
+/*!
+\qmlproperty string Joint::bodyA
+    The first \l{Body}{body} in the joint connection
+*/
+
+/*!
+\qmlproperty string Joint::bodyB
+    The second \l{Body}{body} in the joint connection
+*/
 
 Box2DJoint::Box2DJoint(JointType jointType, QObject *parent) :
     QObject(parent),

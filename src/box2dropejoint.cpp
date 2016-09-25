@@ -28,6 +28,33 @@
 
 #include "box2dworld.h"
 
+/*!
+   \qmltype RopeJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+    \brief The RopeJoint restricts the maximum distance between two bodies.
+This can be useful to prevent chains of bodies from stretching, even under high load.
+
+
+ \l{rope}{Rope Example}
+
+*/
+
+/*!
+  \qmlproperty QPointF RopeJoint::localAnchorA
+ The local anchor point associated with bodyA.
+ */
+
+/*!
+  \qmlproperty QPointF RopeJoint::localAnchorB
+ The local anchor point associated with bodyB.
+ */
+/*!
+  \qmlproperty float RopeJoint::maxLength
+   the maximium length of the rope joint.
+ */
+
 Box2DRopeJoint::Box2DRopeJoint(QObject *parent)
     : Box2DJoint(RopeJoint, parent)
     , m_maxLength(0.0f)
@@ -99,6 +126,10 @@ b2Joint *Box2DRopeJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
+/*!
+ \qmlmethod QPointF RopeJoint::getReactionForce(float inv_dt)
+
+ */
 QPointF Box2DRopeJoint::getReactionForce(float32 inv_dt) const
 {
     if (ropeJoint())
@@ -106,6 +137,10 @@ QPointF Box2DRopeJoint::getReactionForce(float32 inv_dt) const
     return QPointF();
 }
 
+/*!
+ \qmlmethod float RopeJoint::getReactionTorque(float inv_dt)
+
+ */
 float Box2DRopeJoint::getReactionTorque(float32 inv_dt) const
 {
     if (ropeJoint())

@@ -29,6 +29,15 @@
 #include "box2dfixture.h"
 
 
+/*!
+   \qmltype Contact
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief
+*/
+
+
 Box2DContact::Box2DContact(b2Contact *contact) :
     mContact(contact)
 {
@@ -39,11 +48,19 @@ void Box2DContact::setContact(b2Contact *contact)
     mContact = contact;
 }
 
+/*!
+ * \qmlmethod Contact::isTouching()
+    returns true if two things are touching each other
+ */
 bool Box2DContact::isTouching()
 {
     return mContact->IsTouching();
 }
 
+/*!
+ \qmlproperty bool Contact::enabled
+    DOCME
+*/
 bool Box2DContact::isEnabled() const
 {
     return mContact->IsEnabled();
@@ -54,6 +71,10 @@ void Box2DContact::setEnabled(bool enabled)
     mContact->SetEnabled(enabled);
 }
 
+/*!
+ \qmlproperty Fixture Contact::fixtureA
+
+ */
 Box2DFixture *Box2DContact::fixtureA() const
 {
     b2Fixture *fixture = mContact->GetFixtureA();
@@ -62,6 +83,10 @@ Box2DFixture *Box2DContact::fixtureA() const
     return NULL;
 }
 
+/*!
+ \qmlproperty Fixture Contact::fixtureB
+
+ */
 Box2DFixture *Box2DContact::fixtureB() const
 {
     b2Fixture *fixture = mContact->GetFixtureB();
@@ -70,16 +95,26 @@ Box2DFixture *Box2DContact::fixtureB() const
     return NULL;
 }
 
+/*!
+ \qmlproperty int Contact::childIndexA
+
+ */
 int Box2DContact::childIndexA() const
 {
     return mContact->GetChildIndexA();
 }
+/*!
+ \qmlproperty int Contact::childIndexB
 
+ */
 int Box2DContact::childIndexB() const
 {
     return mContact->GetChildIndexB();
 }
 
+/*!
+ \qmlproperty real Contact::fiction
+ */
 qreal Box2DContact::getFriction() const
 {
     return mContact->GetFriction();
@@ -90,11 +125,18 @@ void Box2DContact::setFriction(qreal friction)
     mContact->SetFriction(friction);
 }
 
+/*!
+\qmlmethod Contact::resetFriction()
+ */
 void Box2DContact::resetFriction()
 {
     mContact->ResetFriction();
 }
 
+/*!
+ \qmlproperty real Contact::restitution
+
+ */
 qreal Box2DContact::getRestitution() const
 {
     return mContact->GetRestitution();
@@ -105,11 +147,19 @@ void Box2DContact::setRestitution(qreal restitution)
     mContact->SetRestitution(restitution);
 }
 
+/*!
+\qmlmethod Contact::resetRestitution()
+    method to reset the restitiution.
+ */
 void Box2DContact::resetRestitution()
 {
     mContact->ResetRestitution();
 }
 
+/*!
+\qmlproperty real Contact::tangentSpeed
+
+ */
 qreal Box2DContact::getTangentSpeed() const
 {
     return mContact->GetTangentSpeed();

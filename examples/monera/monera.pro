@@ -17,3 +17,4 @@ export(target.path)
 INSTALLS += target
 export(INSTALLS)
 
+OTHER_FILES += doc/monera-examples.qdoc

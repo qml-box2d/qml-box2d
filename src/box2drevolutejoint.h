@@ -108,6 +108,7 @@ private:
     bool m_defaultReferenceAngle;
 };
 
+
 inline QPointF Box2DRevoluteJoint::localAnchorA() const
 {
     return m_localAnchorA;
@@ -128,6 +129,7 @@ inline float Box2DRevoluteJoint::lowerAngle() const
     return m_lowerAngle;
 }
 
+
 inline float Box2DRevoluteJoint::upperAngle() const
 {
     return m_upperAngle;
@@ -138,15 +140,18 @@ inline float Box2DRevoluteJoint::maxMotorTorque() const
     return m_maxMotorTorque;
 }
 
+
 inline float Box2DRevoluteJoint::motorSpeed() const
 {
     return m_motorSpeed;
 }
 
+
 inline bool Box2DRevoluteJoint::enableLimit() const
 {
     return m_enableLimit;
 }
+
 
 inline bool Box2DRevoluteJoint::enableMotor() const
 {

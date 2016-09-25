@@ -29,6 +29,20 @@
 #include "box2dfixture.h"
 #include "box2dworld.h"
 
+
+/*!
+   \qmltype Raycast
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief
+*/
+/*!
+ \qmlproperty float RayCast::maxFraction()
+
+*/
+
+
 Box2DRayCast::Box2DRayCast(QObject *parent) :
     QObject(parent),
     mMaxFraction(-1.0f)

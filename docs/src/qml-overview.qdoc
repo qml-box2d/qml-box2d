@@ -1,0 +1,31 @@
+/*!
+    \page Overview
+    \title Qml Box2d Overview
+    \indexpage Overview
+    \nextpage WorldOverview
+By good will or good fortune you’ve stumbled upon Qml Box2d
+
+\b{So Welcome to Qml Box2d !}
+
+Box2D is a 2D rigid body simulation library for games. Programmers can use it in their games to make
+objects move in realistic ways and make the game world more interactive. From the game engine's point
+of view, a physics engine is just a system for procedural animation.
+Box2D is written in portable C++. And what you are looking at is the Binding's and Wrappings for just that in QML/QtQuick
+
+
+\b{Common things that you will see all through this documentatiuon}
+
+\b{Density}
+
+How heavy it is in relation to its area,The density of a fixture multiplied by it’s area becomes the mass of that fixture.
+
+\b{Friction}
+
+How slippery a body’s surface is. friction is a property of individual fixtures and not the body itself.
+
+\b{Restitution}
+
+Restitution measures how ‘bouncy’ a fixture is. Like friction, it is given a value between 0 and 1, where zero means that the fixture will not bounce at all, and one means that all the energy of the bounce will be conserved. When two fixtures collide with each other, the resulting restitution tends toward the higher of their restitution values.
+
+
+*/

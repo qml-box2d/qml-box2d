@@ -80,6 +80,7 @@ private:
     bool m_defaultAngularOffset;
 };
 
+
 inline QPointF Box2DMotorJoint::linearOffset() const
 {
     return m_linearOffset;

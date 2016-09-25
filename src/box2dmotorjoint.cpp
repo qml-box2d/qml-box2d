@@ -29,6 +29,54 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+
+/*!
+   \qmltype MotorJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief A MotorJoint lets you control the motion of a Body by specifying target position
+and rotation offsets.
+
+    You can set the \c maxForce and \c maxTorque that will be applied to reach the \c target
+position and \c rotation. If the Body is blocked, it will stop and the contact forces will be
+proportional the \c maxForce and \c maxTorque.
+
+Examples {motorjoint}{ Motor Joint }
+
+*/
+
+////////////////////
+
+
+/*!
+\qmlproperty Qt.point MotorJoint::linearOffset
+    The offset of the MotorJoint
+ */
+
+/*!
+\qmlproperty float MotorJoint::angularOffset
+The angular offset allowed to the MotorJoint
+
+ */
+
+/*!
+\qmlproperty float MotorJoint::maxForce
+    The maxium ammount of force that can be used on the motor joint
+ */
+
+/*!
+\qmlproperty float MotorJoint::maxTorque
+    The maxium ammount of torque that is allowed to the MotorJoint.
+
+ */
+
+/*!
+\qmlproperty float MotorJoint::correctionFactor
+    DOCME
+*/
+
+
 Box2DMotorJoint::Box2DMotorJoint(QObject *parent)
     : Box2DJoint(MotorJoint, parent)
     , m_angularOffset(0.0f)

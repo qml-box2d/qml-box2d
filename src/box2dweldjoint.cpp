@@ -28,6 +28,49 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+/*!
+   \qmltype WeldJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+\brief The WeldJoint attempts to constrain all relative motion between two bodies.
+It is tempting to use the WeldJoint to define breakable structures. However, the Box2D
+ solver is iterative so the joints are a bit soft. So chains of bodies connected by WeldJoints
+will flex. Instead it is better to create breakable bodies starting with a single body with
+multiple fixtures. When the Body breaks, you can destroy a fixture and recreate it on a
+new body.
+
+\l { weld} { Example of using a weld joint in QML}.
+
+*/
+
+
+
+/*!
+ \qmlproperty QPointF WeldJoint::localAnchorA
+ The local anchor point associated with bodyA
+ */
+
+/*!
+   \qmlproperty QPointF WeldJoint::localAnchorB
+    The local anchor point associated with bodyB
+ */
+
+/*!
+   \qmlproperty float WeldJoint::referenceAngle
+    The angle in which the WeldJoint is held together
+ */
+
+/*!
+   \qmlproperty float WeldJoint::frequencyHz
+    Allows one to set the frequency of the WeldJoint.
+ */
+
+/*!
+   \qmlproperty float WeldJoint::dampingRatio
+    Allows one to set the dampingRatio of the WeldJoint.
+ */
+
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent)
     : Box2DJoint(WeldJoint, parent)
     , m_referenceAngle(0.0f)
@@ -125,4 +168,19 @@ b2Joint *Box2DWeldJoint::createJoint()
     jointDef.dampingRatio = m_dampingRatio;
 
     return world()->world().CreateJoint(&jointDef);
+}
+
+QPointF Box2DWeldJoint::localAnchorA() const
+{
+    return m_localAnchorA;
+}
+
+QPointF Box2DWeldJoint::localAnchorB() const
+{
+    return m_localAnchorB;
+}
+
+float Box2DWeldJoint::referenceAngle() const
+{
+    return m_referenceAngle;
 }

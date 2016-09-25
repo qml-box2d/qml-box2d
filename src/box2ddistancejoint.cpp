@@ -28,6 +28,18 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+
+/*!
+   \qmltype DistanceJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief
+*/
+
+
+
+
 Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent)
     : Box2DJoint(DistanceJoint, parent)
     , m_length(1.0f)

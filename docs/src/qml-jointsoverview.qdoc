@@ -1,0 +1,9 @@
+/*!
+    \page JointsOverview
+    \title Joints Overview
+    \startpage Overview
+    \previouspage FixturesOverview
+     Box2D has a number of ‘joints’ that can be used to connect two bodies together. These joints can be used to simulate interaction between objects to form hinges, pistons, ropes, wheels, pulleys, vehicles, chains, etc. Learning to use joints effectively helps to create a more engaging and interesting scene.
+
+    Some joints provide limits so you can control the range of motion. Some joint provide motors which can be used to drive the joint at a prescribed speed until a prescribed force/torque is exceeded. Joint motors can be used in many ways. You can use motors to control position by specifying a joint velocity that is proportional to the difference between the actual and desired position. You can also use motors to simulate joint friction: set the joint velocity to zero and provide a small, but significant maximum motor force/torque. Then the motor will attempt to keep the joint from moving until the load becomes too strong.
+*/

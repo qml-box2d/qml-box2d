@@ -27,6 +27,63 @@
 #include "box2dworld.h"
 #include "box2dbody.h"
 
+/*!
+   \qmltype GearJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+   \brief If you want to create a sophisticated mechanical contraption you might want to use
+ gears.
+
+In principle you can create gears in Box2D by using compound \l{Body}{bodies} to model gear
+teeth. This is not very efficient and might be tedious to author. You also have to be careful to
+line up the gears so the teeth mesh smoothly. Box2D has a simpler method of creating gears:
+the GearJoint.
+
+The gear joint can only connect RevoluteJoint and/or PrismaticJoint.
+Like the PulleyJoints property \c PulleyJoints::ratio ,you can specify a gear ratio.
+
+Also keep in mind that when one Joint is a RevoluteJoint (angular) and the other Joint is
+PrismaticJoint (translation), And then the gear ratio will have units of length or one over length.
+Here is an example gear joint. The bodies bodyA and bodyB are any bodies from
+the two joints, As long as they are not the same bodies.
+
+    \code
+        GearJoint {
+            id: gearJoint
+            world: world
+            bodyA: lever
+            bodyB: damper
+            joint1: revoluteJoint
+            joint2: prismaticJoint
+            ratio: 0.05
+        }
+    \endcode
+
+\b{Example}
+
+\l{gear}{GearJoint Example}
+
+*/
+
+
+
+
+/*!
+\qmlproperty float GearJoint::ratio
+See \{PulleyJoint::ratio}{pulley ratio}
+*/
+
+/*!
+\qmlproperty string GearJoint::joint1
+    DOCME
+*/
+
+/*!
+\qmlproperty string GearJoint::joint2
+    DOCME
+*/
+
 Box2DGearJoint::Box2DGearJoint(QObject *parent)
     : Box2DJoint(GearJoint, parent)
     , m_joint1(0)

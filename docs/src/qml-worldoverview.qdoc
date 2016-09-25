@@ -1,0 +1,19 @@
+/*!
+    \page WorldOverview
+    \title World Overview
+    \indexpage Overview
+    \startpage Overview
+
+    \nextpage BodyOverview
+    \previouspage Overview
+    A physics world is a collection of bodies, fixtures, and constraints that interact together. Normally we only create one world for a give game,it’s the main entity in which all the Box2D bodies live in. When you create or delete a body, you call a function of the world object to do this, so the world is managing all the allocations for the objects within it too. This means that the world is pretty important, so let’s take a look at what we can do with one.
+
+    \list
+        \li define gravity
+        \li tune the physics simulation
+        \li find fixtures in a given region
+        \li cast a ray and find intersected fixtures
+    \endlist
+
+In Guidebee Game Engine, the world singleton is stored in GameEngine.world . By default ,it’s null, When use Stage-Actor pattern for game design, before create any Box2D body, you need to call Stage.initWorld() method to initialize the Box2D world. When stage is disposed , the world associated with this Stage is also disposed. remember to re-initialize GameEngine.world if you have multiple stages uses Box2D.
+*/

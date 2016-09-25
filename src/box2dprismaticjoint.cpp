@@ -27,6 +27,85 @@
 
 #include "box2dworld.h"
 
+/*!
+   \qmltype PrismaticJoint
+   \inqmlmodule Box2d 1.0
+   \ingroup Box2d
+   \inherits QObject
+    \brief A PrismaticJoint allows for relative translation of two bodies along a specified axis.
+
+ A PrismaticJoint prevents relative rotation. Therefore, a PrismaticJoint has a single degree of freedom.
+
+The PrismaticJoint definition is similar to the RevoluteJoint description; just substitute
+translation for \c axis and \c maxMotorForce for \c maxMotorTorque. Using this analogy provides
+an example
+
+PrismaticJoint definition with a Joint limit and a friction motor:
+\code
+        PrismaticJoint {
+            id: prismatic
+            lowerTranslation: -250
+            upperTranslation: 150
+            enableLimit: true
+            maxMotorForce: 3000
+            motorSpeed: -100
+            enableMotor: true
+            bodyB: square
+            bodyA: middle
+            axis: Qt.point(100, 40)
+            world: world
+        }
+\endcode
+
+The RevoluteJoint has an implicit axis coming out of the screen. The PrismaticJoint needs
+an explicit axis parallel to the screen. This axis is fixed in the two \l {Body} {bodies} and follows
+ their motion. Like the RevoluteJoint, the PrismaticJoint translation is zero
+ also see the \l {prismatic} {Prismatic Example }
+*/
+
+
+/*!
+ \qmlproperty float PrismaticJoint::localAnchorA
+    The local anchor point associated with bodyA
+ */
+/*!
+ \qmlproperty Qt.point PrismaticJoint::localAnchorB
+    The local anchor point associated with bodyb
+ */
+/*!
+ \qmlproperty Qt.point PrismaticJoint::localAxisA
+    The axis of the current Prismatic two joints
+ */
+/*!
+ \qmlproperty float PrismaticJoint::referenceAngle
+    DOCME
+ */
+/*!
+ \qmlproperty bool PrismaticJoint::enableLimit
+   Set to true to enable limiting on the joints .
+ */
+/*!
+ \qmlproperty float PrismaticJoint::lowerTranslation
+The lower translation between the two joints
+
+ */
+/*!
+ \qmlproperty float PrismaticJoint::upperTranslation
+    The upper translation between the two joints
+ */
+/*!
+ \qmlproperty bool PrismaticJoint::enableMotor
+  Set to true to enable a motor on the joints.
+ */
+/*!
+ \qmlproperty float PrismaticJoint::maxMotorForce
+    The maxium allowed motor force that you PrismaticJoint will use.
+ */
+/*!
+ \qmlproperty float PrismaticJoint::motorSpeed
+    The maxium ammount of motor speed that will be used.
+ */
+
 Box2DPrismaticJoint::Box2DPrismaticJoint(QObject *parent)
     : Box2DJoint(PrismaticJoint, parent)
     , m_localAxisA(1.0, 0.0)
@@ -194,13 +273,20 @@ b2Joint *Box2DPrismaticJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
+/*!
+ \qmlmethod PrismaticJoint::getJointTranslation()
+    Returns the current translation for the prismatic joint.
+ */
 float Box2DPrismaticJoint::getJointTranslation() const
 {
     if (prismaticJoint())
         return world()->toPixels(prismaticJoint()->GetJointTranslation());
     return 0.0f;
 }
-
+/*!
+ \qmlmethod PrismaticJoint::getJointSpeed()
+    Returns the current speed of the prismatic joint.
+*/
 float Box2DPrismaticJoint::getJointSpeed() const
 {
     if (prismaticJoint())
