@@ -89,14 +89,8 @@ qmldir.files += $$PWD/qmldir
 
 
 # FIXME generate .qmltype files here
-# plugin.qmltypes is used by Qt Creator for syntax highlighting and the QML code model.  It needs
-# to be regenerated whenever the QML elements exported by the plugin change.  This cannot be done
-# automatically at compile time because qmlplugindump does not support some QML features and it may
-# not be possible when cross-compiling.
-#
-# To regenerate run 'make qmltypes' which will update the plugins.qmltypes file in the source
-# directory.  Then review and commit the changes made to plugins.qmltypes.
-#
+
+
 qmltypes.files = $$PWD/plugins.qmltypes
 qmltypes.target = qmltypes
 qmltypes.commands = $$[QT_INSTALL_BINS]/qmlplugindump $$uri 2.0 $$QMAKE_RESOLVED_TARGET > $$PWD/plugins.qmltypes
