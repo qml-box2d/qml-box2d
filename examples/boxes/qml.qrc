@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>WoodenBox.qml</file>
+        <file>Wall.qml</file>
+        <file>boxes.qml</file>
+    </qresource>
+</RCC>

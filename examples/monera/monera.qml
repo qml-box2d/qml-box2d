@@ -1,45 +1,50 @@
 import QtQuick 2.0
+import QtQuick.Window 2.0
 import Box2D 2.0
-import "../shared"
-
-Rectangle {
-    id: screen
-
-    property int selected: -1
-
-    color: "black"
-
+import Box2D.Components 1.0
+Window{
+    visible: true
+    title: qsTr("Monera Example")
     width: 800
     height: 400
+    Rectangle {
+        id: screen
 
-    SpeciesModel {
-        id: speciesModel
-    }
+        property int selected: -1
 
-    World {
-        id: physicsWorld
-        gravity: Qt.point(0, 0)
-    }
-
-    Repeater {
+        color: "black"
         anchors.fill: parent
-        model: speciesModel
-        delegate: SpeciesInfo {
-            id: speciesInfo
-            x: Math.random() * (screen.width - radius)
-            y: Math.random() * (screen.height - radius)
-            expanded: index == screen.selected
-            speciesName: species
-            descriptionText: description
-            photoUrl: photo
-            onSelected: screen.selected = index
+
+
+        SpeciesModel {
+            id: speciesModel
         }
-    }
 
-    ScreenBoundaries {}
+        World {
+            id: physicsWorld
+            gravity: Qt.point(0, 0)
+        }
 
-    DebugDraw {
-        world: physicsWorld
-        visible: false
+        Repeater {
+            anchors.fill: parent
+            model: speciesModel
+            delegate: SpeciesInfo {
+                id: speciesInfo
+                x: Math.random() * (screen.width - radius)
+                y: Math.random() * (screen.height - radius)
+                expanded: index == screen.selected
+                speciesName: species
+                descriptionText: description
+                photoUrl: "qrc:/"+photo
+                onSelected: screen.selected = index
+            }
+        }
+
+        ScreenBoundaries {}
+
+        DebugDraw {
+            world: physicsWorld
+            visible: false
+        }
     }
 }

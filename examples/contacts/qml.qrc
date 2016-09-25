@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Wall.qml</file>
+        <file>images/wheel.png</file>
+    </qresource>
+</RCC>

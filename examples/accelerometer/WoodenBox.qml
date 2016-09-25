@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import Box2D 2.0
-import "../shared"
+import Box2D.Components 1.0
 
 PhysicsItem {
     id: box
@@ -18,5 +18,5 @@ PhysicsItem {
         restitution: 0.5
     }
 
-    Image { anchors.fill: parent; source: "woodenbox.png" }
+    Image { anchors.fill: parent; source: "qrc:/images/woodenbox.png" }
 }

@@ -1,0 +1,18 @@
+/*!
+    \page FixturesOverview
+    \title Fixtures Overview
+    \indexpage Overview
+    \startpage Overview
+    \nextpage JointsOverview
+    \previouspage ShapesOverview
+     Fixtures are used to describe the size, shape, and material properties of an object in the physics scene. One body can have multiple fixtures attached to it, and the center of mass of the body will be affected by the arrangement of its fixtures. When two bodies collide, their fixtures are used to decide how they will react. The main properties of fixtures are:
+
+    \list
+        \li shape – a polygon or circle
+        \li restitution – how bouncy the fixture is
+        \li friction – how slippery it is
+        \li density – how heavy it is in relation to its area.
+    \endlist
+
+You can attach multiple fixtures to a single body, if this the case, you need to directly use Box2D physics API to do this.
+*/

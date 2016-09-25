@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>boat.qml</file>
+        <file>images/boat.png</file>
+        <file>images/wave.png</file>
+    </qresource>
+</RCC>

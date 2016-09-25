@@ -1,9 +1,14 @@
 import QtQuick 2.2
-import Box2D 2.0
+import QtQuick.Window 2.0
 import QtQuick.Controls 1.1
-import "../shared"
 
-Rectangle {
+import Box2D 2.0
+import Box2D.Components 1.0
+
+
+Window{
+    visible: true
+    title: qsTr("Raycast Example")
     width: 800
     height: 600
 

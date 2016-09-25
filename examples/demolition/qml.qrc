@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Building.qml</file>
+        <file>demolition.qml</file>
+        <file>Wall.qml</file>
+        <file>WoodenBox.qml</file>
+        <file>images/brickwall.png</file>
+        <file>images/plate.png</file>
+        <file>images/skyline.png</file>
+        <file>images/demo-background.png</file>
+        <file>images/demo-wheel.png</file>
+        <file>images/demo-woodenbox.png</file>
+    </qresource>
+</RCC>

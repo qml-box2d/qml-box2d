@@ -1,0 +1,66 @@
+project	 = Box2d
+description =  Box2d Documentation
+version = 1.0
+url = http://qml-box2d.github.io/qml-box2d/
+syntaxhighlighting = true
+sourceencoding = UTF-8
+outputencoding = UTF-8
+
+# The following parameters are for creating a qhp file, the qhelpgenerator
+# program can convert the qhp file into a qch file which can be opened in
+# Qt Assistant and/or Qt Creator.
+
+## Used to make offline documentation
+include($QT_INSTALL_ARCHDATA/doc/global/qt-html-templates-offline.qdocconf)
+
+# Defines the name of the project. You cannot use operators (+, =, -) in
+# the name. Properties for this project are set using a qhp.<projectname>.property
+# format.
+qhp.projects = Box2d
+qhp.Box2d.file = qmlbox2d.qhp
+qhp.Box2d.namespace = org.qmlbox2d.100
+qhp.Box2d.indexTitle = qmlbox2d
+qhp.Box2d.virtualFolder  = qmlbox2d
+
+# For listing child nodes in Qt Creator or Assistant.
+qhp.Box2d.subprojects = qmltypes examples
+
+qhp.Box2d.subprojects.examples.title = Examples
+qhp.Box2d.subprojects.examples.indexTitle = Qml Box2d Examples
+qhp.Box2d.subprojects.examples.selectors = fake:example
+qhp.Box2d.subprojects.examples.sortPages = true
+
+qhp.Box2d.subprojects.qmltypes.title = QML Types
+qhp.Box2d.subprojects.qmltypes.indexTitle = Box2d QML Types
+qhp.Box2d.subprojects.qmltypes.selectors = fake:qmlclass
+qhp.Box2d.subprojects.qmltypes.sortPages = true
+
+exampledirs += ../examples/
+
+examplesinstallpath = qmlbox2d
+
+imagedirs += images
+sourcedirs += ../src/ \
+              ../docs/src/ \
+              ../src/Components
+
+excludedirs += ../../
+sources.fileextensions  = "*.qdoc *.cpp *.qml"
+outputdir = $OUTDIR
+
+HTML.footer = \
+    "        </div>\n" \
+    "       </div>\n" \
+    "   </div>\n" \
+    "   </div>\n" \
+    "</div>\n" \
+    "<div class=\"footer\">\n" \
+    "   <p>\n" \
+    "   <acronym title=\"Copyright\">&copy;</acronym> 2016 Joseph Mills.\n" \
+    "   Documentation contributions included herein are the copyrights of\n" \
+    "   their respective owners.<br>" \
+    "   The documentation provided herein is licensed under the terms of the" \
+    "   <a href=\"http://www.gnu.org/licenses/fdl.html\">GNU Free Documentation" \
+    "   License version 1.3</a> as published by the Free Software Foundation.<br>" \
+    "   </p>\n" \
+    "</div>\n"

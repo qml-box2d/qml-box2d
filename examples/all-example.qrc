@@ -1,0 +1,77 @@
+<RCC>
+    <qresource prefix="/">
+        <file>accelerometer/accelerometer.qml</file>
+        <file>accelerometer/WoodenBox.qml</file>
+        <file>boxes/boxes.qml</file>
+        <file>boxes/Wall.qml</file>
+        <file>boxes/WoodenBox.qml</file>
+        <file>cannon/sounds/cannon.wav</file>
+        <file>cannon/sounds/gear.wav</file>
+        <file>cannon/main.qml</file>
+        <file>cannon/Wall.qml</file>
+        <file>contacts/main.qml</file>
+        <file>contacts/Wall.qml</file>
+        <file>demolition/Building.qml</file>
+        <file>demolition/demolition.qml</file>
+        <file>demolition/Wall.qml</file>
+        <file>demolition/WoodenBox.qml</file>
+        <file>distance/Ball.qml</file>
+        <file>distance/distance.qml</file>
+        <file>distance/Square.qml</file>
+        <file>filtering/filtering.qml</file>
+        <file>fixtures/main.qml</file>
+        <file>fixtures/Wall.qml</file>
+        <file>friction/main.qml</file>
+        <file>friction/Wall.qml</file>
+        <file>gear/main.qml</file>
+        <file>gear/Wall.qml</file>
+        <file>impulse/impulse.qml</file>
+        <file>impulse/Ball.qml</file>
+        <file>monera/monera.qml</file>
+        <file>monera/SpeciesInfo.qml</file>
+        <file>monera/SpeciesModel.qml</file>
+        <file>motorjoint/boat.qml</file>
+        <file>mouse/main.qml</file>
+        <file>mouse/Wall.qml</file>
+        <file>movingBox/MovableBox.qml</file>
+        <file>movingBox/movingBox.qml</file>
+        <file>movingBox/Wall.qml</file>
+        <file>movingBox/WoodenBox.qml</file>
+        <file>polygons/polygons.qml</file>
+        <file>polygons/Trapezoid.qml</file>
+        <file>prismatic/prismatic.qml</file>
+        <file>prismatic/Square.qml</file>
+        <file>pulley/main.qml</file>
+        <file>pulley/Wall.qml</file>
+        <file>raycast/main.qml</file>
+        <file>raycast/Wall.qml</file>
+        <file>revolute/revolute.qml</file>
+        <file>rope/main.qml</file>
+        <file>rope/Wall.qml</file>
+        <file>weld/main.qml</file>
+        <file>weld/Wall.qml</file>
+        <file>wheel/main.qml</file>
+        <file>wheel/Wall.qml</file>
+        <file alias="images/cannon.png">cannon/images/cannon.png</file>
+        <file alias="images/cannon_base.png">cannon/images/cannon_base.png</file>
+        <file alias="images/demo-woodenbox.png">demolition/images/demo-woodenbox.png</file>
+        <file alias="images/demo-background.png">demolition/images/demo-background.png</file>
+        <file alias="images/brickwall.png">demolition/images/brickwall.png</file>
+        <file alias="images/demo-wheel.png">demolition/images/demo-wheel.png</file>
+        <file alias="images/plate.png">demolition/images/plate.png</file>
+        <file alias="images/skyline.png">demolition/images/skyline.png</file>
+        <file alias="images/coral.png">monera/images/coral.png</file>
+        <file alias="images/coral2.png">monera/images/coral2.png</file>
+        <file alias="images/fungus.png">monera/images/fungus.png</file>
+        <file alias="images/hexa.png">monera/images/hexa.png</file>
+        <file alias="images/monera.png">monera/images/monera.png</file>
+        <file alias="images/shell.png">monera/images/shell.png</file>
+        <file alias="images/shell2.png">monera/images/shell2.png</file>
+        <file alias="images/spikes.png">monera/images/spikes.png</file>
+        <file alias="images/boat.png">motorjoint/images/boat.png</file>
+        <file alias="images/Thumbs.db">motorjoint/images/Thumbs.db</file>
+        <file alias="images/wave.png">motorjoint/images/wave.png</file>
+        <file alias="images/arrow.png">wheel/images/arrow.png</file>
+        <file alias="images/wheel.png">wheel/images/wheel.png</file>
+    </qresource>
+</RCC>
