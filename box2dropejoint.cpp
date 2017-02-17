@@ -1,5 +1,5 @@
 /*
- * box2drevolutejoint.cpp
+ * box2dropejoint.cpp
  * Copyright (c) 2011 Joonas Erkinheimo <joonas.erkinheimo@nokia.com>
  * Copyright (c) 2011 Markus Kivioja <markus.kivioja@digia.com>
  *

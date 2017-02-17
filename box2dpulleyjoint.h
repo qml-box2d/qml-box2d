@@ -1,5 +1,5 @@
 /*
- * box2dprismaticjoint.h
+ * box2dpulleyjoint.h
  * Copyright (c) 2011 Joonas Erkinheimo <joonas.erkinheimo@nokia.com>
  *
  * This file is part of the Box2D QML plugin.
