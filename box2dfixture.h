@@ -30,12 +30,13 @@
 
 #include <QQuickItem>
 #include <QFlags>
+#include <QQuickItem>
 
 #include <Box2D.h>
 
 class Box2DBody;
 
-class Box2DFixture : public QObject
+class Box2DFixture : public QQuickItem
 {
     Q_OBJECT
 
@@ -51,7 +52,7 @@ class Box2DFixture : public QObject
     Q_FLAGS(CategoryFlags)
 
 public:
-    explicit Box2DFixture(QObject *parent = 0);
+    explicit Box2DFixture(QQuickItem *parent = 0);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
                        Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,

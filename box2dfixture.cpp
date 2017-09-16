@@ -34,8 +34,8 @@
 
 #include "Common/b2Math.h"
 
-Box2DFixture::Box2DFixture(QObject *parent) :
-    QObject(parent),
+Box2DFixture::Box2DFixture(QQuickItem *parent) :
+    QQuickItem(parent),
     mFixture(0),
     mBody(0)
 {
@@ -228,6 +228,11 @@ void Box2DBox::setRotation(qreal rotation)
     mRotation = rotation;
     recreateFixture();
     emit rotationChanged();
+}
+
+void Box2DBox::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+{
+    qWarning() <<"geometryChanged Function is not defined";
 }
 
 b2Shape *Box2DBox::createShape()
