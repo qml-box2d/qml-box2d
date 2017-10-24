@@ -17,7 +17,7 @@ INSTALLING
 
 RUNNING THE EXAMPLE
 
- qmlscene examples/boxes/boxes.qml
+ qmlscene examples/ui.qml
 
 
 DEPLOYMENT

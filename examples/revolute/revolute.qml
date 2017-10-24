@@ -11,9 +11,11 @@ Item {
     Keys.onPressed: {
         if (event.key === Qt.Key_Left) {
             revolute.motorSpeed -= 10;
+            event.accepted = true;
         }
         else if (event.key === Qt.Key_Right) {
-            revolute.motorSpeed += 10
+            revolute.motorSpeed += 10;
+            event.accepted = true;
         }
     }
 
@@ -25,7 +27,7 @@ Item {
         }
         height: 40
         horizontalAlignment: Text.AlignHCenter;
-        text: "Left/Right buttons to control the speed, Mouse click to activate/deactivate motor"
+        text: "Left/Right keys to control the speed, Mouse click to activate/deactivate motor"
     }
 
     // BOX2D WORLD

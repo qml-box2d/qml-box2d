@@ -9,6 +9,11 @@ Rectangle {
     height: 600
 
     property int hz: 0
+    readonly property int wallMeasure: 40 
+    readonly property int ballDiameter: 20
+    readonly property int middlePosX: screen.width / 2
+    readonly property int minBallPos: Math.ceil(wallMeasure)
+    readonly property int maxBallPos: Math.floor(screen.width - (wallMeasure + ballDiameter))
 
     Component {
         id: ballComponent
@@ -16,8 +21,8 @@ Rectangle {
         PhysicsItem {
             id: box
 
-            width: 20
-            height: 20
+            width: ballDiameter
+            height: ballDiameter
             bodyType: Body.Dynamic
 
             fixtures: Circle {
@@ -106,8 +111,8 @@ Rectangle {
         var prevLink = bodyA;
         for (var i = 0; i < 10; i++) {
             var newLink = linkComponent.createObject(screen);
-            newLink.x = 350 + i * 3;
-            newLink.y = 500 - (i * 40);
+            newLink.x = middlePosX + i * 3;
+            newLink.y = (screen.height - wallMeasure - bodyA.height) - (i * 40);
             newLink.width = 20 - i * 1.5;
             newLink.height = 40;
             var newJoint = linkJoint.createObject(screen);
@@ -125,7 +130,7 @@ Rectangle {
 
     PhysicsItem {
         id: ground
-        height: 40
+        height: wallMeasure
         anchors {
             left: parent.left
             right: parent.right
@@ -144,7 +149,7 @@ Rectangle {
     }
     Wall {
         id: topWall
-        height: 40
+        height: wallMeasure
         anchors {
             left: parent.left
             right: parent.right
@@ -154,23 +159,23 @@ Rectangle {
 
     Wall {
         id: leftWall
-        width: 40
+        width: wallMeasure
         anchors {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
-            bottomMargin: 40
+            bottomMargin: wallMeasure
         }
     }
 
     Wall {
         id: rightWall
-        width: 40
+        width: wallMeasure
         anchors {
             right: parent.right
             top: parent.top
             bottom: parent.bottom
-            bottomMargin: 40
+            bottomMargin: wallMeasure
         }
     }
 
@@ -178,8 +183,8 @@ Rectangle {
         id: bodyA
         width: 100
         height: 20
-        x: 300
-        y: 540
+        x: middlePosX - (width / 2)
+        y: (screen.height - wallMeasure - height)
         fixtures: Box {
             width: bodyA.width
             height: bodyA.height
@@ -194,9 +199,10 @@ Rectangle {
         id: debugButton
         x: 50
         y: 50
-        width: 120
+        width: debugButtonText.implicitWidth + 10
         height: 30
         Text {
+            id: debugButtonText
             text: debugDraw.visible ? "Debug view: on" : "Debug view: off";
             anchors.centerIn: parent
         }
@@ -215,7 +221,7 @@ Rectangle {
         width: 70
         height: 30
         Text {
-            text: "Get crazy"
+            text: "Go crazy"
             anchors.centerIn: parent
         }
         color: "#DEDEDE"
@@ -226,9 +232,11 @@ Rectangle {
             onClicked: {
                 if (hz == 0) {
                     hz = 60;
+                    ballsTimer.interval = 300
                     crazyButton.color = "#999";
                 } else {
                     hz = 0;
+                    ballsTimer.interval = 1000
                     crazyButton.color = "#DEDEDE";
                 }
             }
@@ -243,14 +251,19 @@ Rectangle {
         z: 10
     }
 
+    function xPos() {
+        return (Math.floor(Math.random() * (maxBallPos - minBallPos)) + minBallPos)
+    }
+
     Timer {
         id: ballsTimer
         interval: 1000
         running: true
         repeat: true
+        
         onTriggered: {
-            var newBox = ballComponent.createObject(screen);
-            newBox.x = 40 + (Math.random() * screen.width - 80);
+            var newBox = ballComponent.createObject(screen)
+            newBox.x = xPos()
             newBox.y = 50;
         }
     }

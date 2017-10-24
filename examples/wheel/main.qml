@@ -9,12 +9,17 @@ Rectangle {
     height: 600
     color: "#EFEFFF"
 
+    readonly property int wallMeasure: 40 
+    readonly property int ballDiameter: 20
+    readonly property int minBallPos: Math.ceil(wallMeasure)
+    readonly property int maxBallPos: Math.floor(screen.width - (wallMeasure + ballDiameter))
+
     Component {
         id: ballsComponent
         PhysicsItem {
             id: ball
-            width: 20
-            height: 20
+            width: ballDiameter
+            height: ballDiameter
             bodyType: Body.Dynamic
             property color boxColor: "blue"
             fixtures: Circle {
@@ -38,7 +43,7 @@ Rectangle {
 
     Wall {
         id: topWall
-        height: 40
+        height: wallMeasure
         anchors {
             left: parent.left
             right: parent.right
@@ -48,29 +53,29 @@ Rectangle {
 
     Wall {
         id: leftWall
-        width: 40
+        width: wallMeasure
         anchors {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
-            bottomMargin: 40
+            bottomMargin: wallMeasure
         }
     }
 
     Wall {
         id: rightWall
-        width: 40
+        width: wallMeasure
         anchors {
             right: parent.right
             top: parent.top
             bottom: parent.bottom
-            bottomMargin: 40
+            bottomMargin: wallMeasure
         }
     }
 
     PhysicsItem {
         id: ground
-        height: 40
+        height: wallMeasure
         anchors {
             left: parent.left
             right: parent.right
@@ -127,9 +132,9 @@ Rectangle {
 
     Wall {
         anchors.right: parent.right
-        anchors.rightMargin: 40
+        anchors.rightMargin: wallMeasure
         width:500
-        height: 40
+        height: wallMeasure
         y: 220
     }
 
@@ -317,6 +322,10 @@ Rectangle {
         visible: false
     }
 
+    function xPos() {
+        return (Math.floor(Math.random() * (maxBallPos - minBallPos)) + minBallPos)
+    }
+
     Timer {
         id: ballsTimer
         interval: 1000
@@ -324,7 +333,7 @@ Rectangle {
         repeat: true
         onTriggered: {
             var newBox = ballsComponent.createObject(screen);
-            newBox.x = 40 + Math.round(Math.random() * 720);
+            newBox.x = xPos(); 40 + Math.round(Math.random() * 720);
             newBox.y = 50;
         }
     }

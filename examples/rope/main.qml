@@ -9,6 +9,11 @@ Rectangle {
     width: 800
     height: 600
 
+    readonly property int wallMeasure: 40 
+    readonly property int ballDiameter: 20
+    readonly property int minBallPos: Math.ceil(wallMeasure)
+    readonly property int maxBallPos: Math.floor(screen.width - (wallMeasure + ballDiameter))
+
     Slider {
         id: lengthSlider
         x: 180
@@ -157,6 +162,10 @@ Rectangle {
         visible: false
     }
 
+    function xPos() {
+        return (Math.floor(Math.random() * (maxBallPos - minBallPos)) + minBallPos)
+    }
+
     Timer {
         id: ballsTimer
         interval: 500
@@ -164,7 +173,7 @@ Rectangle {
         repeat: true
         onTriggered: {
             var newBox = linkComponent.createObject(screen);
-            newBox.x = 40 + (Math.random() * screen.width - 80);
+            newBox.x = xPos()
             newBox.y = 50;
         }
     }

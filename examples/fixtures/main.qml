@@ -8,13 +8,18 @@ Rectangle {
     width: 800
     height: 600
 
+    readonly property int wallMeasure: 40 
+    readonly property int ballDiameter: 20
+    readonly property int minBallPos: Math.ceil(wallMeasure)
+    readonly property int maxBallPos: Math.floor(screen.width - (wallMeasure + ballDiameter))
+
     Component {
         id: ballComponent
         Rectangle {
             id: ball
 
-            width: 20
-            height: 20
+            width: ballDiameter
+            height: ballDiameter
             radius: 10
             border.color: "blue"
             color: "#EFEFEF"
@@ -62,7 +67,7 @@ Rectangle {
             arr.push(Qt.point(0,height));
             return arr;
         }
-        height: 40
+        height: wallMeasure
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -95,7 +100,7 @@ Rectangle {
 
     Wall {
         id: topWall
-        height: 40
+        height: wallMeasure
         anchors {
             left: parent.left
             right: parent.right
@@ -105,23 +110,23 @@ Rectangle {
 
     Wall {
         id: leftWall
-        width: 40
+        width: wallMeasure
         anchors {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
-            bottomMargin: 40
+            bottomMargin: wallMeasure
         }
     }
 
     Wall {
         id: rightWall
-        width: 40
+        width: wallMeasure
         anchors {
             right: parent.right
             top: parent.top
             bottom: parent.bottom
-            bottomMargin: 40
+            bottomMargin: wallMeasure
         }
     }
 
@@ -262,6 +267,10 @@ Rectangle {
         text: count + " balls"
     }
 
+    function xPos() {
+        return (Math.floor(Math.random() * (maxBallPos - minBallPos)) + minBallPos)
+    }
+
     Timer {
         id: ballsTimer
         interval: 200
@@ -269,7 +278,7 @@ Rectangle {
         repeat: true
         onTriggered: {
             var newBox = ballComponent.createObject(screen);
-            newBox.x = 40 + (Math.random() * screen.width - 80);
+            newBox.x = xPos();
             newBox.y = 50;
             ballsCounter.count ++;
         }
@@ -405,10 +414,10 @@ Rectangle {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                if (ground.height == 40)
+                if (ground.height == wallMeasure)
                     ground.height = 100
                 else
-                    ground.height = 40
+                    ground.height = wallMeasure
             }
         }
     }

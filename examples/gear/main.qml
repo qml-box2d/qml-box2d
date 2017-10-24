@@ -8,12 +8,17 @@ Rectangle {
     width: 800
     height: 600
 
+    readonly property int wallMeasure: 40 
+    readonly property int ballDiameter: 20
+    readonly property int minBallPos: Math.ceil(wallMeasure)
+    readonly property int maxBallPos: Math.floor(screen.width - (wallMeasure + ballDiameter))
+
     Component {
         id: ballComponent
         PhysicsItem {
             id: box
-            width: 20
-            height: 20
+            width: ballDiameter
+            height: ballDiameter
             property string color: "#EFEFEF"
             bodyType: Body.Dynamic
             fixtures: Circle {
@@ -36,7 +41,7 @@ Rectangle {
 
     PhysicsItem {
         id: ground
-        height: 40
+        height: wallMeasure
         anchors {
             left: parent.left
             right: parent.right
@@ -56,7 +61,7 @@ Rectangle {
 
     Wall {
         id: topWall
-        height: 40
+        height: wallMeasure
         anchors {
             left: parent.left
             right: parent.right
@@ -66,7 +71,7 @@ Rectangle {
 
     Wall {
         id: leftWall
-        width: 40
+        width: wallMeasure
         anchors {
             left: parent.left
             top: parent.top
@@ -77,7 +82,7 @@ Rectangle {
 
     Wall {
         id: rightWall
-        width: 40
+        width: wallMeasure
         anchors {
             right: parent.right
             top: parent.top
@@ -370,7 +375,7 @@ Rectangle {
     Text {
         id: rightCounter
         property int count: 0
-        x:410
+        x: 410
         y: 220
         width: 75
         height: 20
@@ -387,14 +392,18 @@ Rectangle {
         visible: false
     }
 
+    function xPos() {
+        return (Math.floor(Math.random() * (maxBallPos - minBallPos)) + minBallPos)
+    }
+
     Timer {
         id: ballsTimer
         interval: 2000
         running: true
         repeat: true
         onTriggered: {
-            var newBox = ballComponent.createObject(screen);
-            newBox.x = 40 + (Math.random() * screen.width - 80);
+            var newBox = ballComponent.createObject(screen)
+            newBox.x = xPos();
             newBox.y = 50;
         }
     }
