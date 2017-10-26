@@ -17,7 +17,6 @@ Item {
             revolute.motorSpeed += 10;
             event.accepted = true;
         }
-        event.accepted = true;
     }
 
     Text {

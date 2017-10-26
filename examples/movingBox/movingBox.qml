@@ -21,7 +21,6 @@ Item {
             movableBox.jump();
             event.accepted = true;
         }
-        event.accepted = true;
     }
 
     Keys.onReleased: {
