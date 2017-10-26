@@ -1,11 +1,4 @@
-/* 
-* @Author: thomasvogelpohl
-* @Date:   2015-12-14 16:39:40
-* @Last Modified by:   Thomas Vogelpohl
-* @Last Modified time: 2016-05-18 10:29:50
-*/
-
-import QtQuick 2.6
+import QtQuick 2.4
 import Box2D 2.0
 import "../shared"
 
@@ -18,16 +11,22 @@ Item {
     property bool enableTracking: false
     property real requestedAngle: 0
 
+    property vector2d globalPositionRevolute: Qt.vector2d(0,0)
+    property vector2d vectorToMouse: Qt.vector2d(0,0)
+
+    function calcDifferenceVector(vector1, vector2) {
+        // calculate difference vector
+        return (vector1.minus(vector2))
+    }
+
+    function calcAngle(differenceVector) {
+        var radTodeg = 57.295779513082320876
+        return ((Math.atan2(differenceVector.y, differenceVector.x)) * radTodeg)
+    }
+
+
     Keys.onPressed: {
-        if (event.key === Qt.Key_Left) {
-        	console.log("Key left")
-            revolute.motorSpeed -= 10;
-        }
-        else if (event.key === Qt.Key_Right) {
-        	console.log("Key right")
-            revolute.motorSpeed += 10
-        }
-	    else if (event.key === Qt.Key_Up) {
+	    if (event.key === Qt.Key_Up) {
 	    	console.log("Key up")
 	    	revolute.enableMotor = true
 		    revolute.maxMotorTorque = 200
@@ -50,7 +49,7 @@ Item {
         }
         height: 40
         horizontalAlignment: Text.AlignHCenter;
-        text: "Up/Down keys to activate/deactivate motor, Mouse click to set new traking point (if motor active)"
+        text: "Up/Down keys to activate/deactivate motor, Mouse click to set new tracking point (if motor active)"
     }
 
     Text {
@@ -134,17 +133,36 @@ Item {
         localAnchorA: Qt.point(20,20)
     }
 
+
+    Line {
+        x: globalPositionRevolute.x
+        y: globalPositionRevolute.y
+        visible: mouseArea.pressed
+        color: "blue"
+        rotation: trackJointAngleScreen.requestedAngle
+
+        width: vectorToMouse.length()
+        height: 1
+    }
+
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         onClicked: {
-            var radTodeg = 57.295779513082320876
-        	var bodyAPosition = Qt.vector2d(middle.x, middle.y)
-        	var localAnchorRevolute = Qt.vector2d(revolute.localAnchorA.x, revolute.localAnchorA.y);
-        	var globalPositionRevolute = bodyAPosition.plus(localAnchorRevolute)
-        	var mousePosition = Qt.vector2d(mouseX, mouseY);
-        	var differenceVector = mousePosition.minus(globalPositionRevolute);
-
-        	trackJointAngleScreen.requestedAngle = Math.atan2(differenceVector.y, differenceVector.x) * radTodeg
+            vectorToMouse = calcDifferenceVector(Qt.vector2d(mouseX, mouseY), globalPositionRevolute)
+            trackJointAngleScreen.requestedAngle = calcAngle(vectorToMouse)
         }
+        onPressed: {
+            vectorToMouse = calcDifferenceVector(Qt.vector2d(mouseX, mouseY), globalPositionRevolute)
+            trackJointAngleScreen.requestedAngle = calcAngle(vectorToMouse)
+        }
+    }
+
+    Component.onCompleted: {
+            var bodyAPosition = Qt.vector2d(middle.x, middle.y)
+            var localAnchorRevolute = Qt.vector2d(revolute.localAnchorA.x, revolute.localAnchorA.y);
+
+            // position of middle of revolute joint
+            globalPositionRevolute = bodyAPosition.plus(localAnchorRevolute)
     }
 }

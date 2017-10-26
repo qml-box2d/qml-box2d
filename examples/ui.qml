@@ -1,6 +1,6 @@
 import QtQuick 2.4;
-import QtQuick.Window 2.2;
-import QtQuick.Layouts 1.3
+import QtQuick.Window 2.1;
+import QtQuick.Layouts 1.1
 import Box2D 2.0;
 //import "shared"
 
@@ -124,6 +124,13 @@ Window {
 
             border.color: "#DEDEDE"
             border.width: 1
+
+
+            MouseArea {
+            anchors.fill: listView
+            onWheel: listView.flick(0, wheel.angleDelta.y * 5)
+            }
+
 
             ListView {
                 id: listView
