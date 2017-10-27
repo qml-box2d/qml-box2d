@@ -20,7 +20,7 @@ in a directory of which the parent is added as import path.
  qmlscene examples/ui.qml
  (You need to be in the root folder of qml-box2d.)
 
- [Examples page:](./examples/examples.md)
+ [Examples page:](examples/examples.md)
 
 
 ### DEPLOYMENT
