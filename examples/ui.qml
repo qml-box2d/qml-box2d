@@ -98,6 +98,10 @@ Window {
             path: "revolute/revolute.qml"
         }
         ListElement {
+            name: "revolute plot angle"
+            path: "revoluteplotangle/revolutePlotAngle.qml"
+        }
+        ListElement {
             name: "rope"
             path: "rope/main.qml"
         }
@@ -118,6 +122,7 @@ Window {
 
         // 1st pane
         Rectangle {
+            id: firstPane
             Layout.preferredWidth: 200
             Layout.preferredHeight: parent.height
             Layout.fillHeight: true
@@ -154,7 +159,7 @@ Window {
                         anchors.fill: parent;
                         onClicked: {
                             listView.currentIndex = index
-                            loader.source = path
+                            sceneLoader.source = path
                         }
                     }
                 }
@@ -171,12 +176,13 @@ Window {
 
         // 2nd pane
         Item {
+            id: secondPane
             Layout.preferredWidth: 800
             Layout.preferredHeight: parent.height
             Layout.fillHeight: true
 
             Loader {
-                id: loader;
+                id: sceneLoader
                 width: parent.width
                 height: parent.height
                 focus: true
