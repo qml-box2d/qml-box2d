@@ -52,8 +52,8 @@ This will make sure that before running, the version of the plugin is updated
 in Qt's import path.
 
 
-### Screenshots of some examples:
-(These screenshots have been done on an iPad Air with qml-box2d linked statically)
+### EXAMPLE SCREENSHOTS:
+(These screenshots have been done on an iPad Air)
 
 <img src="./examples/screenshots/IMG_0645.PNG" width="800" height="600">
 
