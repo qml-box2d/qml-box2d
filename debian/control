@@ -7,12 +7,10 @@ Build-Depends: debhelper (>= 11),
                qtdeclarative5-dev
 Standards-Version: 4.1.3
 
-Package: qml-box2d
+Package: qml-module-box2d
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
 Description: Box2d physics for QML applications
  The goal is to expose the functionality of Box2D as QML components, 
  in order to make it easy to write physics based games in QML.
-
-
