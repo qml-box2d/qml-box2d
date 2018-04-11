@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 
     Box2DPlugin plugin;
     plugin.registerTypes("Box2D");
+    qmlProtectModule("Box2D", 2);
 
     QQmlApplicationEngine engine;
     engine.load(QUrl("qrc:/ui.qml"));
