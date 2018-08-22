@@ -282,10 +282,11 @@ void Box2DBody::createBody()
 
     if (mTarget) {
         mBodyDef.angle = toRadians(mTarget->rotation());
+        QPointF position = mTarget->mapToScene(QPointF(0,0));
         mBodyDef.position = mWorld->toMeters(
                     mTarget->transformOrigin() == QQuickItem::TopLeft ?
-                        mTarget->position() :
-                        mTarget->position() + originOffset());
+                        position :
+                        position + originOffset());
     }
 
     mBody = mWorld->world().CreateBody(&mBodyDef);
@@ -309,11 +310,12 @@ void Box2DBody::synchronize()
 
     if (sync(mBodyDef.position, mBody->GetPosition())) {
         if (mTarget) {
-            mTarget->setPosition(
-                        mTarget->transformOrigin() == QQuickItem::TopLeft ?
-                            mWorld->toPixels(mBodyDef.position) :
-                            mWorld->toPixels(mBodyDef.position) - originOffset());
-
+            QPointF position = mTarget->transformOrigin() == QQuickItem::TopLeft ?
+                        mWorld->toPixels(mBodyDef.position) :
+                        mWorld->toPixels(mBodyDef.position) - originOffset();
+            if(mTarget->parentItem())
+                position = mTarget->parentItem()->mapFromScene(position);
+            mTarget->setPosition(position);
         }
         emit positionChanged();
     }
@@ -378,10 +380,11 @@ void Box2DBody::updateTransform()
     Q_ASSERT(mTransformDirty);
 
     mBodyDef.angle = toRadians(mTarget->rotation());
+    QPointF position = mTarget->mapToScene(QPointF(0,0));
     mBodyDef.position = mWorld->toMeters(
                 mTarget->transformOrigin() == QQuickItem::TopLeft ?
-                    mTarget->position() :
-                    mTarget->position() + originOffset());
+                    position :
+                    position + originOffset());
 
     mBody->SetTransform(mBodyDef.position, mBodyDef.angle);
     mTransformDirty = false;
