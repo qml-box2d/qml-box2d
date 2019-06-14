@@ -317,6 +317,10 @@ void Box2DBody::synchronize()
         }
         emit positionChanged();
     }
+
+    if (sync(mBodyDef.linearVelocity, mBody->GetLinearVelocity())) {
+        emit linearVelocityChanged();
+    }
 }
 
 void Box2DBody::classBegin()
