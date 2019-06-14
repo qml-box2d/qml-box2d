@@ -33,6 +33,8 @@
 #include "box2djoint.h"
 #include "box2draycast.h"
 
+#include <chrono>
+
 StepDriver::StepDriver(Box2DWorld *world)
     : QAbstractAnimation(world)
     , mWorld(world)
@@ -47,6 +49,11 @@ int StepDriver::duration() const
 
 void StepDriver::updateCurrentTime(int)
 {
+    using namespace std::chrono;
+    static auto start = system_clock::now();
+    auto deltaMs = duration_cast<milliseconds>(system_clock::now() - start);
+    start = system_clock::now();
+    mWorld->setTimeStep(deltaMs.count()/1000.0f);
     mWorld->step();
 }
 
