@@ -31,7 +31,7 @@
 #include <QPointF>
 #include <QQmlParserStatus>
 
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 
 class b2World;
 class Box2DBody;

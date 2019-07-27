@@ -28,7 +28,7 @@
 #define BOX2DROPEJOINT_H
 
 #include "box2djoint.h"
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 
 class b2World;
 class b2RopeJoint;
