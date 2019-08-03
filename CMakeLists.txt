@@ -3,10 +3,10 @@ project (box2dqml)
 
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/Box2D)
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/Box2D)
+
 find_package (Qt5 REQUIRED COMPONENTS Quick Core Qml)
 add_subdirectory (thirdparty/Box2D)
+add_subdirectory (examples)
 
 add_library (${PROJECT_NAME} SHARED
     box2dbody.cpp
@@ -66,11 +66,4 @@ PRIVATE
     Qt5::Qml
 PUBLIC
     box2d
-)
-
-add_custom_command (TARGET ${PROJECT_NAME}
-POST_BUILD COMMAND
-    ${CMAKE_COMMAND} -E copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/qmldir
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qmldir
 )
