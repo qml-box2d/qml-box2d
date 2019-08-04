@@ -32,7 +32,7 @@
 #define BOX2DBODY_H
 
 #include <QQuickItem>
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 
 class Box2DFixture;
 class Box2DWorld;

@@ -32,7 +32,7 @@
 
 #include <QDebug>
 
-#include "Common/b2Math.h"
+#include <Box2D/Common/b2Math.h>
 
 Box2DFixture::Box2DFixture(QObject *parent) :
     QObject(parent),
