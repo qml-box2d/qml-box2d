@@ -26,6 +26,7 @@ project (qmlbox2d)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(QMLBOX2D_PLUGIN_BASE_DIR ${CMAKE_BINARY_DIR}/bin/plugins)
 
 add_subdirectory (plugin)
 add_subdirectory (thirdparty/Box2D)
