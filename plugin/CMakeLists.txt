@@ -28,7 +28,11 @@ set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package (Qt5 REQUIRED COMPONENTS Quick Core Qml)
 
-add_library (${PROJECT_NAME} SHARED
+if (NOT QML_PLUGIN_LINK_TYPE)
+  set(QML_PLUGIN_LINK_TYPE SHARED)
+endif()
+
+add_library (${PROJECT_NAME} ${QML_PLUGIN_LINK_TYPE}
     box2dbody.cpp
     box2dbody.h
     box2dcontact.cpp
@@ -82,6 +86,11 @@ PROPERTIES
 )
 
 target_include_directories (${PROJECT_NAME} PUBLIC ./)
+
+target_compile_definitions(${PROJECT_NAME}
+PRIVATE
+    $<$<STREQUAL:${QML_PLUGIN_LINK_TYPE},STATIC>:QT_STATICPLUGIN>
+)
 
 target_link_libraries (${PROJECT_NAME}
 PRIVATE

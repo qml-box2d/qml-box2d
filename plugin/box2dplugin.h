@@ -34,9 +34,7 @@
 class Q_DECL_EXPORT Box2DPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
-#if !defined(STATIC_PLUGIN_BOX2D)
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
-#endif
+    Q_PLUGIN_METADATA(IID "org.box2d.box2dqml")
 
 public:
     explicit Box2DPlugin(QObject *parent = 0);
