@@ -26,7 +26,7 @@ project (box2dqml)
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package (Qt5 REQUIRED COMPONENTS Quick Core Qml)
+find_package (Qt6 REQUIRED COMPONENTS Quick Core Qml)
 
 if (NOT QML_PLUGIN_LINK_TYPE)
   set(QML_PLUGIN_LINK_TYPE SHARED)
@@ -94,9 +94,9 @@ PRIVATE
 
 target_link_libraries (${PROJECT_NAME}
 PRIVATE
-    Qt5::Core
-    Qt5::Quick
-    Qt5::Qml
+    Qt6::Core
+    Qt6::Quick
+    Qt6::Qml
 PUBLIC
     box2d
 )

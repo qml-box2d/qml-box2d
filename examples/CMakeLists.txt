@@ -23,7 +23,7 @@
 cmake_minimum_required (VERSION 3.5.0 FATAL_ERROR)
 project (box2qml-examples)
 
-find_package (Qt5 REQUIRED COMPONENTS Quick Core Qml)
+find_package (Qt6 REQUIRED COMPONENTS Quick Core Qml)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTORCC ON)
 
@@ -131,7 +131,7 @@ set_target_properties (${PROJECT_NAME} PROPERTIES
 
 target_link_libraries (${PROJECT_NAME}
 PRIVATE
-    Qt5::Core
-    Qt5::Quick
-    Qt5::Qml
+    Qt6::Core
+    Qt6::Quick
+    Qt6::Qml
 )
