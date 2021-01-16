@@ -111,6 +111,7 @@ private:
 class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListener
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
     Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep NOTIFY timeStepChanged)
@@ -415,7 +416,5 @@ inline float toRadians(float degrees)
     return -degrees * b2_pi / 180;
 }
 
-
-QML_DECLARE_TYPE(Box2DWorld)
 
 #endif // BOX2DWORLD_H

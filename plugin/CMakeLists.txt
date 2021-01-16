@@ -106,3 +106,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     ${CMAKE_CURRENT_SOURCE_DIR}/qmldir
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/qmldir
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    QT_QML_MODULE_VERSION 2.0
+    QT_QML_MODULE_URI     Box2D
+)
+
+qt6_qml_type_registration(${PROJECT_NAME})
