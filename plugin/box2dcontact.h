@@ -29,7 +29,7 @@
 #include <QObject>
 #include <Box2D/Box2D.h>
 
-class Box2DFixture;
+#include "box2dfixture.h"
 
 class Box2DContact : public QObject
 {

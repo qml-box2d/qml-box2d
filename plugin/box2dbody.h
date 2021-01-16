@@ -35,7 +35,7 @@
 #include <Box2D/Box2D.h>
 
 class Box2DFixture;
-class Box2DWorld;
+#include "box2dworld.h"
 
 /**
  * The Box2D body, build up from a list of shapes.
