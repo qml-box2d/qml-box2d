@@ -416,5 +416,9 @@ inline float toRadians(float degrees)
     return -degrees * b2_pi / 180;
 }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+QML_DECLARE_TYPE(Box2DWorld)
+#endif
+
 
 #endif // BOX2DWORLD_H
