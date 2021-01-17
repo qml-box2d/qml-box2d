@@ -36,6 +36,14 @@
 
 class Box2DFixture;
 #include "box2dworld.h"
+#include <QtGlobal>
+
+// Specific sizetype is only available with Qt 6
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#define QT_SIZE_TYPE qsizetype
+#else
+#define QT_SIZE_TYPE int
+#endif
 
 /**
  * The Box2D body, build up from a list of shapes.
@@ -176,8 +184,8 @@ private:
 
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
-    static qsizetype count_fixture(QQmlListProperty<Box2DFixture> *list);
-    static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, qsizetype index);
+    static QT_SIZE_TYPE count_fixture(QQmlListProperty<Box2DFixture> *list);
+    static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, QT_SIZE_TYPE index);
     QPointF originOffset() const;
 };
 

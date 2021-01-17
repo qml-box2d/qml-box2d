@@ -234,13 +234,13 @@ void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
     body->mFixtures.append(fixture);
 }
 
-qsizetype Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
+QT_SIZE_TYPE Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
     return body->mFixtures.length();
 }
 
-Box2DFixture *Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, qsizetype index)
+Box2DFixture *Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, QT_SIZE_TYPE index)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
     return body->mFixtures.at(index);
