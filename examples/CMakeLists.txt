@@ -30,8 +30,7 @@ endif()
 
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTORCC ON)
-
-add_executable (${PROJECT_NAME} 
+set(PROJECT_SOURCES
     main.cpp
     example.qrc
 
@@ -90,7 +89,7 @@ add_executable (${PROJECT_NAME}
 
     polygons/Trapezoid.qml
     polygons/polygons.qml
-    
+
     prismatic/Square.qml
     prismatic/prismatic.qml
 
@@ -126,6 +125,12 @@ add_executable (${PROJECT_NAME}
     wheel/Wall.qml
     wheel/main.qml
 )
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+else()
+    add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+endif()
 
 set_target_properties (${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 11
