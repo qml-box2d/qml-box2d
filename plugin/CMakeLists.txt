@@ -26,7 +26,7 @@ project (box2dqml)
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 COMPONENTS Quick Core Qml)
+find_package(Qt6 COMPONENTS Quick Core Qml QUIET)
 if (NOT Qt6_FOUND)
     find_package(Qt5 5.15 COMPONENTS Quick Core Qml REQUIRED)
 endif()
