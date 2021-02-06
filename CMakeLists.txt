@@ -26,8 +26,12 @@ project (qmlbox2d)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(QMLBOX2D_PLUGIN_BASE_DIR ${CMAKE_BINARY_DIR}/bin/plugins)
+set(QMLBOX2D_PLUGIN_BASE_DIR ${CMAKE_BINARY_DIR}/bin/qml)
 
 add_subdirectory (plugin)
 add_subdirectory (thirdparty/Box2D)
-add_subdirectory (examples)
+
+# TODO Enable examples for Android
+if (NOT ANDROID)
+    add_subdirectory (examples)
+endif()

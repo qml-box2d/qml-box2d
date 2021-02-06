@@ -35,6 +35,8 @@ if (NOT QML_PLUGIN_LINK_TYPE)
   set(QML_PLUGIN_LINK_TYPE SHARED)
 endif()
 
+set(BOX2D_PLUGIN_URI Box2D)
+
 add_library (${PROJECT_NAME} ${QML_PLUGIN_LINK_TYPE}
     box2dbody.cpp
     box2dbody.h
@@ -78,6 +80,15 @@ add_library (${PROJECT_NAME} ${QML_PLUGIN_LINK_TYPE}
     )
 
 set (PLUGIN_DEST_DIR "${QMLBOX2D_PLUGIN_BASE_DIR}/Box2D")
+
+if (ANDROID)
+    string(REPLACE "." "_" uri_in_file_name "${BOX2D_PLUGIN_URI}")
+    set_target_properties(${PROJECT_NAME}
+        PROPERTIES
+        LIBRARY_OUTPUT_NAME "qml_${uri_in_file_name}_${PROJECT_NAME}"
+        )
+endif()
+
 set_target_properties(
 ${PROJECT_NAME}
 PROPERTIES
@@ -113,7 +124,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 if (Qt6_FOUND)
     set_target_properties(${PROJECT_NAME} PROPERTIES
         QT_QML_MODULE_VERSION 2.0
-        QT_QML_MODULE_URI     Box2D
+        QT_QML_MODULE_URI     ${BOX2D_PLUGIN_URI}
     )
     qt6_qml_type_registration(${PROJECT_NAME})
 endif()
