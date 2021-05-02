@@ -23,7 +23,7 @@
 cmake_minimum_required (VERSION 3.5.0 FATAL_ERROR)
 project (box2d)
 
-add_library (${PROJECT_NAME} STATIC
+set(box2d_sources
     src/Box2D/Box2D.h
     src/Box2D/Collision/Shapes/b2ChainShape.cpp
     src/Box2D/Collision/Shapes/b2ChainShape.h
@@ -119,6 +119,13 @@ add_library (${PROJECT_NAME} STATIC
     src/Box2D/Rope/b2Rope.h
     )
 
+if (ANDROID)
+    add_library (${PROJECT_NAME} OBJECT ${box2d_sources})
+else()
+    add_library (${PROJECT_NAME} STATIC ${box2d_sources})
+endif()
+
+
 set_target_properties (${PROJECT_NAME}
 PROPERTIES
     CXX_STANDARD 11
@@ -127,6 +134,12 @@ PROPERTIES
     POSITION_INDEPENDENT_CODE ON
 )
 
+if (ANDROID)
+    set_target_properties(${PROJECT_NAME}
+        PROPERTIES
+        ARCHIVE_OUTPUT_NAME "${PROJECT_NAME}_${ANDROID_ABI}"
+        )
+endif()
 target_include_directories (${PROJECT_NAME}
 PUBLIC
     src

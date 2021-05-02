@@ -37,6 +37,9 @@ endif()
 
 set(BOX2D_PLUGIN_URI Box2D)
 
+if(ANDROID)
+    set(box2dqml_platform_extra $<TARGET_OBJECTS:box2d>)
+endif()
 add_library (${PROJECT_NAME} ${QML_PLUGIN_LINK_TYPE}
     box2dbody.cpp
     box2dbody.h
@@ -76,6 +79,7 @@ add_library (${PROJECT_NAME} ${QML_PLUGIN_LINK_TYPE}
     box2dwheeljoint.h
     box2dworld.cpp
     box2dworld.h
+    ${box2dqml_platform_extra}
     qmldir
     )
 
