@@ -1,6 +1,6 @@
 #
 # examples/CMakeLists.txt
-# Copyright (c) 2019 Serein Pfeiffer <serein.pfeiffer@gmail.com>
+# Copyright (c) 2021 Serein Pfeiffer <serein.pfeiffer@gmail.com>
 #
 # This file is part of the Box2D QML plugin.
 #
@@ -23,10 +23,7 @@
 cmake_minimum_required (VERSION 3.5.0 FATAL_ERROR)
 project (box2qml-examples)
 
-find_package(Qt6 COMPONENTS Quick Core Qml)
-if (NOT Qt6_FOUND)
-    find_package(Qt5 5.15 COMPONENTS Quick Core Qml REQUIRED)
-endif()
+find_package(Qt6 COMPONENTS Quick Core Multimedia Qml REQUIRED)
 
 set (CMAKE_INCLUDE_CURRENT_DIR ON)
 set (CMAKE_AUTORCC ON)
@@ -126,11 +123,7 @@ set(PROJECT_SOURCES
     wheel/main.qml
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
-else()
-    add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
-endif()
+qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 set_target_properties (${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 11
@@ -142,5 +135,6 @@ target_link_libraries (${PROJECT_NAME}
 PRIVATE
     Qt::Core
     Qt::Quick
+    Qt::Multimedia
     Qt::Qml
 )
