@@ -32,6 +32,7 @@
 #include <QQmlParserStatus>
 
 #include <Box2D/Box2D.h>
+#include <QQuickItem>
 
 class b2World;
 class Box2DBody;
@@ -40,6 +41,8 @@ class Box2DWorld;
 class Box2DJoint : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Joint)
+    QML_UNCREATABLE("InternallyCreated")
     Q_INTERFACES(QQmlParserStatus)
 
     Q_ENUMS(JointType)

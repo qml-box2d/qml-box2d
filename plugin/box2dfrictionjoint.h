@@ -28,10 +28,12 @@
 
 #include "box2djoint.h"
 #include <Box2D/Box2D.h>
+#include <QQuickItem>
 
 class Box2DFrictionJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(FrictionJoint)
 
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)

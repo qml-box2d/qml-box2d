@@ -34,6 +34,9 @@
 class Box2DContact : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Contact)
+    QML_UNCREATABLE("InternallyCreated")
+
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
     Q_PROPERTY(Box2DFixture *fixtureA READ fixtureA)
     Q_PROPERTY(Box2DFixture *fixtureB READ fixtureB)

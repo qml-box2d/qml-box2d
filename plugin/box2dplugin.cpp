@@ -60,32 +60,32 @@ void Box2DPlugin::registerTypes(const char *uri)
     Q_ASSERT(QLatin1String(uri) == QLatin1String("Box2D"));
 #endif
 
-    qmlRegisterType<Box2DWorld>(uri, versionMajor, versionMinor, "World");
-    qmlRegisterUncreatableType<Box2DProfile>(uri, versionMajor, versionMinor, "Profile",
-                                             QStringLiteral("Property group of World"));
-    qmlRegisterType<Box2DBody>(uri, versionMajor, versionMinor, "Body");
-    qmlRegisterUncreatableType<Box2DFixture>(uri, versionMajor, versionMinor, "Fixture",
-                                             QStringLiteral("Base type for Box, Circle etc."));
-    qmlRegisterType<Box2DBox>(uri, versionMajor, versionMinor, "Box");
-    qmlRegisterType<Box2DCircle>(uri, versionMajor, versionMinor, "Circle");
-    qmlRegisterType<Box2DPolygon>(uri, versionMajor, versionMinor, "Polygon");
-    qmlRegisterType<Box2DChain>(uri, versionMajor, versionMinor, "Chain");
-    qmlRegisterType<Box2DEdge>(uri, versionMajor, versionMinor, "Edge");
-    qmlRegisterType<Box2DDebugDraw>(uri, versionMajor, versionMinor, "DebugDraw");
-    qmlRegisterUncreatableType<Box2DJoint>(uri, versionMajor, versionMinor, "Joint",
-                                           QStringLiteral("Base type for DistanceJoint, RevoluteJoint etc."));
-    qmlRegisterType<Box2DDistanceJoint>(uri, versionMajor, versionMinor, "DistanceJoint");
-    qmlRegisterType<Box2DPrismaticJoint>(uri, versionMajor, versionMinor, "PrismaticJoint");
-    qmlRegisterType<Box2DRevoluteJoint>(uri, versionMajor, versionMinor, "RevoluteJoint");
-    qmlRegisterType<Box2DMotorJoint>(uri, versionMajor, versionMinor, "MotorJoint");
-    qmlRegisterType<Box2DWeldJoint>(uri, versionMajor, versionMinor, "WeldJoint");
-    qmlRegisterType<Box2DPulleyJoint>(uri, versionMajor, versionMinor, "PulleyJoint");
-    qmlRegisterType<Box2DFrictionJoint>(uri, versionMajor, versionMinor, "FrictionJoint");
-    qmlRegisterType<Box2DWheelJoint>(uri, versionMajor, versionMinor, "WheelJoint");
-    qmlRegisterType<Box2DMouseJoint>(uri, versionMajor, versionMinor, "MouseJoint");
-    qmlRegisterType<Box2DGearJoint>(uri, versionMajor, versionMinor, "GearJoint");
-    qmlRegisterType<Box2DRopeJoint>(uri, versionMajor, versionMinor, "RopeJoint");
-    qmlRegisterType<Box2DRayCast>(uri, versionMajor, versionMinor, "RayCast");
+//    qmlRegisterType<Box2DWorld>(uri, versionMajor, versionMinor, "World");
+//    qmlRegisterType<Box2DBody>(uri, versionMajor, versionMinor, "Body");
+//    qmlRegisterType<Box2DBox>(uri, versionMajor, versionMinor, "Box");
+//    qmlRegisterType<Box2DCircle>(uri, versionMajor, versionMinor, "Circle");
+//    qmlRegisterType<Box2DPolygon>(uri, versionMajor, versionMinor, "Polygon");
+//    qmlRegisterType<Box2DChain>(uri, versionMajor, versionMinor, "Chain");
+//    qmlRegisterType<Box2DEdge>(uri, versionMajor, versionMinor, "Edge");
+//    qmlRegisterType<Box2DDebugDraw>(uri, versionMajor, versionMinor, "DebugDraw");
+//    qmlRegisterType<Box2DDistanceJoint>(uri, versionMajor, versionMinor, "DistanceJoint");
+//    qmlRegisterType<Box2DPrismaticJoint>(uri, versionMajor, versionMinor, "PrismaticJoint");
+//    qmlRegisterType<Box2DRevoluteJoint>(uri, versionMajor, versionMinor, "RevoluteJoint");
+//    qmlRegisterType<Box2DMotorJoint>(uri, versionMajor, versionMinor, "MotorJoint");
+//    qmlRegisterType<Box2DWeldJoint>(uri, versionMajor, versionMinor, "WeldJoint");
+//    qmlRegisterType<Box2DPulleyJoint>(uri, versionMajor, versionMinor, "PulleyJoint");
+//    qmlRegisterType<Box2DFrictionJoint>(uri, versionMajor, versionMinor, "FrictionJoint");
+//    qmlRegisterType<Box2DWheelJoint>(uri, versionMajor, versionMinor, "WheelJoint");
+//    qmlRegisterType<Box2DMouseJoint>(uri, versionMajor, versionMinor, "MouseJoint");
+//    qmlRegisterType<Box2DGearJoint>(uri, versionMajor, versionMinor, "GearJoint");
+//    qmlRegisterType<Box2DRopeJoint>(uri, versionMajor, versionMinor, "RopeJoint");
+//    qmlRegisterType<Box2DRayCast>(uri, versionMajor, versionMinor, "RayCast");
 
-    qmlRegisterUncreatableType<Box2DContact>(uri, versionMajor, versionMinor, "Contact", QStringLiteral("Contact class"));
+//    qmlRegisterUncreatableType<Box2DFixture>(uri, versionMajor, versionMinor, "Fixture",
+//                                             QStringLiteral("Base type for Box, Circle etc."));
+//    qmlRegisterUncreatableType<Box2DJoint>(uri, versionMajor, versionMinor, "Joint",
+//                                           QStringLiteral("Base type for DistanceJoint, RevoluteJoint etc."));
+//    qmlRegisterUncreatableType<Box2DProfile>(uri, versionMajor, versionMinor, "Profile",
+//                                             QStringLiteral("Property group of World"));
+//    qmlRegisterUncreatableType<Box2DContact>(uri, versionMajor, versionMinor, "Contact", QStringLiteral("Contact class"));
 }

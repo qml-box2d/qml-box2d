@@ -29,10 +29,12 @@
 
 #include "box2djoint.h"
 #include <Box2D/Box2D.h>
+#include <QQuickItem>
 
 class Box2DMotorJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(MotorJoint)
 
     Q_PROPERTY(QPointF linearOffset READ linearOffset WRITE setLinearOffset NOTIFY linearOffsetChanged)
     Q_PROPERTY(float angularOffset READ angularOffset WRITE setAngularOffset NOTIFY angularOffsetChanged)

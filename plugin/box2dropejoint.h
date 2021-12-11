@@ -29,6 +29,7 @@
 
 #include "box2djoint.h"
 #include <Box2D/Box2D.h>
+#include <QQuickItem>
 
 class b2World;
 class b2RopeJoint;
@@ -36,6 +37,7 @@ class b2RopeJoint;
 class Box2DRopeJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(RopeJoint)
 
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)

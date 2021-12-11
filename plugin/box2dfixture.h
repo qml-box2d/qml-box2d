@@ -38,6 +38,8 @@ class Box2DBody;
 class Box2DFixture : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Fixture)
+    QML_UNCREATABLE("InternallyCreated")
 
     Q_PROPERTY(float density READ density WRITE setDensity NOTIFY densityChanged)
     Q_PROPERTY(float friction READ friction WRITE setFriction NOTIFY frictionChanged)
@@ -112,6 +114,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
 class Box2DBox : public Box2DFixture
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Box)
 
     Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged)
@@ -164,6 +167,7 @@ private:
 class Box2DCircle : public Box2DFixture
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Circle)
 
     Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged)
@@ -204,6 +208,7 @@ private:
 class Box2DPolygon : public Box2DFixture
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Polygon)
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
@@ -229,6 +234,7 @@ private:
 class Box2DChain : public Box2DFixture
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Chain)
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
     Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
@@ -272,6 +278,7 @@ private:
 class Box2DEdge : public Box2DFixture
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Edge)
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 

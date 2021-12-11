@@ -34,16 +34,11 @@
 #include <QQuickItem>
 #include <Box2D/Box2D.h>
 
-class Box2DFixture;
+#include "box2dfixture.h"
 #include "box2dworld.h"
 #include <QtGlobal>
 
-// Specific sizetype is only available with Qt 6
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #define QT_SIZE_TYPE qsizetype
-#else
-#define QT_SIZE_TYPE int
-#endif
 
 /**
  * The Box2D body, build up from a list of shapes.
@@ -51,6 +46,7 @@ class Box2DFixture;
 class Box2DBody : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Body)
 
     Q_ENUMS(BodyType)
     Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld NOTIFY worldChanged)

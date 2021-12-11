@@ -30,6 +30,7 @@
 
 #include <QAbstractAnimation>
 #include <QQuickItem>
+#include <QQuickItem>
 
 #include <Box2D/Box2D.h>
 
@@ -67,6 +68,8 @@ private:
 class Box2DProfile : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Profile)
+    QML_UNCREATABLE("InternallyCreated")
 
     Q_PROPERTY(float step READ step CONSTANT)
     Q_PROPERTY(float collide READ collide CONSTANT)
@@ -111,7 +114,7 @@ private:
 class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListener
 {
     Q_OBJECT
-    QML_ELEMENT
+    QML_NAMED_ELEMENT(World)
 
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
     Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep NOTIFY timeStepChanged)

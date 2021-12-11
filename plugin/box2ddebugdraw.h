@@ -35,6 +35,7 @@ class Box2DDebugDraw : public QQuickItem
 {
     Q_ENUMS(DebugFlag)
     Q_OBJECT
+    QML_NAMED_ELEMENT(DebugDraw)
 
     Q_PROPERTY(qreal axisScale READ axisScale WRITE setAxisScale NOTIFY axisScaleChanged)
     Q_PROPERTY(DebugFlag flags READ flags WRITE setFlags NOTIFY flagsChanged)

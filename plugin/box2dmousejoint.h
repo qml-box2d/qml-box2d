@@ -28,10 +28,12 @@
 
 #include "box2djoint.h"
 #include <Box2D/Box2D.h>
+#include <QQuickItem>
 
 class Box2DMouseJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(MouseJoint)
 
     Q_PROPERTY(QPointF target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(float maxForce READ maxForce WRITE setMaxForce NOTIFY maxForceChanged)

@@ -21,7 +21,7 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 cmake_minimum_required (VERSION 3.5.0 FATAL_ERROR)
-project (box2d)
+project (box2dcpp)
 
 set(box2d_sources
     src/Box2D/Box2D.h
