@@ -213,8 +213,8 @@ Rectangle {
         y: 10
         width: 200
         height: 30
-        minimumValue: 1
-        maximumValue: 70
+        from: 1
+        to: 70
         value: 70
     }
 

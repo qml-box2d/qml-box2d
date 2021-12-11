@@ -20,8 +20,8 @@ Rectangle {
         y: 50
         width: 100
         height: 50
-        maximumValue: 50
-        minimumValue: 20
+        to: 50
+        from: 20
         value: 30
     }
 

@@ -352,8 +352,8 @@ Rectangle {
 
     Slider {
         id: power
-        minimumValue: 0.01
-        maximumValue: 5
+        from: 0.01
+        to: 5
         value: 3
         width: 200
         height: 30
