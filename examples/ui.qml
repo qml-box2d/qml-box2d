@@ -98,10 +98,6 @@ Window {
             path: "revolute/revolute.qml"
         }
         ListElement {
-            name: "revolute plot angle"
-            path: "revoluteplotangle/revolutePlotAngle.qml"
-        }
-        ListElement {
             name: "rope"
             path: "rope/main.qml"
         }
