@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    engine.addImportPath("plugins");
+    engine.addImportPath("qml");
     engine.load(QUrl("qrc:/ui.qml"));
 
     return app.exec();
