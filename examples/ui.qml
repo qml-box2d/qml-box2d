@@ -133,7 +133,7 @@ Window {
 
             MouseArea {
             anchors.fill: listView
-            onWheel: listView.flick(0, wheel.angleDelta.y * 5)
+            onWheel: (wheel)=> {listView.flick(0, wheel.angleDelta.y * 5)}
             }
 
 

@@ -25,7 +25,7 @@ Item {
     }
 
 
-    Keys.onPressed: {
+    Keys.onPressed: (event)=> {
 	    if (event.key === Qt.Key_Up) {
 	    	console.log("Key up")
 	    	revolute.enableMotor = true

@@ -150,7 +150,7 @@ Rectangle {
                         Qt.point(40,-1)
                     ]
                     sensor: true
-                    onBeginContact: {
+                    onBeginContact: (other)=> {
                         if (other.isBall)
                             other.getBody().target.destroy();
                     }
