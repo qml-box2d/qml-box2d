@@ -1,7 +1,7 @@
 import QtQuick 2.4;
 import QtQuick.Window 2.1;
 import QtQuick.Layouts 1.1
-import Box2D 2.0;
+import Box2D;
 //import "shared"
 
 Window {

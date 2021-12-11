@@ -1,4 +1,4 @@
-import Box2D 2.0
+import Box2D
 
 Body {
     id: body

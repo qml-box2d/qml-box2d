@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import Box2D 1.1
+import QtQuick
+import Box2D
 
 Body {
     fixtures: Box { anchors.fill: parent }

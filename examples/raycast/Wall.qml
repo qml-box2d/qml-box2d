@@ -1,5 +1,5 @@
-import QtQuick 2.2
-import Box2D 2.0
+import QtQuick
+import Box2D
 import "../shared"
 
 PhysicsItem {

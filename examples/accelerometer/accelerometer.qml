@@ -1,6 +1,6 @@
-import QtQuick 2.0
-import Box2D 2.0
-import QtSensors 5.0
+import QtQuick
+import Box2D
+import QtSensors
 import "../shared"
 
 Image {
