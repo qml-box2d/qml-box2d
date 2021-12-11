@@ -5,6 +5,8 @@
         <file>accelerometer/background.png</file>
         <file>accelerometer/woodenbox.png</file>
         <file>accelerometer/WoodenBox.qml</file>
+        <file>angletracking/angleTracking.qml</file>
+        <file>angletracking/Line.qml</file>
         <file>boxes/background.png</file>
         <file>boxes/boxes.qml</file>
         <file>boxes/Wall.qml</file>
