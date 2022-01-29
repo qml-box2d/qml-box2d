@@ -23,7 +23,7 @@ Body {
     Circle {
         id: circle
 
-        onBeginContact: body.beginContact(other)
-        onEndContact: body.endContact(other)
+        onBeginContact: other => body.beginContact(other)
+        onEndContact: other => body.endContact(other)
     }
 }

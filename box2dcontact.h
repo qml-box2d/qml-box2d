@@ -28,6 +28,7 @@
 
 #include <QObject>
 #include <Box2D.h>
+#include "box2dfixture.h"
 
 class Box2DFixture;
 

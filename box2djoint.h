@@ -32,6 +32,7 @@
 #include <QQmlParserStatus>
 
 #include <Box2D.h>
+#include "box2dbody.h"
 
 class b2World;
 class Box2DBody;

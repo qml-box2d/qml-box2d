@@ -50,7 +50,7 @@ Rectangle {
     World {
         id: physicsWorld
 
-        onPreSolve: {
+        onPreSolve: contact => {
             var targetA = contact.fixtureA.getBody().target;
             var targetB = contact.fixtureB.getBody().target;
             if (targetA.isBall && contact.fixtureB === topBeltFixture)
@@ -272,7 +272,7 @@ Rectangle {
             height: 500
             world: physicsWorld
             sensor: true
-            onBeginContact: {
+            onBeginContact: other => {
                 other.getBody().gravityScale = -2;
             }
         }
@@ -284,12 +284,12 @@ Rectangle {
             height: 60
             world: physicsWorld
             sensor: true
-            onBeginContact: {
+            onBeginContact: other => {
                 var body = other.getBody();
                 body.gravityScale = 0.5;
                 body.applyLinearImpulse(Qt.point(-5,0), Qt.point(24,24));
             }
-            onEndContact: {
+            onEndContact: other => {
                 var body = other.getBody();
                 body.gravityScale = 1;
                 body.applyForce(Qt.point(5,0), Qt.point(24,24));

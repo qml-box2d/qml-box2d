@@ -25,7 +25,6 @@
 
 #include "box2djoint.h"
 #include "box2dworld.h"
-#include "box2dbody.h"
 
 #include <QDebug>
 

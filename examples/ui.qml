@@ -1,7 +1,7 @@
 import QtQuick 2.4;
 import QtQuick.Window 2.1;
 import QtQuick.Layouts 1.1
-import Box2D 2.0;
+//import Box2D 2.0;
 //import "shared"
 
 Window {
@@ -133,7 +133,7 @@ Window {
 
             MouseArea {
             anchors.fill: listView
-            onWheel: listView.flick(0, wheel.angleDelta.y * 5)
+            onWheel: wheel => listView.flick(0, wheel.angleDelta.y * 5)
             }
 
 
@@ -148,7 +148,7 @@ Window {
                 model: scenesList;
                 delegate: Item {
                     height: 50;
-                    width: parent.width;
+                    width: parent == null ? 200 : parent.width;
 
                     Text {
                         anchors.centerIn: parent;

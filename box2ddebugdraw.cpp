@@ -29,7 +29,6 @@
 
 #include "box2ddebugdraw.h"
 
-#include "box2dworld.h"
 
 #include <Box2D.h>
 
@@ -112,7 +111,7 @@ void DebugDraw::DrawPolygon(const b2Vec2 *vertices,
 {
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
                                             vertexCount);
-    geometry->setDrawingMode(GL_LINE_LOOP);
+    geometry->setDrawingMode(QSGGeometry::DrawLineLoop);
     geometry->setLineWidth(LINE_WIDTH);
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
@@ -130,7 +129,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices,
 {
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
                                             vertexCount);
-    geometry->setDrawingMode(GL_TRIANGLE_FAN);
+    geometry->setDrawingMode(QSGGeometry::DrawTriangleFan);
     geometry->setLineWidth(LINE_WIDTH);
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
@@ -148,7 +147,7 @@ void DebugDraw::DrawCircle(const b2Vec2 &center,
 {
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
                                             CIRCLE_SEGMENTS_COUNT);
-    geometry->setDrawingMode(GL_LINE_LOOP);
+    geometry->setDrawingMode(QSGGeometry::DrawLineLoop);
     geometry->setLineWidth(LINE_WIDTH);
 
     QPointF centerInPixels = mWorld.toPixels(center);
@@ -170,7 +169,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
 
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
                                             CIRCLE_SEGMENTS_COUNT);
-    geometry->setDrawingMode(GL_TRIANGLE_FAN);
+    geometry->setDrawingMode(QSGGeometry::DrawTriangleFan);
     geometry->setLineWidth(LINE_WIDTH);
 
     QPointF centerInPixels = mWorld.toPixels(center);
@@ -189,7 +188,7 @@ void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
     QSGNode * node = createNode(geometry,toQColor(color));
 
     QSGGeometry *axisGeometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
-    axisGeometry->setDrawingMode(GL_LINES);
+    axisGeometry->setDrawingMode(QSGGeometry::DrawLines);
     axisGeometry->setLineWidth(LINE_WIDTH);
 
     axisGeometry->vertexDataAsPoint2D()[0].set(centerInPixels.x(), centerInPixels.y());
@@ -205,7 +204,7 @@ void DebugDraw::DrawSegment(const b2Vec2 &p1,
     QPointF p2InPixels = mWorld.toPixels(p2);
 
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
-    geometry->setDrawingMode(GL_LINES);
+    geometry->setDrawingMode(QSGGeometry::DrawLines);
     geometry->setLineWidth(LINE_WIDTH);
 
     geometry->vertexDataAsPoint2D()[0].set(p1InPixels.x(), p1InPixels.y());
@@ -223,7 +222,7 @@ void DebugDraw::DrawTransform(const b2Transform &xf)
                  p1.y() + mAxisScale * p2.y());
 
     QSGGeometry *geometryX = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
-    geometryX->setDrawingMode(GL_LINES);
+    geometryX->setDrawingMode(QSGGeometry::DrawLines);
     geometryX->setLineWidth(LINE_WIDTH);
     geometryX->vertexDataAsPoint2D()[0].set(p1.x(), p1.y());
     geometryX->vertexDataAsPoint2D()[1].set(p2.x(), p2.y());
@@ -234,7 +233,7 @@ void DebugDraw::DrawTransform(const b2Transform &xf)
                  p1.y() + mAxisScale * p2.y());
 
     QSGGeometry *geometryY = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
-    geometryY->setDrawingMode(GL_LINES);
+    geometryY->setDrawingMode(QSGGeometry::DrawLines);
     geometryY->setLineWidth(LINE_WIDTH);
     geometryY->vertexDataAsPoint2D()[0].set(p1.x(), p1.y());
     geometryY->vertexDataAsPoint2D()[1].set(p2.x(), p2.y());
