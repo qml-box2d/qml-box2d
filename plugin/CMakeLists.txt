@@ -49,8 +49,6 @@ set(PLUGIN_SOURCES
     box2dmotorjoint.h
     box2dmousejoint.cpp
     box2dmousejoint.h
-    box2dplugin.cpp
-    box2dplugin.h
     box2dprismaticjoint.cpp
     box2dprismaticjoint.h
     box2dpulleyjoint.cpp
@@ -69,8 +67,14 @@ set(PLUGIN_SOURCES
     box2dworld.h
     )
 
+set(BOX2D_PLUGIN_LINKING SHARED)
+if (ANDROID)
+    set(BOX2D_PLUGIN_LINKING STATIC)
+endif()
+
 qt_add_qml_module(${PROJECT_NAME}
     URI ${PROJECT_NAME}
+    ${BOX2D_PLUGIN_LINKING}
     OUTPUT_DIRECTORY ${QMLBOX2D_PLUGIN_BASE_DIR}/${PROJECT_NAME}
     VERSION 2.0
     SOURCES ${PLUGIN_SOURCES}
