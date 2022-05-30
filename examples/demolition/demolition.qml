@@ -99,7 +99,7 @@ Image {
 
             MouseArea {
                 anchors.fill: parent
-                onPressAndHold: {
+                onPressAndHold: mouse => {
                     var wheel = wheelComponent.createObject(physicsRoot)
                     wheel.x = mouse.x - wheel.width / 2
                     wheel.y = mouse.y - wheel.height / 2

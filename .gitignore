@@ -6,3 +6,4 @@ box2d.pro.user*
 *.obj
 build-*/*
 *.user
+*.bak

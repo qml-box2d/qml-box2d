@@ -177,8 +177,13 @@ private:
 
     static void append_fixture(QQmlListProperty<Box2DFixture> *list,
                                Box2DFixture *fixture);
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     static qsizetype count_fixture(QQmlListProperty<Box2DFixture> *list);
     static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, qsizetype index);
+#else
+    static int count_fixture(QQmlListProperty<Box2DFixture> *list);
+    static Box2DFixture *at_fixture(QQmlListProperty<Box2DFixture> *list, int index);
+#endif
     QPointF originOffset() const;
 };
 

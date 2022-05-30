@@ -107,7 +107,7 @@ Rectangle {
             id: sensorRay
             property point point1: Qt.point(40, 200)
             property point point2: Qt.point(fractionSlider.value * 10, 200)
-            onFixtureReported: fixture => {
+            onFixtureReported: ( fixture, point, normal, fraction ) => {
                 if (fixture.isBall) {
                     intersectionPoint.x = point.x - 5;
                     intersectionPoint.y = point.y - 5;
