@@ -1,0 +1,57 @@
+name: Compile
+
+on:
+  [ push, pull_request ]
+
+jobs:
+  build-with-qbs:
+    name: Ubuntu (Qbs)
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 100M
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install qtbase5-dev qtdeclarative5-dev qtdeclarative5-private-dev qbs
+
+    - name: Setup Qbs
+      run: |
+        qbs --version
+        qbs setup-toolchains --detect
+        qbs config defaultProfile gcc
+
+    - name: Build
+      run: |
+        qbs build modules.cpp.compilerWrapper:ccache
+
+  build-with-qmake:
+    name: Ubuntu (qmake)
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 100M
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install qtbase5-dev qtdeclarative5-dev
+
+    - name: Build
+      run: |
+        qmake -v
+        qmake CONFIG+=ccache
+        make
