@@ -20,8 +20,8 @@ Rectangle {
         y: 50
         width: 100
         height: 50
-        from: 50
-        to: 20
+        from: 20
+        to: 50
         value: 30
     }
 
