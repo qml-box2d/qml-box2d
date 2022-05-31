@@ -22,6 +22,11 @@ in a directory of which the parent is added as import path.
  This example is a Mac path, on other platforms you will see different paths and compilers.
 
 
+### INSTALLING - Debian
+
+    debuild -uc -us -b
+    sudo dpkg -i ../qml-box2d_*.deb
+
 ### RUNNING THE EXAMPLES
 
  You can run the examples launcher from a Terminal/Cmd prompt with:
