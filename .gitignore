@@ -7,3 +7,4 @@ box2d.pro.user*
 build-*/*
 *.user
 *.bak
+*.stash
