@@ -5,6 +5,7 @@ on:
 
 jobs:
   build-with-qbs:
+    name: Ubuntu (Qbs)
     runs-on: ubuntu-20.04
 
     steps:
@@ -19,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install qtbase5-dev qtdeclarative5-dev qbs
+        sudo apt install qtbase5-dev qtdeclarative5-dev qtdeclarative5-private-dev qbs
 
     - name: Setup Qbs
       run: |
@@ -32,6 +33,7 @@ jobs:
         qbs build modules.cpp.compilerWrapper:ccache
 
   build-with-qmake:
+    name: Ubuntu (qmake)
     runs-on: ubuntu-20.04
 
     steps:
@@ -51,5 +53,5 @@ jobs:
     - name: Build
       run: |
         qmake -v
-        qmake
+        qmake CONFIG+=ccache
         make
