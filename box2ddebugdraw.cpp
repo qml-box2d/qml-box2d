@@ -110,9 +110,12 @@ void DebugDraw::DrawPolygon(const b2Vec2 *vertices,
                             int32 vertexCount,
                             const b2Color &color)
 {
+    Q_ASSERT(vertexCount > 1);
+
+    // We'd use QSGGeometry::DrawLineLoop, but it's not supported in Qt 6
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
-                                            vertexCount);
-    geometry->setDrawingMode(QSGGeometry::DrawLineLoop);
+                                            vertexCount + 1);
+    geometry->setDrawingMode(QSGGeometry::DrawLineStrip);
     geometry->setLineWidth(LINE_WIDTH);
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
@@ -120,6 +123,7 @@ void DebugDraw::DrawPolygon(const b2Vec2 *vertices,
         QPointF point = mWorld.toPixels(vertices[i]);
         points[i].set(point.x(), point.y());
     }
+    points[vertexCount] = points[0];
 
     createNode(geometry, toQColor(color));
 }
@@ -128,15 +132,26 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices,
                                  int32 vertexCount,
                                  const b2Color &color)
 {
+    Q_ASSERT(vertexCount > 2);
+
+    // We'd use QSGGeometry::DrawTriangleFan, but it's not supported in Qt 6
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
-                                            vertexCount);
-    geometry->setDrawingMode(QSGGeometry::DrawTriangleFan);
+                                            (vertexCount - 2) * 3);
+    geometry->setDrawingMode(QSGGeometry::DrawTriangles);
     geometry->setLineWidth(LINE_WIDTH);
 
+    const QPointF origin = mWorld.toPixels(vertices[0]);
+
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
-    for (int i = 0; i < vertexCount; ++i) {
-        QPointF point = mWorld.toPixels(vertices[i]);
-        points[i].set(point.x(), point.y());
+    QPointF prev = mWorld.toPixels(vertices[1]);
+    for (int i = 2; i < vertexCount; ++i) {
+        const QPointF cur = mWorld.toPixels(vertices[i]);
+
+        const int triangleStart = (i - 2) * 3;
+        points[triangleStart].set(origin.x(), origin.y());
+        points[triangleStart + 1].set(prev.x(), prev.y());
+        points[triangleStart + 2].set(cur.x(), cur.y());
+        prev = cur;
     }
 
     createNode(geometry, toQColor(color));
@@ -146,17 +161,18 @@ void DebugDraw::DrawCircle(const b2Vec2 &center,
                            float32 radius,
                            const b2Color &color)
 {
+    // We'd use QSGGeometry::DrawLineLoop, but it's not supported in Qt 6
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
-                                            CIRCLE_SEGMENTS_COUNT);
-    geometry->setDrawingMode(QSGGeometry::DrawLineLoop);
+                                            CIRCLE_SEGMENTS_COUNT + 1);
+    geometry->setDrawingMode(QSGGeometry::DrawLineStrip);
     geometry->setLineWidth(LINE_WIDTH);
 
     QPointF centerInPixels = mWorld.toPixels(center);
     qreal radiusInPixels = mWorld.toPixels(radius);
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
-    for (int i = 0; i < CIRCLE_SEGMENTS_COUNT; ++i) {
-        float theta = i * 2 * M_PI / (CIRCLE_SEGMENTS_COUNT - 2);
+    for (int i = 0; i <= CIRCLE_SEGMENTS_COUNT; ++i) {
+        const float theta = i * 2 * M_PI / CIRCLE_SEGMENTS_COUNT;
         points[i].set(centerInPixels.x() + radiusInPixels * qCos(theta),
                       centerInPixels.y() + radiusInPixels * qSin(theta));
     }
@@ -167,10 +183,10 @@ void DebugDraw::DrawCircle(const b2Vec2 &center,
 void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
                                 const b2Vec2 &axis, const b2Color &color)
 {
-
+    // We'd use QSGGeometry::DrawTriangleFan, but it's not supported in Qt 6
     QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(),
-                                            CIRCLE_SEGMENTS_COUNT);
-    geometry->setDrawingMode(QSGGeometry::DrawTriangleFan);
+                                            CIRCLE_SEGMENTS_COUNT * 3);
+    geometry->setDrawingMode(QSGGeometry::DrawTriangles);
     geometry->setLineWidth(LINE_WIDTH);
 
     QPointF centerInPixels = mWorld.toPixels(center);
@@ -180,13 +196,23 @@ void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
     axisInPixels.setY(centerInPixels.y() + radius * axisInPixels.y());
 
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
-    points[0].set(centerInPixels.x(), centerInPixels.y());
-    for (int i = 1; i < CIRCLE_SEGMENTS_COUNT; ++i) {
-        float theta = i * 2 * M_PI / (CIRCLE_SEGMENTS_COUNT - 2);
-        points[i].set(centerInPixels.x() + radiusInPixels * qCos(theta),
-                      centerInPixels.y() + radiusInPixels * qSin(theta));
+    QSGGeometry::Point2D lastPoint;
+    lastPoint.set(centerInPixels.x() + radiusInPixels,
+                  centerInPixels.y());
+
+    for (int i = 1; i <= CIRCLE_SEGMENTS_COUNT; ++i) {
+        const float theta = i * 2 * M_PI / CIRCLE_SEGMENTS_COUNT;
+        QSGGeometry::Point2D currentPoint;
+        currentPoint.set(centerInPixels.x() + radiusInPixels * qCos(theta),
+                         centerInPixels.y() + radiusInPixels * qSin(theta));
+
+        const int triangleStart = (i - 1) * 3;
+        points[triangleStart].set(centerInPixels.x(), centerInPixels.y());
+        points[triangleStart + 1] = lastPoint;
+        points[triangleStart + 2] = currentPoint;
+        lastPoint = currentPoint;
     }
-    QSGNode * node = createNode(geometry,toQColor(color));
+    QSGNode *node = createNode(geometry, toQColor(color));
 
     QSGGeometry *axisGeometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
     axisGeometry->setDrawingMode(QSGGeometry::DrawLines);
@@ -216,7 +242,6 @@ void DebugDraw::DrawSegment(const b2Vec2 &p1,
 
 void DebugDraw::DrawTransform(const b2Transform &xf)
 {
-
     QPointF p1 = mWorld.toPixels(xf.p);
     QPointF p2 = mWorld.toPixels(xf.q.GetXAxis());
     p2 = QPointF(p1.x() + mAxisScale * p2.x(),
@@ -248,7 +273,7 @@ void DebugDraw::setAxisScale(qreal axisScale)
 }
 
 Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
-    QQuickItem (parent),
+    QQuickItem(parent),
     mWorld(0),
     mAxisScale(0.5),
     mFlags(Everything)
