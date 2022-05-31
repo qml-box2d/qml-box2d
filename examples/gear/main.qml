@@ -330,7 +330,7 @@ Rectangle {
             width: leftSensor.width
             height: leftSensor.height
             sensor: true
-            onBeginContact: {
+            onBeginContact: other => {
                 var target = other.getBody().target
                 if (target.color === "#EFEFEF") {
                     target.color = "lightgreen"
@@ -350,7 +350,7 @@ Rectangle {
             width: rightSensor.width
             height: rightSensor.height
             sensor: true
-            onBeginContact: {
+            onBeginContact: other => {
                 var target = other.getBody().target
                 if (target.color === "#EFEFEF") {
                     target.color = "orange"

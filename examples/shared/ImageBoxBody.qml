@@ -45,8 +45,8 @@ Image {
             width: image.width
             height: image.height
 
-            onBeginContact: image.beginContact(other)
-            onEndContact: image.endContact(other)
+            onBeginContact: other => image.beginContact(other)
+            onEndContact: other => image.endContact(other)
         }
     }
 }

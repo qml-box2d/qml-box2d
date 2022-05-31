@@ -233,13 +233,13 @@ void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
     body->mFixtures.append(fixture);
 }
 
-int Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
+QList<Box2DFixture*>::size_type Box2DBody::count_fixture(QQmlListProperty<Box2DFixture> *list)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
     return body->mFixtures.length();
 }
 
-Box2DFixture *Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, int index)
+Box2DFixture *Box2DBody::at_fixture(QQmlListProperty<Box2DFixture> *list, QList<Box2DFixture*>::size_type index)
 {
     Box2DBody *body = static_cast<Box2DBody*>(list->object);
     return body->mFixtures.at(index);
@@ -504,3 +504,5 @@ void Box2DBody::onWorldPixelsPerMeterChanged()
         updateTransform();
     }
 }
+
+#include "moc_box2dbody.cpp"

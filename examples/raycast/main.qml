@@ -1,6 +1,6 @@
 import QtQuick 2.2
 import Box2D 2.0
-import QtQuick.Controls 1.1
+import QtQuick.Controls 2.2
 import "../shared"
 
 Rectangle {
@@ -107,7 +107,7 @@ Rectangle {
             id: sensorRay
             property point point1: Qt.point(40, 200)
             property point point2: Qt.point(fractionSlider.value * 10, 200)
-            onFixtureReported: {
+            onFixtureReported: ( fixture, point, normal, fraction ) => {
                 if (fixture.isBall) {
                     intersectionPoint.x = point.x - 5;
                     intersectionPoint.y = point.y - 5;
@@ -150,7 +150,7 @@ Rectangle {
                         Qt.point(40,-1)
                     ]
                     sensor: true
-                    onBeginContact: {
+                    onBeginContact: other => {
                         if (other.isBall)
                             other.getBody().target.destroy();
                     }
@@ -213,8 +213,8 @@ Rectangle {
         y: 10
         width: 200
         height: 30
-        minimumValue: 1
-        maximumValue: 70
+        from: 1
+        to: 70
         value: 70
     }
 

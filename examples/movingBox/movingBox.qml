@@ -8,7 +8,7 @@ Item {
     height: 600
     focus: true
 
-    Keys.onPressed: {
+    Keys.onPressed: event => {
         if (event.key === Qt.Key_Left) {
             movableBox.moveBackward();
             event.accepted = true;
@@ -23,7 +23,7 @@ Item {
         }
     }
 
-    Keys.onReleased: {
+    Keys.onReleased: event => {
         if (event.isAutoRepeat)
             return ;
 

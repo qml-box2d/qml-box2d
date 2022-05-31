@@ -8,7 +8,7 @@ Item {
     height: 600
     focus: true
 
-    Keys.onPressed: {
+    Keys.onPressed: event => {
         if (event.key === Qt.Key_Left) {
             revolute.motorSpeed -= 10;
             event.accepted = true;
