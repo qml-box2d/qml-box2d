@@ -32,6 +32,7 @@
 #include "box2dbody.h"
 
 #include "box2dfixture.h"
+#include "box2dworld.h"
 #include <qmath.h>
 
 static bool sync(float &value, float newValue)
@@ -503,3 +504,5 @@ void Box2DBody::onWorldPixelsPerMeterChanged()
         updateTransform();
     }
 }
+
+#include "moc_box2dbody.cpp"

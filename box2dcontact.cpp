@@ -24,7 +24,9 @@
  */
 
 #include "box2dcontact.h"
+
 #include "box2dworld.h"
+#include "box2dfixture.h"
 
 Box2DContact::Box2DContact(b2Contact *contact) :
     mContact(contact)
@@ -116,3 +118,5 @@ void Box2DContact::setTangentSpeed(qreal speed)
 {
     mContact->SetTangentSpeed(speed);
 }
+
+#include "moc_box2dcontact.cpp"

@@ -33,7 +33,6 @@
 
 #include <QQuickItem>
 #include <Box2D.h>
-#include "box2dworld.h"
 
 class Box2DFixture;
 class Box2DWorld;

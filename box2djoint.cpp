@@ -24,7 +24,9 @@
  */
 
 #include "box2djoint.h"
+
 #include "box2dworld.h"
+#include "box2dbody.h"
 
 #include <QDebug>
 
@@ -150,3 +152,5 @@ void Box2DJoint::bodyBCreated()
     disconnect(mBodyB, SIGNAL(bodyCreated()), this, SLOT(bodyBCreated()));
     initialize();
 }
+
+#include "moc_box2djoint.cpp"

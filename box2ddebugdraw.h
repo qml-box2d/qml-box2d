@@ -28,7 +28,6 @@
 #define BOX2DDEBUGDRAW_H
 
 #include <QQuickItem>
-#include "box2dworld.h"
 
 class Box2DWorld;
 

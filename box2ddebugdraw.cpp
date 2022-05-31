@@ -29,6 +29,7 @@
 
 #include "box2ddebugdraw.h"
 
+#include "box2dworld.h"
 
 #include <Box2D.h>
 
@@ -309,3 +310,5 @@ void Box2DDebugDraw::onWorldStepped()
     if (isVisible() && opacity() > 0)
         update();
 }
+
+#include "moc_box2ddebugdraw.cpp"

@@ -4,7 +4,6 @@ QT += quick
 TARGET = $$qtLibraryTarget(Box2D)
 TARGETPATH = Box2D
 API_VER=2.0
-MOC_DIR = .moc
 OBJECTS_DIR = .obj
 CONFIG -= android_install
 
