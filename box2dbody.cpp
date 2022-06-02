@@ -56,9 +56,9 @@ static bool sync(b2Vec2 &value, const b2Vec2 &newValue)
 
 Box2DBody::Box2DBody(QObject *parent) :
     QObject(parent),
-    mWorld(0),
-    mTarget(0),
-    mBody(0),
+    mWorld(nullptr),
+    mTarget(nullptr),
+    mBody(nullptr),
     mComponentComplete(false),
     mTransformDirty(false),
     mCreatePending(false)
@@ -219,11 +219,11 @@ void Box2DBody::setGravityScale(float gravityScale)
 
 QQmlListProperty<Box2DFixture> Box2DBody::fixtures()
 {
-    return QQmlListProperty<Box2DFixture>(this, 0,
+    return QQmlListProperty<Box2DFixture>(this, nullptr,
                                           &Box2DBody::append_fixture,
                                           &Box2DBody::count_fixture,
                                           &Box2DBody::at_fixture,
-                                          0);
+                                          nullptr);
 }
 
 void Box2DBody::append_fixture(QQmlListProperty<Box2DFixture> *list,
@@ -344,7 +344,7 @@ void Box2DBody::setWorld(Box2DWorld *world)
     // Destroy body when leaving our previous world
     if (mWorld && mBody) {
         mWorld->world().DestroyBody(mBody);
-        mBody = 0;
+        mBody = nullptr;
     }
 
     mWorld = world;
@@ -360,7 +360,7 @@ void Box2DBody::setTarget(QQuickItem *target)
         mTarget->disconnect(this);
 
     mTarget = target;
-    mTransformDirty = target != 0;
+    mTransformDirty = target != nullptr;
 
     if (target) {
         connect(target, SIGNAL(xChanged()), this, SLOT(markTransformDirty()));

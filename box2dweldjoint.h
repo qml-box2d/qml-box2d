@@ -40,7 +40,7 @@ class Box2DWeldJoint : public Box2DJoint
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
 
 public:
-    explicit Box2DWeldJoint(QObject *parent = 0);
+    explicit Box2DWeldJoint(QObject *parent = nullptr);
 
     float referenceAngle() const;
     void setReferenceAngle(float referenceAngle);
@@ -67,7 +67,7 @@ signals:
     void localAnchorBChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_localAnchorA;

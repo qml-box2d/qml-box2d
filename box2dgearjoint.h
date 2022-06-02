@@ -38,7 +38,7 @@ class Box2DGearJoint : public Box2DJoint
     Q_PROPERTY(float ratio READ ratio WRITE setRatio NOTIFY ratioChanged)
 
 public:
-    explicit Box2DGearJoint(QObject *parent = 0);
+    explicit Box2DGearJoint(QObject *parent = nullptr);
 
     Box2DJoint *joint1() const;
     void setJoint1(Box2DJoint *joint1);
@@ -57,7 +57,7 @@ signals:
     void ratioChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private slots:
     void joint1Created();

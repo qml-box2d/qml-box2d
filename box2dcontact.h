@@ -44,7 +44,7 @@ class Box2DContact : public QObject
     Q_PROPERTY(qreal tangentSpeed READ getTangentSpeed WRITE setTangentSpeed)
 
 public:
-    Box2DContact(b2Contact *contact = 0);
+    Box2DContact(b2Contact *contact = nullptr);
     void setContact(b2Contact *contact);
 
     Q_INVOKABLE bool isTouching();

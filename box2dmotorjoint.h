@@ -41,7 +41,7 @@ class Box2DMotorJoint : public Box2DJoint
     Q_PROPERTY(float correctionFactor READ correctionFactor WRITE setCorrectionFactor NOTIFY correctionFactorChanged)
 
 public:
-    explicit Box2DMotorJoint(QObject *parent = 0);
+    explicit Box2DMotorJoint(QObject *parent = nullptr);
 
     QPointF linearOffset() const;
     void setLinearOffset(const QPointF & linearOffset);
@@ -68,7 +68,7 @@ signals:
     void correctionFactorChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_linearOffset;

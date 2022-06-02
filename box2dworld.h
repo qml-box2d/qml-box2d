@@ -51,10 +51,10 @@ class StepDriver : public QAbstractAnimation
 public:
     explicit StepDriver(Box2DWorld *world);
 
-    int duration() const;
+    int duration() const override;
 
 protected:
-    void updateCurrentTime(int);
+    void updateCurrentTime(int) override;
 
 private:
     Box2DWorld *mWorld;
@@ -80,7 +80,7 @@ class Box2DProfile : public QObject
     Q_PROPERTY(float emitSignals READ emitSignals CONSTANT)
 
 public:
-    explicit Box2DProfile(b2World *world, QObject *parent = 0)
+    explicit Box2DProfile(b2World *world, QObject *parent = nullptr)
         : QObject(parent)
         , mWorld(world)
     {}
@@ -125,8 +125,8 @@ class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListene
     Q_INTERFACES(QQmlParserStatus)
 
 public:
-    explicit Box2DWorld(QObject *parent = 0);
-    ~Box2DWorld();
+    explicit Box2DWorld(QObject *parent = nullptr);
+    ~Box2DWorld() override;
 
     float timeStep() const;
     void setTimeStep(float timeStep);
@@ -166,14 +166,14 @@ public:
 
     bool isSynchronizing() const;
 
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
     b2World &world();
 
     // b2DestructionListener interface
-    void SayGoodbye(b2Joint *joint);
-    void SayGoodbye(b2Fixture *fixture);
+    void SayGoodbye(b2Joint *joint) override;
+    void SayGoodbye(b2Fixture *fixture) override;
 
     Q_INVOKABLE void step();
     Q_INVOKABLE void clearForces();

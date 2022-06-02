@@ -44,7 +44,7 @@ class Box2DWheelJoint : public Box2DJoint
     Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
 
 public:
-    explicit Box2DWheelJoint(QObject *parent = 0);
+    explicit Box2DWheelJoint(QObject *parent = nullptr);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -88,7 +88,7 @@ signals:
     void dampingRatioChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_localAnchorA;

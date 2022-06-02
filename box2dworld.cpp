@@ -68,10 +68,10 @@ class ContactListener : public b2ContactListener
 {
 public:
     explicit ContactListener(Box2DWorld *world);
-    void BeginContact(b2Contact *contact);
-    void EndContact(b2Contact *contact);
-    void PreSolve(b2Contact *contact, const b2Manifold *oldManifold);
-    void PostSolve(b2Contact *contact, const b2ContactImpulse *impulse);
+    void BeginContact(b2Contact *contact) override;
+    void EndContact(b2Contact *contact) override;
+    void PreSolve(b2Contact *contact, const b2Manifold *oldManifold) override;
+    void PostSolve(b2Contact *contact, const b2ContactImpulse *impulse) override;
 
     void removeEvent(int index) { mEvents.removeAt(index); }
     void clearEvents() { mEvents.clear(); }
@@ -125,7 +125,7 @@ static Box2DWorld * mDefaultWorld;
 Box2DWorld::Box2DWorld(QObject *parent) :
     QObject(parent),
     mWorld(b2Vec2(0.0f, -10.0f)),
-    mContactListener(0),
+    mContactListener(nullptr),
     mTimeStep(1.0f / 60.0f),
     mVelocityIterations(8),
     mPositionIterations(3),
@@ -154,7 +154,7 @@ Box2DWorld::~Box2DWorld()
         toBox2DJoint(joint)->nullifyJoint();
     enableContactListener(false);
     if (mDefaultWorld == this)
-        mDefaultWorld = 0;
+        mDefaultWorld = nullptr;
 }
 
 void Box2DWorld::setTimeStep(float timeStep)
@@ -237,7 +237,7 @@ void Box2DWorld::enableContactListener(bool enable)
         mContactListener = new ContactListener(this);
         mWorld.SetContactListener(mContactListener);
     } else {
-        mWorld.SetContactListener(0);
+        mWorld.SetContactListener(nullptr);
         delete mContactListener;
     }
 }

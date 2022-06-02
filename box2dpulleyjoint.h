@@ -42,7 +42,7 @@ class Box2DPulleyJoint : public Box2DJoint
     Q_PROPERTY(float ratio READ ratio WRITE setRatio NOTIFY ratioChanged)
 
 public:
-    explicit Box2DPulleyJoint(QObject *parent = 0);
+    explicit Box2DPulleyJoint(QObject *parent = nullptr);
 
     QPointF groundAnchorA() const;
     void setGroundAnchorA(const QPointF &groundAnchorA);
@@ -82,7 +82,7 @@ signals:
     void ratioChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_groundAnchorA;

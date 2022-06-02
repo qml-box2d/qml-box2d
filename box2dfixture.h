@@ -47,17 +47,17 @@ class Box2DFixture : public QObject
     Q_PROPERTY(CategoryFlags collidesWith READ collidesWith WRITE setCollidesWith NOTIFY collidesWithChanged)
     Q_PROPERTY(int groupIndex READ groupIndex WRITE setGroupIndex NOTIFY groupIndexChanged)
 
-    Q_ENUMS(CategoryFlag)
     Q_FLAGS(CategoryFlags)
 
 public:
-    explicit Box2DFixture(QObject *parent = 0);
+    explicit Box2DFixture(QObject *parent = nullptr);
 
     enum CategoryFlag {Category1 = 0x0001, Category2 = 0x0002, Category3 = 0x0004, Category4 = 0x0008,
                        Category5 = 0x0010, Category6 = 0x0020, Category7 = 0x0040, Category8 = 0x0080,
                        Category9 = 0x0100, Category10 = 0x0200, Category11 = 0x0400, Category12 = 0x0800,
                        Category13 = 0x1000, Category14 = 0x2000, Category15 = 0x4000, Category16 = 0x8000,
                        All = 0xFFFF, None=0x0000};
+    Q_ENUM(CategoryFlag)
 
     Q_DECLARE_FLAGS(CategoryFlags, CategoryFlag)
 
@@ -120,7 +120,7 @@ class Box2DBox : public Box2DFixture
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
 
 public:
-    explicit Box2DBox(QQuickItem *parent = 0)
+    explicit Box2DBox(QQuickItem *parent = nullptr)
         : Box2DFixture(parent)
         , mPosition(0, 0)
         , mSize(0, 0)
@@ -152,7 +152,7 @@ signals:
 protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
 
-    b2Shape *createShape();
+    b2Shape *createShape() override;
 
 private:
     QPointF mPosition;
@@ -170,7 +170,7 @@ class Box2DCircle : public Box2DFixture
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
 public:
-    explicit Box2DCircle(QQuickItem *parent = 0)
+    explicit Box2DCircle(QQuickItem *parent = nullptr)
         : Box2DFixture(parent)
         , mPosition(0, 0)
         , mRadius(32)
@@ -193,7 +193,7 @@ signals:
     void radiusChanged();
 
 protected:
-    b2Shape *createShape();
+    b2Shape *createShape() override;
 
 private:
     QPointF mPosition;
@@ -208,7 +208,7 @@ class Box2DPolygon : public Box2DFixture
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
-    explicit Box2DPolygon(QQuickItem *parent = 0) :
+    explicit Box2DPolygon(QQuickItem *parent = nullptr) :
         Box2DFixture(parent)
     { }
 
@@ -219,7 +219,7 @@ signals:
     void verticesChanged();
 
 protected:
-    b2Shape *createShape();
+    b2Shape *createShape() override;
 
 private:
     QVariantList mVertices;
@@ -236,7 +236,7 @@ class Box2DChain : public Box2DFixture
     Q_PROPERTY(QPointF nextVertex READ nextVertex WRITE setNextVertex NOTIFY nextVertexChanged)
 
 public:
-    explicit Box2DChain(QQuickItem *parent = 0);
+    explicit Box2DChain(QQuickItem *parent = nullptr);
 
     QVariantList vertices() const { return mVertices; }
     void setVertices(const QVariantList &vertices);
@@ -257,7 +257,7 @@ signals:
     void nextVertexChanged();
 
 protected:
-    b2Shape *createShape();
+    b2Shape *createShape() override;
 
 private:
     QVariantList mVertices;
@@ -276,7 +276,7 @@ class Box2DEdge : public Box2DFixture
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
-    explicit Box2DEdge(QQuickItem *parent = 0) :
+    explicit Box2DEdge(QQuickItem *parent = nullptr) :
         Box2DFixture(parent)
     { }
 
@@ -287,7 +287,7 @@ signals:
     void verticesChanged();
 
 protected:
-    b2Shape *createShape();
+    b2Shape *createShape() override;
 
 private:
     QVariantList mVertices;

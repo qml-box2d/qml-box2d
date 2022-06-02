@@ -148,7 +148,7 @@ b2Joint *Box2DPulleyJoint::createJoint()
 
     if (qFuzzyIsNull(jointDef.lengthA) || qFuzzyIsNull(jointDef.lengthB)) {
         qWarning() << "PulleyJoint: the joint length cannot be zero";
-        return 0;
+        return nullptr;
     }
 
     jointDef.ratio = m_ratio;

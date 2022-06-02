@@ -29,8 +29,8 @@
 
 Box2DGearJoint::Box2DGearJoint(QObject *parent)
     : Box2DJoint(GearJoint, parent)
-    , m_joint1(0)
-    , m_joint2(0)
+    , m_joint1(nullptr)
+    , m_joint2(nullptr)
     , m_ratio(1.0f)
 {
 }
@@ -67,7 +67,7 @@ void Box2DGearJoint::setJoint1(Box2DJoint *joint1)
 
     if (!validJoint(joint1)) {
         qWarning() << "GearJoint.joint1: Invalid joint type";
-        joint1 = 0;
+        joint1 = nullptr;
     }
 
     m_joint1 = joint1;
@@ -87,7 +87,7 @@ void Box2DGearJoint::setJoint2(Box2DJoint *joint2)
 
     if (!validJoint(joint2)) {
         qWarning() << "GearJoint.joint2: Invalid joint type";
-        joint2 = 0;
+        joint2 = nullptr;
     }
 
     m_joint2 = joint2;
@@ -103,9 +103,9 @@ void Box2DGearJoint::setJoint2(Box2DJoint *joint2)
 b2Joint *Box2DGearJoint::createJoint()
 {
     if (!m_joint1 || !m_joint2)
-        return 0;
+        return nullptr;
     if (!m_joint1->joint() || !m_joint2->joint())
-        return 0;
+        return nullptr;
 
     b2GearJointDef jointDef;
     initializeJointDef(jointDef);

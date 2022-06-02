@@ -33,7 +33,6 @@ class Box2DWorld;
 
 class Box2DDebugDraw : public QQuickItem
 {
-    Q_ENUMS(DebugFlag)
     Q_OBJECT
 
     Q_PROPERTY(qreal axisScale READ axisScale WRITE setAxisScale NOTIFY axisScaleChanged)
@@ -49,7 +48,9 @@ public:
         CenterOfMass = 16,
         Everything = 31
     };
-    explicit Box2DDebugDraw(QQuickItem *parent = 0);
+    Q_ENUM(DebugFlag)
+
+    explicit Box2DDebugDraw(QQuickItem *parent = nullptr);
 
     qreal axisScale() const;
     void setAxisScale(qreal _axisScale);
@@ -61,7 +62,7 @@ public:
     void setWorld(Box2DWorld *world);
 
 protected:
-    QSGNode *updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *);
+    QSGNode *updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *) override;
 
 signals:
     void axisScaleChanged();

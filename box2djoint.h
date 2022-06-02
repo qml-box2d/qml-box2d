@@ -42,7 +42,6 @@ class Box2DJoint : public QObject, public QQmlParserStatus
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
 
-    Q_ENUMS(JointType)
     Q_PROPERTY(JointType jointType READ jointType CONSTANT)
     Q_PROPERTY(bool collideConnected READ collideConnected WRITE setCollideConnected NOTIFY collideConnectedChanged)
     Q_PROPERTY(Box2DBody *bodyA READ bodyA WRITE setBodyA NOTIFY bodyAChanged)
@@ -63,9 +62,10 @@ public:
         RopeJoint,
         MotorJoint
     };
+    Q_ENUM(JointType)
 
-    Box2DJoint(JointType jointType, QObject *parent = 0);
-    ~Box2DJoint();
+    Box2DJoint(JointType jointType, QObject *parent = nullptr);
+    ~Box2DJoint() override;
 
     JointType jointType() const;
 
@@ -85,8 +85,8 @@ public:
     b2Joint *joint() const;
 
     // QQmlParserStatus interface
-    void classBegin() {}
-    void componentComplete();
+    void classBegin() override {}
+    void componentComplete() override;
 
 protected:
     virtual b2Joint *createJoint() = 0;
@@ -135,7 +135,7 @@ inline Box2DBody *Box2DJoint::bodyB() const
 
 inline void Box2DJoint::nullifyJoint()
 {
-    mJoint = 0;
+    mJoint = nullptr;
 }
 
 inline Box2DWorld *Box2DJoint::world() const

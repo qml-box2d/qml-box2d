@@ -44,7 +44,6 @@ class Box2DBody : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
 
-    Q_ENUMS(BodyType)
     Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld NOTIFY worldChanged)
     Q_PROPERTY(QQuickItem *target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(float linearDamping READ linearDamping WRITE setLinearDamping NOTIFY linearDampingChanged)
@@ -69,9 +68,10 @@ public:
         Kinematic,
         Dynamic
     };
+    Q_ENUM(BodyType)
 
-    explicit Box2DBody(QObject *parent = 0);
-    ~Box2DBody();
+    explicit Box2DBody(QObject *parent = nullptr);
+    ~Box2DBody() override;
 
     Box2DWorld *world() const;
     void setWorld(Box2DWorld *world);
@@ -135,8 +135,8 @@ public:
     Q_INVOKABLE QPointF getLinearVelocityFromLocalPoint(const QPointF &point) const;
     Q_INVOKABLE void addFixture(Box2DFixture *fixture);
 
-    void classBegin();
-    void componentComplete();
+    void classBegin() override;
+    void componentComplete() override;
 
     b2Body *body() const;
 
@@ -228,7 +228,7 @@ inline float Box2DBody::gravityScale() const
 
 inline void Box2DBody::nullifyBody()
 {
-    mBody = 0;
+    mBody = nullptr;
 }
 
 inline b2Body *Box2DBody::body() const
