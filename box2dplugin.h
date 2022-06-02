@@ -40,9 +40,9 @@ class Q_DECL_EXPORT Box2DPlugin : public QQmlExtensionPlugin
 #endif
 
 public:
-    explicit Box2DPlugin(QObject *parent = 0);
+    explicit Box2DPlugin(QObject *parent = nullptr);
 
-    void registerTypes(const char *uri);
+    void registerTypes(const char *uri) override;
 };
 
 #endif // BOX2DPLUGIN_H

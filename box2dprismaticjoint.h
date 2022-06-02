@@ -45,7 +45,7 @@ class Box2DPrismaticJoint : public Box2DJoint
     Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
 
 public:
-    explicit Box2DPrismaticJoint(QObject *parent = 0);
+    explicit Box2DPrismaticJoint(QObject *parent = nullptr);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -95,7 +95,7 @@ signals:
     void motorSpeedChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_localAnchorA;

@@ -36,8 +36,8 @@
 
 Box2DFixture::Box2DFixture(QObject *parent) :
     QObject(parent),
-    mFixture(0),
-    mBody(0)
+    mFixture(nullptr),
+    mBody(nullptr)
 {
     mFixtureDef.userData = this;
 }
@@ -302,7 +302,7 @@ b2Shape *Box2DPolygon::createShape()
     const int count = mVertices.length();
     if (count < 2 || count > b2_maxPolygonVertices) {
         qWarning() << "Polygon: Invalid number of vertices:" << count;
-        return 0;
+        return nullptr;
     }
 
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
@@ -313,7 +313,7 @@ b2Shape *Box2DPolygon::createShape()
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
                 qWarning() << "Polygon: vertices are too close together";
-                return 0;
+                return nullptr;
             }
         }
     }
@@ -382,7 +382,7 @@ b2Shape *Box2DChain::createShape()
 
     if (count < 2 || (mLoop && count < 3)) {
         qWarning() << "Chain: Invalid number of vertices:" << count;
-        return 0;
+        return nullptr;
     }
 
     QScopedArrayPointer<b2Vec2> vertices(new b2Vec2[count]);
@@ -393,7 +393,7 @@ b2Shape *Box2DChain::createShape()
         if (i > 0) {
             if (b2DistanceSquared(vertices[i - 1], vertices[i]) <= b2_linearSlop * b2_linearSlop) {
                 qWarning() << "Chain: vertices are too close together";
-                return 0;
+                return nullptr;
             }
         }
     }
@@ -430,13 +430,13 @@ b2Shape *Box2DEdge::createShape()
     const int count = mVertices.length();
     if (count != 2) {
         qWarning() << "Edge: Invalid number of vertices:" << count;
-        return 0;
+        return nullptr;
     }
     const b2Vec2 vertex1 = mBody->world()->toMeters(mVertices.at(0).toPointF());
     const b2Vec2 vertex2 = mBody->world()->toMeters(mVertices.at(1).toPointF());
     if (b2DistanceSquared(vertex1, vertex2) <= b2_linearSlop * b2_linearSlop) {
         qWarning() << "Edge: vertices are too close together";
-        return 0;
+        return nullptr;
     }
     b2EdgeShape *shape = new b2EdgeShape;
     shape->Set(vertex1, vertex2);

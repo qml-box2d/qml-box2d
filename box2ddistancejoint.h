@@ -40,7 +40,7 @@ class Box2DDistanceJoint : public Box2DJoint
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
 
 public:
-    explicit Box2DDistanceJoint(QObject *parent = 0);
+    explicit Box2DDistanceJoint(QObject *parent = nullptr);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -70,7 +70,7 @@ signals:
     void dampingRatioChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_localAnchorA;

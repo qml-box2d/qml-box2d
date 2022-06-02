@@ -46,16 +46,16 @@ public:
     void draw();
 
     void DrawPolygon(const b2Vec2 *vertices, int32 vertexCount,
-                     const b2Color &color);
+                     const b2Color &color) override;
     void DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount,
-                          const b2Color &color);
+                          const b2Color &color) override;
     void DrawCircle(const b2Vec2 &center, float32 radius,
-                    const b2Color &color);
+                    const b2Color &color) override;
     void DrawSolidCircle(const b2Vec2 &center, float32 radius,
-                         const b2Vec2 &axis, const b2Color &color);
+                         const b2Vec2 &axis, const b2Color &color) override;
     void DrawSegment(const b2Vec2 &p1, const b2Vec2 &p2,
-                     const b2Color &color);
-    void DrawTransform(const b2Transform &xf);
+                     const b2Color &color) override;
+    void DrawTransform(const b2Transform &xf) override;
 
     void setAxisScale(qreal axisScale);
 
@@ -64,7 +64,7 @@ private:
     Box2DWorld &mWorld;
     qreal mAxisScale;
 
-    QSGNode *createNode(QSGGeometry *geometry, const QColor &color, QSGNode *parent = 0);
+    QSGNode *createNode(QSGGeometry *geometry, const QColor &color, QSGNode *parent = nullptr);
 };
 
 DebugDraw::DebugDraw(QSGNode *root, Box2DWorld &world) :
@@ -77,7 +77,7 @@ void DebugDraw::draw()
 {
     mWorld.world().SetDebugDraw(this);
     mWorld.world().DrawDebugData();
-    mWorld.world().SetDebugDraw(0);
+    mWorld.world().SetDebugDraw(nullptr);
 }
 
 static QColor toQColor(const b2Color &color)
@@ -274,7 +274,7 @@ void DebugDraw::setAxisScale(qreal axisScale)
 
 Box2DDebugDraw::Box2DDebugDraw(QQuickItem *parent) :
     QQuickItem(parent),
-    mWorld(0),
+    mWorld(nullptr),
     mAxisScale(0.5),
     mFlags(Everything)
 {
@@ -320,7 +320,7 @@ QSGNode *Box2DDebugDraw::updatePaintNode(QSGNode *oldNode, QQuickItem::UpdatePai
         delete oldNode;
 
     if (!mWorld)
-        return 0;
+        return nullptr;
 
     QSGTransformNode *root = new QSGTransformNode;
     DebugDraw debugDraw(root, *mWorld);

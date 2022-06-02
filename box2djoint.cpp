@@ -36,10 +36,10 @@ Box2DJoint::Box2DJoint(JointType jointType, QObject *parent) :
     mCollideConnected(false),
     mComponentComplete(false),
     mInitializePending(false),
-    mBodyA(0),
-    mBodyB(0),
-    mWorld(0),
-    mJoint(0)
+    mBodyA(nullptr),
+    mBodyB(nullptr),
+    mWorld(nullptr),
+    mJoint(nullptr)
 {
 }
 
@@ -101,8 +101,8 @@ void Box2DJoint::initialize()
     // Destroy any previously created joint
     if (mJoint) {
         mWorld->world().DestroyJoint(mJoint);
-        mJoint = 0;
-        mWorld = 0;
+        mJoint = nullptr;
+        mWorld = nullptr;
     }
 
     if (!mBodyA || !mBodyB)

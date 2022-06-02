@@ -42,7 +42,7 @@ class Box2DRopeJoint : public Box2DJoint
     Q_PROPERTY(float maxLength READ maxLength WRITE setMaxLength NOTIFY maxLengthChanged)
 
 public:
-    explicit Box2DRopeJoint(QObject *parent = 0);
+    explicit Box2DRopeJoint(QObject *parent = nullptr);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -64,7 +64,7 @@ signals:
     void maxLengthChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_localAnchorA;

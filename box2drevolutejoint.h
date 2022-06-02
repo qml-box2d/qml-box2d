@@ -45,7 +45,7 @@ class Box2DRevoluteJoint : public Box2DJoint
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
 
 public:
-    explicit Box2DRevoluteJoint(QObject *parent = 0);
+    explicit Box2DRevoluteJoint(QObject *parent = nullptr);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -91,7 +91,7 @@ signals:
     void maxMotorTorqueChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_localAnchorA;

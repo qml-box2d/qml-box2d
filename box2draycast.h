@@ -40,12 +40,12 @@ class Box2DRayCast : public QObject, public b2RayCastCallback
     Q_PROPERTY(float maxFraction READ maxFraction WRITE setMaxFraction)
 
 public:
-    Box2DRayCast(QObject *parent = 0);
+    Box2DRayCast(QObject *parent = nullptr);
 
     float32 ReportFixture(b2Fixture *fixture,
                           const b2Vec2 &point,
                           const b2Vec2 &normal,
-                          float32 fraction);
+                          float32 fraction) override;
 
     float maxFraction() const;
     void setMaxFraction(float maxFraction);

@@ -58,7 +58,7 @@ Box2DFixture *Box2DContact::fixtureA() const
     b2Fixture *fixture = mContact->GetFixtureA();
     if(fixture)
         return toBox2DFixture(fixture);
-    return NULL;
+    return nullptr;
 }
 
 Box2DFixture *Box2DContact::fixtureB() const
@@ -66,7 +66,7 @@ Box2DFixture *Box2DContact::fixtureB() const
     b2Fixture *fixture = mContact->GetFixtureB();
     if(fixture)
         return toBox2DFixture(fixture);
-    return NULL;
+    return nullptr;
 }
 
 int Box2DContact::childIndexA() const

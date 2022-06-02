@@ -39,7 +39,7 @@ class Box2DFrictionJoint : public Box2DJoint
     Q_PROPERTY(float maxTorque READ maxTorque WRITE setMaxTorque NOTIFY maxTorqueChanged)
 
 public:
-    explicit Box2DFrictionJoint(QObject *parent = 0);
+    explicit Box2DFrictionJoint(QObject *parent = nullptr);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -65,7 +65,7 @@ signals:
     void maxTorqueChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_localAnchorA;

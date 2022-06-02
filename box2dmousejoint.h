@@ -39,7 +39,7 @@ class Box2DMouseJoint : public Box2DJoint
     Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
 
 public:
-    explicit Box2DMouseJoint(QObject *parent = 0);
+    explicit Box2DMouseJoint(QObject *parent = nullptr);
 
     float dampingRatio() const;
     void setDampingRatio(float dampingRatio);
@@ -65,7 +65,7 @@ signals:
     void dampingRatioChanged();
 
 protected:
-    b2Joint *createJoint();
+    b2Joint *createJoint() override;
 
 private:
     QPointF m_target;
