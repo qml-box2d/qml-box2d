@@ -20,10 +20,10 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 #
-set (CMAKE_INCLUDE_CURRENT_DIR ON)
-set (CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTORCC ON)
 
-add_executable (box2qml-examples
+add_executable(box2qml-examples
     main.cpp
     example.qrc
 
@@ -119,20 +119,19 @@ add_executable (box2qml-examples
     wheel/main.qml
 )
 
-set_target_properties (box2qml-examples PROPERTIES
+set_target_properties(box2qml-examples PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS NO
     )
 
-target_include_directories (box2qml-examples PUBLIC ..)
+target_include_directories(box2qml-examples PUBLIC ..)
 
-target_link_libraries (box2qml-examples
+target_link_libraries(box2qml-examples
 PRIVATE
     ${QT_MAJOR_VERSION}::Core
     ${QT_MAJOR_VERSION}::Quick
     ${QT_MAJOR_VERSION}::Qml
 PUBLIC
-    box2d
     qmlbox2d
 )

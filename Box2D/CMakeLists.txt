@@ -21,7 +21,7 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-add_library (box2d STATIC
+add_library (Box2D STATIC
     Box2D.h
     Collision/Shapes/b2ChainShape.cpp
     Collision/Shapes/b2ChainShape.h
@@ -117,7 +117,9 @@ add_library (box2d STATIC
     Rope/b2Rope.h
     )
 
-set_target_properties (box2d
+add_library (box2d::box2d ALIAS Box2D)
+
+set_target_properties (Box2D
 PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
@@ -125,4 +127,4 @@ PROPERTIES
     POSITION_INDEPENDENT_CODE ON
 )
 
-target_include_directories (box2d PUBLIC ..)
+target_include_directories (Box2D PUBLIC .. ${CMAKE_CURRENT_SOURCE_DIR})
