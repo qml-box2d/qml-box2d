@@ -131,6 +131,11 @@ PRIVATE
     $<$<STREQUAL:${QML_PLUGIN_LINK_TYPE},STATIC>:QT_STATICPLUGIN>
 )
 
+if(MINGW)
+  # Remove lib prefix when compiling with mingw on Windows to have the same library name as in qmldir
+  set_target_properties(${QML_BOX2D_LIBRARY_NAME} PROPERTIES PREFIX "")
+endif()
+
 target_link_libraries(${QML_BOX2D_LIBRARY_NAME}
 PRIVATE
     ${QT_MAJOR_VERSION}::Core
