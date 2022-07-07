@@ -7,23 +7,22 @@ QML.
 This plugin is meant to be installed to your Qt/imports directory, or shipped
 in a directory of which the parent is added as import path.
 
+# Build Status
+![Build Status](https://github.com/qml-box2d/qml-box2d/actions/workflows/compile.yml/badge.svg)
+
 ### Installing
 
-    qmake
+    mkdir build
+    cd build
+    cmake ..
     make
-    make install  (goes to Qt's import path, run with sudo if necessary)
+    make install
 
-The `make install` step will copy the qml-box2d Box2D plugin into your Qt
-installation. For example, if you have a Qt installation of:
-
-    /Users/user/Qt/5.12.12
-
-the plugin will be in:
-
-    /Users/user/Qt/5.12.12/clang_64/qml/Box2D.2.0
-
-This example is a Mac path, on other platforms you will see different paths and
-compilers.
+Multiple CMake options exist:
+* USE_QT6 (ON by default) to use Qt6 if it is installed. If set to OFF or Qt6 is not installed, it will look for Qt5 (5.12 minimal).
+* USE_SYSTEM_BOX2D (OFF by default) to use the system box2D library if already installed. Note that it only works for Box2D 2.3.1.
+* BUILD_EXAMPLES (ON by default) to build the examples along with the plugin. It will generate a binary `box2qml-examples` in the `bin` folder that you can run.
+* BUILD_SHARED_LIBS (ON by default) to build either a STATIC or SHARED library.
 
 ### Installing on Debian
 

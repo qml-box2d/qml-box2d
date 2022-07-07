@@ -32,26 +32,45 @@ jobs:
       run: |
         qbs build modules.cpp.compilerWrapper:ccache
 
-  build-with-qmake:
-    name: Ubuntu (qmake)
+  build-with-cmake-qt5:
+    name: Ubuntu (CMake Qt5)
     runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        max-size: 100M
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install qtbase5-dev qtdeclarative5-dev qtdeclarative5-private-dev cmake
+
+    - name: Setup CMake
+      run: |
+        cmake -B ${{github.workspace}}/build -DUSE_QT6=OFF -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: |
+        cmake --build ${{github.workspace}}/build --config Release
+
+
+  build-with-cmake-qt6:
+    name: Ubuntu (CMake Qt6)
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install qtbase5-dev qtdeclarative5-dev
+        sudo apt install qt6-base-dev qt6-declarative-dev qt6-declarative-private-dev cmake libgl1-mesa-dev
+
+    - name: Setup CMake
+      run: |
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
       run: |
-        qmake -v
-        qmake CONFIG+=ccache
-        make
+        cmake --build ${{github.workspace}}/build --config Release
