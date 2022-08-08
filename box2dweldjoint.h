@@ -27,15 +27,15 @@
 #define BOX2WELDJOINT_H
 
 #include "box2djoint.h"
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DWeldJoint : public Box2DJoint
 {
     Q_OBJECT
 
     Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
-    Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
-    Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
+    //Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
+    Q_PROPERTY(float damping READ damping WRITE setDamping NOTIFY dampingChanged)
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
 
@@ -45,11 +45,11 @@ public:
     float referenceAngle() const;
     void setReferenceAngle(float referenceAngle);
 
-    float frequencyHz() const;
+    /*float frequencyHz() const;
     void setFrequencyHz(float frequencyHz);
-
-    float dampingRatio() const;
-    void setDampingRatio(float dampingRatio);
+    */
+    float damping() const;
+    void setDamping(float damping);
 
     QPointF localAnchorA() const;
     void setLocalAnchorA(const QPointF &localAnchorA);
@@ -61,8 +61,8 @@ public:
 
 signals:
     void referenceAngleChanged();
-    void frequencyHzChanged();
-    void dampingRatioChanged();
+    //void frequencyHzChanged();
+    void dampingChanged();
     void localAnchorAChanged();
     void localAnchorBChanged();
 
@@ -73,8 +73,8 @@ private:
     QPointF m_localAnchorA;
     QPointF m_localAnchorB;
     float m_referenceAngle;
-    float m_frequencyHz;
-    float m_dampingRatio;
+    //float m_frequencyHz;
+    float m_damping;
 
     bool m_defaultLocalAnchorA;
     bool m_defaultLocalAnchorB;
@@ -96,14 +96,14 @@ inline float Box2DWeldJoint::referenceAngle() const
     return m_referenceAngle;
 }
 
-inline float Box2DWeldJoint::frequencyHz() const
+/*inline float Box2DWeldJoint::frequencyHz() const
 {
     return m_frequencyHz;
-}
+    }*/
 
-inline float Box2DWeldJoint::dampingRatio() const
+inline float Box2DWeldJoint::damping() const
 {
-    return m_dampingRatio;
+    return m_damping;
 }
 
 inline b2WeldJoint *Box2DWeldJoint::weldJoint() const

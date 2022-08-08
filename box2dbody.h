@@ -32,7 +32,7 @@
 #define BOX2DBODY_H
 
 #include <QQuickItem>
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DFixture;
 class Box2DWorld;
@@ -52,7 +52,7 @@ class Box2DBody : public QObject, public QQmlParserStatus
     Q_PROPERTY(bool bullet READ isBullet WRITE setBullet NOTIFY bulletChanged)
     Q_PROPERTY(bool sleepingAllowed READ sleepingAllowed WRITE setSleepingAllowed NOTIFY sleepingAllowedChanged)
     Q_PROPERTY(bool fixedRotation READ fixedRotation WRITE setFixedRotation NOTIFY fixedRotationChanged)
-    Q_PROPERTY(bool active READ isActive WRITE setActive)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
     Q_PROPERTY(bool awake READ isAwake WRITE setAwake)
     Q_PROPERTY(QPointF linearVelocity READ linearVelocity WRITE setLinearVelocity NOTIFY linearVelocityChanged)
     Q_PROPERTY(float angularVelocity READ angularVelocity WRITE setAngularVelocity NOTIFY angularVelocityChanged)
@@ -97,8 +97,8 @@ public:
     bool fixedRotation() const;
     void setFixedRotation(bool fixedRotation);
 
-    bool isActive() const;
-    void setActive(bool active);
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
 
     bool isAwake() const;
     void setAwake(bool awake);
@@ -216,9 +216,9 @@ inline bool Box2DBody::fixedRotation() const
     return mBodyDef.fixedRotation;
 }
 
-inline bool Box2DBody::isActive() const
+inline bool Box2DBody::isEnabled() const
 {
-    return mBodyDef.active;
+    return mBodyDef.enabled;
 }
 
 inline float Box2DBody::gravityScale() const
@@ -252,7 +252,7 @@ inline bool Box2DBody::transformDirty() const
  */
 inline Box2DBody *toBox2DBody(b2Body *body)
 {
-    return static_cast<Box2DBody*>(body->GetUserData());
+    return reinterpret_cast<Box2DBody*>(body->GetUserData().pointer);
 }
 
 #endif // BOX2DBODY_H

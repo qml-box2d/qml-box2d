@@ -165,8 +165,8 @@ b2Joint *Box2DRevoluteJoint::createJoint()
     }
 
     if (m_defaultReferenceAngle) {
-        float32 angleA = jointDef.bodyA->GetAngle();
-        float32 angleB = jointDef.bodyB->GetAngle();
+        float angleA = jointDef.bodyA->GetAngle();
+        float angleB = jointDef.bodyB->GetAngle();
         jointDef.referenceAngle = angleB - angleA;
     } else {
         jointDef.referenceAngle = toRadians(m_referenceAngle);

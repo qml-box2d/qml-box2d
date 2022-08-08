@@ -295,7 +295,7 @@ void Box2DWorld::step()
     // Update Box2D state before stepping
     for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext()) {
         Box2DBody *b = toBox2DBody(body);
-        if (b->transformDirty() && b->isActive())
+        if (b->transformDirty() && b->isEnabled())
             b->updateTransform();
     }
 
@@ -307,7 +307,7 @@ void Box2DWorld::step()
     mSynchronizing = true;
     for (b2Body *body = mWorld.GetBodyList(); body; body = body->GetNext()) {
         Box2DBody *b = toBox2DBody(body);
-        if (b->isActive() && b->bodyType() != Box2DBody::Static && b->target())
+        if (b->isEnabled() && b->bodyType() != Box2DBody::Static && b->target())
             b->synchronize();
     }
     mSynchronizing = false;

@@ -31,7 +31,7 @@
 
 #include "box2dworld.h"
 
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 #include <QPainter>
 #include <QSGNode>
@@ -49,13 +49,15 @@ public:
                      const b2Color &color) override;
     void DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount,
                           const b2Color &color) override;
-    void DrawCircle(const b2Vec2 &center, float32 radius,
+    void DrawCircle(const b2Vec2 &center, float radius,
                     const b2Color &color) override;
-    void DrawSolidCircle(const b2Vec2 &center, float32 radius,
+    void DrawSolidCircle(const b2Vec2 &center, float radius,
                          const b2Vec2 &axis, const b2Color &color) override;
     void DrawSegment(const b2Vec2 &p1, const b2Vec2 &p2,
                      const b2Color &color) override;
     void DrawTransform(const b2Transform &xf) override;
+    void DrawPoint(const b2Vec2 &p, float size,
+                     const b2Color &color) override;
 
     void setAxisScale(qreal axisScale);
 
@@ -76,7 +78,7 @@ DebugDraw::DebugDraw(QSGNode *root, Box2DWorld &world) :
 void DebugDraw::draw()
 {
     mWorld.world().SetDebugDraw(this);
-    mWorld.world().DrawDebugData();
+    mWorld.world().DebugDraw();
     mWorld.world().SetDebugDraw(nullptr);
 }
 
@@ -158,7 +160,7 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices,
 }
 
 void DebugDraw::DrawCircle(const b2Vec2 &center,
-                           float32 radius,
+                           float radius,
                            const b2Color &color)
 {
     // We'd use QSGGeometry::DrawLineLoop, but it's not supported in Qt 6
@@ -180,7 +182,7 @@ void DebugDraw::DrawCircle(const b2Vec2 &center,
     createNode(geometry, toQColor(color));
 }
 
-void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float32 radius,
+void DebugDraw::DrawSolidCircle(const b2Vec2 &center, float radius,
                                 const b2Vec2 &axis, const b2Color &color)
 {
     // We'd use QSGGeometry::DrawTriangleFan, but it's not supported in Qt 6
@@ -265,6 +267,21 @@ void DebugDraw::DrawTransform(const b2Transform &xf)
     geometryY->vertexDataAsPoint2D()[1].set(p2.x(), p2.y());
 
     createNode(geometryY, Qt::yellow);
+}
+
+void DebugDraw::DrawPoint(const b2Vec2 &p, float size, const b2Color &color)
+{
+    // TODO Check
+    QPointF pInPixels = mWorld.toPixels(p);
+
+    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
+    geometry->setDrawingMode(QSGGeometry::DrawPoints);
+    geometry->setLineWidth(size);
+
+    geometry->vertexDataAsPoint2D()[0].set(pInPixels.x(), pInPixels.y());
+
+    createNode(geometry, toQColor(color));
+
 }
 
 void DebugDraw::setAxisScale(qreal axisScale)

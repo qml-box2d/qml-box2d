@@ -114,14 +114,14 @@ b2Joint *Box2DFrictionJoint::createJoint()
     return world()->world().CreateJoint(&jointDef);
 }
 
-QPointF Box2DFrictionJoint::getReactionForce(float32 inv_dt) const
+QPointF Box2DFrictionJoint::getReactionForce(float inv_dt) const
 {
     if (frictionJoint())
         return invertY(frictionJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 
-float Box2DFrictionJoint::getReactionTorque(float32 inv_dt) const
+float Box2DFrictionJoint::getReactionTorque(float inv_dt) const
 {
     if (frictionJoint())
         return frictionJoint()->GetReactionTorque(inv_dt);

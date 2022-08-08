@@ -112,8 +112,8 @@ b2Joint *Box2DMotorJoint::createJoint()
     }
 
     if (m_defaultAngularOffset) {
-        float32 angleA = jointDef.bodyA->GetAngle();
-        float32 angleB = jointDef.bodyB->GetAngle();
+        float angleA = jointDef.bodyA->GetAngle();
+        float angleB = jointDef.bodyB->GetAngle();
         jointDef.angularOffset = angleB - angleA;
     } else {
         jointDef.angularOffset = toRadians(m_angularOffset);

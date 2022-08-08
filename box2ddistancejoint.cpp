@@ -31,8 +31,8 @@
 Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent)
     : Box2DJoint(DistanceJoint, parent)
     , m_length(1.0f)
-    , m_frequencyHz(0.0f)
-    , m_dampingRatio(0.0f)
+      //, m_frequencyHz(0.0f)
+    , m_damping(0.0f)
     , m_defaultLocalAnchorA(true)
     , m_defaultLocalAnchorB(true)
     , m_defaultLength(true)
@@ -73,7 +73,7 @@ void Box2DDistanceJoint::setLength(float length)
     emit lengthChanged();
 }
 
-void Box2DDistanceJoint::setFrequencyHz(float frequencyHz)
+/*void Box2DDistanceJoint::setFrequencyHz(float frequencyHz)
 {
     if (m_frequencyHz == frequencyHz)
         return;
@@ -82,17 +82,17 @@ void Box2DDistanceJoint::setFrequencyHz(float frequencyHz)
     if (distanceJoint())
         distanceJoint()->SetFrequency(frequencyHz);
     emit frequencyHzChanged();
-}
+}*/
 
-void Box2DDistanceJoint::setDampingRatio(float dampingRatio)
+void Box2DDistanceJoint::setDamping(float damping)
 {
-    if (m_dampingRatio == dampingRatio)
+    if (m_damping == damping)
         return;
 
-    m_dampingRatio = dampingRatio;
+    m_damping = damping;
     if (distanceJoint())
-        distanceJoint()->SetDampingRatio(dampingRatio);
-    emit dampingRatioChanged();
+        distanceJoint()->SetDamping(damping);
+    emit dampingChanged();
 }
 
 b2Joint *Box2DDistanceJoint::createJoint()
@@ -121,20 +121,20 @@ b2Joint *Box2DDistanceJoint::createJoint()
         jointDef.length = world()->toMeters(m_length);
     }
 
-    jointDef.frequencyHz = m_frequencyHz;
-    jointDef.dampingRatio = m_dampingRatio;
+    //jointDef.frequencyHz = m_frequencyHz;
+    jointDef.damping = m_damping;
 
     return world()->world().CreateJoint(&jointDef);
 }
 
-QPointF Box2DDistanceJoint::getReactionForce(float32 inv_dt) const
+QPointF Box2DDistanceJoint::getReactionForce(float inv_dt) const
 {
     if (distanceJoint())
         return invertY(distanceJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 
-float Box2DDistanceJoint::getReactionTorque(float32 inv_dt) const
+float Box2DDistanceJoint::getReactionTorque(float inv_dt) const
 {
     if (distanceJoint())
         return distanceJoint()->GetReactionTorque(inv_dt);

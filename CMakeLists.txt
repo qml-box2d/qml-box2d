@@ -91,8 +91,6 @@ set(QML_BOX2D_SOURCES
     box2draycast.h
     box2drevolutejoint.cpp
     box2drevolutejoint.h
-    box2dropejoint.cpp
-    box2dropejoint.h
     box2dweldjoint.cpp
     box2dweldjoint.h
     box2dwheeljoint.cpp
@@ -141,8 +139,6 @@ PRIVATE
     ${QT_MAJOR_VERSION}::Core
     ${QT_MAJOR_VERSION}::Quick
     ${QT_MAJOR_VERSION}::Qml
-PUBLIC
-    Box2D
 )
 
 if(NOT Qt6_FOUND)
@@ -168,15 +164,33 @@ if(Qt6_FOUND)
 endif()
 
 if(USE_SYSTEM_BOX2D)
-  find_package(Box2D REQUIRED)
-  if(NOT BOX2D_FOUND)
-    message(ERROR "System box2d not found")
+  find_package(box2d REQUIRED)
+  if(NOT TARGET box2d::box2d)
+    message(FATAL_ERROR "System box2d not found")
   endif()
-  target_include_directories(${QML_BOX2D_LIBRARY_NAME} PUBLIC ${BOX2D_INCLUDE_DIR} ${BOX2D_INCLUDE_DIR}/Box2D)
+  target_link_libraries(${QML_BOX2D_LIBRARY_NAME} PUBLIC box2d::box2d)
 endif()
 
 if(NOT USE_SYSTEM_BOX2D)
-  add_subdirectory(external/box2d)
+  # make sure submodule is up2date
+  find_package(Git)
+  if(GIT_FOUND)
+    execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+  endif()
+
+  include(ExternalProject)
+  ExternalProject_Add(box2d-external
+    DOWNLOAD_COMMAND ""
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/box2d
+    CMAKE_ARGS -DBOX2D_BUILD_UNIT_TESTS=OFF;-DBOX2D_BUILD_TESTBED=OFF;-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+    BUILD_ALWAYS ON
+  )
+  target_include_directories(${QML_BOX2D_LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/box2d/include)
+  ExternalProject_Get_property(box2d-external INSTALL_DIR)
+  add_library(box2d-local STATIC IMPORTED)
+  set_target_properties(box2d-local PROPERTIES IMPORTED_LOCATION ${INSTALL_DIR}/lib/libbox2d.a)
+  target_link_libraries(${QML_BOX2D_LIBRARY_NAME} PUBLIC box2d-local)
+  add_dependencies(${QML_BOX2D_LIBRARY_NAME} box2d-external)
 endif()
 
 if(BUILD_EXAMPLES)

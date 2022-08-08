@@ -15,7 +15,7 @@ Rectangle {
     property alias bullet: boxBody.bullet
     property alias sleepingAllowed: boxBody.sleepingAllowed
     property alias fixedRotation: boxBody.fixedRotation
-    property alias active: boxBody.active
+    property alias enabled: boxBody.enabled
     property alias awake: boxBody.awake
     property alias linearVelocity: boxBody.linearVelocity
     property alias angularVelocity: boxBody.angularVelocity

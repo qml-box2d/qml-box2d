@@ -31,7 +31,7 @@
 #include <QQuickItem>
 #include <QFlags>
 
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DBody;
 
@@ -299,7 +299,7 @@ private:
  */
 inline Box2DFixture *toBox2DFixture(b2Fixture *fixture)
 {
-    return static_cast<Box2DFixture*>(fixture->GetUserData());
+    return reinterpret_cast<Box2DFixture*>(fixture->GetUserData().pointer);
 }
 
 

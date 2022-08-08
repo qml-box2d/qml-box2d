@@ -37,7 +37,7 @@ Item {
     MouseJoint {
         id: mouseJoint
         bodyA: anchor
-        dampingRatio: 0.8
+        damping: 10
         maxForce: 100
     }
 
