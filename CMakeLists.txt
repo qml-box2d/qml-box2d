@@ -176,7 +176,7 @@ if(USE_SYSTEM_BOX2D)
 endif()
 
 if(NOT USE_SYSTEM_BOX2D)
-  add_subdirectory(Box2D)
+  add_subdirectory(external/box2d)
 endif()
 
 if(BUILD_EXAMPLES)
