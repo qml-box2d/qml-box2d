@@ -31,8 +31,8 @@
 Box2DMouseJoint::Box2DMouseJoint(QObject *parent)
     : Box2DJoint(MouseJoint, parent)
     , m_maxForce(0.0f)
-      //, m_frequencyHz(5.0f)
-    , m_damping(0.7f)
+    , m_stiffness(0.0f)
+    , m_damping(0.0f)
 {
 }
 
@@ -47,17 +47,17 @@ void Box2DMouseJoint::setDamping(float damping)
     emit dampingChanged();
 }
 
-/*void Box2DMouseJoint::setFrequencyHz(float frequencyHz)
+void Box2DMouseJoint::setStiffness(float stiffness)
 {
-    if (m_frequencyHz == frequencyHz)
+    if (m_stiffness == stiffness)
         return;
 
-    m_frequencyHz = frequencyHz;
+    m_stiffness = stiffness;
     if (mouseJoint())
-        mouseJoint()->SetFrequency(frequencyHz);
-    emit frequencyHzChanged();
+        mouseJoint()->SetStiffness(stiffness);
+    emit stiffnessChanged();
 }
-*/
+
 void Box2DMouseJoint::setMaxForce(float maxForce)
 {
     if (m_maxForce == maxForce)
@@ -87,7 +87,7 @@ b2Joint *Box2DMouseJoint::createJoint()
 
     jointDef.target = world()->toMeters(m_target);
     jointDef.maxForce = m_maxForce;
-    //jointDef.frequencyHz = m_frequencyHz;
+    jointDef.stiffness = m_stiffness;
     jointDef.damping = m_damping;
 
     return world()->world().CreateJoint(&jointDef);

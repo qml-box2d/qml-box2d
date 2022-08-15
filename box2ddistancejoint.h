@@ -36,7 +36,7 @@ class Box2DDistanceJoint : public Box2DJoint
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
-    //Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
+    Q_PROPERTY(float stiffness READ stiffness WRITE setStiffness NOTIFY stiffnessChanged)
     Q_PROPERTY(float damping READ damping WRITE setDamping NOTIFY dampingChanged)
 
 public:
@@ -51,8 +51,8 @@ public:
     float length() const;
     void setLength(float length);
 
-    /*float frequencyHz() const;
-      void setFrequencyHz(float frequencyHz);*/
+    float stiffness() const;
+    void setStiffness(float stiffness);
 
     float damping() const;
     void setDamping(float damping);
@@ -66,7 +66,7 @@ signals:
     void localAnchorAChanged();
     void localAnchorBChanged();
     void lengthChanged();
-    //void frequencyHzChanged();
+    void stiffnessChanged();
     void dampingChanged();
 
 protected:
@@ -76,7 +76,7 @@ private:
     QPointF m_localAnchorA;
     QPointF m_localAnchorB;
     float m_length;
-    //float m_frequencyHz;
+    float m_stiffness;
     float m_damping;
     bool m_defaultLocalAnchorA;
     bool m_defaultLocalAnchorB;
@@ -98,10 +98,10 @@ inline float Box2DDistanceJoint::length() const
     return m_length;
 }
 
-/*inline float Box2DDistanceJoint::frequencyHz() const
+inline float Box2DDistanceJoint::stiffness() const
 {
-    return m_frequencyHz;
-}*/
+    return m_stiffness;
+}
 
 inline float Box2DDistanceJoint::damping() const
 {

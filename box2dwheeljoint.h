@@ -38,7 +38,7 @@ class Box2DWheelJoint : public Box2DJoint
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(QPointF localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
     Q_PROPERTY(float damping READ damping WRITE setDamping NOTIFY dampingChanged)
-    //    Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
+    Q_PROPERTY(float stiffness READ stiffness WRITE setStiffness NOTIFY stiffnessChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
     Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
     Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
@@ -64,8 +64,8 @@ public:
     float motorSpeed() const;
     void setMotorSpeed(float motorSpeed);
 
-    //    float frequencyHz() const;
-    //void setFrequencyHz(float frequencyHz);
+    float stiffness() const;
+    void setStiffness(float stiffness);
 
     float damping() const;
     void setDamping(float damping);
@@ -84,7 +84,7 @@ signals:
     void enableMotorChanged();
     void maxMotorTorqueChanged();
     void motorSpeedChanged();
-    //    void frequencyHzChanged();
+    void stiffnessChanged();
     void dampingChanged();
 
 protected:
@@ -97,7 +97,7 @@ private:
     bool m_enableMotor;
     float m_maxMotorTorque;
     float m_motorSpeed;
-    //    float m_frequencyHz;
+    float m_stiffness;
     float m_damping;
 
     bool m_defaultLocalAnchorA;
@@ -135,11 +135,11 @@ inline float Box2DWheelJoint::motorSpeed() const
     return m_motorSpeed;
 }
 
-/*inline float Box2DWheelJoint::frequencyHz() const
+inline float Box2DWheelJoint::stiffness() const
 {
-    return m_frequencyHz;
+    return m_stiffness;
 }
-*/
+
 inline float Box2DWheelJoint::damping() const
 {
     return m_damping;

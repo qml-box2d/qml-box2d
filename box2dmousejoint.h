@@ -35,7 +35,7 @@ class Box2DMouseJoint : public Box2DJoint
 
     Q_PROPERTY(QPointF target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(float maxForce READ maxForce WRITE setMaxForce NOTIFY maxForceChanged)
-    //    Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
+    Q_PROPERTY(float stiffness READ stiffness WRITE setStiffness NOTIFY stiffnessChanged)
     Q_PROPERTY(float damping READ damping WRITE setDamping NOTIFY dampingChanged)
 
 public:
@@ -44,8 +44,8 @@ public:
     float damping() const;
     void setDamping(float damping);
 
-    /*float frequencyHz() const;
-    void setFrequencyHz(float frequencyHz);*/
+    float stiffness() const;
+    void setStiffness(float stiffness);
 
     float maxForce() const;
     void setMaxForce(float maxForce);
@@ -61,7 +61,7 @@ public:
 signals:
     void targetChanged();
     void maxForceChanged();
-    //void frequencyHzChanged();
+    void stiffnessChanged();
     void dampingChanged();
 
 protected:
@@ -70,7 +70,7 @@ protected:
 private:
     QPointF m_target;
     float m_maxForce;
-    //    float m_frequencyHz;
+    float m_stiffness;
     float m_damping;
 };
 
@@ -79,10 +79,10 @@ inline float Box2DMouseJoint::damping() const
     return m_damping;
 }
 
-/*inline float Box2DMouseJoint::frequencyHz() const
+inline float Box2DMouseJoint::stiffness() const
 {
-    return m_frequencyHz;
-    }*/
+    return m_stiffness;
+}
 
 inline float Box2DMouseJoint::maxForce() const
 {

@@ -31,7 +31,7 @@
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent)
     : Box2DJoint(WeldJoint, parent)
     , m_referenceAngle(0.0f)
-      //, m_frequencyHz(0.0f)
+    , m_stiffness(0.0f)
     , m_damping(0.0f)
     , m_defaultLocalAnchorA(true)
     , m_defaultLocalAnchorB(true)
@@ -72,17 +72,17 @@ void Box2DWeldJoint::setReferenceAngle(float referenceAngle)
     emit referenceAngleChanged();
 }
 
-/*void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
+void Box2DWeldJoint::setStiffness(float stiffness)
 {
-    if (m_frequencyHz == frequencyHz)
+    if (m_stiffness == stiffness)
         return;
 
-    m_frequencyHz = frequencyHz;
+    m_stiffness = stiffness;
     if (weldJoint())
-        weldJoint()->SetFrequency(frequencyHz);
-    emit frequencyHzChanged();
+        weldJoint()->SetStiffness(stiffness);
+    emit stiffnessChanged();
 }
-*/
+
 void Box2DWeldJoint::setDamping(float damping)
 {
     if (m_damping == damping)
@@ -121,7 +121,7 @@ b2Joint *Box2DWeldJoint::createJoint()
         jointDef.referenceAngle = toRadians(m_referenceAngle);
     }
 
-    //jointDef.frequencyHz = m_frequencyHz;
+    jointDef.stiffness = m_stiffness;
     jointDef.damping = m_damping;
 
     return world()->world().CreateJoint(&jointDef);

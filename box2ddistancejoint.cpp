@@ -31,7 +31,7 @@
 Box2DDistanceJoint::Box2DDistanceJoint(QObject *parent)
     : Box2DJoint(DistanceJoint, parent)
     , m_length(1.0f)
-      //, m_frequencyHz(0.0f)
+    , m_stiffness(0.0f)
     , m_damping(0.0f)
     , m_defaultLocalAnchorA(true)
     , m_defaultLocalAnchorB(true)
@@ -73,16 +73,16 @@ void Box2DDistanceJoint::setLength(float length)
     emit lengthChanged();
 }
 
-/*void Box2DDistanceJoint::setFrequencyHz(float frequencyHz)
+void Box2DDistanceJoint::setStiffness(float stiffness)
 {
-    if (m_frequencyHz == frequencyHz)
+    if (m_stiffness == stiffness)
         return;
 
-    m_frequencyHz = frequencyHz;
+    m_stiffness = stiffness;
     if (distanceJoint())
-        distanceJoint()->SetFrequency(frequencyHz);
-    emit frequencyHzChanged();
-}*/
+        distanceJoint()->SetStiffness(stiffness);
+    emit stiffnessChanged();
+}
 
 void Box2DDistanceJoint::setDamping(float damping)
 {
@@ -121,7 +121,7 @@ b2Joint *Box2DDistanceJoint::createJoint()
         jointDef.length = world()->toMeters(m_length);
     }
 
-    //jointDef.frequencyHz = m_frequencyHz;
+    jointDef.stiffness = m_stiffness;
     jointDef.damping = m_damping;
 
     return world()->world().CreateJoint(&jointDef);

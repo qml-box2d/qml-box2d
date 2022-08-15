@@ -34,7 +34,7 @@ class Box2DWeldJoint : public Box2DJoint
     Q_OBJECT
 
     Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
-    //Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
+    Q_PROPERTY(float stiffness READ stiffness WRITE setStiffness NOTIFY stiffnessChanged)
     Q_PROPERTY(float damping READ damping WRITE setDamping NOTIFY dampingChanged)
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
@@ -45,9 +45,9 @@ public:
     float referenceAngle() const;
     void setReferenceAngle(float referenceAngle);
 
-    /*float frequencyHz() const;
-    void setFrequencyHz(float frequencyHz);
-    */
+    float stiffness() const;
+    void setStiffness(float stiffness);
+
     float damping() const;
     void setDamping(float damping);
 
@@ -61,7 +61,7 @@ public:
 
 signals:
     void referenceAngleChanged();
-    //void frequencyHzChanged();
+    void stiffnessChanged();
     void dampingChanged();
     void localAnchorAChanged();
     void localAnchorBChanged();
@@ -73,7 +73,7 @@ private:
     QPointF m_localAnchorA;
     QPointF m_localAnchorB;
     float m_referenceAngle;
-    //float m_frequencyHz;
+    float m_stiffness;
     float m_damping;
 
     bool m_defaultLocalAnchorA;
@@ -96,10 +96,10 @@ inline float Box2DWeldJoint::referenceAngle() const
     return m_referenceAngle;
 }
 
-/*inline float Box2DWeldJoint::frequencyHz() const
+inline float Box2DWeldJoint::stiffness() const
 {
-    return m_frequencyHz;
-    }*/
+    return m_stiffness;
+}
 
 inline float Box2DWeldJoint::damping() const
 {

@@ -34,8 +34,8 @@ Box2DWheelJoint::Box2DWheelJoint(QObject *parent)
     , m_enableMotor(false)
     , m_maxMotorTorque(0.0f)
     , m_motorSpeed(0.0f)
-      //, m_frequencyHz(2.0f)
-    , m_damping(0.7f)
+    , m_stiffness(0.0f)
+    , m_damping(0.0f)
     , m_defaultLocalAnchorA(true)
     , m_defaultLocalAnchorB(true)
     , m_defaultLocalAxisA(true)
@@ -108,16 +108,16 @@ void Box2DWheelJoint::setMotorSpeed(float motorSpeed)
     emit motorSpeedChanged();
 }
 
-/*void Box2DWheelJoint::setFrequencyHz(float frequencyHz)
+void Box2DWheelJoint::setStiffness(float stiffness)
 {
-    if (m_frequencyHz == frequencyHz)
+    if (m_stiffness == stiffness)
         return;
 
-    m_frequencyHz = frequencyHz;
+    m_stiffness = stiffness;
     if (wheelJoint())
-        wheelJoint()->SetSpringFrequencyHz(frequencyHz);
-    emit frequencyHzChanged();
-}*/
+        wheelJoint()->SetStiffness(stiffness);
+    emit stiffnessChanged();
+}
 
 void Box2DWheelJoint::setDamping(float damping)
 {
@@ -157,7 +157,7 @@ b2Joint *Box2DWheelJoint::createJoint()
     jointDef.enableMotor = m_enableMotor;
     jointDef.maxMotorTorque = m_maxMotorTorque;
     jointDef.motorSpeed = toRadians(m_motorSpeed);
-    //jointDef.frequencyHz = m_frequencyHz;
+    jointDef.stiffness = m_stiffness;
     jointDef.damping = m_damping;
 
     return world()->world().CreateJoint(&jointDef);

@@ -59,7 +59,7 @@ Item {
         id: extraJoint
         DistanceJoint {
             frequencyHz: 20
-            dampingRatio: 0.5
+            damping: 1
             collideConnected: false
         }
     }
