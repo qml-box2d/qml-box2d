@@ -15,8 +15,8 @@ in a directory of which the parent is added as import path.
     mkdir build
     cd build
     cmake ..
-    make
-    make install
+    cmake --build . (or "make")
+    cmake --build . --target install (or "make install")
 
 Multiple CMake options exist:
 * USE_QT6 (ON by default) to use Qt6 if it is installed. If set to OFF or Qt6 is not installed, it will look for Qt5 (5.12 minimal).
