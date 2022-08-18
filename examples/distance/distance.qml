@@ -58,8 +58,8 @@ Item {
     Component {
         id: extraJoint
         DistanceJoint {
-            frequencyHz: 20
-            damping: 1
+            stiffness: 15790
+            damping: 250
             collideConnected: false
         }
     }
@@ -107,8 +107,8 @@ Item {
 
     DistanceJoint {
         id: joint
-        frequencyHz: 15
-        dampingRatio: 0.5
+        stiffness: 8882
+        damping: 94
         collideConnected: true
         bodyA: ball.body
         bodyB: square.body
