@@ -90,7 +90,7 @@ jobs:
         cmake --build ${{github.workspace}}/build --config Release
 
   build-macos-cmake-qt5:
-    name: macos
+    name: macOS
     runs-on: macos-latest
 
     steps:
@@ -112,7 +112,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
       
   build-windows-cmake-qt5:
-    name: windows
+    name: Windows
     runs-on: windows-latest
 
     steps:
