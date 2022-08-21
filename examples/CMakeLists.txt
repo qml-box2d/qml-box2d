@@ -23,6 +23,12 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTORCC ON)
 
+if(Qt6_FOUND)
+  find_package(Qt6 6.2 COMPONENTS Widgets REQUIRED)
+else()
+  find_package(Qt5 5.12 COMPONENTS Widgets REQUIRED)
+endif()
+
 add_executable(box2qml-examples
     main.cpp
     example.qrc
@@ -131,6 +137,7 @@ target_link_libraries(box2qml-examples
 PRIVATE
     ${QT_MAJOR_VERSION}::Core
     ${QT_MAJOR_VERSION}::Quick
+    ${QT_MAJOR_VERSION}::Widgets
     ${QT_MAJOR_VERSION}::Qml
 PUBLIC
     qmlbox2d

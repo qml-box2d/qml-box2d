@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QDebug>
 #include <QtQml>
@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     Box2DPlugin plugin;
     plugin.registerTypes("Box2D");

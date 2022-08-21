@@ -11,7 +11,7 @@ Project {
         name: "Example";
 
         Depends { name: "cpp"; }
-        Depends { name: "Qt"; submodules: ["core", "qml", "quick"]; }
+        Depends { name: "Qt"; submodules: ["core", "qml", "quick", "widgets"]; }
         Depends { name: "box2d_lib"; }
 
         cpp.rpaths: ["$ORIGIN"]
