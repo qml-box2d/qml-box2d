@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QPointF>
 
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DFixture;
 
@@ -42,10 +42,10 @@ class Box2DRayCast : public QObject, public b2RayCastCallback
 public:
     Box2DRayCast(QObject *parent = nullptr);
 
-    float32 ReportFixture(b2Fixture *fixture,
+    float ReportFixture(b2Fixture *fixture,
                           const b2Vec2 &point,
                           const b2Vec2 &normal,
-                          float32 fraction) override;
+                          float fraction) override;
 
     float maxFraction() const;
     void setMaxFraction(float maxFraction);

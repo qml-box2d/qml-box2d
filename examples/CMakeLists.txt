@@ -103,9 +103,6 @@ add_executable(box2qml-examples
     revoluteplotangle/Revolute.qml
     revoluteplotangle/revolutePlotAngle.qml
 
-    rope/Wall.qml
-    rope/main.qml
-
     shared/BoxBody.qml
     shared/ChainBody.qml
     shared/CircleBody.qml

@@ -32,14 +32,14 @@
 
 #include <QDebug>
 
-#include "Common/b2Math.h"
+#include <box2d/b2_math.h>
 
 Box2DFixture::Box2DFixture(QObject *parent) :
     QObject(parent),
     mFixture(nullptr),
     mBody(nullptr)
 {
-    mFixtureDef.userData = this;
+    mFixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 float Box2DFixture::density() const
@@ -402,12 +402,9 @@ b2Shape *Box2DChain::createShape()
     if (mLoop) {
         shape->CreateLoop(vertices.data(), count);
     } else {
-        shape->CreateChain(vertices.data(), count);
-
-        if (mPrevVertexFlag)
-            shape->SetPrevVertex(mBody->world()->toMeters(mPrevVertex));
-        if (mNextVertexFlag)
-            shape->SetNextVertex(mBody->world()->toMeters(mNextVertex));
+        const b2Vec2 prevVertex = mPrevVertexFlag ? mBody->world()->toMeters(mPrevVertex) : b2Vec2();
+        const b2Vec2 nextVertex = mNextVertexFlag ? mBody->world()->toMeters(mNextVertex) : b2Vec2();
+        shape->CreateChain(vertices.data(), count, prevVertex, nextVertex);
     }
 
     return shape;
@@ -439,7 +436,7 @@ b2Shape *Box2DEdge::createShape()
         return nullptr;
     }
     b2EdgeShape *shape = new b2EdgeShape;
-    shape->Set(vertex1, vertex2);
+    shape->SetTwoSided(vertex1, vertex2);
 
     return shape;
 }

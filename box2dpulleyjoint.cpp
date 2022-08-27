@@ -170,14 +170,14 @@ float Box2DPulleyJoint::getCurrentLengthB() const
     return lengthB();
 }
 
-QPointF Box2DPulleyJoint::getReactionForce(float32 inv_dt) const
+QPointF Box2DPulleyJoint::getReactionForce(float inv_dt) const
 {
     if (pulleyJoint())
         return invertY(pulleyJoint()->GetReactionForce(inv_dt));
     return QPointF();
 }
 
-float Box2DPulleyJoint::getReactionTorque(float32 inv_dt) const
+float Box2DPulleyJoint::getReactionTorque(float inv_dt) const
 {
     if (pulleyJoint())
         return pulleyJoint()->GetReactionTorque(inv_dt);

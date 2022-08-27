@@ -14,7 +14,7 @@ Item {
     property alias bullet: itemBody.bullet
     property alias sleepingAllowed: itemBody.sleepingAllowed
     property alias fixedRotation: itemBody.fixedRotation
-    property alias active: itemBody.active
+    property alias enabled: itemBody.enabled
     property alias awake: itemBody.awake
     property alias linearVelocity: itemBody.linearVelocity
     property alias angularVelocity: itemBody.angularVelocity

@@ -71,8 +71,9 @@ Rectangle {
     Component {
         id: linkJoint
         WeldJoint {
-            dampingRatio: 0.5
-            frequencyHz: hz
+            property real omega: hz
+            damping: omega / 2
+            stiffness: omega * omega
         }
     }
 
@@ -231,7 +232,7 @@ Rectangle {
             anchors.fill: parent
             onClicked: {
                 if (hz == 0) {
-                    hz = 60;
+                    hz = 30;
                     ballsTimer.interval = 300
                     crazyButton.color = "#999";
                 } else {

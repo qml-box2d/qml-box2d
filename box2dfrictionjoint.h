@@ -27,7 +27,7 @@
 #define BOX2FRICTIONJOINT_H
 
 #include "box2djoint.h"
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DFrictionJoint : public Box2DJoint
 {
@@ -55,8 +55,8 @@ public:
 
     b2FrictionJoint *frictionJoint() const;
 
-    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
-    Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
+    Q_INVOKABLE QPointF getReactionForce(float inv_dt) const;
+    Q_INVOKABLE float getReactionTorque(float inv_dt) const;
 
 signals:
     void localAnchorAChanged();

@@ -135,7 +135,7 @@ void Box2DJoint::componentComplete()
 
 void Box2DJoint::initializeJointDef(b2JointDef &def)
 {
-    def.userData = this;
+    def.userData.pointer = reinterpret_cast<uintptr_t>(this);
     def.bodyA = bodyA()->body();
     def.bodyB = bodyB()->body();
     def.collideConnected = mCollideConnected;

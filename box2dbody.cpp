@@ -63,7 +63,7 @@ Box2DBody::Box2DBody(QObject *parent) :
     mTransformDirty(false),
     mCreatePending(false)
 {
-    mBodyDef.userData = this;
+    mBodyDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
     setWorld(Box2DWorld::defaultWorld());
 }
 
@@ -145,14 +145,14 @@ void Box2DBody::setFixedRotation(bool fixedRotation)
     emit fixedRotationChanged();
 }
 
-void Box2DBody::setActive(bool active)
+void Box2DBody::setEnabled(bool enabled)
 {
-    if (mBodyDef.active == active)
+    if (mBodyDef.enabled == enabled)
         return;
 
-    mBodyDef.active = active;
+    mBodyDef.enabled = enabled;
     if (mBody)
-        mBody->SetActive(active);
+        mBody->SetEnabled(enabled);
 }
 
 bool Box2DBody::isAwake() const

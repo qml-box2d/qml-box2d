@@ -31,7 +31,7 @@
 #include <QAbstractAnimation>
 #include <QQuickItem>
 
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DContact;
 class Box2DFixture;

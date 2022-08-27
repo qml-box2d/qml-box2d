@@ -42,7 +42,6 @@
 #include "box2dwheeljoint.h"
 #include "box2dmousejoint.h"
 #include "box2dgearjoint.h"
-#include "box2dropejoint.h"
 #include "box2dcontact.h"
 #include "box2draycast.h"
 
@@ -84,7 +83,6 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DWheelJoint>(uri, versionMajor, versionMinor, "WheelJoint");
     qmlRegisterType<Box2DMouseJoint>(uri, versionMajor, versionMinor, "MouseJoint");
     qmlRegisterType<Box2DGearJoint>(uri, versionMajor, versionMinor, "GearJoint");
-    qmlRegisterType<Box2DRopeJoint>(uri, versionMajor, versionMinor, "RopeJoint");
     qmlRegisterType<Box2DRayCast>(uri, versionMajor, versionMinor, "RayCast");
 
     qmlRegisterUncreatableType<Box2DContact>(uri, versionMajor, versionMinor, "Contact", QStringLiteral("Contact class"));

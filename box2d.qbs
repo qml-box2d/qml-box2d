@@ -5,9 +5,9 @@ Project {
 
     StaticLibrary {
         name: "box2d"
-        files: ["Box2D/*.h", "Box2D/*/*.h", "Box2D/*/*/*.h", "Box2D/*.cpp", "Box2D/*/*.cpp", "Box2D/*/*/*.cpp"]
+        files: ["external/box2d/include/box2d/*.h", "external/box2d/src/*/*.cpp"]
         Depends { name: "cpp" }
-        cpp.includePaths: ["Box2D", "."]
+        cpp.includePaths: ["external/box2d/include", "external/box2d/src"]
 
         Group { qbs.install: true; fileTagsFilter: product.type;}
     }
@@ -18,7 +18,7 @@ Project {
         Depends { name: "cpp" }
         Depends { name: "box2d" }
         Depends { name: "Qt"; submodules: ["core", "qml", "quick"]; }
-        cpp.includePaths: ["Box2D", "."]
+        cpp.includePaths: ["external/box2d/include", "."]
 
         Group { qbs.install: true; fileTagsFilter: product.type;}
 

@@ -35,10 +35,10 @@ Box2DRayCast::Box2DRayCast(QObject *parent) :
 {
 }
 
-float32 Box2DRayCast::ReportFixture(b2Fixture *fixture,
+float Box2DRayCast::ReportFixture(b2Fixture *fixture,
                                     const b2Vec2 &point,
                                     const b2Vec2 &normal,
-                                    float32 fraction)
+                                    float fraction)
 {
     mMaxFraction = -1.0f;
 

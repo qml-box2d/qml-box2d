@@ -15,7 +15,8 @@ Rectangle {
     MouseJoint {
         id: mouseJoint
         bodyA: anchor
-        dampingRatio: 0.8
+        damping: 1000
+        stiffness: 1000
         maxForce: 100
     }
 

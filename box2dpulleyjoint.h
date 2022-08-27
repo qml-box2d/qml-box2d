@@ -27,7 +27,7 @@
 #define BOX2PULLEYJOINT_H
 
 #include "box2djoint.h"
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DPulleyJoint : public Box2DJoint
 {
@@ -69,8 +69,8 @@ public:
 
     Q_INVOKABLE float getCurrentLengthA() const;
     Q_INVOKABLE float getCurrentLengthB() const;
-    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
-    Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
+    Q_INVOKABLE QPointF getReactionForce(float inv_dt) const;
+    Q_INVOKABLE float getReactionTorque(float inv_dt) const;
 
 signals:
     void groundAnchorAChanged();

@@ -206,7 +206,7 @@ Rectangle {
         enableMotor: true
         motorSpeed: body.k * body.speed
         maxMotorTorque: torqueSlider.value
-        frequencyHz: 10
+        stiffness: 3950
     }
 
     WheelJoint {
@@ -218,7 +218,7 @@ Rectangle {
         enableMotor: true
         motorSpeed: body.k * body.speed
         maxMotorTorque: torqueSlider.value
-        frequencyHz: 10
+        stiffness: 3950
     }
 
     Rectangle {

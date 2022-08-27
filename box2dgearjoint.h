@@ -27,7 +27,7 @@
 #define BOX2DGEARJOINT_H
 
 #include "box2djoint.h"
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DGearJoint : public Box2DJoint
 {
