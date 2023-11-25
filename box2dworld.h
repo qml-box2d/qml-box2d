@@ -33,9 +33,10 @@
 
 #include <Box2D.h>
 
-class Box2DContact;
-class Box2DFixture;
-class Box2DJoint;
+#include "box2dcontact.h"
+#include "box2dfixture.h"
+#include "box2djoint.h"
+
 class Box2DWorld;
 class Box2DRayCast;
 class ContactListener;
@@ -67,6 +68,7 @@ private:
 class Box2DProfile : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(float step READ step CONSTANT)
     Q_PROPERTY(float collide READ collide CONSTANT)
@@ -104,6 +106,7 @@ private:
     float mEmitSignals;
 };
 
+Q_DECLARE_OPAQUE_POINTER(Box2DProfile*)
 
 /**
  * Wrapper class around a Box2D world.
@@ -111,6 +114,7 @@ private:
 class Box2DWorld : public QObject, public QQmlParserStatus, b2DestructionListener
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
     Q_PROPERTY(float timeStep READ timeStep WRITE setTimeStep NOTIFY timeStepChanged)

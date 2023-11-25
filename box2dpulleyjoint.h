@@ -28,10 +28,12 @@
 
 #include "box2djoint.h"
 #include <Box2D.h>
+#include <QQuickItem>
 
 class Box2DPulleyJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(QPointF groundAnchorA READ groundAnchorA WRITE setGroundAnchorA NOTIFY groundAnchorAChanged)
     Q_PROPERTY(QPointF groundAnchorB READ groundAnchorB WRITE setGroundAnchorB NOTIFY groundAnchorBChanged)

@@ -106,12 +106,13 @@ protected:
     b2FixtureDef mFixtureDef;
     Box2DBody *mBody;
 };
-
+Q_DECLARE_OPAQUE_POINTER(Box2DFixture*)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Box2DFixture::CategoryFlags)
 
 class Box2DBox : public Box2DFixture
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged)
@@ -164,6 +165,7 @@ private:
 class Box2DCircle : public Box2DFixture
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(qreal x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY yChanged)
@@ -204,6 +206,7 @@ private:
 class Box2DPolygon : public Box2DFixture
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
@@ -229,6 +232,7 @@ private:
 class Box2DChain : public Box2DFixture
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
     Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged)
@@ -272,6 +276,7 @@ private:
 class Box2DEdge : public Box2DFixture
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 

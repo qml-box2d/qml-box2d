@@ -29,10 +29,12 @@
 
 #include "box2djoint.h"
 #include <Box2D.h>
+#include <QQuickItem>
 
 class Box2DRevoluteJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)

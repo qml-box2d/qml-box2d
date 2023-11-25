@@ -113,6 +113,8 @@ private:
     b2Joint *mJoint;
 };
 
+Q_DECLARE_OPAQUE_POINTER(Box2DJoint*)
+
 inline Box2DJoint::JointType Box2DJoint::jointType() const
 {
     return mJointType;

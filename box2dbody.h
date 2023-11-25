@@ -31,8 +31,8 @@
 #ifndef BOX2DBODY_H
 #define BOX2DBODY_H
 
-#include <QQuickItem>
 #include <Box2D.h>
+#include <QQuickItem>
 
 class Box2DFixture;
 class Box2DWorld;
@@ -43,6 +43,7 @@ class Box2DWorld;
 class Box2DBody : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(Box2DWorld *world READ world WRITE setWorld NOTIFY worldChanged)
     Q_PROPERTY(QQuickItem *target READ target WRITE setTarget NOTIFY targetChanged)

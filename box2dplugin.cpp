@@ -60,6 +60,7 @@ void Box2DPlugin::registerTypes(const char *uri)
     Q_ASSERT(QLatin1String(uri) == QLatin1String("Box2D"));
 #endif
 
+    // @uri Box2D
     qmlRegisterType<Box2DWorld>(uri, versionMajor, versionMinor, "World");
     qmlRegisterUncreatableType<Box2DProfile>(uri, versionMajor, versionMinor, "Profile",
                                              QStringLiteral("Property group of World"));

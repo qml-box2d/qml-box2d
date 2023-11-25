@@ -28,10 +28,12 @@
 
 #include "box2djoint.h"
 #include <Box2D.h>
+#include <QQuickItem>
 
 class Box2DWeldJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(float referenceAngle READ referenceAngle WRITE setReferenceAngle NOTIFY referenceAngleChanged)
     Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)

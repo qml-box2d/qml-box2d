@@ -26,14 +26,17 @@
 #ifndef BOX2DCONTACT_H
 #define BOX2DCONTACT_H
 
-#include <QObject>
 #include <Box2D.h>
+#include <QObject>
+#include <QQuickItem>
 
 class Box2DFixture;
 
 class Box2DContact : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
     Q_PROPERTY(Box2DFixture *fixtureA READ fixtureA)
     Q_PROPERTY(Box2DFixture *fixtureB READ fixtureB)
@@ -72,5 +75,7 @@ protected:
     qreal getTangentSpeed() const;
     void setTangentSpeed(qreal speed);
 };
+
+Q_DECLARE_OPAQUE_POINTER(Box2DContact*)
 
 #endif // BOX2DCONTACT_H

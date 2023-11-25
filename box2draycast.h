@@ -30,12 +30,14 @@
 #include <QPointF>
 
 #include <Box2D.h>
+#include <QQuickItem>
 
 class Box2DFixture;
 
 class Box2DRayCast : public QObject, public b2RayCastCallback
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(float maxFraction READ maxFraction WRITE setMaxFraction)
 

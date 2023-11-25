@@ -28,10 +28,12 @@
 
 #include "box2djoint.h"
 #include <Box2D.h>
+#include <QQuickItem>
 
 class Box2DGearJoint : public Box2DJoint
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(Box2DJoint *joint1 READ joint1 WRITE setJoint1 NOTIFY joint1Changed)
     Q_PROPERTY(Box2DJoint *joint2 READ joint2 WRITE setJoint2 NOTIFY joint2Changed)
