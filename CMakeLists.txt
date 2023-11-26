@@ -158,6 +158,9 @@ if(Qt6_FOUND)
         QT_QML_MODULE_VERSION 2.0
         QT_QML_MODULE_URI     Box2D
     )
+    if(QT_KNOWN_POLICY_QTP0001)
+        qt_policy(SET QTP0001 OLD)
+    endif()
     qt_add_qml_module(${QML_BOX2D_LIBRARY_NAME}
       URI Box2D
       VERSION 2.0
