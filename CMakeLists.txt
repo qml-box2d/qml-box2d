@@ -45,14 +45,16 @@ set(QT_MAJOR_VERSION Qt6)
 
 if(USE_QT6)
   find_package(Qt6 6.2 COMPONENTS Quick Core Qml)
+  set(QT_VERSION ${Qt6_VERSION})
 endif()
 
 if(NOT Qt6_FOUND)
     find_package(Qt5 5.12 COMPONENTS Quick Core Qml REQUIRED)
     set(QT_MAJOR_VERSION Qt5)
+    set(QT_VERSION ${Qt5_VERSION})
 endif()
 
-message(STATUS "Using ${QT_MAJOR_VERSION}")
+message(STATUS "Using ${QT_MAJOR_VERSION} (${QT_VERSION})")
 
 if(BUILD_SHARED_LIBS)
   set(QML_PLUGIN_LINK_TYPE SHARED)
@@ -130,6 +132,11 @@ target_compile_definitions(${QML_BOX2D_LIBRARY_NAME}
 PRIVATE
     $<$<STREQUAL:${QML_PLUGIN_LINK_TYPE},STATIC>:QT_STATICPLUGIN>
 )
+
+get_target_property(have_automoc_prop ${QML_BOX2D_LIBRARY_NAME} AUTOMOC)
+if("${QT_VERSION}" VERSION_GREATER_EQUAL "6.2.0" AND "${have_automoc_prop}")
+  qt_extract_metatypes(${QML_BOX2D_LIBRARY_NAME})
+endif()
 
 if(MINGW)
   # Remove lib prefix when compiling with mingw on Windows to have the same library name as in qmldir
