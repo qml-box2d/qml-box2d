@@ -134,8 +134,10 @@ PRIVATE
 )
 
 get_target_property(have_automoc_prop ${QML_BOX2D_LIBRARY_NAME} AUTOMOC)
+message(STATUS "Have automoc ${have_automoc_prop}")
 if("${QT_VERSION}" VERSION_GREATER_EQUAL "6.2.0" AND "${have_automoc_prop}")
   qt_extract_metatypes(${QML_BOX2D_LIBRARY_NAME})
+  message(STATUS "qt_extract_metatypes(${QML_BOX2D_LIBRARY_NAME})")
 endif()
 
 if(MINGW)
