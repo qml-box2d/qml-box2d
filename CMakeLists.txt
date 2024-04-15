@@ -47,7 +47,12 @@ if(USE_QT6)
   find_package(Qt6 6.2 COMPONENTS Quick Core Qml)
 endif()
 
-if(NOT Qt6_FOUND)
+if(Qt6_FOUND)
+  # Set Qt policy, introduced in Qt6.5
+  if(QT_KNOWN_POLICY_QTP0001)
+    qt6_policy(SET QTP0001 NEW)
+  endif()
+else()
     find_package(Qt5 5.12 COMPONENTS Quick Core Qml REQUIRED)
     set(QT_MAJOR_VERSION Qt5)
 endif()
