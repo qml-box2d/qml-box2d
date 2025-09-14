@@ -10,7 +10,7 @@ env:
 jobs:
   build-with-qbs:
     name: Ubuntu (Qbs)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -30,7 +30,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile gcc
+        qbs config defaultProfile x86_64-linux-gnu-gcc-14
 
     - name: Build
       run: |
@@ -38,7 +38,7 @@ jobs:
 
   build-with-cmake-qt5:
     name: Ubuntu (CMake Qt5)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -94,12 +94,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v4
       with:
-        version: '5.15.2'
+        version: '6.5.3'
         host: 'mac'
         target: 'desktop'
         dir: '${{github.workspace}}/qt/'
@@ -116,10 +116,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v4
       with:
         version: '5.15.2'
         host: 'windows'
