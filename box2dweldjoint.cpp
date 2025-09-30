@@ -31,8 +31,8 @@
 Box2DWeldJoint::Box2DWeldJoint(QObject *parent)
     : Box2DJoint(WeldJoint, parent)
     , m_referenceAngle(0.0f)
-    , m_frequencyHz(0.0f)
-    , m_dampingRatio(0.0f)
+    , m_stiffness(0.0f)
+    , m_damping(0.0f)
     , m_defaultLocalAnchorA(true)
     , m_defaultLocalAnchorB(true)
     , m_defaultReferenceAngle(true)
@@ -72,26 +72,26 @@ void Box2DWeldJoint::setReferenceAngle(float referenceAngle)
     emit referenceAngleChanged();
 }
 
-void Box2DWeldJoint::setFrequencyHz(float frequencyHz)
+void Box2DWeldJoint::setStiffness(float stiffness)
 {
-    if (m_frequencyHz == frequencyHz)
+    if (m_stiffness == stiffness)
         return;
 
-    m_frequencyHz = frequencyHz;
+    m_stiffness = stiffness;
     if (weldJoint())
-        weldJoint()->SetFrequency(frequencyHz);
-    emit frequencyHzChanged();
+        weldJoint()->SetStiffness(stiffness);
+    emit stiffnessChanged();
 }
 
-void Box2DWeldJoint::setDampingRatio(float dampingRatio)
+void Box2DWeldJoint::setDamping(float damping)
 {
-    if (m_dampingRatio == dampingRatio)
+    if (m_damping == damping)
         return;
 
-    m_dampingRatio = dampingRatio;
+    m_damping = damping;
     if (weldJoint())
-        weldJoint()->SetDampingRatio(dampingRatio);
-    emit dampingRatioChanged();
+        weldJoint()->SetDamping(damping);
+    emit dampingChanged();
 }
 
 b2Joint *Box2DWeldJoint::createJoint()
@@ -114,15 +114,15 @@ b2Joint *Box2DWeldJoint::createJoint()
     }
 
     if (m_defaultReferenceAngle) {
-        float32 angleA = jointDef.bodyA->GetAngle();
-        float32 angleB = jointDef.bodyB->GetAngle();
+        float angleA = jointDef.bodyA->GetAngle();
+        float angleB = jointDef.bodyB->GetAngle();
         jointDef.referenceAngle = angleB - angleA;
     } else {
         jointDef.referenceAngle = toRadians(m_referenceAngle);
     }
 
-    jointDef.frequencyHz = m_frequencyHz;
-    jointDef.dampingRatio = m_dampingRatio;
+    jointDef.stiffness = m_stiffness;
+    jointDef.damping = m_damping;
 
     return world()->world().CreateJoint(&jointDef);
 }

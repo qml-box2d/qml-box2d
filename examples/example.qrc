@@ -93,9 +93,6 @@
         <file>raycast/main.qml</file>
         <file>raycast/Wall.qml</file>
         <file>revolute/revolute.qml</file>
-        <file>rope/images/wall.jpg</file>
-        <file>rope/main.qml</file>
-        <file>rope/Wall.qml</file>
         <file>weld/images/wall.jpg</file>
         <file>weld/main.qml</file>
         <file>weld/Wall.qml</file>

@@ -31,7 +31,7 @@
 #include <QPointF>
 #include <QQmlParserStatus>
 
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class b2World;
 class Box2DBody;
@@ -154,7 +154,7 @@ inline b2Joint *Box2DJoint::joint() const
  */
 inline Box2DJoint *toBox2DJoint(b2Joint *joint)
 {
-    return static_cast<Box2DJoint*>(joint->GetUserData());
+    return reinterpret_cast<Box2DJoint*>(joint->GetUserData().pointer);
 }
 
 

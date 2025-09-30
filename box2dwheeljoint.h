@@ -28,7 +28,7 @@
 #define BOX2DWHEELJOINT_H
 
 #include "box2djoint.h"
-#include <Box2D.h>
+#include <box2d/box2d.h>
 
 class Box2DWheelJoint : public Box2DJoint
 {
@@ -37,8 +37,8 @@ class Box2DWheelJoint : public Box2DJoint
     Q_PROPERTY(QPointF localAnchorA READ localAnchorA WRITE setLocalAnchorA NOTIFY localAnchorAChanged)
     Q_PROPERTY(QPointF localAnchorB READ localAnchorB WRITE setLocalAnchorB NOTIFY localAnchorBChanged)
     Q_PROPERTY(QPointF localAxisA READ localAxisA WRITE setLocalAxisA NOTIFY localAxisAChanged)
-    Q_PROPERTY(float dampingRatio READ dampingRatio WRITE setDampingRatio NOTIFY dampingRatioChanged)
-    Q_PROPERTY(float frequencyHz READ frequencyHz WRITE setFrequencyHz NOTIFY frequencyHzChanged)
+    Q_PROPERTY(float damping READ damping WRITE setDamping NOTIFY dampingChanged)
+    Q_PROPERTY(float stiffness READ stiffness WRITE setStiffness NOTIFY stiffnessChanged)
     Q_PROPERTY(float maxMotorTorque READ maxMotorTorque WRITE setMaxMotorTorque NOTIFY maxMotorTorqueChanged)
     Q_PROPERTY(float motorSpeed READ motorSpeed WRITE setMotorSpeed NOTIFY motorSpeedChanged)
     Q_PROPERTY(bool enableMotor READ enableMotor WRITE setEnableMotor NOTIFY enableMotorChanged)
@@ -64,16 +64,16 @@ public:
     float motorSpeed() const;
     void setMotorSpeed(float motorSpeed);
 
-    float frequencyHz() const;
-    void setFrequencyHz(float frequencyHz);
+    float stiffness() const;
+    void setStiffness(float stiffness);
 
-    float dampingRatio() const;
-    void setDampingRatio(float dampingRatio);
+    float damping() const;
+    void setDamping(float damping);
 
     b2WheelJoint *wheelJoint() const;
 
-    Q_INVOKABLE QPointF getReactionForce(float32 inv_dt) const;
-    Q_INVOKABLE float getReactionTorque(float32 inv_dt) const;
+    Q_INVOKABLE QPointF getReactionForce(float inv_dt) const;
+    Q_INVOKABLE float getReactionTorque(float inv_dt) const;
     Q_INVOKABLE float getJointTranslation() const;
     Q_INVOKABLE float getJointSpeed() const;
 
@@ -84,8 +84,8 @@ signals:
     void enableMotorChanged();
     void maxMotorTorqueChanged();
     void motorSpeedChanged();
-    void frequencyHzChanged();
-    void dampingRatioChanged();
+    void stiffnessChanged();
+    void dampingChanged();
 
 protected:
     b2Joint *createJoint() override;
@@ -97,8 +97,8 @@ private:
     bool m_enableMotor;
     float m_maxMotorTorque;
     float m_motorSpeed;
-    float m_frequencyHz;
-    float m_dampingRatio;
+    float m_stiffness;
+    float m_damping;
 
     bool m_defaultLocalAnchorA;
     bool m_defaultLocalAnchorB;
@@ -135,14 +135,14 @@ inline float Box2DWheelJoint::motorSpeed() const
     return m_motorSpeed;
 }
 
-inline float Box2DWheelJoint::frequencyHz() const
+inline float Box2DWheelJoint::stiffness() const
 {
-    return m_frequencyHz;
+    return m_stiffness;
 }
 
-inline float Box2DWheelJoint::dampingRatio() const
+inline float Box2DWheelJoint::damping() const
 {
-    return m_dampingRatio;
+    return m_damping;
 }
 
 inline b2WheelJoint *Box2DWheelJoint::wheelJoint() const
