@@ -20,7 +20,7 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 #
-cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(qmlbox2d)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -38,6 +38,7 @@ check_ipo_supported(RESULT ipoSupported)
 
 option(USE_QT6 "Use Qt6 by default, else use Qt5" ON)
 option(USE_SYSTEM_BOX2D "Use system box2d if compatible" OFF)
+option(USE_16KB_PAGESIZE "For android, option to compile with 16 KB pages size (mandatory since Nov 2025)" OFF)
 option(BUILD_EXAMPLES "Build the examples" ON)
 option(BUILD_SHARED_LIBS "Build qml-box2d as a shared lib" ON)
 
@@ -135,6 +136,10 @@ target_compile_definitions(${QML_BOX2D_LIBRARY_NAME}
 PRIVATE
     $<$<STREQUAL:${QML_PLUGIN_LINK_TYPE},STATIC>:QT_STATICPLUGIN>
 )
+
+if(USE_16KB_PAGESIZE)
+    target_link_options(${QML_BOX2D_LIBRARY_NAME} PRIVATE "-Wl,-z,max-page-size=16384")
+endif()
 
 if(MINGW)
   # Remove lib prefix when compiling with mingw on Windows to have the same library name as in qmldir
